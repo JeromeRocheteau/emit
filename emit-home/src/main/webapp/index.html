@@ -14,7 +14,10 @@
 var app = angular.module('app',[]);
 
 app.controller('controller', function ($scope, $http) {
-
+	$http.get("http://172.21.1.18/emit/measurand/list")
+	  .then(function(response) {
+	      $scope.myWelcome = response.data;
+	  });
 });
   </script>  
   <body ng-app="app" ng-controller="controller">
@@ -37,6 +40,8 @@ app.controller('controller', function ($scope, $http) {
     </header>
     <section id="content" class="container">
     </section>
+    <p>Today's welcome message is:</p>
+    <h1>{{myWelcome}}</h1>
     <footer class="footer">
     </footer>
   </body>
