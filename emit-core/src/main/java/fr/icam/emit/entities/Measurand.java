@@ -2,16 +2,16 @@ package fr.icam.emit.entities;
 
 public class Measurand {
 
-	private String procces;
+	private String process;
 	
 	private String name;
 
-	public String getProcces() {
-		return procces;
+	public String getProcess() {
+		return process;
 	}
 
-	public void setProcces(String procces) {
-		this.procces = procces;
+	public void setProcces(String process) {
+		this.process = process;
 	}
 
 	public String getName() {
