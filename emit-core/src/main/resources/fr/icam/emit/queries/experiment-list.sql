@@ -2,6 +2,6 @@ select
   id,
   started,
   stopped,
-  process,
-  uri
+  measurand,
+  observee
 from experiments;
