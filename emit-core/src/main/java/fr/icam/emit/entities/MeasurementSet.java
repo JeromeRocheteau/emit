@@ -1,18 +1,20 @@
 package fr.icam.emit.entities;
 
+import java.sql.Timestamp;
+
 public class MeasurementSet {
 	
-	private int id;
+	private long id;
 	private String data;
-	private long achieved;
+	private Timestamp achieved;
 	private String uri;
-	private int experimentId;
-	private int measurementId;
+	private long experimentId;
+
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	public String getData() {
@@ -21,10 +23,10 @@ public class MeasurementSet {
 	public void setData(String data) {
 		this.data = data;
 	}
-	public long getAchieved() {
+	public Timestamp getAchieved() {
 		return achieved;
 	}
-	public void setAchieved(long datetime) {
+	public void setAchieved(Timestamp datetime) {
 		this.achieved = datetime;
 	}
 	public String getUri() {
@@ -33,26 +35,21 @@ public class MeasurementSet {
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
-	public int getExperimentId() {
+	public long getExperimentId() {
 		return experimentId;
 	}
-	public void setExperimentId(int experimentId) {
+	public void setExperimentId(long experimentId) {
 		this.experimentId = experimentId;
 	}
-	public int getMeasurementId() {
-		return measurementId;
-	}
-	public void setMeasurementId(int measurementId) {
-		this.measurementId = measurementId;
-	}
 	
-	public  MeasurementSet(int id,String data,Long achieved,String uri,int ExperimentId,int MeasurementId){
+	
+	public  MeasurementSet(long id,String data,Timestamp achieved,String uri,long ExperimentId){
 		this.setId(id);
 		this.setData(data);
 		this.setAchieved(achieved);
 		this.setUri(uri);
 		this.setExperimentId(ExperimentId);
-		this.setMeasurementId(MeasurementId);
+		
 	}
 	
 }

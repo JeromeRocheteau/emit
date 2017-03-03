@@ -3,6 +3,7 @@ package fr.icam.emit.servlets;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,10 +29,10 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
 		List<Experiment> experiments = new LinkedList<Experiment>();
         while (resultSet.next()) {
         	int id = resultSet.getInt("id");        	
-            long started = resultSet.getLong("started");
-            long stopped = resultSet.getLong("stopped");
-            String process = resultSet.getString("process");
-            String uri = resultSet.getString("uri");
+        	Timestamp started = resultSet.getTimestamp("started");
+        	Timestamp stopped = resultSet.getTimestamp("stopped");
+            String process = resultSet.getString("measurand");
+            String uri = resultSet.getString("observee");
             experiments.add(new Experiment(id,started,stopped,process,uri));
         }
         return experiments;

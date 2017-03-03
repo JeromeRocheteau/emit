@@ -27,10 +27,11 @@ public class MeasurementList extends JdbcQueryServlet<List<Measurement>> {
 	protected List<Measurement> doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
 		List<Measurement> measurements = new LinkedList<Measurement>();
         while (resultSet.next()) {
-            String id = resultSet.getString("id");
+            int id = resultSet.getInt("id");
             String data = resultSet.getString("data");
-            String name = resultSet.getString("name");
-            measurements.add(new Measurement(id, data, name));
+            String name = resultSet.getString("measure");
+            int measurementSetId = resultSet.getInt("measurementset");
+            measurements.add(new Measurement(id, measurementSetId,data, name));
         }
         return measurements;
 	}

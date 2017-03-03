@@ -1,29 +1,31 @@
 package fr.icam.emit.entities;
 
+import java.sql.Timestamp;
+
 public class Experiment {
 	
-	private int id;
-	private long started;
-	private long stopped;
+	private long id;
+	private Timestamp started;
+	private Timestamp stopped;
 	private String process;
-	private String uri;	
+	private String observee_uri;	
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
-	public long getStarted() {
+	public Timestamp getStarted() {
 		return started;
 	}
-	public void setStarted(long started) {
+	public void setStarted(Timestamp started) {
 		this.started = started;
 	}
-	public long getStopped() {
+	public Timestamp getStopped() {
 		return stopped;
 	}
-	public void setStopped(long stopped) {
+	public void setStopped(Timestamp stopped) {
 		this.stopped = stopped;
 	}
 	public String getProcess() {
@@ -32,19 +34,19 @@ public class Experiment {
 	public void setProcess(String process) {
 		this.process = process;
 	}
-	public String getUri() {
-		return uri;
+	public String getobservee_uri() {
+		return observee_uri;
 	}
-	public void setUri(String uri) {
-		this.uri = uri;
+	public void setobservee_uri(String observee_uri) {
+		this.observee_uri = observee_uri;
 	}
 	
-	public Experiment(int id, long started,long stopped,String process,String uri){
+	public Experiment(long id, Timestamp started,Timestamp stopped,String process,String observee_uri){
 		this.setId(id);
 		this.setStarted(started);
 		this.setStopped(stopped);
 		this.setProcess(process);
-		this.setUri(uri);
+		this.setobservee_uri(observee_uri);
 	}
 	
 

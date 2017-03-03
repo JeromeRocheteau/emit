@@ -2,17 +2,19 @@ package fr.icam.emit.entities;
 
 public class Measurement {
 
-	private String id;
+	private long id;
 	
+	private long measurementSetId;
+
 	private String data;
 	
-	private String name;
+	private String measure_name;
 
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -24,18 +26,27 @@ public class Measurement {
 		this.data = data;
 	}
 
-	public String getName() {
-		return name;
+	public String getmeasure_name() {
+		return measure_name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setmeasure_name(String measure_name) {
+		this.measure_name = measure_name;
 	}
 	
-	public Measurement(String id, String data, String name) {
+	public long getMeasurementSetId() {
+		return measurementSetId;
+	}
+
+	public void setMeasurementSetId(long measurementSetId) {
+		this.measurementSetId = measurementSetId;
+	}
+	
+	public Measurement(long id,long measurementSetId, String data, String measure_name) {
 		this.setId(id);
 		this.setData(data);
-		this.setName(name);
+		this.setmeasure_name(measure_name);
+		this.setMeasurementSetId(measurementSetId);
 	}
 	
 }

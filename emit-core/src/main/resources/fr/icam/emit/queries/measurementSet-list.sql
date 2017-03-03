@@ -1,7 +1,7 @@
 select   
+  id,
   data,
   achieved,
-  uri,
-  experiementId,
-  measurementId
+  experiement,
+  observer
 from measurementSet;

@@ -1,5 +1,6 @@
 select
   id,
   data,
-  name
+  measurementset,
+  measure
 from measurements;
