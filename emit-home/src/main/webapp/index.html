@@ -17,15 +17,39 @@
 <script type="text/javascript">
 	var app = angular.module('app', []);
 
-	app.controller('controller', function($scope, $http) {
+	app.controller('myCtrl', function($scope, $http) {
+		$http.get("http://172.21.1.18/emit/experiment/list").then(
+				function(response) {
+					$scope.experimentlist = response.data;
+				});
+		$http.get("http://172.21.1.18/emit/observer/list").then(
+				function(response) {
+					$scope.observerlist = response.data;
+				});
+		$http.get("http://172.21.1.18/emit/observee/list").then(
+				function(response) {
+					$scope.observeelist = response.data;
+				});
+		$http.get("http://172.21.1.18/emit/measure/list").then(
+				function(response) {
+					$scope.measurelist = response.data;
+				});
+		$http.get("http://172.21.1.18/emit/measurement/list").then(
+				function(response) {
+					$scope.measurementlist = response.data;
+				});
 		$http.get("http://172.21.1.18/emit/measurand/list").then(
 				function(response) {
-					$scope.myWelcome = response.data;
+					$scope.measurandlist = response.data;
+				});
+		$http.get("http://172.21.1.18/emit/measurementset/list").then(
+				function(response) {
+					$scope.measurementsetlist = response.data;
 				});
 	});
 </script>
-<body ng-app="app" ng-controller="controller">
-<h1> COUCOU </h1>
+
+<body ng-app="app" ng-controller="myCtrl">
 	<header>
 		<div class="navbar navbar-default navbar-custom navbar-static-top">
 			<div class="container">
@@ -54,11 +78,13 @@
 					<li role="presentation" class=""><a href="#observee"
 						aria-controls="observee" role="tab" data-toggle="tab">Observees</a></li>
 					<li role="presentation" class=""><a href="#measurand"
-						aria-controls="measurand" role="tab" data-toggle="tab">Measurand</a></li>
-					<li role="presentation" class=""><a href="#measurements"
+						aria-controls="measurand" role="tab" data-toggle="tab">Measurands</a></li>
+					<li role="presentation" class=""><a href="#measurement"
 						aria-controls="measurements" role="tab" data-toggle="tab">Measurements</a></li>
-					<li role="presentation" class=""><a href="#measures"
+					<li role="presentation" class=""><a href="#measure"
 						aria-controls="measures" role="tab" data-toggle="tab">Measures</a></li>
+					<li role="presentation" class=""><a href="#measurementset"
+						aria-controls="measures" role="tab" data-toggle="tab">MeasurementSets</a></li>
 				</ul>
 			</div>
 			<div class="col-md-8 list-group-item">
@@ -66,32 +92,15 @@
 					<div role="tabpanel" class="tab-pane active" id="experiment">
 						<legend>Experiments</legend>
 						<div class="panel panel-default">
-							<p>{{myWelcome}}</p>
+							<p>{{experimentlist}}</p>
 							<table class="table">
-								<thead>
-									<tr>
-										<th>Id</th>
-										<th>Started time</th>
-										<th>Stopped time</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>1</td>
-										<td>started1</td>
-										<td>stopped1</td>
-									</tr>
-									<tr>
-										<td>2</td>
-										<td>started2</td>
-										<td>stopped2</td>
-									</tr>
-									<tr>
-										<td>3</td>
-										<td>started3</td>
-										<td>stopped3</td>
-									</tr>
-								</tbody>
+								<tr ng-repeat="x in experimentlist">
+									<td>{{ x.id }}</td>
+									<td>{{ x.started }}</td>
+									<td>{{ x.stopped }}</td>
+									<td>{{ x.process }}</td>
+									<td>{{ x.observee_uri }}</td>
+								</tr>
 							</table>
 						</div>
 						<div class="pull-right">
@@ -109,27 +118,12 @@
 					<div role="tabpanel" class="tab-pane" id="observer">
 						<legend>Observers</legend>
 						<div class="panel panel-default">
+						<p>{{observerlist}}</p>
 							<table class="table">
-								<thead>
-									<tr>
-										<th>Id</th>
-										<th>Name</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>1</td>
-										<td>observer1</td>
-									</tr>
-									<tr>
-										<td>2</td>
-										<td>observer2</td>
-									</tr>
-									<tr>
-										<td>3</td>
-										<td>observer3</td>
-									</tr>
-								</tbody>
+								<tr ng-repeat="x in observerlist">
+									<td>{{ x.uri }}</td>
+									<td>{{ x.name }}</td>
+								</tr>
 							</table>
 						</div>
 						<div class="pull-right">
@@ -147,27 +141,12 @@
 					<div role="tabpanel" class="tab-pane" id="observee">
 						<legend>Observees</legend>
 						<div class="panel panel-default">
+						<p>{{observeelist}}</p>
 							<table class="table">
-								<thead>
-									<tr>
-										<th>Id</th>
-										<th>Name</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>1</td>
-										<td>observee1</td>
-									</tr>
-									<tr>
-										<td>2</td>
-										<td>observee2</td>
-									</tr>
-									<tr>
-										<td>3</td>
-										<td>observee3</td>
-									</tr>
-								</tbody>
+								<tr ng-repeat="x in observeelist">
+									<td>{{ x.uri }}</td>
+									<td>{{ x.name }}</td>
+								</tr>
 							</table>
 						</div>
 						<div class="pull-right">
@@ -183,22 +162,16 @@
 						</div>
 					</div>
 					<div role="tabpanel" class="tab-pane" id="measurand">
-						<legend>Measurand</legend>
-						<div class="pull-right">
-							<button type="button" class="btn btn-default">
-								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
-							</button>
-							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
-							</button>
-							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-remove">&ensp;</span> Supprimer
-							</button>
+						<legend>Measurands</legend>
+						<div class="panel panel-default">
+							<table class="table">
+							<p>{{measurandlist}}</p>
+								<tr ng-repeat="x in measurandlist">
+									<td>{{ x.process }}</td>
+									<td>{{ x.name }}</td>
+								</tr>
+							</table>
 						</div>
-
-					</div>
-					<div role="tabpanel" class="tab-pane" id="measurements">
-						<legend>Measurements</legend>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
 								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
@@ -211,8 +184,17 @@
 							</button>
 						</div>
 					</div>
-					<div role="tabpanel" class="tab-pane" id="measures">
+					<div role="tabpanel" class="tab-pane" id="measure">
 						<legend>Measures</legend>
+						<div class="panel panel-default">
+						<p>{{measurelist}}</p>
+							<table class="table">
+								<tr ng-repeat="x in measurelist">
+									<td>{{ x.name }}</td>
+									<td>{{ x.unit }}</td>
+								</tr>
+							</table>
+						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
 								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
@@ -225,13 +207,62 @@
 							</button>
 						</div>
 					</div>
-					<div role="tabpanel" class="tab-pane" id="password"></div>
+					<div role="tabpanel" class="tab-pane" id="measurement">
+						<legend>Measurements</legend>
+						<div class="panel panel-default">
+						<p>{{measurementlist}}</p>
+							<table class="table">
+								<tr ng-repeat="x in measurementlist">
+									<td>{{ x.id }}</td>
+									<td>{{ x.data }}</td>
+									<td>{{ x.measurementSetId }}</td>
+									<td>{{ x.measure_name }}</td>
+								</tr>
+							</table>
+						</div>
+						<div class="pull-right">
+							<button type="button" class="btn btn-default">
+								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
+							</button>
+							<button type="submit" class="btn btn">
+								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
+							</button>
+							<button type="submit" class="btn btn">
+								<span class="glyphicon glyphicon-remove">&ensp;</span> Supprimer
+							</button>
+						</div>
+					</div>
+
+					<div role="tabpanel" class="tab-pane" id="measurementset">
+						<legend>Measurement Sets</legend>
+						<div class="panel panel-default">
+						<p>{{measurementsetlist}}</p>
+							<table class="table">
+								<tr ng-repeat="x in measurementsetlist">
+									<td>{{ x.id }}</td>
+									<td>{{ x.data }}</td>
+									<td>{{ x.achieved }}</td>
+									<td>{{ x.experiment }}</td>
+									<td>{{ x.observer }}</td>
+								<tr>
+							</table>
+						</div>
+						<div class="pull-right">
+							<button type="button" class="btn btn-default">
+								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
+							</button>
+							<button type="submit" class="btn btn">
+								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
+							</button>
+							<button type="submit" class="btn btn">
+								<span class="glyphicon glyphicon-remove">&ensp;</span> Supprimer
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</section>
-	<p>Today's welcome message is:</p>
-	<h1>{{myWelcome}}</h1>
 	<footer class="footer"> </footer>
 </body>
 </html>
