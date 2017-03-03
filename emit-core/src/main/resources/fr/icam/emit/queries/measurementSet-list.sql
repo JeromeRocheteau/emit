@@ -1,7 +1,7 @@
 select   
   id,
-  data,
+  data,  
+  experiment,
   achieved,
-  experiement,
   observer
-from measurementSet;
+from measurementSets;

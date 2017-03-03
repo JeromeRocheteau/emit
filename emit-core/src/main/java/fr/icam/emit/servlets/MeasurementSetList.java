@@ -1,9 +1,11 @@
 package fr.icam.emit.servlets;
 
 import java.io.IOException;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,12 +30,13 @@ public class MeasurementSetList extends JdbcQueryServlet<List<MeasurementSet>> {
 	protected List<MeasurementSet> doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
 		List<MeasurementSet> MeasurementSets = new LinkedList<MeasurementSet>();
         while (resultSet.next()) {
-        	int id = resultSet.getInt("id");
+        	long id = resultSet.getInt("id");
         	String data = resultSet.getString("data");
-        	Timestamp achieved = resultSet.getTimestamp("achieved");
+        	long achieved = (resultSet.getTimestamp("achieved")).getTime();
         	String uri = resultSet.getString("observer");
-        	int experimentId =resultSet.getInt("experiment");        	
+        	long experimentId =resultSet.getInt("experiment");        	
             MeasurementSets.add(new MeasurementSet(id, data,achieved,uri,experimentId));
+            //MeasurementSets.add(new MeasurementSet(id, data,uri,experimentId));
         }
         return MeasurementSets;
 	}
