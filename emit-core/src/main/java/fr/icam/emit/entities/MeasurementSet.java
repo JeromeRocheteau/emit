@@ -1,6 +1,6 @@
 package fr.icam.emit.entities;
 
-
+//teste commit
 
 public class MeasurementSet {
 	
