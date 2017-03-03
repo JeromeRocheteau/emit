@@ -1,9 +1,0 @@
-<Context>
-  <Resource name="jdbc/database"
-            auth="Container"
-            type="javax.sql.DataSource"
-            username="emit"
-            password="emit"
-            driverClassName="com.mysql.jdbc.Driver"
-            url="jdbc:mysql://172.21.1.18:3306/emit" />
-</Context>
