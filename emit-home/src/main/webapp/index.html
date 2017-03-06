@@ -42,7 +42,7 @@
 				function(response) {
 					$scope.measurandlist = response.data;
 				});
-		$http.get("http://172.21.1.18/emit/measurementset/list").then(
+		$http.get("http://172.21.1.18/emit/measurementSet/list").then(
 				function(response) {
 					$scope.measurementsetlist = response.data;
 				});
@@ -92,10 +92,9 @@
 					<div role="tabpanel" class="tab-pane active" id="experiment">
 						<legend>Experiments</legend>
 						<div class="panel panel-default">
-							<p>{{experimentlist}}</p>
 							<table class="table">
 								<tr ng-repeat="x in experimentlist">
-									<td>{{ x.id }}</td>
+									<td><a href="#listobserver{{ x.id }}">{{ x.id }} </a></td>
 									<td>{{ x.started }}</td>
 									<td>{{ x.stopped }}</td>
 									<td>{{ x.process }}</td>
@@ -118,7 +117,6 @@
 					<div role="tabpanel" class="tab-pane" id="observer">
 						<legend>Observers</legend>
 						<div class="panel panel-default">
-						<p>{{observerlist}}</p>
 							<table class="table">
 								<tr ng-repeat="x in observerlist">
 									<td>{{ x.uri }}</td>
@@ -141,7 +139,6 @@
 					<div role="tabpanel" class="tab-pane" id="observee">
 						<legend>Observees</legend>
 						<div class="panel panel-default">
-						<p>{{observeelist}}</p>
 							<table class="table">
 								<tr ng-repeat="x in observeelist">
 									<td>{{ x.uri }}</td>
@@ -165,7 +162,6 @@
 						<legend>Measurands</legend>
 						<div class="panel panel-default">
 							<table class="table">
-							<p>{{measurandlist}}</p>
 								<tr ng-repeat="x in measurandlist">
 									<td>{{ x.process }}</td>
 									<td>{{ x.name }}</td>
@@ -187,7 +183,6 @@
 					<div role="tabpanel" class="tab-pane" id="measure">
 						<legend>Measures</legend>
 						<div class="panel panel-default">
-						<p>{{measurelist}}</p>
 							<table class="table">
 								<tr ng-repeat="x in measurelist">
 									<td>{{ x.name }}</td>
@@ -210,7 +205,6 @@
 					<div role="tabpanel" class="tab-pane" id="measurement">
 						<legend>Measurements</legend>
 						<div class="panel panel-default">
-						<p>{{measurementlist}}</p>
 							<table class="table">
 								<tr ng-repeat="x in measurementlist">
 									<td>{{ x.id }}</td>
@@ -236,14 +230,13 @@
 					<div role="tabpanel" class="tab-pane" id="measurementset">
 						<legend>Measurement Sets</legend>
 						<div class="panel panel-default">
-						<p>{{measurementsetlist}}</p>
 							<table class="table">
 								<tr ng-repeat="x in measurementsetlist">
 									<td>{{ x.id }}</td>
 									<td>{{ x.data }}</td>
 									<td>{{ x.achieved }}</td>
-									<td>{{ x.experiment }}</td>
-									<td>{{ x.observer }}</td>
+									<td>{{ x.experimentId }}</td>
+									<td>{{ x.uri }}</td>
 								<tr>
 							</table>
 						</div>
