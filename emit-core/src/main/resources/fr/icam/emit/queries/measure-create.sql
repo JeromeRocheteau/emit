@@ -1,2 +1,2 @@
-insert into measure (name, unit)
+insert into measures (name, unit)
 values (?,?);

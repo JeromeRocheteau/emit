@@ -46,6 +46,11 @@
 				function(response) {
 					$scope.measurementsetlist = response.data;
 				});
+		var indata = {name :'measure6',unit:'unit6'  };
+		$http.post("http://172.21.1.18/emit/measure/create",indata).then(
+				function(response) {
+					$scope.test = response.data;
+				});
 	});
 </script>
 
