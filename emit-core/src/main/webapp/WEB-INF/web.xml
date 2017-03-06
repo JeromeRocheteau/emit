@@ -67,6 +67,19 @@
     <servlet-name>measure-list</servlet-name>
     <url-pattern>/measure/list</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>measure-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasureCreation</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-create</servlet-name>
+    <url-pattern>/measure/create</url-pattern>
+  </servlet-mapping>
 	
 	<servlet>
     <servlet-name>observer-list</servlet-name>
