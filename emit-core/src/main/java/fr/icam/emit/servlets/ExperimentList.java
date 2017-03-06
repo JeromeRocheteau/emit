@@ -42,6 +42,6 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		List<Experiment> experiments = this.doProcess(request);
         this.doPrint(experiments, response);
-	}
+	}	
 
 }
