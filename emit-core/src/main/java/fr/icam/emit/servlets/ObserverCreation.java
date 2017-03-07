@@ -1,6 +1,9 @@
 package fr.icam.emit.servlets;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.PreparedStatement;
 
 import javax.servlet.ServletException;
@@ -18,9 +21,9 @@ public class ObserverCreation extends JdbcUpdateServlet<Boolean>  {
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();		
-		String Json = this.getStringJson(request); 
-		 // Measure measure = gson.fromJson(request.getInputStream().toString(), Measure.class);
-		Observer observer = gson.fromJson(Json, Observer.class);
+		InputStream inputStream = request.getInputStream();
+		Reader reader = new InputStreamReader(inputStream);
+		Observer observer = gson.fromJson(reader, Observer.class);
 		statement.setString(1, observer.getUri());
 		statement.setString(2, observer.getName());
 	}

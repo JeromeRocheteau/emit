@@ -1,6 +1,9 @@
 package fr.icam.emit.servlets;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.PreparedStatement;
 
 import javax.servlet.ServletException;
@@ -18,9 +21,11 @@ private static final long serialVersionUID = 201703070922L;
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();		
-		String Json = this.getStringJson(request); 
+		// String Json = this.getStringJson(request);
+		InputStream inputStream = request.getInputStream();
+		Reader reader = new InputStreamReader(inputStream);
 		 // Measure measure = gson.fromJson(request.getInputStream().toString(), Measure.class);
-		Measurand measurand = gson.fromJson(Json, Measurand.class);
+		Measurand measurand = gson.fromJson(reader, Measurand.class);
 		statement.setString(1, measurand.getProcess());
 		statement.setString(2, measurand.getName());
 	}
