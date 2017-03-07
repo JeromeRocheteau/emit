@@ -22,8 +22,7 @@ private static final long serialVersionUID = 201703070926L;
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();		
 		InputStream inputStream = request.getInputStream();
-		Reader reader = new InputStreamReader(inputStream);
-		 // Measure measure = gson.fromJson(request.getInputStream().toString(), Measure.class);
+		Reader reader = new InputStreamReader(inputStream);		 
 		Observee observee = gson.fromJson(reader, Observee.class);
 		statement.setString(1, observee.getUri());
 		statement.setString(2, observee.getName());

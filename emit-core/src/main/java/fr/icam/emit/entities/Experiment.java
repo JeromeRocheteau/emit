@@ -7,8 +7,8 @@ public class Experiment {
 	private long id;
 	private Timestamp started;
 	private Timestamp stopped;
-	private String process;
-	private String observee_uri;	
+	private String measurand;
+	private String observee;	
 	
 	public long getId() {
 		return id;
@@ -28,25 +28,25 @@ public class Experiment {
 	public void setStopped(Timestamp stopped) {
 		this.stopped = stopped;
 	}
-	public String getProcess() {
-		return process;
+	public String getMeasurand() {
+		return measurand;
 	}
-	public void setProcess(String process) {
-		this.process = process;
+	public void setMeasurand(String measurand) {
+		this.measurand = measurand;
 	}
-	public String getobservee_uri() {
-		return observee_uri;
+	public String getObservee() {
+		return observee;
 	}
-	public void setobservee_uri(String observee_uri) {
-		this.observee_uri = observee_uri;
+	public void setObservee(String observee_uri) {
+		this.observee = observee_uri;
 	}
 	
-	public Experiment(long id, Timestamp started,Timestamp stopped,String process,String observee_uri){
+	public Experiment(long id, Timestamp started,Timestamp stopped,String measurand,String observee_uri){
 		this.setId(id);
 		this.setStarted(started);
 		this.setStopped(stopped);
-		this.setProcess(process);
-		this.setobservee_uri(observee_uri);
+		this.setMeasurand(measurand);
+		this.setObservee(observee_uri);
 	}
 	
 

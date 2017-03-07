@@ -4,11 +4,11 @@ public class Measurement {
 
 	private long id;
 	
-	private long measurementSetId;
+	private long measurementSet;
 
 	private String data;
 	
-	private String measure_name;
+	private String measure;
 
 	public long getId() {
 		return id;
@@ -26,27 +26,27 @@ public class Measurement {
 		this.data = data;
 	}
 
-	public String getmeasure_name() {
-		return measure_name;
+	public String getMeasure() {
+		return measure;
 	}
 
-	public void setmeasure_name(String measure_name) {
-		this.measure_name = measure_name;
+	public void setMeasure(String measure) {
+		this.measure = measure;
 	}
 	
-	public long getMeasurementSetId() {
-		return measurementSetId;
+	public long getMeasurementSet() {
+		return measurementSet;
 	}
 
-	public void setMeasurementSetId(long measurementSetId) {
-		this.measurementSetId = measurementSetId;
+	public void setMeasurementSet(long measurementSet) {
+		this.measurementSet = measurementSet;
 	}
 	
-	public Measurement(long id,long measurementSetId, String data, String measure_name) {
+	public Measurement(long id,long measurementSet, String data, String measure) {
 		this.setId(id);
 		this.setData(data);
-		this.setmeasure_name(measure_name);
-		this.setMeasurementSetId(measurementSetId);
+		this.setMeasure(measure);
+		this.setMeasurementSet(measurementSet);
 	}
 	
 }

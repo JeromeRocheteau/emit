@@ -9,8 +9,8 @@ public class MeasurementSet {
 	private long id;
 	private String data;
 	private Timestamp achieved;
-	private String uri;
-	private long experimentId;
+	private String observer;
+	private long experiment;
 
 	
 	public long getId() {
@@ -31,26 +31,26 @@ public class MeasurementSet {
 	public void setAchieved(Timestamp longtime) {
 		this.achieved = longtime;
 	}
-	public String getUri() {
-		return uri;
+	public String getObserver() {
+		return observer;
 	}
-	public void setUri(String uri) {
-		this.uri = uri;
+	public void setObserver(String observer) {
+		this.observer = observer;
 	}
-	public long getExperimentId() {
-		return experimentId;
+	public long getExperiment() {
+		return experiment;
 	}
-	public void setExperimentId(long experimentId) {
-		this.experimentId = experimentId;
+	public void setExperiment(long experimentId) {
+		this.experiment = experimentId;
 	}
 	
-	public  MeasurementSet(long id,String data,Timestamp achieved,String uri,long ExperimentId){
-	//public  MeasurementSet(long id,String data,String uri,long ExperimentId){
+	public  MeasurementSet(long id,String data,Timestamp achieved,String observer,long ExperimentId){
+	//public  MeasurementSet(long id,String data,String observer,long ExperimentId){
 		this.setId(id);
 		this.setData(data);
 		this.setAchieved(achieved);
-		this.setUri(uri);
-		this.setExperimentId(ExperimentId);
+		this.setObserver(observer);
+		this.setExperiment(ExperimentId);
 		
 	}
 
