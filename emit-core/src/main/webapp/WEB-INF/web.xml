@@ -42,6 +42,19 @@
     <servlet-name>measurand-list</servlet-name>
     <url-pattern>/measurand/list</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>experiment-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.ExperimentCreation</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/experiment-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>experiment-create</servlet-name>
+    <url-pattern>/experiment/create</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>experiment-list</servlet-name>
@@ -54,7 +67,8 @@
   <servlet-mapping>
     <servlet-name>experiment-list</servlet-name>
     <url-pattern>/experiment/list</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>  
+  
   
 	<servlet>
     <servlet-name>measurement-list</servlet-name>
@@ -67,6 +81,19 @@
   <servlet-mapping>
     <servlet-name>measurement-list</servlet-name>
     <url-pattern>/measurement/list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>measurement-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurementCreattion</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurement-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurement-create</servlet-name>
+    <url-pattern>/measurement/create</url-pattern>
   </servlet-mapping>
 	
 	<servlet>
@@ -158,6 +185,19 @@
   <servlet-mapping>
     <servlet-name>measurementSet-list</servlet-name>
     <url-pattern>/measurementSet/list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>measurementSet-creation</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurementSetCreation</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurementSet-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurementSet-creation</servlet-name>
+    <url-pattern>/measurementSet/create</url-pattern>
   </servlet-mapping>
 
 </web-app>
