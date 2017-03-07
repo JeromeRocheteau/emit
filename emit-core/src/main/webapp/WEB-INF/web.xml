@@ -16,6 +16,20 @@
     <listener-class>com.github.servlet.jdbc.JdbcListener</listener-class>
   </listener>
   
+  
+  <servlet>
+    <servlet-name>measurand-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurandCreation</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurand-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurand-create</servlet-name>
+    <url-pattern>/measurand/create</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>measurand-list</servlet-name>
     <servlet-class>fr.icam.emit.servlets.MeasurandList</servlet-class>
@@ -79,7 +93,7 @@
   <servlet-mapping>
     <servlet-name>measure-create</servlet-name>
     <url-pattern>/measure/create</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>  
 	
 	<servlet>
     <servlet-name>observer-list</servlet-name>
@@ -93,6 +107,19 @@
     <servlet-name>observer-list</servlet-name>
     <url-pattern>/observer/list</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>observer-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.ObserverCreation</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/observer-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>observer-create</servlet-name>
+    <url-pattern>/observer/create</url-pattern>
+  </servlet-mapping>
 	
   <servlet>
     <servlet-name>observee-list</servlet-name>
@@ -105,6 +132,19 @@
   <servlet-mapping>
     <servlet-name>observee-list</servlet-name>
     <url-pattern>/observee/list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>observee-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.ObserveeCreation</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/observee-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>observee-create</servlet-name>
+    <url-pattern>/observee/create</url-pattern>
   </servlet-mapping>
   
   <servlet>
