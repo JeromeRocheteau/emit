@@ -1,9 +1,9 @@
 package fr.icam.emit.servlets;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
 import java.sql.PreparedStatement;
-import java.util.Enumeration;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,17 +19,10 @@ public class MeasureCreation extends JdbcUpdateServlet<Boolean>{
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		Gson gson = new Gson();
-		StringBuffer jb = new StringBuffer();
-		  String line = null;
-		  try {
-		    BufferedReader reader = request.getReader();
-		    while ((line = reader.readLine()) != null)
-		      jb.append(line);
-		  } catch (Exception e) { /*report an error*/ }
-	
+		Gson gson = new Gson();		
+		String Json = this.getStringJson(request); 
 		 // Measure measure = gson.fromJson(request.getInputStream().toString(), Measure.class);
-		Measure measure = gson.fromJson(jb.toString(), Measure.class);
+		Measure measure = gson.fromJson(Json, Measure.class);
 		statement.setString(1, measure.getName());
 		statement.setString(2, measure.getUnit());
 	}
