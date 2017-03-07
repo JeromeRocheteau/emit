@@ -57,30 +57,31 @@ app.controller('controller', function ($scope, $http, $window, $cookieStore, md5
 		$('#alert').modal('show');
 	}*/
   	
-  	
+	$scope.alert = {};
+	$scope.setAlert = function(type,message) {
+		$scope.alert.type = type;
+		$scope.alert.message = message;
+		$('#alert').modal('show');
+
+	
 	$scope.uri = null;
 	$scope.name = null;
 	$scope.create = function() {
 		if ($scope.name === null) {
-			$scope.setAlert("Error","The field 'name' is empty");
-			$scope.setAlert("Error","Ca passe");			
+			$scope.setAlert("Error","The field 'name' is empty");	
 		} else {
 			var indata = {uri :$scope.uri,name:$scope.name  };
 			$http.post("http://172.21.1.18/emit/observer/create",indata).then(	
 			.success(function(response) {
-				$scope.setAlert("Error","Ca passe aussi");
 		  		$scope.setAlert("Info","Observer created");
 		  		$window.open("./CreateObserver.html","_self");
 	  	  	}).error(function(response) {
-	  	  		$scope.setAlert("Error","Ca passe encore");
 	  	  		$scope.setAlert("Error","A problem occured");
 	  	  	});
-			$scope.setAlert("Error","Ca clear");
 			$scope.clear();
 		}
   	}
 	$scope.clear = function() {
-		$scope.setAlert("Error","Ca efface");
 		$scope.uri = null;
 		$scope.name = null;
 	}
