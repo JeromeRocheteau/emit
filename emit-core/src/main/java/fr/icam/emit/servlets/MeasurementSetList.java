@@ -32,9 +32,9 @@ public class MeasurementSetList extends JdbcQueryServlet<List<MeasurementSet>> {
         	long id = resultSet.getInt("id");
         	String data = resultSet.getString("data");
         	Timestamp achieved = resultSet.getTimestamp("achieved");
-        	String uri = resultSet.getString("observer");
-        	long experimentId =resultSet.getInt("experiment");        	
-            MeasurementSets.add(new MeasurementSet(id, data,achieved,uri,experimentId));
+        	String observer = resultSet.getString("observer");
+        	long experiment =resultSet.getInt("experiment");        	
+            MeasurementSets.add(new MeasurementSet(id, data,achieved,observer,experiment));
             //MeasurementSets.add(new MeasurementSet(id, data,uri,experimentId));
         }
         return MeasurementSets;
