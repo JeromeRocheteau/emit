@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 
 import fr.icam.emit.entities.Observee;
 
-public class ObserveeeCreation extends JdbcUpdateServlet<Boolean> {
+public class ObserveeCreation extends JdbcUpdateServlet<Boolean> {
 private static final long serialVersionUID = 201703070926L;
 	
 	@Override
