@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>EMIT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript"
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('myCtrl', function($scope, $http) {
+
+		$http.get("http://172.21.1.18/emit/observee/list").then(
+				function(response) {
+					$scope.observees = response.data;
+				});
+		
+		$http.get("http://172.21.1.18/emit/measurand/list").then(
+				function(response) {
+					$scope.measurands = response.data;
+				});
+		
+		$http.get("http://172.21.1.18/emit/observer/list").then(
+				function(response) {
+					$scope.observers = response.data;
+				});
+	});
+</script>
+
+<body ng-app="app" ng-controller="myCtrl">
+	<header>
+		<div class="navbar navbar-default navbar-custom navbar-static-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed"
+						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+						aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="./index.html">EMIT</a>
+				</div>
+				<div class="collapse navbar-collapse"></div>
+			</div>
+		</div>
+	</header>
+	<section id="content" class="container">
+		<div class="col-md-3"></div>
+		<div class="col-md-8">
+			<form class="form list-group-item" id="form">
+				<fieldset>
+					<legend>Plan an experiment</legend>
+					<div class="row col-md-12">
+						<label>Measurands</label>
+					</div>
+					<div class="row">
+						<div class="col-md-12 form-group">
+							<select class="form-control selectpicker"
+								ng-options="measurand.name for measurand in measurands"
+								ng-model="measurand_selection" title="Measurand"
+								ng-required="true" required>
+							</select>
+						</div>
+					</div>
+					<div class="row col-md-12">
+						<label>Observee</label>
+					</div>
+					<div class="row">
+						<div class="col-md-12 form-group">
+							<select class="form-control selectpicker"
+								ng-options="observee.name for observee in observees"
+								ng-model="observee_selection" title="Observee"
+								ng-required="true" required>
+							</select>
+						</div>
+					</div>
+					<div class="row col-md-12">
+						<label>Observers</label>
+					</div>
+					<div class="row">
+						<div class="col-md-12 form-group">
+							<select class="form-control selectpicker"
+								ng-options="observer.name for observer in observers"
+								ng-model="observer_selection" title="Observer"
+								ng-required="true" required multiple>
+							</select>
+						</div>
+					</div>
+					<div class="pull-right">
+						<button type="reset" ng-click="clear()" class="btn btn-default">
+							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
+						</button>
+						<button type="submit" ng-click="create()"
+							ng-disabled="!form.$valid" class="btn btn">
+							<span class="glyphicon glyphicon-send">&ensp;</span> Launch
+						</button>
+					</div>
+					<div class="row">
+						<br />
+					</div>
+				</fieldset>
+			</form>
+			<div class="alert alert-{{alert.type}} alert-dismissible" id="alert"
+				role="alert" style="display: none;">
+				<button type="button" class="close" aria-label="close"
+					ng-click="dismiss()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<p>{{alert.message}}</p>
+			</div>
+		</div>
+	</section>
+
+	<footer class="footer"> </footer>
+</body>
+</html>

@@ -98,14 +98,14 @@
 									<td><a href="#listobserver{{ x.id }}">{{ x.id }} </a></td>
 									<td>{{ x.started }}</td>
 									<td>{{ x.stopped }}</td>
-									<td>{{ x.measurand }}</td>
-									<td>{{ x.observee }}</td>
+									<td>{{ x.process }}</td>
+									<td>{{ x.observee_uri }}</td>
 								</tr>
 							</table>
 						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
-								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
+								<a href="./CreateExperiment.html"><span class="glyphicon glyphicon-plus">&ensp;</span> Créer</a>
 							</button>
 							<button type="submit" class="btn btn">
 								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
@@ -149,7 +149,7 @@
 						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
-								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
+								<a href="./CreateObservee.html"><span class="glyphicon glyphicon-plus">&ensp;</span> Créer</a>
 							</button>
 							<button type="submit" class="btn btn">
 								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
@@ -171,7 +171,7 @@
 						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
-								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
+								<a href="./CreateMeasurand.html"><span class="glyphicon glyphicon-plus">&ensp;</span> Créer</a>
 							</button>
 							<button type="submit" class="btn btn">
 								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
@@ -210,8 +210,8 @@
 								<tr ng-repeat="x in measurementlist">
 									<td>{{ x.id }}</td>
 									<td>{{ x.data }}</td>
-									<td>{{ x.measurementSet }}</td>
-									<td>{{ x.measure }}</td>
+									<td>{{ x.measurementSetId }}</td>
+									<td>{{ x.measure_name }}</td>
 								</tr>
 							</table>
 						</div>
@@ -227,7 +227,6 @@
 							</button>
 						</div>
 					</div>
-
 					<div role="tabpanel" class="tab-pane" id="measurementset">
 						<legend>Measurement Sets</legend>
 						<div class="panel panel-default">
@@ -236,8 +235,8 @@
 									<td>{{ x.id }}</td>
 									<td>{{ x.data }}</td>
 									<td>{{ x.achieved }}</td>
-									<td>{{ x.experiment }}</td>
-									<td>{{ x.observer }}</td>
+									<td>{{ x.experimentId }}</td>
+									<td>{{ x.uri }}</td>
 								<tr>
 							</table>
 						</div>
