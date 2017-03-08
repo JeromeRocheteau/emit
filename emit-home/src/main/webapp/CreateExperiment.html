@@ -18,7 +18,7 @@
 	var app = angular.module('app', []);
 
 	app.controller('myCtrl', function($scope, $http) {
-
+		
 		$http.get("http://172.21.1.18/emit/observee/list").then(
 				function(response) {
 					$scope.observees = response.data;
@@ -28,11 +28,18 @@
 				function(response) {
 					$scope.measurands = response.data;
 				});
-
+		
 		$http.get("http://172.21.1.18/emit/observer/list").then(
 				function(response) {
 					$scope.observers = response.data;
 				});
+				
+		$scope.create = function() {
+			$.each(observers, function(i, item) {
+			    alert(item.name);
+			});
+		}
+
 	});
 </script>
 
@@ -62,6 +69,7 @@
 					<legend>Plan an experiment</legend>
 					<div class="row col-md-12">
 						<label>Measurands</label>
+						<p>{{ observers }}</p>
 					</div>
 					<div class="row">
 						<div class="col-md-12 form-group">
@@ -100,8 +108,7 @@
 						<button type="reset" ng-click="clear()" class="btn btn-default">
 							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
 						</button>
-						<button type="submit" ng-click="create()"
-							ng-disabled="!form.$valid" class="btn btn">
+						<button type="submit" ng-click="create()" class="btn btn">
 							<span class="glyphicon glyphicon-send">&ensp;</span> Start
 						</button>
 					</div>
