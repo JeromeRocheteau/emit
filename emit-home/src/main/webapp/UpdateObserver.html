@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>EMIT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('myCtrl', function($scope, $http) {
+		
+		$http.get("http://172.21.1.18/emit/observee/list").then(		
+				function(response) {
+					$scope.observerlist = response.data;
+				});
+		
+		$scope.uri = null;
+		$scope.name = null;
+		$scope.old_uri = null;
+		$scope.old_name = null;
+		
+		$scope.show_data = function(name,uri){
+			$scope.old_name = name;
+			$scope.old_uri = uri;
+		}
+		
+		$scope.alert = {};
+		$scope.setAlert = function(type, message) {
+			$scope.alert.type = type;
+			$scope.alert.message = message;
+			$('#alert').modal('show');
+		}
+
+	
+		$scope.create = function() {
+			if ($scope.name === null) {
+				$scope.setAlert("Error", "The field 'name' is empty");
+			} else {
+				var indata = {
+					uri : $scope.uri,
+					name : $scope.name
+				};
+				$http.post("http://172.21.1.18/emit/observer/create", indata)
+						.then(function(response) {
+							$scope.setAlert("Info", "Observer created");
+						});
+				$scope.clear();
+			}
+		}
+		$scope.clear = function() {
+			$scope.uri = null;
+			$scope.name = null;
+		}
+	});
+</script>
+
+<body ng-app="app" ng-controller="myCtrl">
+	<header>
+		<div class="navbar navbar-default navbar-custom navbar-static-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed"
+						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+						aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="./index.html">EMIT</a>
+				</div>
+				<div class="collapse navbar-collapse"></div>
+			</div>
+		</div>
+	</header>
+	
+	<section id="content" class="container">
+		<div class="col-md-8 list-group-item">
+			<div class="tab-content">				
+				<legend>Observers</legend>
+					<div class="panel panel-default">
+						<table class="table table-striped table-bordered" style="text-align:center" id="table">
+						<thead> 
+							<th align="center">adresse</th>
+							<th align="center">nom</th>							
+							<th align="center" colspan="2">Actions</th> 
+						</thead> 
+						<tbody>   
+							<tr ng-repeat="x in observerlist">
+								<td>{{ x.uri }}</td>
+								<td>{{ x.name }}</td>
+								<td><a  ng-click="show_data(x.name,x.uri)">modifier</a></td>
+							</tr>
+						</tbody>  
+						</table>
+					</div>				
+			</div>
+		</div>
+	</section>
+	
+	<section id="content" class="container">	
+		<div class="col-md-6 list-group-item">
+			<form name="form" class="form">
+				<fieldset ng-disabled="passphrase">
+					<legend>Observer to change</legend>
+					<div class="form-group">
+						<P ng-bind="old_uri">
+					</div>
+					<div class="form-group">
+						<p ng-bind="old_name">
+					</div>
+					<div class="pull-right">
+						<button type="reset" ng-click="clear()" class="btn btn-default">
+							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
+						</button>
+						<button type="submit" ng-click="create()"
+							ng-disabled="!form.$valid" class="btn btn">
+							<span class="glyphicon glyphicon-send">&ensp;</span> Send 
+						</button>
+					</div>
+				</fieldset>
+			</form>
+		</div>				
+		<div class="col-md-6 list-group-item">
+			<form name="form" class="form">
+				<fieldset ng-disabled="passphrase">
+					<legend>Creation of an observer</legend>
+					<div class="form-group">
+						<input type="text" class="form-control" ng-model="uri"
+							placeholder="Observer Id" ng-required="true" required>
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" ng-model="name"
+							placeholder="Name" ng-required="true" required>
+					</div>
+					<div class="pull-right">
+						<button type="reset" ng-click="clear()" class="btn btn-default">
+							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
+						</button>
+						<button type="submit" ng-click="create()"
+							ng-disabled="!form.$valid" class="btn btn">
+							<span class="glyphicon glyphicon-send">&ensp;</span> Send 
+						</button>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="col-md-3"></div>
+	</section>
+
+	<footer class="footer"> </footer>
+</body>
+</html>
