@@ -19,6 +19,8 @@ import com.google.gson.reflect.TypeToken;
 import fr.icam.emit.entities.Observer;
 
 public class ObserverUpdate extends JdbcUpdateServlet<Boolean>{
+	private static final long serialVersionUID = 201703080934L;
+	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();		
