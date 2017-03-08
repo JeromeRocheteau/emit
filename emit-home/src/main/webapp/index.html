@@ -46,7 +46,7 @@
 				function(response) {
 					$scope.measurementsetlist = response.data;
 				});
-		
+
 	});
 </script>
 
@@ -94,24 +94,34 @@
 						<legend>Experiments</legend>
 						<div class="panel panel-default">
 							<table class="table">
+								<thead>
+									<tr>
+										<th>Id</th>
+										<th>Started time</th>
+										<th>Stopped time</th>
+										<th>Process</th>
+										<th>Observee</th>
+									</tr>
+								</thead>
 								<tr ng-repeat="x in experimentlist">
-									<td><a href="#listobserver{{ x.id }}">{{ x.id }} </a></td>
-									<td>{{ x.started }}</td>
-									<td>{{ x.stopped }}</td>
-									<td>{{ x.process }}</td>
-									<td>{{ x.observee_uri }}</td>
+									<td>{{ x.id }}</td>
+									<td>{{ x.started | date:"d MMM 'at' HH:mm:ss"}}</td>
+									<td>{{ x.stopped | date:"d MMM 'at' HH:mm:ss"}}</td>
+									<td>{{ x.measurand }}</td>
+									<td>{{ x.observee }}</td>
 								</tr>
 							</table>
 						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
-								<a href="./CreateExperiment.html"><span class="glyphicon glyphicon-plus">&ensp;</span> Create</a>
+								<a href="./CreateExperiment.html"><span
+									class="glyphicon glyphicon-plus">&ensp;</span> Create</a>
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
+								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modify
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete 
+								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
 							</button>
 						</div>
 					</div>
@@ -119,6 +129,12 @@
 						<legend>Observers</legend>
 						<div class="panel panel-default">
 							<table class="table">
+								<thead>
+									<tr>
+										<th>Uri</th>
+										<th>Name</th>
+									</tr>
+								</thead>
 								<tr ng-repeat="x in observerlist">
 									<td>{{ x.uri }}</td>
 									<td>{{ x.name }}</td>
@@ -127,13 +143,14 @@
 						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
-								<a href="./CreateObserver.html"><span class="glyphicon glyphicon-plus">&ensp;</span> Créer</a>
+								<a href="./CreateObserver.html"><span
+									class="glyphicon glyphicon-plus">&ensp;</span> Create</a>
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
+								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modify
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-remove">&ensp;</span> Supprimer
+								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
 							</button>
 						</div>
 					</div>
@@ -141,6 +158,12 @@
 						<legend>Observees</legend>
 						<div class="panel panel-default">
 							<table class="table">
+								<thead>
+									<tr>
+										<th>Uri</th>
+										<th>Name</th>
+									</tr>
+								</thead>
 								<tr ng-repeat="x in observeelist">
 									<td>{{ x.uri }}</td>
 									<td>{{ x.name }}</td>
@@ -149,13 +172,14 @@
 						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
-								<a href="./CreateObservee.html"><span class="glyphicon glyphicon-plus">&ensp;</span> Créer</a>
+								<a href="./CreateObservee.html"><span
+									class="glyphicon glyphicon-plus">&ensp;</span> Create</a>
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
+								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modify
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-remove">&ensp;</span> Supprimer
+								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
 							</button>
 						</div>
 					</div>
@@ -163,6 +187,12 @@
 						<legend>Measurands</legend>
 						<div class="panel panel-default">
 							<table class="table">
+								<thead>
+									<tr>
+										<th>Process</th>
+										<th>Name</th>
+									</tr>
+								</thead>
 								<tr ng-repeat="x in measurandlist">
 									<td>{{ x.process }}</td>
 									<td>{{ x.name }}</td>
@@ -171,13 +201,14 @@
 						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
-								<a href="./CreateMeasurand.html"><span class="glyphicon glyphicon-plus">&ensp;</span> Créer</a>
+								<a href="./CreateMeasurand.html"><span
+									class="glyphicon glyphicon-plus">&ensp;</span> Create</a>
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
+								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modify
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-remove">&ensp;</span> Supprimer
+								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
 							</button>
 						</div>
 					</div>
@@ -185,6 +216,12 @@
 						<legend>Measures</legend>
 						<div class="panel panel-default">
 							<table class="table">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Unit</th>
+									</tr>
+								</thead>
 								<tr ng-repeat="x in measurelist">
 									<td>{{ x.name }}</td>
 									<td>{{ x.unit }}</td>
@@ -193,13 +230,13 @@
 						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
-								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
+								<span class="glyphicon glyphicon-plus">&ensp;</span> Create
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
+								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modify
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-remove">&ensp;</span> Supprimer
+								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
 							</button>
 						</div>
 					</div>
@@ -207,23 +244,31 @@
 						<legend>Measurements</legend>
 						<div class="panel panel-default">
 							<table class="table">
+								<thead>
+									<tr>
+										<th>Id</th>
+										<th>Data</th>
+										<th>Linked MeasurementSet</th>
+										<th>Measure name</th>
+									</tr>
+								</thead>
 								<tr ng-repeat="x in measurementlist">
 									<td>{{ x.id }}</td>
 									<td>{{ x.data }}</td>
-									<td>{{ x.measurementSetId }}</td>
-									<td>{{ x.measure_name }}</td>
+									<td>{{ x.measurementSet }}</td>
+									<td>{{ x.measure }}</td>
 								</tr>
 							</table>
 						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
-								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
+								<span class="glyphicon glyphicon-plus">&ensp;</span> Create
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
+								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modify
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-remove">&ensp;</span> Supprimer
+								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
 							</button>
 						</div>
 					</div>
@@ -231,24 +276,34 @@
 						<legend>Measurement Sets</legend>
 						<div class="panel panel-default">
 							<table class="table">
+								<thead>
+									<tr>
+										<th>Id</th>
+										<th>Data</th>
+										<th>Achieved time</th>
+										<th>Linked Experiment</th>
+										<th>Uri</th>
+									</tr>
+								</thead>
 								<tr ng-repeat="x in measurementsetlist">
+
 									<td>{{ x.id }}</td>
 									<td>{{ x.data }}</td>
-									<td>{{ x.achieved }}</td>
-									<td>{{ x.experimentId }}</td>
-									<td>{{ x.uri }}</td>
+									<td>{{ x.achieved | date:"d MMM 'at' HH:mm:ss" }}</td>
+									<td>{{ x.experiment }}</td>
+									<td>{{ x.observer }}</td>
 								<tr>
 							</table>
 						</div>
 						<div class="pull-right">
 							<button type="button" class="btn btn-default">
-								<span class="glyphicon glyphicon-plus">&ensp;</span> Créer
+								<span class="glyphicon glyphicon-plus">&ensp;</span> Create
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modifier
+								<span class="glyphicon glyphicon-pencil">&ensp;</span> Modify
 							</button>
 							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-remove">&ensp;</span> Supprimer
+								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
 							</button>
 						</div>
 					</div>
