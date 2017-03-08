@@ -3,7 +3,7 @@ package fr.icam.emit.entities;
 import java.sql.Timestamp;
 
 public class Experiment {
-	
+	//comment
 	private long id;
 	private Timestamp started;
 	private Timestamp stopped;
