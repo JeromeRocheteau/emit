@@ -1,1 +1,1 @@
-UPDATE(CASCADE) measurands SET process=?, name=? WHERE process=?;
+UPDATE measurands SET process=?, name=? WHERE process=?;
