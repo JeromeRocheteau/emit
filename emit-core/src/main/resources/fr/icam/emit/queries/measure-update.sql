@@ -1,0 +1,1 @@
+UPDATE(CASCADE) measures SET name=?, unit=? WHERE name=?;

@@ -1,0 +1,1 @@
+UPDATE(CASCADE) observeees SET uri=?, name=? WHERE uri=?;

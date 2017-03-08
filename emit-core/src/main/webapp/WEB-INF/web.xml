@@ -43,6 +43,19 @@
     <url-pattern>/measurand/list</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+    <servlet-name>measurand-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurandUpdate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurand-update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurand-update</servlet-name>
+    <url-pattern>/measurand/update</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>experiment-create</servlet-name>
     <servlet-class>fr.icam.emit.servlets.ExperimentCreation</servlet-class>
@@ -121,6 +134,19 @@
     <servlet-name>measure-create</servlet-name>
     <url-pattern>/measure/create</url-pattern>
   </servlet-mapping>  
+  
+  <servlet>
+    <servlet-name>measure-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasureUpdate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-update</servlet-name>
+    <url-pattern>/measure/update</url-pattern>
+  </servlet-mapping>  
 	
 	<servlet>
     <servlet-name>observer-list</servlet-name>
@@ -146,6 +172,19 @@
   <servlet-mapping>
     <servlet-name>observer-create</servlet-name>
     <url-pattern>/observer/create</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>observer-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.ObserverUpdate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/observer-update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>observer-update</servlet-name>
+    <url-pattern>/observer/update</url-pattern>
   </servlet-mapping>
 	
   <servlet>
@@ -174,6 +213,19 @@
     <url-pattern>/observee/create</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+    <servlet-name>observee-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.ObserveeUpdate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/observee-update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>observee-update</servlet-name>
+    <url-pattern>/observee/update</url-pattern>
+  </servlet-mapping>
+    
   <servlet>
     <servlet-name>measurementSet-list</servlet-name>
     <servlet-class>fr.icam.emit.servlets.MeasurementSetList</servlet-class>

@@ -1,0 +1,1 @@
+UPDATE(CASCADE) observers SET uri=?, name=? WHERE uri=?;
