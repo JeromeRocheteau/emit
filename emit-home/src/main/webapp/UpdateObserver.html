@@ -16,7 +16,7 @@
 
 	app.controller('myCtrl', function($scope, $http) {
 		
-		$http.get("http://172.21.1.18/emit/observee/list").then(		
+		$http.get("http://172.21.1.18/emit/observer/list").then(		
 				function(response) {
 					$scope.observerlist = response.data;
 				});
@@ -42,12 +42,17 @@
 		$scope.create = function() {
 			if ($scope.name === null) {
 				$scope.setAlert("Error", "The field 'name' is empty");
-			} else {
-				var indata = {
+			} else if($scope.old_name === null) {
+				$scope.setAlert("Error", "The field 'name' is empty");
+			}else{
+				var indata = [{
+					uri : $scope.old_uri,
+					name : $scope.old_name
+					},{
 					uri : $scope.uri,
 					name : $scope.name
-				};
-				$http.post("http://172.21.1.18/emit/observer/create", indata)
+					}];
+				$http.post("http://172.21.1.18/emit/observer/update", indata)
 						.then(function(response) {
 							$scope.setAlert("Info", "Observer created");
 						});
