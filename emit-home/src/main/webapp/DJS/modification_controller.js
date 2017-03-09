@@ -13,15 +13,17 @@
 		}
 
 		$scope.afficher_table();
+		
+		
+		
+		$scope.primekey = null;
+		$scope.info = null;
+		$scope.old_primekey = null;
+		$scope.old_info = null;
 
-		$scope.uri = null;
-		$scope.name = null;
-		$scope.old_uri = null;
-		$scope.old_name = null;
-
-		$scope.show_data = function(name, uri) {
-			$scope.old_name = name;
-			$scope.old_uri = uri;
+		$scope.show_data = function(primekey1, info1) {
+			$scope.old_info = info1;
+			$scope.old_primekey = primekey1;
 		}
 
 		$scope.alert = {};
@@ -37,23 +39,27 @@
 			} else if ($scope.old_name === null) {
 				$scope.setAlert("Error", "The field 'name' is empty");
 			} else {
-				var indata = [ {
-					prime_key : $scope.old_uri,
-					info : $scope.old_name
-				}, {
-					prime_key : $scope.uri,
-					info : $scope.name
-				} ];
+				var indata =[];
+					item1 = {};
+					item1[prime_key] = $scope.old_primekey;
+					item1[info] = $scope.old_info;
+					indata.push(item1);
+					item2 = {};
+					item2[prime_key] = $scope.primekey;
+					item2[info] = $scope.info;
+					indata.push(item2);
+					
 				$http.post(adresse+"/update", indata)
 						.then(function(response) {
 							$scope.setAlert("Info", "Observer created");
 							$scope.afficher_table();
 						});
+					//console.log(angular.toJson(indata));
 				$scope.clear();
 			}
 		}
 		$scope.clear = function() {
-			$scope.uri = null;
-			$scope.name = null;
+			$scope.primekey = null;
+			$scope.info = null;
 		}
 	});
