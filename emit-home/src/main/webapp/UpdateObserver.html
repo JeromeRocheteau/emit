@@ -8,63 +8,21 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript"
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
-	var app = angular.module('app', []);
-
-	app.controller('myCtrl', function($scope, $http) {
-		
-		$http.get("http://172.21.1.18/emit/observer/list").then(		
-				function(response) {
-					$scope.observerlist = response.data;
-				});
-		
-		$scope.uri = null;
-		$scope.name = null;
-		$scope.old_uri = null;
-		$scope.old_name = null;
-		
-		$scope.show_data = function(name,uri){
-			$scope.old_name = name;
-			$scope.old_uri = uri;
-		}
-		
-		$scope.alert = {};
-		$scope.setAlert = function(type, message) {
-			$scope.alert.type = type;
-			$scope.alert.message = message;
-			$('#alert').modal('show');
-		}
-
-	
-		$scope.create = function() {
-			if ($scope.name === null) {
-				$scope.setAlert("Error", "The field 'name' is empty");
-			} else if($scope.old_name === null) {
-				$scope.setAlert("Error", "The field 'name' is empty");
-			}else{
-				var indata = [{
-					uri : $scope.old_uri,
-					name : $scope.old_name
-					},{
-					uri : $scope.uri,
-					name : $scope.name
-					}];
-				$http.post("http://172.21.1.18/emit/observer/update", indata)
-						.then(function(response) {
-							$scope.setAlert("Info", "Observer created");
-						});
-				$scope.clear();
-			}
-		}
-		$scope.clear = function() {
-			$scope.uri = null;
-			$scope.name = null;
-		}
-	});
+// init
+var prime_key = "uri"
+var info = "name"
+var adresse = "http://172.21.1.18/emit/observer";
 </script>
+<script type="text/javascript" src="DJS/modification_controller.js"></script>
+	
+
 
 <body ng-app="app" ng-controller="myCtrl">
 	<header>
@@ -84,58 +42,55 @@
 			</div>
 		</div>
 	</header>
-	
+
 	<section id="content" class="container">
-		<div class="col-md-8 list-group-item">
-			<div class="tab-content">				
+		<div class="col-md-12 list-group-item">
+			<div class="tab-content">
 				<legend>Observers</legend>
-					<div class="panel panel-default">
-						<table class="table table-striped table-bordered" style="text-align:center" id="table">
-						<thead> 
+				<div class="panel panel-default">
+					<table class="table table-striped table-bordered"
+						style="text-align: center" id="table">
+						<thead>
 							<th align="center">adresse</th>
-							<th align="center">nom</th>							
-							<th align="center" colspan="2">Actions</th> 
-						</thead> 
-						<tbody>   
+							<th align="center">nom</th>
+							<th align="center" colspan="2">Actions</th>
+						</thead>
+						<tbody>
 							<tr ng-repeat="x in observerlist">
 								<td>{{ x.uri }}</td>
 								<td>{{ x.name }}</td>
-								<td><a  ng-click="show_data(x.name,x.uri)">modifier</a></td>
+								<td><a ng-click="show_data(x.name,x.uri)">modifier</a></td>
 							</tr>
-						</tbody>  
-						</table>
-					</div>				
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
-	</section>
-	
-	<section id="content" class="container">	
-		<div class="col-md-6 list-group-item">
-			<form name="form" class="form">
-				<fieldset ng-disabled="passphrase">
-					<legend>Observer to change</legend>
-					<div class="form-group">
-						<P ng-bind="old_uri">
+
+		<div class=" col-md-6 list-group-item">
+			<form class="form-horizontal">
+				<legend>Observer to change</legend>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Uri:</label>
+					<div class="col-sm-10">
+						<p class="form-control-static" ng-bind="old_uri">
 					</div>
-					<div class="form-group">
-						<p ng-bind="old_name">
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">name:</label>
+					<div class="col-sm-10">
+						<p class="form-control-static" ng-bind="old_name">
 					</div>
-					<div class="pull-right">
-						<button type="reset" ng-click="clear()" class="btn btn-default">
-							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
-						</button>
-						<button type="submit" ng-click="create()"
-							ng-disabled="!form.$valid" class="btn btn">
-							<span class="glyphicon glyphicon-send">&ensp;</span> Send 
-						</button>
-					</div>
-				</fieldset>
+				</div>
 			</form>
-		</div>				
+		</div>
+
+
+
 		<div class="col-md-6 list-group-item">
 			<form name="form" class="form">
 				<fieldset ng-disabled="passphrase">
-					<legend>Creation of an observer</legend>
+					<legend>Modification of an observer</legend>
 					<div class="form-group">
 						<input type="text" class="form-control" ng-model="uri"
 							placeholder="Observer Id" ng-required="true" required>
@@ -150,13 +105,15 @@
 						</button>
 						<button type="submit" ng-click="create()"
 							ng-disabled="!form.$valid" class="btn btn">
-							<span class="glyphicon glyphicon-send">&ensp;</span> Send 
+							<span class="glyphicon glyphicon-send">&ensp;</span> Send
 						</button>
 					</div>
 				</fieldset>
 			</form>
 		</div>
-		<div class="col-md-3"></div>
+
+		
+
 	</section>
 
 	<footer class="footer"> </footer>
