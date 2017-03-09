@@ -8,7 +8,7 @@
 		$scope.afficher_table = function() {
 			$http.get(adresse+"/list").then(
 					function(response) {
-						$scope.observerlist = response.data;
+						$scope.list = response.data;
 					});
 		}
 
@@ -52,7 +52,7 @@
 					
 				$http.post(adresse+"/update", indata)
 						.then(function(response) {
-							$scope.setAlert("Info", "Observer created");
+							$scope.setAlert("Info", "Element created");
 							$scope.afficher_table();
 						});
 					//console.log(angular.toJson(indata));

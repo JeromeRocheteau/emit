@@ -44,7 +44,7 @@ var adresse = "http://172.21.1.18/emit/observee";
 	<section id="content" class="container">
 		<div class="col-md-12 list-group-item">
 			<div class="tab-content">
-				<legend>Observers</legend>
+				<legend>Observees</legend>
 				<div class="panel panel-default">
 					<table class="table table-striped table-bordered"
 						style="text-align: center" id="table">
@@ -54,7 +54,7 @@ var adresse = "http://172.21.1.18/emit/observee";
 							<th align="center" colspan="2">Actions</th>
 						</thead>
 						<tbody>
-							<tr ng-repeat="x in observerlist">
+							<tr ng-repeat="x in list">
 								<td>{{ x.uri }}</td>
 								<td>{{ x.name }}</td>
 								<td><a ng-click="show_data(x.uri,x.name)">Modify</a></td>
