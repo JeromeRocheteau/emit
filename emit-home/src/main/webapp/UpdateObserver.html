@@ -14,64 +14,12 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
-<script type="text/javascript">
-	var app = angular.module('app', []);
-
-	app.controller('myCtrl', function($scope, $http) {
-
-		$scope.afficher_table = function() {
-			$http.get("http://172.21.1.18/emit/observer/list").then(
-					function(response) {
-						$scope.observerlist = response.data;
-					});
-		}
-
-		$scope.afficher_table();
-
-		$scope.uri = null;
-		$scope.name = null;
-		$scope.old_uri = null;
-		$scope.old_name = null;
-
-		$scope.show_data = function(name, uri) {
-			$scope.old_name = name;
-			$scope.old_uri = uri;
-		}
-
-		$scope.alert = {};
-		$scope.setAlert = function(type, message) {
-			$scope.alert.type = type;
-			$scope.alert.message = message;
-			$('#alert').modal('show');
-		}
-
-		$scope.create = function() {
-			if ($scope.name === null) {
-				$scope.setAlert("Error", "The field 'name' is empty");
-			} else if ($scope.old_name === null) {
-				$scope.setAlert("Error", "The field 'name' is empty");
-			} else {
-				var indata = [ {
-					uri : $scope.old_uri,
-					name : $scope.old_name
-				}, {
-					uri : $scope.uri,
-					name : $scope.name
-				} ];
-				$http.post("http://172.21.1.18/emit/observer/update", indata)
-						.then(function(response) {
-							$scope.setAlert("Info", "Observer created");
-							$scope.afficher_table();
-						});
-				$scope.clear();
-			}
-		}
-		$scope.clear = function() {
-			$scope.uri = null;
-			$scope.name = null;
-		}
-	});
+<script type="text/javascript"> 
+var adresse = "http://172.21.1.18/emit/observer";
 </script>
+<script type="text/javascript" src="DJS/modification_controller.js"></script>
+	
+
 
 <body ng-app="app" ng-controller="myCtrl">
 	<header>
