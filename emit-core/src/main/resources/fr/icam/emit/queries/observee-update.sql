@@ -1,1 +1,1 @@
-UPDATE observeees SET uri=?, name=? WHERE uri=?;
+UPDATE observees SET uri=?, name=? WHERE uri=?;
