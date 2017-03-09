@@ -37,34 +37,20 @@
 
 		$scope.createers = function(observer_selection) {
 			angular.forEach(observer_selection, function(value, key) {
-				console.log(key + ': ' + angular.toJson(value));
+				alert(angular.toJson(value));
+				console.log(angular.toJson(value));
 			});
 		};
 
 		$scope.createees = function(observee_selection) {
-			angular.forEach(observee_selection, function(value, key) {
-				console.log(key + ': ' + value);
-			});
+			alert(angular.toJson(observee_selection));
+			console.log(angular.toJson(observee_selection));
 		};
 
 		$scope.createands = function(measurand_selection) {
-			angular.forEach(measurand_selection, function(value, key) {
-				console.log(key + ': ' + value); 
-			});
+			alert(angular.toJson(measurand_selection));
+			console.log(angular.toJson(measurand_selection));
 		};
-
-		/*alert(angular.toJson(observee_selection));*/
-		/*function(data) {
-		    $.each(data, function(i, item){
-		        alert("Mine is " + i + "|" + item.title + "|" + item.key);
-		    });
-		}
-		function PrintResults(result) {
-
-			for (var i = 0; i < result.length; i++) { 
-			    alert(result.employeename);
-			}*/
-
 	});
 </script>
 
