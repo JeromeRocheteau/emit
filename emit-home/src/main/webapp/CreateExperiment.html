@@ -16,8 +16,9 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
 	var app = angular.module('app', []);
+	var log = [];
 
-	app.controller('myCtrl', function($scope, $http) {
+	app.controller('myCtrl', function($window, $scope, $http) {
 
 		$http.get("http://172.21.1.18/emit/observee/list").then(
 				function(response) {
@@ -34,12 +35,25 @@
 					$scope.observers = response.data;
 				});
 
-		$scope.create = function() {
-			$.each(observers, function(i, item) {
-			    alert(item.name);
+		$scope.createers = function(observer_selection) {
+			angular.forEach(observer_selection, function(value, key) {
+				console.log(key + ': ' + angular.toJson(value));
 			});
-		}
-		
+		};
+
+		$scope.createees = function(observee_selection) {
+			angular.forEach(observee_selection, function(value, key) {
+				console.log(key + ': ' + value);
+			});
+		};
+
+		$scope.createands = function(measurand_selection) {
+			angular.forEach(measurand_selection, function(value, key) {
+				console.log(key + ': ' + value);
+			});
+		};
+
+		/*alert(angular.toJson(observee_selection));*/
 		/*function(data) {
 		    $.each(data, function(i, item){
 		        alert("Mine is " + i + "|" + item.title + "|" + item.key);
@@ -54,7 +68,7 @@
 	});
 </script>
 
-<body ng-app="app" >
+<body ng-app="app" ng-controller="myCtrl">
 	<header>
 		<div class="navbar navbar-default navbar-custom navbar-static-top">
 			<div class="container">
@@ -81,7 +95,6 @@
 					<legend>Plan an experiment</legend>
 					<div class="row col-md-12">
 						<label>Measurands</label>
-						<p>{{ observers }}</p>
 					</div>
 					<div class="row">
 						<div class="col-md-12 form-group">
@@ -120,8 +133,14 @@
 						<button type="reset" ng-click="clear()" class="btn btn-default">
 							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
 						</button>
-						<button type="submit" ng-click="create()" class="btn btn">
-							<span class="glyphicon glyphicon-send">&ensp;</span> Start
+						<button ng-click="createers(observer_selection)" class="btn btn">
+							<span class="glyphicon glyphicon-send">&ensp;</span> observers
+						</button>
+						<button ng-click="createees(observee_selection)" class="btn btn">
+							<span class="glyphicon glyphicon-send">&ensp;</span> observees
+						</button>
+						<button ng-click="createands(measurand_selection)" class="btn btn">
+							<span class="glyphicon glyphicon-send">&ensp;</span> measurands
 						</button>
 					</div>
 
@@ -136,7 +155,6 @@
 					ng-click="dismiss()">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<p>{{alert.message}}</p>
 			</div>
 		</div>
 	</section>
