@@ -38,11 +38,11 @@
 				$scope.setAlert("Error", "The field 'name' is empty");
 			} else {
 				var indata = [ {
-					uri : $scope.old_uri,
-					name : $scope.old_name
+					prime_key : $scope.old_uri,
+					info : $scope.old_name
 				}, {
-					uri : $scope.uri,
-					name : $scope.name
+					prime_key : $scope.uri,
+					info : $scope.name
 				} ];
 				$http.post(adresse+"/update", indata)
 						.then(function(response) {
