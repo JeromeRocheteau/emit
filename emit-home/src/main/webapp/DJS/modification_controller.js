@@ -20,6 +20,7 @@
 		$scope.info = null;
 		$scope.old_primekey = null;
 		$scope.old_info = null;
+		
 
 		$scope.show_data = function(primekey1, info1) {
 			$scope.old_info = info1;
