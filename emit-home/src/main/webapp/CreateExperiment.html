@@ -18,7 +18,7 @@
 	var app = angular.module('app', []);
 
 	app.controller('myCtrl', function($scope, $http) {
-		
+
 		$http.get("http://172.21.1.18/emit/observee/list").then(
 				function(response) {
 					$scope.observees = response.data;
@@ -28,22 +28,33 @@
 				function(response) {
 					$scope.measurands = response.data;
 				});
-		
+
 		$http.get("http://172.21.1.18/emit/observer/list").then(
 				function(response) {
 					$scope.observers = response.data;
 				});
-				
+
 		$scope.create = function() {
 			$.each(observers, function(i, item) {
 			    alert(item.name);
 			});
 		}
+		
+		/*function(data) {
+		    $.each(data, function(i, item){
+		        alert("Mine is " + i + "|" + item.title + "|" + item.key);
+		    });
+		}
+		function PrintResults(result) {
+
+			for (var i = 0; i < result.length; i++) { 
+			    alert(result.employeename);
+			}*/
 
 	});
 </script>
 
-<body ng-app="app" ng-controller="myCtrl">
+<body ng-app="app" >
 	<header>
 		<div class="navbar navbar-default navbar-custom navbar-static-top">
 			<div class="container">
@@ -61,10 +72,7 @@
 			</div>
 		</div>
 	</header>
-	<section id="content" class="container">
-	
-	
-	</section>
+	<section id="content" class="container"></section>
 	<section id="content" class="container">
 		<div class="col-md-3"></div>
 		<div class="col-md-8">
@@ -116,6 +124,7 @@
 							<span class="glyphicon glyphicon-send">&ensp;</span> Start
 						</button>
 					</div>
+
 					<div class="row">
 						<br />
 					</div>
