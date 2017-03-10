@@ -26,10 +26,10 @@ private static final long serialVersionUID = 201703071443L;
 		Reader reader = new InputStreamReader(inputStream);
 		 // Measure measure = gson.fromJson(request.getInputStream().toString(), Measure.class);
 		Measurement measurement = gson.fromJson(reader, Measurement.class);
-		statement.setLong(1, measurement.getId());
-		statement.setString(2, measurement.getData());
-		statement.setLong(3, measurement.getMeasurementSet());
-		statement.setString(4, measurement.getMeasure());			
+		//statement.setLong(1, measurement.getId());
+		statement.setString(1, measurement.getData());
+		statement.setLong(2, measurement.getMeasurementSet());
+		statement.setString(3, measurement.getMeasure());			
 		
 	}
 

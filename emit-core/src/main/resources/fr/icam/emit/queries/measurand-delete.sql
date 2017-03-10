@@ -1,0 +1,1 @@
+DELETE FROM measurands WHERE process=?;

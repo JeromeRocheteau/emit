@@ -1,2 +1,2 @@
-insert into measurements (id,data,measurementset,measure)
-values (?,?,?,?);
+insert into measurements (data,measurementset,measure)
+values (?,?,?);

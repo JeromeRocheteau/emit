@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,26 +13,18 @@ import javax.servlet.http.HttpServletResponse;
 import com.github.servlet.jdbc.JdbcUpdateServlet;
 import com.google.gson.Gson;
 
-import fr.icam.emit.entities.MeasurementSet;
+import fr.icam.emit.entities.Measurand;
 
-public class MeasurementSetCreation extends JdbcUpdateServlet<Boolean>{
-	private static final long serialVersionUID = 201703071416L;
-	
+public class MeasurandDelete  extends JdbcUpdateServlet<Boolean>{
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		
-		Gson gson = new Gson();	
+		Gson gson = new Gson();		
+		// String Json = this.getStringJson(request);
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
 		 // Measure measure = gson.fromJson(request.getInputStream().toString(), Measure.class);
-		MeasurementSet measurementSet = gson.fromJson(reader, MeasurementSet.class);
-		Timestamp time = new Timestamp(measurementSet.getAchieved());
-		//statement.setLong(1, measurementSet.getId());
-		statement.setString(1, measurementSet.getData());
-		statement.setTimestamp(2, time);
-		statement.setLong(3, measurementSet.getExperiment());
-		statement.setString(4, measurementSet.getObserver());		
-		
+		Measurand measurand = gson.fromJson(reader, Measurand.class);
+		statement.setString(1, measurand.getProcess());		
 	}
 
 	@Override

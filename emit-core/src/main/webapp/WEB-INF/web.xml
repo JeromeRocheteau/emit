@@ -44,6 +44,19 @@
   </servlet-mapping>
   
    <servlet>
+    <servlet-name>measurand-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurandCreation</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurand-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurand-delete</servlet-name>
+    <url-pattern>/measurand/delete</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
     <servlet-name>measurand-update</servlet-name>
     <servlet-class>fr.icam.emit.servlets.MeasurandUpdate</servlet-class>
     <init-param>
@@ -211,6 +224,19 @@
   <servlet-mapping>
     <servlet-name>observee-create</servlet-name>
     <url-pattern>/observee/create</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>observee-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.ObserveeCreation</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/observee-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>observee-delete</servlet-name>
+    <url-pattern>/observee/delete</url-pattern>
   </servlet-mapping>
   
    <servlet>

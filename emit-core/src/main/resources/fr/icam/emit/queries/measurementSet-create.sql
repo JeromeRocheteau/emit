@@ -1,2 +1,2 @@
-insert into measurementsets (id, data,achieved,experiment,observer)
-values (?,?,?,?,?);
+insert into measurementsets (data,achieved,experiment,observer)
+values (?,?,?,?);
