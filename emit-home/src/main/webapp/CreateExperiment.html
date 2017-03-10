@@ -60,9 +60,9 @@
 						experiment : $scope.id_experiment
 					};
 					console.log(measurement_data);
-				/*$http.post("http://172.21.1.18/emit/experiment/create", measurement_data)
+				$http.post("http://172.21.1.18/emit/measurementSet/create", measurement_data)
 				.then(function(response) {
-				});*/
+				});
 
 				compteur = compteur + 1;
 			});
