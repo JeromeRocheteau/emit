@@ -35,22 +35,44 @@
 					$scope.observers = response.data;
 				});
 
-		$scope.createers = function(observer_selection) {
-			angular.forEach(observer_selection, function(value, key) {
-				alert(angular.toJson(value));
-				console.log(angular.toJson(value));
+		$scope.create = function() {
+			var experiment_data = {
+					id : $scope.id_experiment,
+					started : new Date(),
+					stopped : null,
+					measurand : $scope.measurand_selection.process,
+					observee : $scope.observee_selection.uri
+				};
+			
+			$http.post("http://172.21.1.18/emit/experiment/create", experiment_data)
+			.then(function(response) {
+			});		
+			
+			var compteur = parseInt($scope.id_experiment);
+			
+			angular.forEach($scope.observer_selection, function(value, key) {
+				var measurement_data = {
+						id : compteur,
+						data : null,
+						achieved : null,
+						observer : value.uri,
+						experiment : $scope.id_experiment
+					};
+
+				/*$http.post("http://172.21.1.18/emit/experiment/create", measurement_data)
+				.then(function(response) {
+				});*/
+
+				compteur = compteur + 1;
 			});
+			alert("Experiment created");
 		};
-
-		$scope.createees = function(observee_selection) {
-			alert(angular.toJson(observee_selection));
-			console.log(angular.toJson(observee_selection));
-		};
-
-		$scope.createands = function(measurand_selection) {
-			alert(angular.toJson(measurand_selection));
-			console.log(angular.toJson(measurand_selection));
-		};
+		
+		$scope.clear = function() {
+			$scope.id = null;
+		}
+		
+		
 	});
 </script>
 
@@ -72,13 +94,15 @@
 			</div>
 		</div>
 	</header>
-	<section id="content" class="container"></section>
 	<section id="content" class="container">
-		<div class="col-md-3"></div>
 		<div class="col-md-8">
 			<form class="form list-group-item" id="form">
 				<fieldset>
 					<legend>Plan an experiment</legend>
+					<div class="row col-md-12">
+						<input type="text" class="form-control" ng-model="id_experiment"
+							placeholder="Id of the experiment" ng-required="true" required>
+					</div>
 					<div class="row col-md-12">
 						<label>Measurands</label>
 					</div>
@@ -88,6 +112,7 @@
 								ng-options="measurand.name for measurand in measurands"
 								ng-model="measurand_selection" title="Measurand"
 								ng-required="true" required>
+								<option value="" disabled>-- choose a measurand --</option>
 							</select>
 						</div>
 					</div>
@@ -100,6 +125,7 @@
 								ng-options="observee.name for observee in observees"
 								ng-model="observee_selection" title="Observee"
 								ng-required="true" required>
+								<option value="" disabled>-- choose an observee --</option>
 							</select>
 						</div>
 					</div>
@@ -119,14 +145,8 @@
 						<button type="reset" ng-click="clear()" class="btn btn-default">
 							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
 						</button>
-						<button ng-click="createers(observer_selection)" class="btn btn">
-							<span class="glyphicon glyphicon-send">&ensp;</span> observers
-						</button>
-						<button ng-click="createees(observee_selection)" class="btn btn">
-							<span class="glyphicon glyphicon-send">&ensp;</span> observees
-						</button>
-						<button ng-click="createands(measurand_selection)" class="btn btn">
-							<span class="glyphicon glyphicon-send">&ensp;</span> measurands
+						<button ng-click="create(observer_selection)" class="btn btn">
+							<span class="glyphicon glyphicon-send">&ensp;</span> Send
 						</button>
 					</div>
 
