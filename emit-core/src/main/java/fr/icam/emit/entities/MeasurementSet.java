@@ -1,6 +1,6 @@
 package fr.icam.emit.entities;
 
-import java.sql.Timestamp;
+
 
 //teste commit
 
@@ -8,7 +8,7 @@ public class MeasurementSet {
 	
 	private long id;
 	private String data;
-	private Timestamp achieved;
+	private long achieved;
 	private String observer;
 	private long experiment;
 
@@ -25,10 +25,10 @@ public class MeasurementSet {
 	public void setData(String data) {
 		this.data = data;
 	}
-	public Timestamp getAchieved() {
+	public long getAchieved() {
 		return achieved;
 	}
-	public void setAchieved(Timestamp longtime) {
+	public void setAchieved(long longtime) {
 		this.achieved = longtime;
 	}
 	public String getObserver() {
@@ -44,7 +44,7 @@ public class MeasurementSet {
 		this.experiment = experimentId;
 	}
 	
-	public  MeasurementSet(long id,String data,Timestamp achieved,String observer,long ExperimentId){
+	public  MeasurementSet(long id,String data,long achieved,String observer,long ExperimentId){
 	//public  MeasurementSet(long id,String data,String observer,long ExperimentId){
 		this.setId(id);
 		this.setData(data);
