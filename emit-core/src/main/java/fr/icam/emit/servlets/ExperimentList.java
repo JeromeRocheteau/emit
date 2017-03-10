@@ -29,8 +29,8 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
 		List<Experiment> experiments = new LinkedList<Experiment>();
         while (resultSet.next()) {
         	int id = resultSet.getInt("id");        	
-        	Timestamp started = resultSet.getTimestamp("started");
-        	Timestamp stopped = resultSet.getTimestamp("stopped");
+        	long started = (resultSet.getTimestamp("started")).getTime();
+        	long stopped = (resultSet.getTimestamp("stopped")).getTime();
             String measurand = resultSet.getString("measurand");
             String observee = resultSet.getString("observee");
             experiments.add(new Experiment(id,started,stopped,measurand,observee));
