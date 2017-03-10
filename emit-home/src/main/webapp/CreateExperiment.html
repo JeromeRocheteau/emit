@@ -36,9 +36,10 @@
 				});
 
 		$scope.create = function() {
+			var today = new Date(); 
 			var experiment_data = {
 					id : $scope.id_experiment,
-					started : new Date(),
+					started : today.getTime(),
 					stopped : null,
 					measurand : $scope.measurand_selection.process,
 					observee : $scope.observee_selection.uri
