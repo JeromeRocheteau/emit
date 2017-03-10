@@ -16,6 +16,7 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
 	var app = angular.module('app', []);
+	var id_a_supprimer = "186.36.1.254";
 
 	app.controller('myCtrl', function($scope, $http) {
 		$http.get("http://172.21.1.18/emit/experiment/list").then(
@@ -47,6 +48,23 @@
 					$scope.measurementsetlist = response.data;
 				});
 
+		$scope.delete_this = function() {
+			$http.get("http://172.21.1.18/emit/experiment/list").then(
+					function(response) {
+						$scope.list = response.data;
+					});
+			/*angular.forEach($scope.list, function(value, key) {
+				if (value.observee === id_a_supprimer) {
+					alert("This observee is used in an experiment, you can't delete it")
+				} else {
+					alert("let's delete it");
+					$http.post("http://172.21.1.18/emit/observee/delete")
+					.then(function(response) {
+					});
+				}
+			});*/
+		};
+		
 	});
 </script>
 
@@ -164,11 +182,14 @@
 									<tr>
 										<th>Uri</th>
 										<th>Name</th>
+										<th>Delete</th>
 									</tr>
 								</thead>
 								<tr ng-repeat="x in observeelist">
 									<td>{{ x.uri }}</td>
 									<td>{{ x.name }}</td>
+									<td><input ng-model= "" type="checkbox"
+										value=""></td>
 								</tr>
 							</table>
 						</div>
@@ -182,8 +203,8 @@
 									class="glyphicon glyphicon-pencil">&ensp;</span> Modify
 								</a>
 							</button>
-							<button type="submit" class="btn btn">
-								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
+							<button ng-click="delete_this()" type="submit" class="btn btn">
+								<span class="glyphicon glyphicon-remove"> &ensp;</span> Delete
 							</button>
 						</div>
 						<br /> <br />
