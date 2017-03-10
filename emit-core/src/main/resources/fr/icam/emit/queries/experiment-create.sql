@@ -1,2 +1,2 @@
-insert into experiments (id, started,stopped,measurand,observee)
-values (?,?,?,?,?);
+insert into experiments (started,stopped,measurand,observee)
+values (?,?,?,?);
