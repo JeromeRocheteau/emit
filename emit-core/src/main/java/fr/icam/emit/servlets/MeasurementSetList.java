@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 
