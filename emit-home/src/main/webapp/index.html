@@ -155,6 +155,8 @@
 
 <body ng-app="app" ng-controller="myCtrl">
 	<header>
+		<a href="./index.html"><img src="./png/logo_measure.png"
+			height="100" alt="Measure" /></a>
 		<div class="navbar navbar-default navbar-custom navbar-static-top">
 			<div class="container">
 				<div class="navbar-header">
@@ -165,7 +167,8 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="./index.html">EMIT</a>
+					<a href="./index.html"><span
+								class="glyphicon glyphicon-home">&ensp;</span> EMIT Home</a>
 				</div>
 				<div class="collapse navbar-collapse"></div>
 			</div>
@@ -234,6 +237,7 @@
 									<tr>
 										<th>Uri</th>
 										<th>Name</th>
+										<th>Delete</th>
 									</tr>
 								</thead>
 								<tr ng-repeat="x in observerlist">
@@ -276,7 +280,8 @@
 								<tr ng-repeat="x in observeelist">
 									<td>{{ x.uri }}</td>
 									<td>{{ x.name }}</td>
-									<td><input type="checkbox" name="observees" value="{{ x.uri }}"></td>
+									<td><input type="checkbox" name="observees"
+										value="{{ x.uri }}"></td>
 								</tr>
 							</table>
 						</div>
@@ -292,7 +297,7 @@
 							</button>
 							<button ng-click="delete_observee()" type="submit"
 								class="btn btn">
-								<span class="glyphicon glyphicon-remove"> &ensp;</span> Delete
+								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
 							</button>
 						</div>
 						<br /> <br />
@@ -305,6 +310,7 @@
 									<tr>
 										<th>Process</th>
 										<th>Name</th>
+										<th>Delete</th>
 									</tr>
 								</thead>
 								<tr ng-repeat="x in measurandlist">
@@ -414,6 +420,7 @@
 					</div>
 				</div>
 			</div>
+
 		</div>
 	</section>
 	<footer class="footer"> </footer>
