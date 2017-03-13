@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import fr.icam.emit.entities.Measurand;
 
 public class MeasurandDelete  extends JdbcUpdateServlet<Boolean>{
+	private static final long serialVersionUID = 201703011226L;
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();		

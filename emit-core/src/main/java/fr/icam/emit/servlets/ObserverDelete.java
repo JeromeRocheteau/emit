@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import fr.icam.emit.entities.Observer;
 
 public class ObserverDelete extends JdbcUpdateServlet<Boolean> {
-private static final long serialVersionUID = 201703070926L;
+private static final long serialVersionUID = 201703010926L;
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
