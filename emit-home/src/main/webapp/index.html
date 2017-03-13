@@ -16,7 +16,6 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
 	var app = angular.module('app', []);
-	var id_a_supprimer = "186.36.1.254";
 
 	app.controller('myCtrl', function($scope, $http) {
 		$http.get("http://172.21.1.18/emit/experiment/list").then(
@@ -48,23 +47,94 @@
 					$scope.measurementsetlist = response.data;
 				});
 
-		$scope.delete_this = function() {
-			$http.get("http://172.21.1.18/emit/experiment/list").then(
-					function(response) {
-						$scope.list = response.data;
-					});
-			/*angular.forEach($scope.list, function(value, key) {
-				if (value.observee === id_a_supprimer) {
-					alert("This observee is used in an experiment, you can't delete it")
-				} else {
-					alert("let's delete it");
-					$http.post("http://172.21.1.18/emit/observee/delete")
+		$scope.delete_observee = function() {
+			var cantdelete = "";
+			$("input:checkbox[name=observees]:checked").each(function() {
+				var checkbox = $(this).val();
+				var can_delete = true;
+				angular.forEach($scope.experimentlist, function(value) {
+					if (value.observee == checkbox) {
+						can_delete = false;						
+					}
+				});
+				var data ={uri:checkbox}
+				if (can_delete == true) {
+					$http.post("http://172.21.1.18/emit/observee/delete",data)
 					.then(function(response) {
 					});
+				} else {
+					cantdelete = cantdelete + " " + checkbox;
 				}
-			});*/
+			});
+			if (cantdelete != "") {
+				console.log("These observee(s) can't be deleted : " + " " + cantdelete);				
+			}
 		};
 		
+		$scope.delete_observer = function() {
+			var cantdelete = "";
+			$("input:checkbox[name=observers]:checked").each(function() {
+				var checkbox = $(this).val();
+				var can_delete = true;
+				angular.forEach($scope.measurementsetlist, function(value) {
+					if (value.observer == checkbox) {
+						can_delete = false;						
+					}
+				});
+				var data ={uri:checkbox}
+				if (can_delete == true) {
+					$http.post("http://172.21.1.18/emit/observer/delete",data)
+					.then(function(response) {
+					});
+				} else {
+					cantdelete = cantdelete + " " + checkbox;
+				}
+			});
+			if (cantdelete != "") 
+			console.log("These observer(s) can't be deleted : " + " " + cantdelete);
+		};
+		
+		$scope.delete_measurand = function() {
+			var cantdelete = "";
+			$("input:checkbox[name=measurands]:checked").each(function() {
+				var checkbox = $(this).val();
+				var can_delete = true;
+				angular.forEach($scope.experimentlist, function(value) {
+					if (value.measurand == checkbox) {
+						can_delete = false;						
+					}
+				});
+				var data ={process:checkbox}
+				if (can_delete == true) {
+					$http.post("http://172.21.1.18/emit/measurand/delete",data)
+					.then(function(response) {
+					});
+				} else {
+					cantdelete = cantdelete + " " + checkbox;
+				}
+			});
+			if (cantdelete != "") {
+				console.log("These measurand(s) can't be deleted : " + " " + cantdelete);				
+			}
+		};
+		
+
+		/*$("input:checkbox[name=type]:checked").each(function(){
+		    MyArray.push($(this).val());
+		});
+		alert(MyArray);
+		console.log(MyArray);*/
+	
+		/*angular.forEach($scope.list, function(value, key) {
+			if (value.observee === id_a_supprimer) {
+				alert("This observee is used in an experiment, you can't delete it")
+			} else {
+				alert("let's delete it");
+				$http.post("http://172.21.1.18/emit/observee/delete")
+				.then(function(response) {
+				});
+			}
+		});*/
 	});
 </script>
 
@@ -104,7 +174,7 @@
 						aria-controls="measures" role="tab" data-toggle="tab">Measures</a></li>
 					<li role="presentation" class=""><a href="#measurementset"
 						aria-controls="measures" role="tab" data-toggle="tab">MeasurementSets</a></li>
-				</ul> 
+				</ul>
 			</div>
 			<div class="col-md-8 list-group-item">
 				<div class="tab-content">
@@ -154,6 +224,7 @@
 								<tr ng-repeat="x in observerlist">
 									<td>{{ x.uri }}</td>
 									<td>{{ x.name }}</td>
+									<td><input type="checkbox" name="observers" value="{{ x.uri }}"></td>
 								</tr>
 							</table>
 						</div>
@@ -168,7 +239,7 @@
 								</a>
 
 							</button>
-							<button type="submit" class="btn btn">
+							<button ng-click="delete_observer()" type="submit" class="btn btn">
 								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
 							</button>
 						</div>
@@ -188,8 +259,7 @@
 								<tr ng-repeat="x in observeelist">
 									<td>{{ x.uri }}</td>
 									<td>{{ x.name }}</td>
-									<td><input ng-model= "" type="checkbox"
-										value=""></td>
+									<td><input type="checkbox" name="observees" value="{{ x.uri }}"></td>
 								</tr>
 							</table>
 						</div>
@@ -203,7 +273,7 @@
 									class="glyphicon glyphicon-pencil">&ensp;</span> Modify
 								</a>
 							</button>
-							<button ng-click="delete_this()" type="submit" class="btn btn">
+							<button ng-click="delete_observee()" type="submit" class="btn btn">
 								<span class="glyphicon glyphicon-remove"> &ensp;</span> Delete
 							</button>
 						</div>
@@ -222,6 +292,7 @@
 								<tr ng-repeat="x in measurandlist">
 									<td>{{ x.process }}</td>
 									<td>{{ x.name }}</td>
+									<td><input type="checkbox" name="measurands" value="{{ x.process }}"></td>
 								</tr>
 							</table>
 						</div>
@@ -235,7 +306,7 @@
 									class="glyphicon glyphicon-pencil">&ensp;</span> Modify
 								</a>
 							</button>
-							<button type="submit" class="btn btn">
+							<button ng-click="delete_measurand()"  type="submit" class="btn btn">
 								<span class="glyphicon glyphicon-remove">&ensp;</span> Delete
 							</button>
 						</div>
