@@ -8,15 +8,19 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="css/index_tables.css">
+
 </head>
+
+<script type="text/javascript" src="DJS/Chart.min.js"></script>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript"
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+<script type="text/javascript" src="DJS/angular-chart.min.js"></script>
 <script type="text/javascript">
-	var app = angular.module('app', []);
+	var app = angular.module('app', ['chart.js']);
 
 	app.controller('myCtrl', function($scope, $http) {
 		
@@ -53,93 +57,41 @@
 		
 		$scope.refresh();
 		
-
-		/*$scope.delete_observee = function() {
-			var cantdelete = "";
-			$("input:checkbox[name=observees]:checked").each(
-					function() {
-						var checkbox = $(this).val();
-						var can_delete = true;
-						angular.forEach($scope.experimentlist, function(value) {
-							if (value.observee == checkbox) {
-								can_delete = false;
-							}
-						});
-						var data = {
-							uri : checkbox
-						}
-						if (can_delete == true) {
-							$http.post(
-									"http://172.21.1.18/emit/observee/delete",
-									data).then(function(response) {
-							});
-						} else {
-							cantdelete = cantdelete + " " + checkbox;
-						}
-					});
-			if (cantdelete != "") {
-				console.log("These observee(s) can't be deleted : " + " "
-						+ cantdelete);
-			}
-		};
-
-		$scope.delete_observer = function() {
-			var cantdelete = "";
-			$("input:checkbox[name=observers]:checked").each(
-					function() {
-						var checkbox = $(this).val();
-						var can_delete = true;
-						angular.forEach($scope.measurementsetlist, function(
-								value) {
-							if (value.observer == checkbox) {
-								can_delete = false;
-							}
-						});
-						var data = {
-							uri : checkbox
-						}
-						if (can_delete == true) {
-							$http.post(
-									"http://172.21.1.18/emit/observer/delete",
-									data).then(function(response) {
-							});
-						} else {
-							cantdelete = cantdelete + " " + checkbox;
-						}
-					});
-			if (cantdelete != "")
-				console.log("These observer(s) can't be deleted : " + " "
-						+ cantdelete);
-		};
-
-		$scope.delete_measurand = function() {
-			var cantdelete = "";
-			$("input:checkbox[name=measurands]:checked").each(
-					function() {
-						var checkbox = $(this).val();
-						var can_delete = true;
-						angular.forEach($scope.experimentlist, function(value) {
-							if (value.measurand == checkbox) {
-								can_delete = false;
-							}
-						});
-						var data = {
-							process : checkbox
-						}
-						if (can_delete == true) {
-							$http.post(
-									"http://172.21.1.18/emit/measurand/delete",
-									data).then(function(response) {
-							});
-						} else {
-							cantdelete = cantdelete + " " + checkbox;
-						}
-					});
-			if (cantdelete != "") {
-				console.log("These measurand(s) can't be deleted : " + " "
-						+ cantdelete);
-			}
-		};*/
+		$scope.afficher_test = function(){
+			var retour_test = [];
+			var serie = [];
+			var serie1 = [];
+			var globalSerie = [];
+			
+			$http.get("http://172.21.1.18/emit/test/test?file_name=emit-1464192786377.json").then(
+					function(response) {
+						retour_test = response.data;
+						console.log(retour_test.length);
+						
+						
+						for (var i = 0;i<retour_test.length;i++){
+						serie[i] = retour_test[i].x;
+						serie1[i] = retour_test[i].y;
+						console.log(i);
+						}						
+						
+						globalSerie.push(serie1);
+						
+						
+						  $scope.labels = serie
+							$scope.series = ['Series A'];
+							$scope.data = globalSerie;
+							$scope.onClick = function (points, evt) {
+								console.log(points, evt);
+							  
+							 }
+						
+						
+					});			
+				
+				}		
+	
+	
 		
 		$scope.modify = function(primarykey, info) {
 			sessionStorage.setItem("primarykey", primarykey);
@@ -400,11 +352,17 @@
 												<td>{{ x.data }}</td>
 												<td>{{ x.measurementSet }}</td>
 												<td>{{ x.measure }}</td>
-												<td><a ng-click="delete('rien','rien','rien')">Delete</a></td>
+												<td><a ng-click="afficher_test()">Delete</a></td>
 											</tr>
 										</tbody>
 									</table>
 								</div>
+							</div>
+							<div col-md-10>
+								<canvas id="line" class="chart chart-line" chart-data="data"
+									chart-labels="labels" chart-series="series" chart-options="options"
+									chart-dataset-override="datasetOverride" chart-click="onClick">
+							</canvas>
 							</div>
 							<div role="tabpanel" class="tab-pane" id="measurementset">
 								<legend>Measurement Sets</legend>

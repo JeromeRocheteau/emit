@@ -1,16 +1,11 @@
 package fr.icam.emit.servlets;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.LinkedList;
-import java.util.List;
+
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -37,19 +32,19 @@ private static final long serialVersionUID = 201703141635L;
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		
-		this.doPrint(this.read_file(response), response);
+		String file_name = request.getParameter("file_name");
+		this.doPrint(this.read_file(response,file_name), response);
 		
 		
 	}
 	
 	
-	public String read_file(HttpServletResponse response){
+	public String read_file(HttpServletResponse response,String file_name){
 		String s;
 		s= "";
 		 
 		ServletContext context = getServletContext();
-		InputStream is = context.getResourceAsStream("WEB-INF/classes/emit-1464192786377.json");
+		InputStream is = context.getResourceAsStream("WEB-INF/classes/"+file_name);
 		if (is != null) {
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader reader = new BufferedReader(isr);
@@ -60,15 +55,15 @@ private static final long serialVersionUID = 201703141635L;
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			String text = "";
+			
 			
 			//hi
 			// We read the file line by line and later will be displayed on the 
 			// browser page.
 			//
 			try {
-				while ((text = reader.readLine()) != null) {
-					writer.println(text);
+				while ((s = reader.readLine()) != null) {
+					writer.println(s);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
