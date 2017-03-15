@@ -57,13 +57,13 @@
 		
 		$scope.refresh();
 		
-		$scope.afficher_test = function(){
+		$scope.afficher_test = function(file_name){
 			var retour_test = [];
 			var serie = [];
 			var serie1 = [];
 			var globalSerie = [];
 			
-			$http.get("http://172.21.1.18/emit/test/test?file_name=emit-1464192786377.json").then(
+			$http.get("http://172.21.1.18/emit/test/test?file_name="+file_name).then(
 					function(response) {
 						retour_test = response.data;
 						console.log(retour_test.length);
@@ -353,7 +353,7 @@
 												<td>{{ x.data }}</td>
 												<td>{{ x.measurementSet }}</td>
 												<td>{{ x.measure }}</td>
-												<td><a ng-click="afficher_test()">Delete</a></td>
+												<td><a ng-click="afficher_test(x.data)">Delete</a></td>
 											</tr>
 										</tbody>
 									</table>
