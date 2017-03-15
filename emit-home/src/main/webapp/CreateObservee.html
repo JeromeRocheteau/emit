@@ -8,37 +8,29 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript"
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
 	var app = angular.module('app', []);
 
 	app.controller('myCtrl', function($scope, $http) {
 
-		$scope.alert = {};
-		$scope.setAlert = function(type, message) {
-			$scope.alert.type = type;
-			$scope.alert.message = message;
-			$('#alert').modal('show');
-		}
-
 		$scope.uri = null;
 		$scope.name = null;
 		$scope.create = function() {
-			if ($scope.name === null) {
-				$scope.setAlert("Error", "The field 'name' is empty");
-			} else {
-				var indata = {
-					uri : $scope.uri,
-					name : $scope.name
-				};
-				$http.post("http://172.21.1.18/emit/observee/create", indata)
-						.then(function(response) {
-							$scope.setAlert("Info", "Observee created");
-						});
-				$scope.clear();
-			}
+			var indata = {
+				uri : $scope.uri,
+				name : $scope.name
+			};
+			$http.post("http://172.21.1.18/emit/observee/create", indata).then(
+					function(response) {
+						alert("Observee created");
+					});
+			$scope.clear();
 		}
 		$scope.clear = function() {
 			$scope.uri = null;
@@ -49,7 +41,7 @@
 
 <body ng-app="app" ng-controller="myCtrl">
 	<header>
-	<a href="./index.html"><img src="./png/logo_measure.png"
+		<a href="./index.html"><img src="./png/logo_measure.png"
 			height="100" alt="Measure" /></a>
 		<div class="navbar navbar-default navbar-custom navbar-static-top">
 			<div class="container">
@@ -61,8 +53,8 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a href="./index.html"><span
-								class="glyphicon glyphicon-home">&ensp;</span> EMIT Home</a>
+					<a href="./index.html"><span class="glyphicon glyphicon-home">&ensp;</span>
+						EMIT Home</a>
 				</div>
 				<div class="collapse navbar-collapse"></div>
 			</div>
@@ -84,11 +76,11 @@
 					</div>
 					<div class="pull-right">
 						<button type="reset" ng-click="clear()" class="btn btn-default">
-							<span class="glyphicon glyphicon-erase">&ensp;</span> Annuler
+							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
 						</button>
 						<button type="submit" ng-click="create()"
 							ng-disabled="!form.$valid" class="btn btn">
-							<span class="glyphicon glyphicon-send">&ensp;</span> Envoyer
+							<span class="glyphicon glyphicon-send">&ensp;</span> Send
 						</button>
 					</div>
 				</fieldset>

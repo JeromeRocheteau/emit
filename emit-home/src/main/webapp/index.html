@@ -246,7 +246,7 @@
 											<tr ng-repeat="x in observerlist">
 												<td>{{ x.uri }}</td>
 												<td>{{ x.name }}</td>
-												<td><a ng-click="modify(x.uri,x.name)">Modify</a></td>
+												<td><a href = "./UpdateObserver.html" ng-click="modify(x.uri,x.name)">Modify</a></td>
 												<td><a
 													ng-click="deleteobject('observer','/observer/delete',x.uri)">Delete</a></td>
 											</tr>
