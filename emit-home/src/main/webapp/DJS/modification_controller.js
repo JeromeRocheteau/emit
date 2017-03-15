@@ -4,41 +4,21 @@
 	var app = angular.module('app', []);
 
 	app.controller('myCtrl', function($scope, $http) {
-
-		$scope.afficher_table = function() {
-			$http.get(adresse+"/list").then(
-					function(response) {
-						$scope.list = response.data;
-					});
-		}
-
-		$scope.afficher_table();
-		
-		
 		
 		$scope.primekey = null;
 		$scope.info = null;
-		$scope.old_primekey = null;
-		$scope.old_info = null;
+		$scope.old_primekey = sessionStorage.getItem("primarykey");
+		$scope.old_info = sessionStorage.getItem("info");
+		$scope.show_current = function(){
+			$scope.old_primekey = $scope.primekey;
+			$scope.old_info = $scope.info;
+		}
 		
-
-		$scope.show_data = function(primekey1, info1) {
-			$scope.old_info = info1;
-			$scope.old_primekey = primekey1;
-		}
-
-		$scope.alert = {};
-		$scope.setAlert = function(type, message) {
-			$scope.alert.type = type;
-			$scope.alert.message = message;
-			$('#alert').modal('show');
-		}
-
 		$scope.create = function() {
 			if ($scope.name === null) {
-				$scope.setAlert("Error", "The field 'name' is empty");
+				alert("The field 'name' is empty");
 			} else if ($scope.old_name === null) {
-				$scope.setAlert("Error", "The field 'name' is empty");
+				alert("The field 'name' is empty");
 			} else {
 				var indata =[];
 					item1 = {};
@@ -52,10 +32,9 @@
 					
 				$http.post(adresse+"/update", indata)
 						.then(function(response) {
-							$scope.setAlert("Info", "Element created");
-							$scope.afficher_table();
+							alert("Element updated");
 						});
-					//console.log(angular.toJson(indata));
+				$scope.show_current();
 				$scope.clear();
 			}
 		}
