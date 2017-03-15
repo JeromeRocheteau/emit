@@ -294,10 +294,7 @@
   <servlet>
     <servlet-name>test-fichier</servlet-name>
     <servlet-class>fr.icam.emit.servlets.ImportTest</servlet-class>
-     <init-param>
-      <param-name>sql-query</param-name>
-      <param-value>/fr/icam/emit/queries/test-test.sql</param-value>
-    </init-param>
+    
  </servlet>
   <servlet-mapping>
     <servlet-name>test-fichier</servlet-name>
