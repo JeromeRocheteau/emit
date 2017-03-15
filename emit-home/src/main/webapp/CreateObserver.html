@@ -16,18 +16,11 @@
 
 	app.controller('myCtrl', function($scope, $http) {
 
-		$scope.alert = {};
-		$scope.setAlert = function(type, message) {
-			$scope.alert.type = type;
-			$scope.alert.message = message;
-			$('#alert').modal('show');
-		}
-
 		$scope.uri = null;
 		$scope.name = null;
 		$scope.create = function() {
 			if ($scope.name === null) {
-				$scope.setAlert("Error", "The field 'name' is empty");
+				alert("The field 'name' is empty");
 			} else {
 				var indata = {
 					uri : $scope.uri,
@@ -35,7 +28,7 @@
 				};
 				$http.post("http://172.21.1.18/emit/observer/create", indata)
 						.then(function(response) {
-							$scope.setAlert("Info", "Observer created");
+							alert("Observer created");
 						});
 				$scope.clear();
 			}
