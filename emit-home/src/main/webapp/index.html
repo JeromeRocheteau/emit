@@ -20,11 +20,11 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript" src="DJS/angular-chart.min.js"></script>
 <script type="text/javascript">
-	var app = angular.module('app', ['chart.js']);
+	var app = angular.module('app', [ 'chart.js' ]);
 
 	app.controller('myCtrl', function($scope, $http) {
-		
-		$scope.refresh = function(){
+
+		$scope.refresh = function() {
 			$http.get("http://172.21.1.18/emit/experiment/list").then(
 					function(response) {
 						$scope.experimentlist = response.data;
@@ -54,120 +54,125 @@
 						$scope.measurementsetlist = response.data;
 					});
 		}
-		
+
 		$scope.refresh();
-		
-		$scope.afficher_test = function(file_name){
+
+		$scope.afficher_test = function(file_name) {
 			var retour_test = [];
 			var serie = [];
 			var serie1 = [];
 			var globalSerie = [];
-			
-			$http.get("http://172.21.1.18/emit/test/test?file_name="+file_name).then(
-					function(response) {
+
+			$http.get(
+					"http://172.21.1.18/emit/test/test?file_name=" + file_name)
+					.then(function(response) {
 						retour_test = response.data;
-						console.log(retour_test.length);
-						
-						
-						for (var i = 0;i<retour_test.length;i++){
-						serie[i] = retour_test[i].x;
-						serie1[i] = retour_test[i].y;
-						console.log(i);
-						// renvois
-						}						
-						
+						//console.log(retour_test.length);
+
+						for (var i = 0; i < retour_test.length; i++) {
+							serie[i] = retour_test[i].x / 1000;
+							serie1[i] = retour_test[i].y;
+							console.log(i);
+							// renvois
+						}
+
+						$scope.loaded_file = "Loaded file : " + file_name;
+
 						globalSerie.push(serie1);
-						
-						
-						  $scope.labels = serie
-							$scope.series = ['Series A'];
-							$scope.data = globalSerie;
-							$scope.onClick = function (points, evt) {
-								console.log(points, evt);
-							  
-							 }
-						
-						
-					});			
-				
-				}		
-	
-	
-		
+
+						$scope.labels = serie
+						$scope.series = [ 'Series A' ];
+
+						console.log(serie);
+
+						$scope.data = globalSerie;
+						$scope.onClick = function(points, evt) {
+							console.log(points, evt);
+
+						}
+					});
+		}
+
 		$scope.modify = function(primarykey, info) {
 			sessionStorage.setItem("primarykey", primarykey);
 			sessionStorage.setItem("info", info);
 		}
-		$scope.deleteobject = function(element,adresse_delete,primarykey) {
+		$scope.deleteobject = function(element, adresse_delete, primarykey) {
 			var can_delete = true;
-			switch(element) {
-			    case 'observer':
-			    	angular.forEach($scope.measurementsetlist, function(
-							value) {
-						if (value.observer == primarykey) {
-							can_delete = false;
-						}
-					});
-			        break;
-			    case 'observee':
-			    	angular.forEach($scope.experimentlist, function(
-							value) {
-						if (value.observee == primarykey) {
-							can_delete = false;
-						}
-					}); 
-			        break;
-			    case 'measurement':
-				    angular.forEach($scope.experimentlist, function(
-							value) {
-						if (value.measurand == primarykey) {
-							can_delete = false;
-						}
-					});
-			        break;
-			    default:
-			    	alert("Not possible yet");
-			    	can_delete = false;
+			switch (element) {
+			case 'observer':
+				angular.forEach($scope.measurementsetlist, function(value) {
+					if (value.observer == primarykey) {
+						can_delete = false;
+					}
+				});
+				break;
+			case 'observee':
+				angular.forEach($scope.experimentlist, function(value) {
+					if (value.observee == primarykey) {
+						can_delete = false;
+					}
+				});
+				break;
+			case 'measurement':
+				angular.forEach($scope.experimentlist, function(value) {
+					if (value.measurand == primarykey) {
+						can_delete = false;
+					}
+				});
+				break;
+			default:
+				alert("Not possible yet");
+				can_delete = false;
 			}
-			
+
 			if (can_delete == true) {
 				var data = {
-						uri : primarykey
+					uri : primarykey
 				}
 				var url_delete = "http://172.21.1.18/emit" + adresse_delete;
 				$http.post(url_delete, data).then(function(response) {
-				
-					
+
 				});
 				alert("This " + element + " is deleted");
 				$scope.refresh();
-			}
-			else {
+			} else {
 				alert("This " + element + " can't be deleted");
 			}
-			
+
 		}
 	});
 </script>
-
 <body ng-app="app" ng-controller="myCtrl">
 	<header>
-		<a href="./index.html"><img src="./png/logo_measure.png"
-			height="100" alt="Measure" /></a>
+		<h1 class="page-header" id="glyphicons">
+			<a href="./index.html"
+				style="margin-left: 2em; padding-right: 0.5em;"></a>EMIT
+		</h1>
 		<div class="navbar navbar-default navbar-custom navbar-static-top">
 			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed"
-						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-						aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a href="./index.html"><span class="glyphicon glyphicon-home">&ensp;</span>
-						EMIT Home</a>
+				<button class="navbar-toggle" data-toggle="collapse"
+					data-target=".navHeaderCollapse">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav navbar-center">
+						<li class="active"><a href="./index.html"><span
+								class="glyphicon glyphicon-home">&ensp;</span> Home</a></li>
+						<li class="dropdown" ng-hide="!passphrase"><a href=""
+							class="dropdown-toggle" data-toggle="dropdown" role="button"
+							aria-expanded="false"> <span
+								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements <span
+								class="caret"></span>
+						</a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="./Observer.html">Observers</a></li>
+								<li><a href="./Observee.html">Observees</a></li>
+								<li><a href="./Measurand.html">Measurands</a></li>
+							</ul></li>
+					</ul>
 				</div>
-				<div class="collapse navbar-collapse"></div>
 			</div>
 		</div>
 	</header>
@@ -247,7 +252,8 @@
 											<tr ng-repeat="x in observerlist">
 												<td>{{ x.uri }}</td>
 												<td>{{ x.name }}</td>
-												<td><a href = "./UpdateObserver.html" ng-click="modify(x.uri,x.name)">Modify</a></td>
+												<td><a href="./UpdateObserver.html"
+													ng-click="modify(x.uri,x.name)">Modify</a></td>
 												<td><a
 													ng-click="deleteobject('observer','/observer/delete',x.uri)">Delete</a></td>
 											</tr>
@@ -258,7 +264,6 @@
 									</table>
 								</div>
 							</div>
-
 							<div role="tabpanel" class="tab-pane" id="observee">
 								<legend>Observees</legend>
 								<div class="panel panel-default">
@@ -275,7 +280,8 @@
 											<tr ng-repeat="x in observeelist">
 												<td>{{ x.uri }}</td>
 												<td>{{ x.name }}</td>
-												<td><a ng-click="modify(x.uri,x.name)">Modify</a></td>
+												<td><a href="./UpdateObservee.html"
+													ng-click="modify(x.uri,x.name)">Modify</a></td>
 												<td><a
 													ng-click="deleteobject('observee','/observee/delete',x.uri)">Delete</a></td>
 											</tr>
@@ -302,7 +308,8 @@
 											<tr ng-repeat="x in measurandlist">
 												<td>{{ x.process }}</td>
 												<td>{{ x.name }}</td>
-												<td><a ng-click="modify(x.process,x.name)">Modify</a></td>
+												<td><a href="./UpdateMeasurand.html"
+													ng-click="modify(x.process,x.name)">Modify</a></td>
 												<td><a
 													ng-click="deleteobject('measurand','/measurand/delete',x.process)">Delete</a></td>
 											</tr>
@@ -353,17 +360,22 @@
 												<td>{{ x.data }}</td>
 												<td>{{ x.measurementSet }}</td>
 												<td>{{ x.measure }}</td>
-												<td><a ng-click="afficher_test(x.data)">Delete</a></td>
+												<td><button ng-click="afficher_test(x.data)"
+														type="button" class="btn btn-default">
+														<span class="glyphicon glyphicon-eye-open">&ensp;</span>
+													</button></td>
 											</tr>
 										</tbody>
 									</table>
 								</div>
-							</div>
-							<div col-md-10>
-								<canvas id="line" class="chart chart-line" chart-data="data"
-									chart-labels="labels" chart-series="series" chart-options="options"
-									chart-dataset-override="datasetOverride" chart-click="onClick">
-							</canvas>
+								<div col-md-10>
+									<legend ng-model="loaded_file"> {{ loaded_file }} </legend>
+									<canvas id="line" class="chart chart-line" chart-data="data"
+										chart-labels="labels" chart-series="series"
+										chart-options="options"
+										chart-dataset-override="datasetOverride" chart-click="onClick">
+									</canvas>
+								</div>
 							</div>
 							<div role="tabpanel" class="tab-pane" id="measurementset">
 								<legend>Measurement Sets</legend>
