@@ -17,155 +17,292 @@
 <script type="text/javascript">
 	var app = angular.module('app', []);
 
-	app.controller('myCtrl', function($scope, $http) {
-
-		$scope.uri = null;
-		$scope.name = null;
-		$scope.create = function() {
-			var indata = {
-				uri : $scope.uri,
-				name : $scope.name
-			};
-			$http.post("http://172.21.1.18/emit/observer/create", indata).then(
-					function(response) {
-						alert("Observer created");
-					});
-			$scope.clear();
-		}
-		$scope.clear = function() {
-			$scope.uri = null;
-			$scope.name = null;
-		}
+	app.filter('ceil', function() {
+		return function(input) {
+			return Math.ceil(input);
+		};
 	});
+
+	app
+			.controller(
+					'controller',
+					function($scope, $http) {
+
+						$http
+								.get(
+										"http://172.21.1.18/emit/experiment/list")
+								.then(function(response) {
+									$scope.experimentlist = response.data;
+								});
+
+						var empty = {};
+
+						$scope.selected = false;
+						$scope.creating = false;
+						$scope.updating = false;
+
+						$scope.alert = {};
+						$scope.measurand = {};
+						$scope.measurands = [];
+						$scope.size = 0;
+						$scope.offset = 0;
+						$scope.length = 5;
+
+						var init = function() {
+							$scope.selected = false;
+							$scope.creating = false;
+							$scope.updating = false;
+							$scope.measurand = angular.copy(empty);
+						}
+						$scope.clean = function() {
+							init();
+						}
+						$scope.select = function(measurand) {
+							if (measurand) {
+								$scope.creating = false;
+								$scope.updating = true;
+								$scope.measurand = measurand;
+							} else {
+								$scope.creating = true;
+								$scope.updating = false;
+							}
+							$scope.selected = true;
+						}
+						$scope.create = function() {
+
+							var indata = {
+								process : $scope.measurand.process,
+								name : $scope.measurand.name
+							};
+							$http
+									.post(
+											"http://172.21.1.18/emit/measurand/create",
+											indata)
+									.then(
+											function(success) {
+												alert("Measurand created");
+												init();
+												$scope.size = 0;
+												$scope.offset = 0;
+												size();
+												page();
+											},
+											function(error) {
+												alert("An error occured during creation of the Measurand.");
+											});
+						}
+						$scope.update = function() {
+							var indata = {
+								process : $scope.measurand.process,
+								name : $scope.measurand.name
+							};
+
+							$http
+									.post(
+											"http://172.21.1.18/emit/measurand/update",
+											indata)
+									.then(
+											function(success) {
+												alert("Measurand updated");
+											},
+											function(error) {
+												alert("An error occured during updating of the Measurand.");
+											});
+						}
+
+						$scope.remove = function(measurand) {
+							$scope.measurand = measurand;
+							$('#modal').modal('show');
+						}
+
+						$scope.erase = function() {
+							$('#modal').modal('hide');
+							var can_delete = true;
+							var process = $scope.measurand.process;
+							angular.forEach($scope.experimentlist,
+									function(value) {
+										if (value.measurand == process) {
+											can_delete = false;
+										}
+									});
+							if (can_delete == true) {
+								var data = {
+									process : process
+								};
+								$http
+										.post(
+												"http://172.21.1.18/emit/measurand/delete",
+												data)
+										.then(
+												function(success) {
+													alert("Measurand deleted");
+													init();
+													$scope.size = 0;
+													$scope.offset = 0;
+													size();
+													page();
+												},
+												function(error) {
+													alert("An error occured during deleting of the Measurand.");
+												});
+							} else {
+								alert("This " + element + " can't be deleted");
+							}
+						}
+
+						var size = function() {
+							$http.get("http://172.21.1.18/emit/measurand/size")
+									.then(function(success) {
+										$scope.size = success.data;
+									}, function(error) {
+										$scope.size = 0;
+									});
+						}
+						var page = function() {
+							$http.get("http://172.21.1.18/emit/measurand/page",
+									{
+										"params" : {
+											"offset" : $scope.offset
+										}
+									}).then(function(success) {
+								$scope.measurands = success.data;
+							}, function(error) {
+								$scope.measurands = [];
+							});
+						}
+						$scope.prev = function() {
+							if ($scope.length <= $scope.offset) {
+								$scope.offset = $scope.offset - $scope.length;
+								page();
+							}
+						}
+						$scope.next = function() {
+							if ($scope.offset + $scope.length < $scope.size) {
+								$scope.offset = $scope.offset + $scope.length;
+								page();
+							}
+						}
+						$scope.first = function() {
+							$scope.offset = 0;
+							page();
+						}
+						$scope.last = function() {
+							$scope.offset = Math.floor(($scope.size - 1)
+									/ $scope.length)
+									* $scope.length;
+							page();
+						}
+
+						init();
+						size();
+						page();
+
+					});
 </script>
-<body>
-	<body ng-app="app" ng-controller="controller">
-    <header>
-      <div class="navbar navbar-default navbar-custom navbar-static-top">
-        <div class="container">
-          <button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="./index.html">OpenBeer DB</a>
-          <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-center">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-pushpin">&ensp;</span> Séance n°1 <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header"><a href="list.html">Liste des brasseries</a></li>
-                  <li class="dropdown-header"><a href="page.html">Pages des bières</a></li>
-                  <li class="dropdown-header"><a href="page-per-country.html">Pages des bières pour un pays</a></li>
-                  <li class="dropdown-header"><a href="page-per-filter.html">Recherche de bières</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-pushpin">&ensp;</span> Séance n°2 <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header"><a href="breweries.html">Édition des brasseries</a></li>
-                  <li class="dropdown-header"><a href="beers.html">Édition des bières</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-pushpin">&ensp;</span> Séance n°3 <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header"><a href="dashboard.html">Tableau de bord</a></li>
-                </ul>
-              </li>
-            </ul>
-            <form class="navbar-form navbar-right">
-              <div class="form-group">
-                <input type="text" class="form-control" ng-model="id" placeholder="Spécifier votre identifiant de binôme">
-              </div>
-              <button type="submit" ng-click="setId()" class="btn btn-default">Valider</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </header>
-    <div class="container">
-      <section id="search" class="col-md-4">
-        <form class="form" role="form" name="form" ng-if="selected">
-          <fieldset>
-          <legend ng-if="creating">Édition d'une nouvelle brasserie</legend>
-          <legend ng-if="updating">Édition de la brasserie #{{brewery.id}}</legend>
-            <div class="form-group">
-              <label for="brewery.name">Nom de la brasserie</label>
-              <input type="text" id="brewery.name" class="form-control" ng-model="brewery.name" placeholder="Nom" required ng-required="true" />
-            </div>
-            <div class="form-group">
-              <label for="brewery.address">Adresse de la brasserie</label>
-              <input type="text" id="brewery.address" class="form-control" ng-model="brewery.address" placeholder="Adresse" ng-required="false" />
-            </div>
-            <div class="form-group">
-              <label for="brewery.city">Ville de la brasserie</label>
-              <input type="text" id="brewery.city" class="form-control" ng-model="brewery.city" placeholder="Ville" required ng-required="true" />
-            </div>
-            <div class="form-group">
-              <label for="brewery.country">Pays de la brasserie</label>
-              <input type="text" id="brewery.country" class="form-control" ng-model="brewery.country" placeholder="Pays" required ng-required="true" />
-            </div>
-            <div class="form-group pull-right">
-               <button type="reset" class="btn btn-default" ng-click="clean()"><strong>Annuler</strong></button>
-               <button type="submit" class="btn" ng-click="form.$valid && update()" ng-disabled="form.$invalid" ng-if="updating"><strong>Modifier</strong></button>
-               <button type="submit" class="btn" ng-click="form.$valid && create()" ng-disabled="form.$invalid" ng-if="creating"><strong>Ajouter</strong></button>
-             </div>
-          </fieldset>
-        </form>
-        <div class="alert alert-{{alert.type}} alert-dismissible" id="alert" role="alert" style="display:none;">
-          <button type="button" class="close" aria-label="close" ng-click="dismiss()"><span aria-hidden="true">&times;</span></button>
-          <p>{{alert.message}}</p>
-        </div>
-      </section>
-      <section id="results" class="col-md-8">
-        <h2>Brasseries <small>({{size}} éléments)</small></h2>
-        <nav aria-label="...">
-          <ul class="pager">
-            <li class="previous"><a class="btn btn-default" ng-click="first()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
-            <li class="previous"><a class="btn btn-default" ng-click="prev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
-            <li ng-if="size > 0">{{(offset / length) + 1 | ceil}} / {{size / length | ceil}}</li>
-            <li class="next"><a class="btn btn-default" ng-click="last()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
-            <li class="next"><a class="btn btn-default" ng-click="next()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
-          </ul>
-        </nav>
-        <ul class="list-group" ng-repeat="brewery in breweries">
-          <li class="list-group-item">
-            <p class="list-group-item-heading">#{{brewery.id}} {{brewery.name}}</p>
-            <p class="list-group-item-text"><span ng-if="brewery.address">{{brewery.address}}, </span>{{brewery.city}}, {{brewery.country}}</p>
-            <p class="list-group-item-text text-right">
-              <button type="button" class="btn btn-default" ng-click="remove(brewery)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
-              <span>&nbsp;</span> 
-              <button type="button" class="btn btn-default" ng-click="select(brewery)"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
-            </p>
-          </li>
-        </ul>
-        <div class="">
-          <button type="button" class="btn btn-info pull-right" ng-click="select()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-        </div>
-      </section>
-    </div>
-    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Suppression d'une brasserie</h4>
-          </div>
-          <div class="modal-body">
-            <p>Voulez-vous réellement supprimer la brasserie #{{brewery.id}}&nbsp;?</p>
-            <p>nom&nbsp;: {{brewery.name}}</p>
-            <p ng-if="brewery.address">adresse&nbsp;: {{brewery.address}}</p>
-            <p>ville&nbsp;: {{brewery.city}}</p>
-            <p>pays&nbsp;: {{brewery.country}}</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-            <button type="button" class="btn" ng-click="erase()">Confirmer</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </body>
+<body ng-app="app" ng-controller="controller">
+	<div class="container">
+		<section id="search" class="col-md-4">
+			<form class="form" role="form" name="form" ng-if="selected">
+				<fieldset>
+					<legend ng-if="creating">Creation of a new Measurand</legend>
+					<legend ng-if="updating">Updating a Measurand
+						{{measurand.name}}</legend>
+					<div class="form-group">
+						<label for="measurand.process">Process of the Measurand</label> <input
+							type="text" id="measurand.process" class="form-control"
+							ng-model="measurand.process" placeholder="Process" required
+							ng-required="true" />
+					</div>
+					<div class="form-group">
+						<label for="measurand.name">Name</label> <input type="text"
+							id="measurand.name" class="form-control" ng-model="measurand.name"
+							placeholder="Name" ng-required="true" />
+					</div>
+					<div class="form-group pull-right">
+						<button type="reset" class="btn btn-default" ng-click="clean()">
+							<strong>Cancel</strong>
+						</button>
+						<button type="submit" class="btn"
+							ng-click="form.$valid && update()" ng-disabled="form.$invalid"
+							ng-if="updating">
+							<strong>Modify</strong>
+						</button>
+						<button type="submit" class="btn"
+							ng-click="form.$valid && create()" ng-disabled="form.$invalid"
+							ng-if="creating">
+							<strong>Add</strong>
+						</button>
+					</div>
+				</fieldset>
+			</form>
+		</section>
+		<section id="results" class="col-md-8">
+			<h2>
+				Measurands <small>({{size}} elements)</small>
+			</h2>
+			<nav aria-label="...">
+				<ul class="pager">
+					<li class="previous"><a class="btn btn-default"
+						ng-click="first()"><span aria-hidden="true"
+							class="glyphicon glyphicon-step-backward"></span> </a></li>
+					<li class="previous"><a class="btn btn-default"
+						ng-click="prev()"><span aria-hidden="true"
+							class="glyphicon glyphicon-chevron-left"></span></a></li>
+					<li ng-if="size > 0">{{(offset / length) + 1 | ceil}} / {{size
+						/ length | ceil}}</li>
+					<li class="next"><a class="btn btn-default" ng-click="last()"><span
+							aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+					<li class="next"><a class="btn btn-default" ng-click="next()"><span
+							aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+				</ul>
+			</nav>
+			<ul class="list-group" ng-repeat="measurand in measurands">
+				<li class="list-group-item">
+					<p class="list-group-item-heading">{{measurand.name}}</p>
+					<p class="list-group-item-text">
+						<span ng-if="measurand.process">{{measurand.process}} </span>
+					</p>
+					<p class="list-group-item-text text-right">
+						<button type="button" class="btn btn-default"
+							ng-click="remove(measurand)">
+							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+						</button>
+						<span>&nbsp;</span>
+						<button type="button" class="btn btn-default"
+							ng-click="select(measurand)">
+							<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+						</button>
+					</p>
+				</li>
+			</ul>
+			<div class="">
+				<button type="button" class="btn btn-info pull-right"
+					ng-click="select()">
+					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				</button>
+			</div>
+		</section>
+	</div>
+	<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">Deleting a Measurand</h4>
+				</div>
+				<div class="modal-body">
+					<p>Do you really want to delete : {{measurand.name}}&nbsp;?</p>
+					<p>Process&nbsp;: {{measurand.process}}</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn" ng-click="erase()">Confirm</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
