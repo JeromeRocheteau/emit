@@ -10,14 +10,14 @@ body {
   width: 100%;
 }
 #page-wrapper {
-  padding: 0 15px;
+  padding: 0 0px;
   min-height: 568px;
   background-color: white;
 }
 @media (min-width: 768px) {
   #page-wrapper {
     position: inherit;
-    margin: 0 0 0 250px;
+    margin: 0 0 0 100px;
     padding: 0 30px;
     border-left: 1px solid #e7e7e7;
   }
@@ -67,33 +67,6 @@ body {
   .navbar-top-links .dropdown-alerts {
     margin-left: auto;
   }
-}
-.btn-outline {
-  color: inherit;
-  background-color: transparent;
-  transition: all .5s;
-}
-.btn-primary.btn-outline {
-  color: #428bca;
-}
-.btn-success.btn-outline {
-  color: #5cb85c;
-}
-.btn-info.btn-outline {
-  color: #5bc0de;
-}
-.btn-warning.btn-outline {
-  color: #f0ad4e;
-}
-.btn-danger.btn-outline {
-  color: #d9534f;
-}
-.btn-primary.btn-outline:hover,
-.btn-success.btn-outline:hover,
-.btn-info.btn-outline:hover,
-.btn-warning.btn-outline:hover,
-.btn-danger.btn-outline:hover {
-  color: white;
 }
 
 

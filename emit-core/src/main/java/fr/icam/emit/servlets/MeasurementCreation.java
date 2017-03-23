@@ -5,12 +5,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcUpdateServlet;
+import com.github.jeromerocheteau.JdbcUpdateServlet;
 import com.google.gson.Gson;
 
 import fr.icam.emit.entities.Measurement;
@@ -34,7 +35,7 @@ private static final long serialVersionUID = 201703071443L;
 	}
 
 	@Override
-	protected Boolean doMap(HttpServletRequest request, int count) throws Exception {
+	protected Boolean doMap(HttpServletRequest request, int count,ResultSet resultSet) throws Exception {
 		return count > 0;
 	}
 	
@@ -42,6 +43,6 @@ private static final long serialVersionUID = 201703071443L;
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		boolean done = this.doProcess(request);
-		this.doPrint(done, response);
+		this.doWrite(done, response.getWriter());
 	}
 }

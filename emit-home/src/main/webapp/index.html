@@ -8,9 +8,11 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	
-<link href="css/font-awesome.min.css" rel="stylesheet">
-<link href="css/metisMenu.css" rel="stylesheet">
+
+
 <link href="css/sb-admin-2.css" rel="stylesheet">
+<link href="css/bootstrap-treeview.css" rel="stylesheet">
+
 
    
 </head>
@@ -23,43 +25,204 @@
 <script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript" src="DJS/angular-chart.min.js"></script>
-<script type="text/javascript" src="DJS/metisMenu.min.js"></script>
+
 <script type="text/javascript" src="DJS/sb-admin-2.js"></script>
-
+<script type="text/javascript" src="DJS/bootstrap-treeview.js"></script>
 <script type="text/javascript">
-	var app = angular.module('app', [ 'chart.js' ]);
-
-	app.controller('myCtrl', function($scope, $http) {
+	
+	
+	var app = angular.module('app', [ 'chart.js' ]);	
+	// tableau de navigation des items
+	var downloadComplete = false;
+	var tableDownload = [];	
+	var tree = [];
+	
+	
+	
+	app.controller('myCtrl', function($scope, $http,$q) {	
+		
+		
+		$scope.retrive_observer_name = function(uri){
+			var name ="";
+			angular.forEach($scope.observerlist, function(value) {//$scope.measurandlist
+				if(uri == value.uri){
+					name = value.name;
+				}
+			});
+			return name;
+		}
+		
+		
+		var initSelectableTree = function() {
+	          return $('#tree').treeview({
+	            data: tree,
+	            multiSelect: false,
+	            onNodeSelected: function(event, node) {
+	             console.log(node.text +' was selected')
+	             $scope.afficher_test(node.text);
+	            },
+	            onNodeUnselected: function (event, node) {
+	             
+	            }
+	          });
+	        };
+	        
+		
+			
+			
+			
+			function fillMeasurement(datalow,measurementset){
+				/*while(tableDownload[4] == false	){
+					// attente télechargement
+				}*/
+				var node =[];
+				var i = 0;
+				angular.forEach($scope.measurementlist, function(value){
+					if(measurementset == value.measurementSet){
+						var data = {
+								text:value.data,
+								color:"black"
+							}
+						node[i] = data;
+						i++
+					}				
+				});
+				if(node[0]!=null){
+				datalow.nodes = node;
+				}
+			}
+			
+			function fillMeasurementSet(datalow,experiment){
+				
+				var node =[];
+				var i = 0;
+				angular.forEach($scope.measurementsetlist, function(value){
+					
+					if(experiment == value.experiment){
+						var observer = $scope.retrive_observer_name(value.observer);
+						var data = {
+							text:observer,
+							color:"black",
+							selectable:false
+						}
+						fillMeasurement(data,value.id);
+						node[i] = data;
+						i++;
+					}
+				});
+				if(node[0]!=null){
+				datalow.nodes = node;
+				}
+			}
+			
+			function fillExperiment(process,indice){
+				
+				var node =[];
+				var i = 0;
+				angular.forEach($scope.experimentlist, function(value){
+					
+					if(process == value.measurand){
+						var dstarted = new Date(value.started);
+						var data ={
+								text:dstarted,
+								color:"black",
+								selectable:false
+						}
+						fillMeasurementSet(data,value.id);
+						console.log(data);
+						node[i] = data;
+						i++;
+					}
+					
+					
+				});
+				tree[indice].nodes = node;
+			};
+			
+			function fillMeasurand(){
+				var i = 0;
+				angular.forEach($scope.measurandlist, function(value){
+					var data = {
+						text:value.name,
+						color:"black",
+						selectable:false,
+						state: { expanded: false }
+					};				
+					tree[i] =data;
+					fillExperiment(value.process,i);
+					i++;
+				});
+				console.log(tree[0].text);
+				var $selectableTree = initSelectableTree();
+				
+			};
+			
+			
+	
 
 		$scope.refresh = function() {
+			// déclaration des promesses (voir promises)
+			var experiment = $http.get("http://172.21.1.18/emit/experiment/list");
+			var observer = $http.get("http://172.21.1.18/emit/observer/list");
+			var observee = $http.get("http://172.21.1.18/emit/observee/list");
+			var measure = $http.get("http://172.21.1.18/emit/measure/list");
+			var measurement = $http.get("http://172.21.1.18/emit/measurement/list");
+			var measurand = $http.get("http://172.21.1.18/emit/measurand/list");
+			var measurementset = $http.get("http://172.21.1.18/emit/measurementSet/list");
+			
+			// attente de la réalisation de toutes les promesses
+			$q.all([experiment,observer,observee,measure,measurement,measurand,measurementset]).then(function(values){
+				//console.log(angular.toJson(values[0].data))
+				$scope.experimentlist = values[0].data;
+				$scope.observerlist = values[1].data;
+				$scope.observeelist= values[2].data;
+				$scope.measurelist=values[3].data;
+				$scope.measurementlist = values[4].data;
+				$scope.measurandlist =  values[5].data;
+				$scope.measurementsetlist = values[6].data;
+				//réalisation des opérations souaitées
+				fillMeasurand();
+			});
+			
+			/*
 			$http.get("http://172.21.1.18/emit/experiment/list").then(
 					function(response) {
 						$scope.experimentlist = response.data;
+						
 					});
 			$http.get("http://172.21.1.18/emit/observer/list").then(
 					function(response) {
 						$scope.observerlist = response.data;
+						
 					});
 			$http.get("http://172.21.1.18/emit/observee/list").then(
 					function(response) {
 						$scope.observeelist = response.data;
+						
 					});
 			$http.get("http://172.21.1.18/emit/measure/list").then(
 					function(response) {
 						$scope.measurelist = response.data;
+						
 					});
 			$http.get("http://172.21.1.18/emit/measurement/list").then(
 					function(response) {
 						$scope.measurementlist = response.data;
+						
 					});
 			$http.get("http://172.21.1.18/emit/measurand/list").then(
 					function(response) {
-						$scope.measurandlist = response.data;
+						$scope.measurandlist = response.data;					
+						setTimeout(fillMeasurand, 500);
 					});
 			$http.get("http://172.21.1.18/emit/measurementSet/list").then(
 					function(response) {
 						$scope.measurementsetlist = response.data;
+						
 					});
+		
+			console.log(tableDownload);
+			*/
 		}
 
 		$scope.refresh();
@@ -77,14 +240,16 @@
 						//console.log(retour_test.length);
 
 						for (var i = 0; i < retour_test.length; i++) {
+							
 							serie[i] = retour_test[i].x / 1000;
-							serie1[i] = retour_test[i].y;
+							serie1[i] = retour_test[i];						
+							
 							console.log(i);
 							// renvois
 						}
 
 						$scope.loaded_file = "Loaded file : " + file_name;
-
+						console.log(angular.toJson(serie1));
 						globalSerie.push(serie1);
 
 						$scope.labels = serie
@@ -152,277 +317,41 @@
 </script>
 <body ng-app="app" ng-controller="myCtrl">
 	<header>
-		
-		  <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<div class="navbar navbar-default navbar-custom navbar-static-top">
+			<div class="container">
+				 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-               <h1  id="glyphicons">
-			<a href="./index.html"
-				style="margin-left: 2em; padding-right: 0.5em;"></a>EMIT
-			</h1>
-            </div>
-            <!-- /.navbar-header -->
-		</nav>
+				<a class="navbar-brand" href="./index.html">EMIT</a>
+				<a href="./index.html">EMIT</a>
+				
+			</div>
+		</div>	
+		 
 		
 		<div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
+                <div  id ="acordion" class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                     
-                        <li li ng-repeat="x in measurandlist">
-                            <a href="#">{{x.name}}</a>
-                             <ul class="nav nav-second-level">
-                             	<li><a href="#">second</a>
-                             	</li>
-                             </ul>
-                             
-                        </li>
-                      </ul>
+                     	 <div id="tree"></div>
+                     </ul>                   
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
             <!-- /.navbar-static-side -->
 	</header>
 	 <div id="page-wrapper">
-	<section id="content" class="container">
-		<div class="row">
-			<div class="panel panel-default">
-				<div class="panel-body">
-					<div class="col-md-2">
-						<ul class="nav nav-tabs nav-stacked" role="tablist">
-							<li role="presentation" class="active"><a href="#experiment"
-								aria-controls="experiment" role="tab" data-toggle="tab">Experiments</a></li>
-							<li role="presentation" class=""><a href="#observer"
-								aria-controls="observer" role="tab" data-toggle="tab">Observers</a></li>
-							<li role="presentation" class=""><a href="#observee"
-								aria-controls="observee" role="tab" data-toggle="tab">Observees</a></li>
-							<li role="presentation" class=""><a href="#measurand"
-								aria-controls="measurand" role="tab" data-toggle="tab">Measurands</a></li>
-							<li role="presentation" class=""><a href="#measurement"
-								aria-controls="measurements" role="tab" data-toggle="tab">Measurements</a></li>
-							<li role="presentation" class=""><a href="#measure"
-								aria-controls="measures" role="tab" data-toggle="tab">Measures</a></li>
-							<li role="presentation" class=""><a href="#measurementset"
-								aria-controls="measures" role="tab" data-toggle="tab">MeasurementSets</a></li>
-						</ul>
-					</div>
-					<div class="col-md-10 list-group-item">
-						<div class="tab-content">
-							<div role="tabpanel" class="tab-pane active" id="experiment">
-								<legend>Experiments</legend>
-								<div class="panel panel-default">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Id</th>
-												<th>Started time</th>
-												<th>Stopped time</th>
-												<th>Process</th>
-												<th>Observee</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr ng-repeat="x in experimentlist">
-												<td>{{ x.id }}</td>
-												<td>{{ x.started | date:"d MMM 'at' HH:mm:ss"}}</td>
-												<td>{{ x.stopped | date:"d MMM 'at' HH:mm:ss"}}</td>
-												<td>{{ x.measurand }}</td>
-												<td>{{ x.observee }}</td>
-												<td><a ng-click="deleteobject('rien','rien','rien')">Delete</a></td>
-											</tr>
-											<tr>
-												<td><a href="./CreateExperiment.html">Create</a></td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="pull-right">
-									<button type="button" class="btn btn-default">
-										<a href="./CreateExperiment.html"><span
-											class="glyphicon glyphicon-plus">&ensp;</span> Start</a>
-									</button>
-								</div>
-							</div>
-							<div role="tabpanel" class="tab-pane" id="observer">
-								<legend>Observers</legend>
-								<div class="panel panel-default">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Uri</th>
-												<th>Name</th>
-												<th></th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr ng-repeat="x in observerlist">
-												<td>{{ x.uri }}</td>
-												<td>{{ x.name }}</td>
-												<td><a href="./UpdateObserver.html"
-													ng-click="modify(x.uri,x.name)">Modify</a></td>
-												<td><a
-													ng-click="deleteobject('observer','/observer/delete',x.uri)">Delete</a></td>
-											</tr>
-											<tr>
-												<td><a href="./CreateObserver.html">Create</a></td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							<div role="tabpanel" class="tab-pane" id="observee">
-								<legend>Observees</legend>
-								<div class="panel panel-default">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Uri</th>
-												<th>Name</th>
-												<th></th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr ng-repeat="x in observeelist">
-												<td>{{ x.uri }}</td>
-												<td>{{ x.name }}</td>
-												<td><a href="./UpdateObservee.html"
-													ng-click="modify(x.uri,x.name)">Modify</a></td>
-												<td><a
-													ng-click="deleteobject('observee','/observee/delete',x.uri)">Delete</a></td>
-											</tr>
-											<tr>
-												<td><a href="./CreateObservee.html">Create</a></td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							<div role="tabpanel" class="tab-pane" id="measurand">
-								<legend>Measurands</legend>
-								<div class="panel panel-default">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Process</th>
-												<th>Name</th>
-												<th></th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr ng-repeat="x in measurandlist">
-												<td>{{ x.process }}</td>
-												<td>{{ x.name }}</td>
-												<td><a href="./UpdateMeasurand.html"
-													ng-click="modify(x.process,x.name)">Modify</a></td>
-												<td><a
-													ng-click="deleteobject('measurand','/measurand/delete',x.process)">Delete</a></td>
-											</tr>
-											<tr>
-												<td><a href="./CreateMeasurand.html">Create</a></td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							<div role="tabpanel" class="tab-pane" id="measure">
-								<legend>Measures</legend>
-								<div class="panel panel-default">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Name</th>
-												<th>Unit</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr ng-repeat="x in measurelist">
-												<td>{{ x.name }}</td>
-												<td>{{ x.unit }}</td>
-												<td><a ng-click="delete('rien','rien','rien')">Delete</a></td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							<div role="tabpanel" class="tab-pane" id="measurement">
-								<legend>Measurements</legend>
-								<div class="panel panel-default">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Id</th>
-												<th>Data</th>
-												<th>Linked MeasurementSet</th>
-												<th>Measure name</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr ng-repeat="x in measurementlist">
-												<td>{{ x.id }}</td>
-												<td>{{ x.data }}</td>
-												<td>{{ x.measurementSet }}</td>
-												<td>{{ x.measure }}</td>
-												<td><button ng-click="afficher_test(x.data)"
-														type="button" class="btn btn-default">
-														<span class="glyphicon glyphicon-eye-open">&ensp;</span>
-													</button></td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div col-md-10>
-									<legend ng-model="loaded_file"> {{ loaded_file }} </legend>
-									<canvas id="line" class="chart chart-line" chart-data="data"
-										chart-labels="labels" chart-series="series"
-										chart-options="options"
-										chart-dataset-override="datasetOverride" chart-click="onClick">
-									</canvas>
-								</div>
-							</div>
-							<div role="tabpanel" class="tab-pane" id="measurementset">
-								<legend>Measurement Sets</legend>
-								<div class="panel panel-default">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Id</th>
-												<th>Data</th>
-												<th>Achieved time</th>
-												<th>Linked Experiment</th>
-												<th>Uri</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr ng-repeat="x in measurementsetlist">
-												<td>{{ x.id }}</td>
-												<td>{{ x.data }}</td>
-												<td>{{ x.achieved | date:"d MMM 'at' HH:mm:ss" }}</td>
-												<td>{{ x.experiment }}</td>
-												<td>{{ x.observer }}</td>
-												<td><a ng-click="delete('rien','rien','rien')">Delete</a></td>
-											<tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-	</section>
+	
+	 	<div col-md-10>
+			<legend ng-model="loaded_file"> {{ loaded_file }} </legend>
+			<canvas id="line" class="chart chart-line" chart-data="data"
+				chart-labels="labels" chart-series="series"
+				chart-options="options"
+				chart-dataset-override="datasetOverride" chart-click="onClick">
+			</canvas>
+		</div>		
 	</div>
 	<footer class="footer"> </footer>
 </body>

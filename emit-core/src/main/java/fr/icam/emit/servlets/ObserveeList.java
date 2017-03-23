@@ -10,7 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcQueryServlet;
+import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.Observee;
 
@@ -36,7 +36,7 @@ public class ObserveeList extends JdbcQueryServlet<List<Observee>>{
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		List<Observee> Observees = this.doProcess(request);
-        this.doPrint(Observees, response);
+        this.doWrite(Observees, response.getWriter());
 	}
 
 }

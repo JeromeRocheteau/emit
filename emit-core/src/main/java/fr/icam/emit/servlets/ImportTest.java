@@ -12,7 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcServlet;
+import com.github.jeromerocheteau.JdbcServlet;
 
 
 
@@ -24,8 +24,8 @@ private static final long serialVersionUID = 201703151635L;
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String file_name = request.getParameter("file_name");
-		this.doPrint(this.read_file(file_name), response);
-		
+		//this.doWrite(this.read_file(file_name), response.getWriter());
+		response.getWriter().write(this.read_file(file_name));
 		
 	}
 	

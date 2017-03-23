@@ -6,13 +6,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcUpdateServlet;
+import com.github.jeromerocheteau.JdbcUpdateServlet;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -37,7 +38,7 @@ private static final long serialVersionUID = 201703080901L;
 	}
 
 	@Override
-	protected Boolean doMap(HttpServletRequest request, int count) throws Exception {
+	protected Boolean doMap(HttpServletRequest request, int count,ResultSet resultSet) throws Exception {
 		return count > 0;
 	}
 	
@@ -45,6 +46,6 @@ private static final long serialVersionUID = 201703080901L;
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		boolean done = this.doProcess(request);
-		this.doPrint(done, response);
+		this.doWrite(done, response.getWriter());
 	}
 }

@@ -13,8 +13,13 @@
 	</context-param>
 
 	<listener>
-		<listener-class>com.github.servlet.jdbc.JdbcListener</listener-class>
+		<listener-class>com.github.jeromerocheteau.JdbcListener</listener-class>
 	</listener>
+	
+  <filter>
+    <filter-name>jdbc-filter</filter-name>
+    <filter-class>com.github.jeromerocheteau.JdbcFilter</filter-class>
+  </filter>
 
 
 	<servlet>

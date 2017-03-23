@@ -11,7 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcQueryServlet;
+import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.MeasurementSet;
 
@@ -42,6 +42,6 @@ public class MeasurementSetList extends JdbcQueryServlet<List<MeasurementSet>> {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		List<MeasurementSet> MeasurementSets = this.doProcess(request);
-        this.doPrint(MeasurementSets, response);
+        this.doWrite(MeasurementSets, response.getWriter());
 	}
 }

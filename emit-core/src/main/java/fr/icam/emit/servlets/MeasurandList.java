@@ -10,7 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcQueryServlet;
+import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.Measurand;
 
@@ -37,7 +37,7 @@ public class MeasurandList extends JdbcQueryServlet<List<Measurand>> {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		List<Measurand> measurands = this.doProcess(request);
-        this.doPrint(measurands, response);
+        this.doWrite(measurands, response.getWriter());
 	}
 
 }

@@ -33,9 +33,10 @@
 
   <dependencies>
   	<dependency>
-  		<groupId>com.github.servlet.jdbc</groupId>
+  		<groupId>com.github.jeromerocheteau</groupId>
   		<artifactId>jdbc-servlet-api</artifactId>
   		<version>1.0</version>
+  		<scope>provided</scope>
   	</dependency>
   	<dependency>
   		<groupId>javax.servlet</groupId>
@@ -50,4 +51,11 @@
   		<scope>provided</scope>
   	</dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>id</id>
+      <name>name</name>
+      <url>http://172.21.50.1/maven/repository</url>
+    </repository>
+  </repositories>
 </project>

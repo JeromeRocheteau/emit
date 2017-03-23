@@ -10,7 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcQueryServlet;
+import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.Experiment;
 
@@ -40,7 +40,7 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		List<Experiment> experiments = this.doProcess(request);
-        this.doPrint(experiments, response);
+        this.doWrite(experiments, response.getWriter());
 	}	
 
 }
