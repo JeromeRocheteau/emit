@@ -2,8 +2,16 @@
   <Resource name="jdbc/database"
             auth="Container"
             type="javax.sql.DataSource"
+            initialSize="10"
+            maxActive="100"
+            maxIdle="50"
+            minIdle="10"
+            maxWaitMillis="10000"
+            validationQuery="select 1"
+            validationInterval="30000"
             username="emit"
             password="emit"
             driverClassName="com.mysql.jdbc.Driver"
+            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
             url="jdbc:mysql://172.21.1.18:3306/emit" />
 </Context>
