@@ -12,55 +12,34 @@ body {
 #page-wrapper {
   padding: 0 0px;
   min-height: 568px;
-  background-color: white;
+  background-color: #f8f8f8;
 }
 @media (min-width: 768px) {
   #page-wrapper {
     position: inherit;
-    margin: 0 0 0 100px;
+    margin: 0 0 0 300px;
     padding: 0 30px;
     border-left: 1px solid #e7e7e7;
   }
+}
+
+
+
+#navigation_barre{
+	background-color: rgb(72, 72, 83);
 }
 
 .sidebar .sidebar-nav.navbar-collapse {
   padding-left: 0;
   padding-right: 0;
 }
-.sidebar .sidebar-search {
-  padding: 15px;
-}
-.sidebar ul li {
-  border-bottom: 1px solid #e7e7e7;
-}
-.sidebar ul li a.active {
-  background-color: #eeeeee;
-}
-.sidebar .arrow {
-  float: right;
-}
-.sidebar .fa.arrow:before {
-  content: "\f104";
-}
-.sidebar .active > a > .fa.arrow:before {
-  content: "\f107";
-}
-.sidebar .nav-second-level li,
-.sidebar .nav-third-level li {
-  border-bottom: none !important;
-}
-.sidebar .nav-second-level li a {
-  padding-left: 37px;
-}
-.sidebar .nav-third-level li a {
-  padding-left: 52px;
-}
+
 @media (min-width: 768px) {
   .sidebar {
     z-index: 1;
     position: absolute;
-    width: 250px;
-    margin-top: 51px;
+    width: 300px;
+    margin-top: 0px;
   }
   .navbar-top-links .dropdown-messages,
   .navbar-top-links .dropdown-tasks,
@@ -70,3 +49,46 @@ body {
 }
 
 
+/*----------------------------------menu maison-----------------------------------*/
+#titre_appli{
+	color:rgb(220, 220, 220);
+}
+
+#menu{
+	
+	width:900px;
+	margin:0 auto;
+	height:20px;
+	padding:5px 30px;
+	margin-bottom:5px;
+
+	
+		}
+
+#menu li.primaire {
+	color: white;
+	float:left;
+	display:block;
+	
+	text-align:center;
+	padding:4px 10px;
+	margin:3px 2px 0 0;
+	}
+	
+#menu li.primaire a.primaire{	
+	font-size:19px;
+	color:rgb(220, 220, 220);
+	display:block;
+	text-decoration:none;
+	}
+	
+#menu li.primaire:hover{
+	border-bottom: 5px solid rgb(202, 224, 255);
+	
+	padding:4px 10px;	
+	
+	}
+	
+
+
+ 

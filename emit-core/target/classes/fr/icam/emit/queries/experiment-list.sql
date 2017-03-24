@@ -4,4 +4,5 @@ select
   stopped,
   measurand,
   observee
-from experiments;
+from experiments
+where measurand = ?;

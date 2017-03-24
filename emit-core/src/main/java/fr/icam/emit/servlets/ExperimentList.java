@@ -19,8 +19,9 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
 	private static final long serialVersionUID = 201703011635L;
 	
 	@Override
-	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		
+	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {		 
+	            String fkey = request.getParameter("fkey");
+	            statement.setString(1,fkey);		
 	}
 
 	@Override

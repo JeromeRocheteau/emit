@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="css/sb-admin-2.css" rel="stylesheet">
 </head>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -200,6 +201,40 @@
 					});
 </script>
 <body ng-app="app" ng-controller="controller">
+	<header>
+		<div class="navbar navbar-default navbar-custom navbar-static-top" id="navigation_barre">
+			<div class="container">
+				 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+				<a class="navbar-brand" id = "titre_appli">EMIT</a>
+				<ul id = "menu">
+					<li class="active primaire"><a href="./index.html" class="primaire"><span
+								class="glyphicon glyphicon-home">&ensp;</span> Home</a></li>
+					
+					<li class= "dropdown primaire"> <a href="#" class="dropdown-toggle primaire"
+							data-toggle="dropdown" role="button" aria-expanded="false"><span
+								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
+								class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="./Observer.html">Observers</a></li>
+								<li><a href="./Observee.html">Observees</a></li>
+								<li><a href="./Measurand.html">Measurands</a></li>
+							</ul>
+						</li>
+						<li class="active primaire"><a href="./CreateExperiment.html" class="primaire"><span
+							class="glyphicon glyphicon-plus">&ensp;</span>Add experiment</a></li>
+				</ul>
+				
+				
+			</div>
+		</div>
+	</header>	
+
+
 	<div class="container">
 		<section id="search" class="col-md-4">
 			<form class="form" role="form" name="form" ng-if="selected">

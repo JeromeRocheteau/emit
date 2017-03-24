@@ -4,4 +4,5 @@ select
   experiment,
   achieved,
   observer
-from measurementSets;
+from measurementSets
+where experiment=?; 

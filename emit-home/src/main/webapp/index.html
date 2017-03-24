@@ -32,10 +32,10 @@
 	
 	
 	var app = angular.module('app', [ 'chart.js' ]);	
-	// tableau de navigation des items
-	var downloadComplete = false;
-	var tableDownload = [];	
+	// tableau de navigation des items et ses variables	
 	var tree = [];
+	
+	
 	
 	
 	
@@ -52,14 +52,38 @@
 			return name;
 		}
 		
+		$scope.retrive_measure_name = function(measure){
+			var name ="";
+			angular.forEach($scope.measurelist, function(value) {//$scope.measurandlist
+				if(measure == value.name){
+					name = value.name;
+				}
+			});
+			return name;
+		}
+		
 		
 		var initSelectableTree = function() {
 	          return $('#tree').treeview({
 	            data: tree,
 	            multiSelect: false,
 	            onNodeSelected: function(event, node) {
-	             console.log(node.text +' was selected')
-	             $scope.afficher_test(node.text);
+	             console.log(node.id +' was selected')
+	             switch(node.id){
+	             case "measurand":fillExperiment(node);
+	             break;
+	             case"experiment":{
+	            	 console.log('resultat en cour de saisie');
+	            	 fillMeasurementSet(node);	            	 
+	             }break;
+	             case"measurementSet":fillMeasurement(node);	             
+	             break;
+	             case"measurement":$scope.afficher_test(node.key);
+	             
+	             break;
+	             }
+	             
+	             //$scope.afficher_test(node.text);
 	            },
 	            onNodeUnselected: function (event, node) {
 	             
@@ -67,92 +91,152 @@
 	          });
 	        };
 	        
+	       
+	        	
+	        
 		
 			
 			
 			
-			function fillMeasurement(datalow,measurementset){
-				/*while(tableDownload[4] == false	){
-					// attente télechargement
-				}*/
-				var node =[];
-				var i = 0;
-				angular.forEach($scope.measurementlist, function(value){
-					if(measurementset == value.measurementSet){
-						var data = {
-								text:value.data,
-								color:"black"
+			function fillMeasurement(node){
+				console.log('debut de la fonction');
+				node.selectable  = false;				
+				node.state= { expanded: true };
+				var $selectableTree = initSelectableTree();
+				var temp = [];
+				
+				$http.get("http://172.21.1.18/emit/measurement/list",
+						{
+							"params" : {
+								"fkey" :node.key
 							}
-						node[i] = data;
-						i++
-					}				
-				});
-				if(node[0]!=null){
-				datalow.nodes = node;
-				}
+						}).then(function(success) {
+							var measurement =success.data;
+							
+							var i = 0;
+							angular.forEach(measurement, function(value){
+								
+								var data = {										
+									
+									count:i,									
+									text:$scope.retrive_measure_name(value.measure),
+									color:"black",
+									key:value.data,
+									id:"measurement",
+									selectable:true,									
+									state: { expanded: false },	
+									nodes:""
+								}
+								temp[i] = data;
+								i++;								
+							});
+						node.nodes = temp;
+						tree[node.measurand].nodes[node.experiment].nodes[node.count] =node; 	
+						var $selectableTree = initSelectableTree();
+						console.log("objet intéréssant");
+						
+						});
+			
 			}
 			
-			function fillMeasurementSet(datalow,experiment){
+			function fillMeasurementSet(node){
+				console.log('debut de la fonction');
+				node.selectable  = false;				
+				node.state= { expanded: true };
+				var $selectableTree = initSelectableTree();
+				var temp = [];
 				
-				var node =[];
-				var i = 0;
-				angular.forEach($scope.measurementsetlist, function(value){
-					
-					if(experiment == value.experiment){
-						var observer = $scope.retrive_observer_name(value.observer);
-						var data = {
-							text:observer,
-							color:"black",
-							selectable:false
-						}
-						fillMeasurement(data,value.id);
-						node[i] = data;
-						i++;
-					}
-				});
-				if(node[0]!=null){
-				datalow.nodes = node;
-				}
+				$http.get("http://172.21.1.18/emit/measurementSet/list",
+						{
+							"params" : {
+								"fkey" :node.key
+							}
+						}).then(function(success) {
+							var measurementSet =success.data;
+							
+							var i = 0;
+							angular.forEach(measurementSet, function(value){
+								
+								var data = {										
+									measurand:node.measurand,
+									experiment:node.count,
+									count:i,									
+									text:$scope.retrive_observer_name(value.observer),
+									color:"black",
+									key:value.id,
+									id:"measurementSet",
+									selectable:true,									
+									state: { expanded: false },	
+									nodes:""
+								}
+								temp[i] = data;
+								i++;								
+							});
+						node.nodes = temp;
+						tree[node.measurand].nodes[node.count] =node; 	
+						var $selectableTree = initSelectableTree();	
+						});
+			
 			}
 			
-			function fillExperiment(process,indice){
+			function fillExperiment(node){
 				
-				var node =[];
-				var i = 0;
-				angular.forEach($scope.experimentlist, function(value){
-					
-					if(process == value.measurand){
-						var dstarted = new Date(value.started);
-						var data ={
-								text:dstarted,
-								color:"black",
-								selectable:false
-						}
-						fillMeasurementSet(data,value.id);
-						console.log(data);
-						node[i] = data;
-						i++;
-					}
-					
-					
-				});
-				tree[indice].nodes = node;
+				console.log('debut de la fonction');
+				node.selectable  = false;				
+				node.state= { expanded: true };
+				var $selectableTree = initSelectableTree();
+				var temp = [];
+				$http.get("http://172.21.1.18/emit/experiment/list",
+						{
+							"params" : {
+								"fkey" :node.key
+							}
+						}).then(function(success) {
+							var experiment = success.data;
+							var i = 0;
+							angular.forEach(experiment, function(value){
+								var data = {								
+									measurand:node.count,
+									count:i,
+									text:value.started,
+									color:"black",
+									key:value.id,
+									id:"experiment",
+									selectable:true,									
+									state: { expanded: false },	
+									nodes:""
+								}
+								temp[i] = data;
+								i++;
+							});
+							node.nodes= temp;
+							console.log(angular.toJson(node));
+							console.log(angular.toJson(tree));
+							tree[node.count] = node;
+							console.log('resultat final');
+							console.log(angular.toJson(tree));
+							var $selectableTree = initSelectableTree();
+						});			
 			};
 			
 			function fillMeasurand(){
 				var i = 0;
 				angular.forEach($scope.measurandlist, function(value){
-					var data = {
+					var data = {							
+						count:i,
 						text:value.name,
 						color:"black",
-						selectable:false,
-						state: { expanded: false }
+						key:value.process,
+						id:"measurand",
+						selectable:true,						
+						state: { expanded: false },
+						nodes:""
 					};				
 					tree[i] =data;
-					fillExperiment(value.process,i);
+					
 					i++;
 				});
-				console.log(tree[0].text);
+				
 				var $selectableTree = initSelectableTree();
 				
 			};
@@ -183,46 +267,7 @@
 				//réalisation des opérations souaitées
 				fillMeasurand();
 			});
-			
-			/*
-			$http.get("http://172.21.1.18/emit/experiment/list").then(
-					function(response) {
-						$scope.experimentlist = response.data;
-						
-					});
-			$http.get("http://172.21.1.18/emit/observer/list").then(
-					function(response) {
-						$scope.observerlist = response.data;
-						
-					});
-			$http.get("http://172.21.1.18/emit/observee/list").then(
-					function(response) {
-						$scope.observeelist = response.data;
-						
-					});
-			$http.get("http://172.21.1.18/emit/measure/list").then(
-					function(response) {
-						$scope.measurelist = response.data;
-						
-					});
-			$http.get("http://172.21.1.18/emit/measurement/list").then(
-					function(response) {
-						$scope.measurementlist = response.data;
-						
-					});
-			$http.get("http://172.21.1.18/emit/measurand/list").then(
-					function(response) {
-						$scope.measurandlist = response.data;					
-						setTimeout(fillMeasurand, 500);
-					});
-			$http.get("http://172.21.1.18/emit/measurementSet/list").then(
-					function(response) {
-						$scope.measurementsetlist = response.data;
-						
-					});
 		
-			console.log(tableDownload);
-			*/
 		}
 
 		$scope.refresh();
@@ -317,7 +362,7 @@
 </script>
 <body ng-app="app" ng-controller="myCtrl">
 	<header>
-		<div class="navbar navbar-default navbar-custom navbar-static-top">
+		<div class="navbar navbar-default navbar-custom navbar-static-top" id="navigation_barre">
 			<div class="container">
 				 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -325,8 +370,25 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-				<a class="navbar-brand" href="./index.html">EMIT</a>
-				<a href="./index.html">EMIT</a>
+				<a class="navbar-brand" id = "titre_appli">EMIT</a>
+				<ul id = "menu">
+					<li class="active primaire"><a href="./index.html" class="primaire"><span
+								class="glyphicon glyphicon-home">&ensp;</span> Home</a></li>
+					
+					<li class= "dropdown primaire"> <a href="#" class="dropdown-toggle primaire"
+							data-toggle="dropdown" role="button" aria-expanded="false"><span
+								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
+								class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="./Observer.html">Observers</a></li>
+								<li><a href="./Observee.html">Observees</a></li>
+								<li><a href="./Measurand.html">Measurands</a></li>
+							</ul>
+						</li>
+					<li class="active primaire"><a href="./CreateExperiment.html" class="primaire"><span
+								class="glyphicon glyphicon-plus">&ensp;</span>Add experiment</a></li>
+				</ul>
+				
 				
 			</div>
 		</div>	

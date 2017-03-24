@@ -21,7 +21,8 @@ public class MeasurementSetList extends JdbcQueryServlet<List<MeasurementSet>> {
 
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		
+		  String fkey = request.getParameter("fkey");
+          statement.setString(1,fkey);
 	}
 
 	@Override

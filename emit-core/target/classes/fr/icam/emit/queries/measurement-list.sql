@@ -3,4 +3,5 @@ select
   data,
   measurementset,
   measure
-from measurements;
+from measurements
+where measurementset =?; 
