@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link href="css/sb-admin-2.css" rel="stylesheet">
+<link href="css/sb-admin-2.css" rel="stylesheet">
 </head>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -17,6 +17,8 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
 	var app = angular.module('app', []);
+	var old_name;
+	var old_process;
 
 	app.filter('ceil', function() {
 		return function(input) {
@@ -29,9 +31,7 @@
 					'controller',
 					function($scope, $http) {
 
-						$http
-								.get(
-										"http://172.21.1.18/emit/experiment/list")
+						$http.get("http://172.21.1.18/emit/experiment/list")
 								.then(function(response) {
 									$scope.experimentlist = response.data;
 								});
@@ -63,6 +63,9 @@
 								$scope.creating = false;
 								$scope.updating = true;
 								$scope.measurand = measurand;
+								old_name =  measurand.name;
+								old_process = measurand.process;
+								$scope.old_process = old_process;
 							} else {
 								$scope.creating = true;
 								$scope.updating = false;
@@ -93,10 +96,13 @@
 											});
 						}
 						$scope.update = function() {
-							var indata = {
-								process : $scope.measurand.process,
-								name : $scope.measurand.name
-							};
+							var indata = [ {
+								name : old_name,
+								process : old_process
+							}, {
+								name : $scope.measurand.name,
+								process : $scope.measurand.process
+							} ];
 
 							$http
 									.post(
@@ -109,6 +115,7 @@
 											function(error) {
 												alert("An error occured during updating of the Measurand.");
 											});
+							$scope.clean();
 						}
 
 						$scope.remove = function(measurand) {
@@ -120,12 +127,12 @@
 							$('#modal').modal('hide');
 							var can_delete = true;
 							var process = $scope.measurand.process;
-							angular.forEach($scope.experimentlist,
-									function(value) {
-										if (value.measurand == process) {
-											can_delete = false;
-										}
-									});
+							angular.forEach($scope.experimentlist, function(
+									value) {
+								if (value.measurand == process) {
+									can_delete = false;
+								}
+							});
 							if (can_delete == true) {
 								var data = {
 									process : process
@@ -202,37 +209,40 @@
 </script>
 <body ng-app="app" ng-controller="controller">
 	<header>
-		<div class="navbar navbar-default navbar-custom navbar-static-top" id="navigation_barre">
+		<div class="navbar navbar-default navbar-custom navbar-static-top"
+			id="navigation_barre">
 			<div class="container">
-				 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-				<a href="./index.html" class="navbar-brand" id = "titre_appli">EMIT</a>
-				<ul id = "menu">
-					<li class="active primaire"><a href="./index.html" class="primaire"><span
-								class="glyphicon glyphicon-home">&ensp;</span> Home</a></li>
-					
-					<li class= "dropdown primaire"> <a href="#" class="dropdown-toggle primaire"
-							data-toggle="dropdown" role="button" aria-expanded="false"><span
-								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
-								class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="./Instrument.html">Instruments</a></li>
-								<li><a href="./Environment.html">Environments</a></li>
-								<li><a href="./Measurand.html">Measurands</a></li>
-							</ul>
-						</li>
-						<li class="active primaire"><a href="./CreateExperiment.html" class="primaire"><span
-							class="glyphicon glyphicon-plus">&ensp;</span>Add experiment</a></li>
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
+				<ul id="menu">
+					<li class="active primaire"><a href="./index.html"
+						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
+							Home</a></li>
+
+					<li class="dropdown primaire"><a href="#"
+						class="dropdown-toggle primaire" data-toggle="dropdown"
+						role="button" aria-expanded="false"><span
+							class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="./Instrument.html">Instruments</a></li>
+							<li><a href="./Environment.html">Environments</a></li>
+							<li><a href="./Measurand.html">Measurands</a></li>
+						</ul></li>
+					<li class="active primaire"><a href="./CreateExperiment.html"
+						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
+							experiment</a></li>
 				</ul>
-				
-				
+
+
 			</div>
 		</div>
-	</header>	
+	</header>
 
 
 	<div class="container">
@@ -241,7 +251,7 @@
 				<fieldset>
 					<legend ng-if="creating">Creation of a new Measurand</legend>
 					<legend ng-if="updating">Updating a Measurand
-						{{measurand.name}}</legend>
+						{{old.process}}</legend>
 					<div class="form-group">
 						<label for="measurand.process">Process of the Measurand</label> <input
 							type="text" id="measurand.process" class="form-control"
@@ -250,8 +260,8 @@
 					</div>
 					<div class="form-group">
 						<label for="measurand.name">Name</label> <input type="text"
-							id="measurand.name" class="form-control" ng-model="measurand.name"
-							placeholder="Name" ng-required="true" />
+							id="measurand.name" class="form-control"
+							ng-model="measurand.name" placeholder="Name" ng-required="true" />
 					</div>
 					<div class="form-group pull-right">
 						<button type="reset" class="btn btn-default" ng-click="clean()">

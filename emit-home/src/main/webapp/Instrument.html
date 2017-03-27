@@ -17,6 +17,8 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
 	var app = angular.module('app', []);
+	var old_uri;
+	var old_name;
 
 	app.filter('ceil', function() {
 		return function(input) {
@@ -63,6 +65,10 @@
 								$scope.creating = false;
 								$scope.updating = true;
 								$scope.instrument = instrument;
+								old_uri =  instrument.uri;
+								old_name = instrument.name;
+								$scope.old_name = old_name;
+								
 							} else {
 								$scope.creating = true;
 								$scope.updating = false;
@@ -93,10 +99,13 @@
 											});
 						}
 						$scope.update = function() {
-							var indata = {
+							var indata = [ {
+								uri : old_uri,
+								name : old_name
+							}, {
 								uri : $scope.instrument.uri,
 								name : $scope.instrument.name
-							};
+							} ];
 
 							$http
 									.post(
@@ -109,6 +118,7 @@
 											function(error) {
 												alert("An error occured during updating of the instrument.");
 											});
+							$scope.clean();
 						}
 
 						$scope.remove = function(instrument) {
@@ -152,7 +162,9 @@
 						}
 
 						var size = function() {
-							$http.get("http://172.21.1.18/emit/instrument/size")
+							$http
+									.get(
+											"http://172.21.1.18/emit/instrument/size")
 									.then(function(success) {
 										$scope.size = success.data;
 									}, function(error) {
@@ -160,7 +172,8 @@
 									});
 						}
 						var page = function() {
-							$http.get("http://172.21.1.18/emit/instrument/page",
+							$http.get(
+									"http://172.21.1.18/emit/instrument/page",
 									{
 										"params" : {
 											"offset" : $scope.offset
@@ -202,38 +215,41 @@
 </script>
 <body ng-app="app" ng-controller="controller">
 
-<header>
-		<div class="navbar navbar-default navbar-custom navbar-static-top" id="navigation_barre">
+	<header>
+		<div class="navbar navbar-default navbar-custom navbar-static-top"
+			id="navigation_barre">
 			<div class="container">
-				 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-				<a href="./index.html" 	class="navbar-brand" id = "titre_appli">EMIT</a>
-				<ul id = "menu">
-					<li class="active primaire"><a href="./index.html" class="primaire"><span
-								class="glyphicon glyphicon-home">&ensp;</span> Home</a></li>
-					
-					<li class= "dropdown primaire"> <a href="#" class="dropdown-toggle primaire"
-							data-toggle="dropdown" role="button" aria-expanded="false"><span
-								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
-								class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="./Instrument.html">Instruments</a></li>
-								<li><a href="./Environment.html">Environments</a></li>
-								<li><a href="./Measurand.html">Measurands</a></li>
-							</ul>
-						</li>
-						<li class="active primaire"><a href="./CreateExperiment.html" class="primaire"><span
-							class="glyphicon glyphicon-plus">&ensp;</span>Add experiment</a></li>
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
+				<ul id="menu">
+					<li class="active primaire"><a href="./index.html"
+						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
+							Home</a></li>
+
+					<li class="dropdown primaire"><a href="#"
+						class="dropdown-toggle primaire" data-toggle="dropdown"
+						role="button" aria-expanded="false"><span
+							class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="./Instrument.html">Instruments</a></li>
+							<li><a href="./Environment.html">Environments</a></li>
+							<li><a href="./Measurand.html">Measurands</a></li>
+						</ul></li>
+					<li class="active primaire"><a href="./CreateExperiment.html"
+						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
+							experiment</a></li>
 				</ul>
-				
-				
+
+
 			</div>
 		</div>
-	</header>	
+	</header>
 
 
 
@@ -246,7 +262,7 @@
 				<fieldset>
 					<legend ng-if="creating">Creation of a new instrument</legend>
 					<legend ng-if="updating">Updating an instrument
-						{{instrument.name}}</legend>
+						{{old_name}}</legend>
 					<div class="form-group">
 						<label for="instrument.uri">URI of the instrument</label> <input
 							type="text" id="instrument.uri" class="form-control"
@@ -255,8 +271,8 @@
 					</div>
 					<div class="form-group">
 						<label for="instrument.name">Name</label> <input type="text"
-							id="instrument.name" class="form-control" ng-model="instrument.name"
-							placeholder="Name" ng-required="true" />
+							id="instrument.name" class="form-control"
+							ng-model="instrument.name" placeholder="Name" ng-required="true" />
 					</div>
 					<div class="form-group pull-right">
 						<button type="reset" class="btn btn-default" ng-click="clean()">

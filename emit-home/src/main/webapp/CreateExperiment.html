@@ -35,11 +35,15 @@
 				function(response) {
 					$scope.instruments = response.data;
 				});
+		
+		$http.get("http://172.21.1.18/emit/experiment/last").then(
+				function(response) {
+					$scope.last_experiment = response.data;
+				});
 
 		$scope.create = function() {
 			var today = new Date(); 
 			var experiment_data = {
-					id : $scope.id_experiment,
 					started : today.getTime(),
 					stopped : null,
 					measurand : $scope.measurand_selection.process,
@@ -48,27 +52,23 @@
 			
 			$http.post("http://172.21.1.18/emit/experiment/create", experiment_data)
 			.then(function(response) {
-			});		
-			
-			var compteur = parseInt($scope.id_experiment);
-			
-			angular.forEach($scope.instrument_selection, function(value, key) {
-				var measurement_data = {
-						id : compteur,
-						data : null,
-						achieved : null,
-						instrument : value.uri,
-						experiment : $scope.id_experiment
-					};
-					console.log(measurement_data);
-				$http.post("http://172.21.1.18/emit/measurementSet/create", measurement_data)
-				.then(function(response) {
+				
+				angular.forEach($scope.instrument_selection, function(value, key) {
+					var measurement_data = {
+							data : null,
+							achieved : null,
+							instrument : value.uri,
+							experiment : $scope.last_experiment
+						};
+						console.log(measurement_data);
+					$http.post("http://172.21.1.18/emit/measurementSet/create", measurement_data)
+					.then(function(response) {
+					});
 				});
-
-				compteur = compteur + 1;
-			});
-			alert("Experiment created");
-			$scope.clear();	
+				alert("Experiment created");
+				$scope.clear();
+			});		
+						
 		};
 		
 		$scope.clear = function() {

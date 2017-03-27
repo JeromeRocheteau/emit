@@ -17,7 +17,9 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
 	var app = angular.module('app', []);
-
+	var old_uri;
+	var old_name;
+	
 	app.filter('ceil', function() {
 		return function(input) {
 			return Math.ceil(input);
@@ -63,6 +65,9 @@
 								$scope.creating = false;
 								$scope.updating = true;
 								$scope.environment = environment;
+								old_uri =  environment.uri;
+								old_name = environment.name;
+								$scope.old_name = old_name;
 							} else {
 								$scope.creating = true;
 								$scope.updating = false;
@@ -93,10 +98,13 @@
 											});
 						}
 						$scope.update = function() {
-							var indata = {
+							var indata = [ {
+								uri : old_uri,
+								name : old_name
+							}, {
 								uri : $scope.environment.uri,
 								name : $scope.environment.name
-							};
+							} ];
 
 							$http
 									.post(
@@ -109,6 +117,7 @@
 											function(error) {
 												alert("An error occured during updating of the Environnement.");
 											});
+							$scope.clean();
 						}
 
 						$scope.remove = function(environment) {
@@ -240,7 +249,7 @@
 				<fieldset>
 					<legend ng-if="creating">Creation of a new Environment</legend>
 					<legend ng-if="updating">Updating an Environment
-						{{environment.name}}</legend>
+						{{old.name}}</legend>
 					<div class="form-group">
 						<label for="environment.uri">URI of the Environment</label> <input
 							type="text" id="environment.uri" class="form-control"

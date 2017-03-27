@@ -13,13 +13,14 @@
 	</context-param>
 
 	<listener>
-		<listener-class>com.github.jeromerocheteau.JdbcListener</listener-class>
+		<listener-class>com.github.jeromerocheteau.JdbcListener
+		</listener-class>
 	</listener>
-	
-  <filter>
-    <filter-name>jdbc-filter</filter-name>
-    <filter-class>com.github.jeromerocheteau.JdbcFilter</filter-class>
-  </filter>
+
+	<filter>
+		<filter-name>jdbc-filter</filter-name>
+		<filter-class>com.github.jeromerocheteau.JdbcFilter</filter-class>
+	</filter>
 
 	<filter>
 		<filter-name>filter</filter-name>
@@ -137,6 +138,18 @@
 		<url-pattern>/experiment/list</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>experiment-last</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.ExperimentLast</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/experiment-last.sql</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>experiment-last</servlet-name>
+		<url-pattern>/experiment/last</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>measurement-list</servlet-name>
@@ -220,10 +233,12 @@
 
 	<servlet>
 		<servlet-name>instrument-create</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.InstrumentCreation</servlet-class>
+		<servlet-class>fr.icam.emit.servlets.InstrumentCreation
+		</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/instrument-create.sql</param-value>
+			<param-value>/fr/icam/emit/queries/instrument-create.sql
+			</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -236,7 +251,8 @@
 		<servlet-class>fr.icam.emit.servlets.InstrumentDelete</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/instrument-delete.sql</param-value>
+			<param-value>/fr/icam/emit/queries/instrument-delete.sql
+			</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -249,7 +265,8 @@
 		<servlet-class>fr.icam.emit.servlets.InstrumentUpdate</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/instrument-update.sql</param-value>
+			<param-value>/fr/icam/emit/queries/instrument-update.sql
+			</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -298,10 +315,12 @@
 
 	<servlet>
 		<servlet-name>environment-create</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.EnvironmentCreation</servlet-class>
+		<servlet-class>fr.icam.emit.servlets.EnvironmentCreation
+		</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/environment-create.sql</param-value>
+			<param-value>/fr/icam/emit/queries/environment-create.sql
+			</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -314,7 +333,8 @@
 		<servlet-class>fr.icam.emit.servlets.EnvironmentDelete</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/environment-delete.sql</param-value>
+			<param-value>/fr/icam/emit/queries/environment-delete.sql
+			</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -327,7 +347,8 @@
 		<servlet-class>fr.icam.emit.servlets.EnvironmentUpdate</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/environment-update.sql</param-value>
+			<param-value>/fr/icam/emit/queries/environment-update.sql
+			</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
