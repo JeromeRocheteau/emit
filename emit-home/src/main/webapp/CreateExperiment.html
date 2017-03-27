@@ -21,9 +21,9 @@
 
 	app.controller('myCtrl', function($window, $scope, $http) {
 
-		$http.get("http://172.21.1.18/emit/observee/list").then(
+		$http.get("http://172.21.1.18/emit/environment/list").then(
 				function(response) {
-					$scope.observees = response.data;
+					$scope.environments = response.data;
 				});
 
 		$http.get("http://172.21.1.18/emit/measurand/list").then(
@@ -31,9 +31,9 @@
 					$scope.measurands = response.data;
 				});
 
-		$http.get("http://172.21.1.18/emit/observer/list").then(
+		$http.get("http://172.21.1.18/emit/instrument/list").then(
 				function(response) {
-					$scope.observers = response.data;
+					$scope.instruments = response.data;
 				});
 
 		$scope.create = function() {
@@ -43,7 +43,7 @@
 					started : today.getTime(),
 					stopped : null,
 					measurand : $scope.measurand_selection.process,
-					observee : $scope.observee_selection.uri
+					environment : $scope.environment_selection.uri
 				};
 			
 			$http.post("http://172.21.1.18/emit/experiment/create", experiment_data)
@@ -52,12 +52,12 @@
 			
 			var compteur = parseInt($scope.id_experiment);
 			
-			angular.forEach($scope.observer_selection, function(value, key) {
+			angular.forEach($scope.instrument_selection, function(value, key) {
 				var measurement_data = {
 						id : compteur,
 						data : null,
 						achieved : null,
-						observer : value.uri,
+						instrument : value.uri,
 						experiment : $scope.id_experiment
 					};
 					console.log(measurement_data);
@@ -99,8 +99,8 @@
 								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
 								class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="./Observer.html">Instruments</a></li>
-								<li><a href="./Observee.html">Environments</a></li>
+								<li><a href="./Instrument.html">Instruments</a></li>
+								<li><a href="./Environment.html">Environments</a></li>
 								<li><a href="./Measurand.html">Measurands</a></li>
 							</ul>
 						</li>
@@ -140,8 +140,8 @@
 					<div class="row">
 						<div class="col-md-12 form-group">
 							<select class="form-control selectpicker"
-								ng-options="observee.name for observee in observees"
-								ng-model="observee_selection" title="Observee"
+								ng-options="environment.name for environment in environments"
+								ng-model="environment_selection" title="Environment"
 								ng-required="true" required>
 								<option value="" disabled>-- choose an environment --</option>
 							</select>
@@ -153,8 +153,8 @@
 					<div class="row">
 						<div class="col-md-12 form-group">
 							<select class="form-control selectpicker"
-								ng-options="observer.name for observer in observers"
-								ng-model="observer_selection" title="Observer"
+								ng-options="instrument.name for instrument in instruments"
+								ng-model="instrument_selection" title="instrument"
 								ng-required="true" required multiple>
 							</select>
 						</div>
@@ -163,7 +163,7 @@
 						<button type="reset" ng-click="clear()" class="btn btn-default">
 							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
 						</button>
-						<button ng-click="create(observer_selection)" class="btn btn">
+						<button ng-click="create(instrument_selection)" class="btn btn">
 							<span class="glyphicon glyphicon-send">&ensp;</span> Send
 						</button>
 					</div>
