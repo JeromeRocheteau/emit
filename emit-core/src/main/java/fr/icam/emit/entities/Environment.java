@@ -1,6 +1,6 @@
 package fr.icam.emit.entities;
 
-public class Observee {
+public class Environment {
 	
 	private String name;
 	private String uri;
@@ -18,7 +18,7 @@ public class Observee {
 		this.uri = uri;
 	}
 	
-	public Observee(String name, String uri){
+	public Environment(String name, String uri){
 		this.setName(name);
 		this.setUri(uri);
 	}

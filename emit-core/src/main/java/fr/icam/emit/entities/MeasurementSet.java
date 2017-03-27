@@ -9,7 +9,7 @@ public class MeasurementSet {
 	private long id;
 	private String data;
 	private long achieved;
-	private String observer;
+	private String instrument;
 	private long experiment;
 
 	
@@ -32,10 +32,10 @@ public class MeasurementSet {
 		this.achieved = longtime;
 	}
 	public String getObserver() {
-		return observer;
+		return instrument;
 	}
 	public void setObserver(String observer) {
-		this.observer = observer;
+		this.instrument = observer;
 	}
 	public long getExperiment() {
 		return experiment;

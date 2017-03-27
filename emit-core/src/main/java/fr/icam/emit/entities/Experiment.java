@@ -8,7 +8,7 @@ public class Experiment {
 	private long started;
 	private long stopped;
 	private String measurand;
-	private String observee;	
+	private String environment;	
 	
 	public long getId() {
 		return id;
@@ -35,10 +35,10 @@ public class Experiment {
 		this.measurand = measurand;
 	}
 	public String getObservee() {
-		return observee;
+		return environment;
 	}
 	public void setObservee(String observee_uri) {
-		this.observee = observee_uri;
+		this.environment = observee_uri;
 	}
 	
 	public Experiment(long id, long started,long stopped,String measurand,String observee_uri){

@@ -17,7 +17,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import fr.icam.emit.entities.Observee;
+import fr.icam.emit.entities.Environment;
 
 public class ObserveeUpdate extends JdbcUpdateServlet<Boolean>{
 private static final long serialVersionUID = 201703080901L;
@@ -28,9 +28,9 @@ private static final long serialVersionUID = 201703080901L;
 		//String Json = this.getStringJson(request); 		
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
-		Type listType = new TypeToken<List<Observee>>(){}.getType();
+		Type listType = new TypeToken<List<Environment>>(){}.getType();
 		 // Measurand Measurand = gson.fromJson(request.getInputStream().toString(), Measurand.class);
-		List<Observee> observee = gson.fromJson(reader,listType);
+		List<Environment> observee = gson.fromJson(reader,listType);
 		
 		statement.setString(3, observee.get(0).getUri());
 		statement.setString(1, observee.get(1).getUri());

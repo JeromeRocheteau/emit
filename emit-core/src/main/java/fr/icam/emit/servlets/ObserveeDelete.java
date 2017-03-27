@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.github.jeromerocheteau.JdbcUpdateServlet;
 import com.google.gson.Gson;
 
-import fr.icam.emit.entities.Observee;
+import fr.icam.emit.entities.Environment;
 
 public class ObserveeDelete extends JdbcUpdateServlet<Boolean>{
 private static final long serialVersionUID = 201703070926L;
@@ -24,7 +24,7 @@ private static final long serialVersionUID = 201703070926L;
 		Gson gson = new Gson();		
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);		 
-		Observee observee = gson.fromJson(reader, Observee.class);
+		Environment observee = gson.fromJson(reader, Environment.class);
 		statement.setString(1, observee.getUri());
 		
 	}

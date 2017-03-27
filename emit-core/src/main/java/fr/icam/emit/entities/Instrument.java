@@ -1,6 +1,6 @@
 package fr.icam.emit.entities;
 
-public class Observer {
+public class Instrument {
 	
 	private String uri;
 	
@@ -22,7 +22,7 @@ public class Observer {
 		this.name = name;
 	}
 	
-	public Observer(String uri, String name) {
+	public Instrument(String uri, String name) {
 		this.setUri(uri);
 		this.setName(name);
 	}
