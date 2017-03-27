@@ -206,159 +206,159 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observer-list</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserverList</servlet-class>
+		<servlet-name>instrument-list</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.InstrumentList</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observer-list.sql</param-value>
+			<param-value>/fr/icam/emit/queries/instrument-list.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observer-list</servlet-name>
-		<url-pattern>/observer/list</url-pattern>
+		<servlet-name>instrument-list</servlet-name>
+		<url-pattern>/instrument/list</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observer-create</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserverCreation</servlet-class>
+		<servlet-name>instrument-create</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.InstrumentCreation</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observer-create.sql</param-value>
+			<param-value>/fr/icam/emit/queries/instrument-create.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observer-create</servlet-name>
-		<url-pattern>/observer/create</url-pattern>
+		<servlet-name>instrument-create</servlet-name>
+		<url-pattern>/instrument/create</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observer-delete</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserverDelete</servlet-class>
+		<servlet-name>instrument-delete</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.InstrumentDelete</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observer-delete.sql</param-value>
+			<param-value>/fr/icam/emit/queries/instrument-delete.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observer-delete</servlet-name>
-		<url-pattern>/observer/delete</url-pattern>
+		<servlet-name>instrument-delete</servlet-name>
+		<url-pattern>/instrument/delete</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observer-update</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserverUpdate</servlet-class>
+		<servlet-name>instrument-update</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.InstrumentUpdate</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observer-update.sql</param-value>
+			<param-value>/fr/icam/emit/queries/instrument-update.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observer-update</servlet-name>
-		<url-pattern>/observer/update</url-pattern>
+		<servlet-name>instrument-update</servlet-name>
+		<url-pattern>/instrument/update</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observer-size</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserverSize</servlet-class>
+		<servlet-name>instrument-size</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.InstrumentSize</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observer-size.sql</param-value>
+			<param-value>/fr/icam/emit/queries/instrument-size.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observer-size</servlet-name>
-		<url-pattern>/observer/size</url-pattern>
+		<servlet-name>instrument-size</servlet-name>
+		<url-pattern>/instrument/size</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observer-page</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserverPage</servlet-class>
+		<servlet-name>instrument-page</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.InstrumentPage</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observer-page.sql</param-value>
+			<param-value>/fr/icam/emit/queries/instrument-page.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observer-page</servlet-name>
-		<url-pattern>/observer/page</url-pattern>
+		<servlet-name>instrument-page</servlet-name>
+		<url-pattern>/instrument/page</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observee-list</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserveeList</servlet-class>
+		<servlet-name>environment-list</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.EnvironmentList</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observee-list.sql</param-value>
+			<param-value>/fr/icam/emit/queries/environment-list.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observee-list</servlet-name>
-		<url-pattern>/observee/list</url-pattern>
+		<servlet-name>environment-list</servlet-name>
+		<url-pattern>/environment/list</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observee-create</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserveeCreation</servlet-class>
+		<servlet-name>environment-create</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.EnvironmentCreation</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observee-create.sql</param-value>
+			<param-value>/fr/icam/emit/queries/environment-create.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observee-create</servlet-name>
-		<url-pattern>/observee/create</url-pattern>
+		<servlet-name>environment-create</servlet-name>
+		<url-pattern>/environment/create</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observee-delete</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserveeDelete</servlet-class>
+		<servlet-name>environment-delete</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.EnvironmentDelete</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observee-delete.sql</param-value>
+			<param-value>/fr/icam/emit/queries/environment-delete.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observee-delete</servlet-name>
-		<url-pattern>/observee/delete</url-pattern>
+		<servlet-name>environment-delete</servlet-name>
+		<url-pattern>/environment/delete</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observee-update</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserveeUpdate</servlet-class>
+		<servlet-name>environment-update</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.EnvironmentUpdate</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observee-update.sql</param-value>
+			<param-value>/fr/icam/emit/queries/environment-update.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observee-update</servlet-name>
-		<url-pattern>/observee/update</url-pattern>
+		<servlet-name>environment-update</servlet-name>
+		<url-pattern>/environment/update</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observee-size</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserveeSize</servlet-class>
+		<servlet-name>environment-size</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.EnvironmentSize</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observee-size.sql</param-value>
+			<param-value>/fr/icam/emit/queries/environment-size.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observee-size</servlet-name>
-		<url-pattern>/observee/size</url-pattern>
+		<servlet-name>environment-size</servlet-name>
+		<url-pattern>/environment/size</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>observee-page</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ObserveePage</servlet-class>
+		<servlet-name>environment-page</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.EnvironmentPage</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/observee-page.sql</param-value>
+			<param-value>/fr/icam/emit/queries/environment-page.sql</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>observee-page</servlet-name>
-		<url-pattern>/observee/page</url-pattern>
+		<servlet-name>environment-page</servlet-name>
+		<url-pattern>/environment/page</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
