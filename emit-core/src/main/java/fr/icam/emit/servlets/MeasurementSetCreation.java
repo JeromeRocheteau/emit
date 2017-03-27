@@ -31,7 +31,7 @@ public class MeasurementSetCreation extends JdbcUpdateServlet<Boolean>{
 		statement.setString(1, measurementSet.getData());
 		statement.setTimestamp(2, time);
 		statement.setLong(3, measurementSet.getExperiment());
-		statement.setString(4, measurementSet.getObserver());		
+		statement.setString(4, measurementSet.getInstrument());		
 		
 	}
 

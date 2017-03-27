@@ -31,7 +31,7 @@ public class MeasurementSet {
 	public void setAchieved(long longtime) {
 		this.achieved = longtime;
 	}
-	public String getObserver() {
+	public String getInstrument() {
 		return instrument;
 	}
 	public void setInstrument(String instrument) {
