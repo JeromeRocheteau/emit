@@ -1,1 +1,1 @@
-DELETE FROM observers WHERE uri=?;
+DELETE FROM instruments WHERE uri=?;

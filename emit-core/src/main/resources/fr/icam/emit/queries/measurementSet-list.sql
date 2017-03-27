@@ -3,6 +3,6 @@ select
   data,  
   experiment,
   achieved,
-  observer
+  instrument
 from measurementSets
 where experiment=?; 

@@ -1,2 +1,2 @@
 select count(uri) as size 
-from observers 
+from instruments 

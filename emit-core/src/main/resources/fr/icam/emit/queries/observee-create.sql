@@ -1,2 +1,2 @@
-insert into observees (uri, name)
+insert into environments (uri, name)
 values (?,?);

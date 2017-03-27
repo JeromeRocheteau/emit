@@ -1,3 +1,3 @@
 select uri, name  
-from observers 
+from instruments 
 limit ?,5

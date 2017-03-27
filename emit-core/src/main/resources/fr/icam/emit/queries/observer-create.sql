@@ -1,2 +1,2 @@
-insert into observers (uri, name)
+insert into instruments (uri, name)
 values (?,?);

@@ -1,3 +1,3 @@
 select uri, name  
-from observees 
+from environments 
 limit ?,5

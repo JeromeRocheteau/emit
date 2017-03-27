@@ -1,4 +1,4 @@
 select
   uri,
   name
-from observees;
+from environments;

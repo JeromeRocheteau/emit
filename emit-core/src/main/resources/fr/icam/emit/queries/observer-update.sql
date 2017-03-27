@@ -1,1 +1,1 @@
-UPDATE observers SET uri=?, name=? WHERE uri=?;
+UPDATE instruments SET uri=?, name=? WHERE uri=?;

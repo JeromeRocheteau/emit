@@ -1,1 +1,1 @@
-DELETE FROM observees WHERE uri=?;
+DELETE FROM environments WHERE uri=?;

@@ -1,1 +1,1 @@
-UPDATE observees SET uri=?, name=? WHERE uri=?;
+UPDATE environments SET uri=?, name=? WHERE uri=?;
