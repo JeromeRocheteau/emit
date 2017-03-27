@@ -43,8 +43,8 @@
 						$scope.updating = false;
 
 						$scope.alert = {};
-						$scope.observee = {};
-						$scope.observees = [];
+						$scope.environment = {};
+						$scope.environments = [];
 						$scope.size = 0;
 						$scope.offset = 0;
 						$scope.length = 5;
@@ -53,16 +53,16 @@
 							$scope.selected = false;
 							$scope.creating = false;
 							$scope.updating = false;
-							$scope.observee = angular.copy(empty);
+							$scope.environment = angular.copy(empty);
 						}
 						$scope.clean = function() {
 							init();
 						}
-						$scope.select = function(observee) {
-							if (observee) {
+						$scope.select = function(environment) {
+							if (environment) {
 								$scope.creating = false;
 								$scope.updating = true;
-								$scope.observee = observee;
+								$scope.environment = environment;
 							} else {
 								$scope.creating = true;
 								$scope.updating = false;
@@ -72,12 +72,12 @@
 						$scope.create = function() {
 
 							var indata = {
-								uri : $scope.observee.uri,
-								name : $scope.observee.name
+								uri : $scope.environment.uri,
+								name : $scope.environment.name
 							};
 							$http
 									.post(
-											"http://172.21.1.18/emit/observee/create",
+											"http://172.21.1.18/emit/environment/create",
 											indata)
 									.then(
 											function(success) {
@@ -94,13 +94,13 @@
 						}
 						$scope.update = function() {
 							var indata = {
-								uri : $scope.observee.uri,
-								name : $scope.observee.name
+								uri : $scope.environment.uri,
+								name : $scope.environment.name
 							};
 
 							$http
 									.post(
-											"http://172.21.1.18/emit/observee/update",
+											"http://172.21.1.18/emit/environment/update",
 											indata)
 									.then(
 											function(success) {
@@ -111,18 +111,18 @@
 											});
 						}
 
-						$scope.remove = function(observee) {
-							$scope.observee = observee;
+						$scope.remove = function(environment) {
+							$scope.environment = environment;
 							$('#modal').modal('show');
 						}
 
 						$scope.erase = function() {
 							$('#modal').modal('hide');
 							var can_delete = true;
-							var uri = $scope.observee.uri;
+							var uri = $scope.environment.uri;
 							angular.forEach($scope.experimentlist,
 									function(value) {
-										if (value.observee == uri) {
+										if (value.environment == uri) {
 											can_delete = false;
 										}
 									});
@@ -132,7 +132,7 @@
 								};
 								$http
 										.post(
-												"http://172.21.1.18/emit/observee/delete",
+												"http://172.21.1.18/emit/environment/delete",
 												data)
 										.then(
 												function(success) {
@@ -152,7 +152,7 @@
 						}
 
 						var size = function() {
-							$http.get("http://172.21.1.18/emit/observee/size")
+							$http.get("http://172.21.1.18/emit/environment/size")
 									.then(function(success) {
 										$scope.size = success.data;
 									}, function(error) {
@@ -160,15 +160,15 @@
 									});
 						}
 						var page = function() {
-							$http.get("http://172.21.1.18/emit/observee/page",
+							$http.get("http://172.21.1.18/emit/environment/page",
 									{
 										"params" : {
 											"offset" : $scope.offset
 										}
 									}).then(function(success) {
-								$scope.observees = success.data;
+								$scope.environments = success.data;
 							}, function(error) {
-								$scope.observees = [];
+								$scope.environments = [];
 							});
 						}
 						$scope.prev = function() {
@@ -220,8 +220,8 @@
 								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
 								class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="./Observer.html">Instruments</a></li>
-								<li><a href="./Observee.html">Environments</a></li>
+								<li><a href="./Instrument.html">Instruments</a></li>
+								<li><a href="./Envionment.html">Environments</a></li>
 								<li><a href="./Measurand.html">Measurands</a></li>
 							</ul>
 						</li>
@@ -240,16 +240,16 @@
 				<fieldset>
 					<legend ng-if="creating">Creation of a new Environment</legend>
 					<legend ng-if="updating">Updating an Environment
-						{{observee.name}}</legend>
+						{{environment.name}}</legend>
 					<div class="form-group">
-						<label for="observee.uri">URI of the Environment</label> <input
-							type="text" id="observee.uri" class="form-control"
-							ng-model="observee.uri" placeholder="URI" required
+						<label for="environment.uri">URI of the Environment</label> <input
+							type="text" id="environment.uri" class="form-control"
+							ng-model="environment.uri" placeholder="URI" required
 							ng-required="true" />
 					</div>
 					<div class="form-group">
-						<label for="observee.name">Name</label> <input type="text"
-							id="observee.name" class="form-control" ng-model="observee.name"
+						<label for="environment.name">Name</label> <input type="text"
+							id="environment.name" class="form-control" ng-model="environment.name"
 							placeholder="Name" ng-required="true" />
 					</div>
 					<div class="form-group pull-right">
@@ -290,20 +290,20 @@
 							aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
 				</ul>
 			</nav>
-			<ul class="list-group" ng-repeat="observee in observees">
+			<ul class="list-group" ng-repeat="environment in environments">
 				<li class="list-group-item">
-					<p class="list-group-item-heading">{{observee.name}}</p>
+					<p class="list-group-item-heading">{{environment.name}}</p>
 					<p class="list-group-item-text">
-						<span ng-if="observee.uri">{{observee.uri}} </span>
+						<span ng-if="environment.uri">{{environment.uri}} </span>
 					</p>
 					<p class="list-group-item-text text-right">
 						<button type="button" class="btn btn-default"
-							ng-click="remove(observee)">
+							ng-click="remove(environment)">
 							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 						</button>
 						<span>&nbsp;</span>
 						<button type="button" class="btn btn-default"
-							ng-click="select(observee)">
+							ng-click="select(environment)">
 							<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 						</button>
 					</p>
@@ -328,8 +328,8 @@
 					<h4 class="modal-title">Deleting an Environment</h4>
 				</div>
 				<div class="modal-body">
-					<p>Do you really want to delete : {{observee.name}}&nbsp;?</p>
-					<p>URI&nbsp;: {{observee.uri}}</p>
+					<p>Do you really want to delete : {{environment.name}}&nbsp;?</p>
+					<p>URI&nbsp;: {{environment.uri}}</p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
