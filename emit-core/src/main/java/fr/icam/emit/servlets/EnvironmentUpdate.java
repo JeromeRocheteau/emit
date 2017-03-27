@@ -17,24 +17,22 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import fr.icam.emit.entities.Instrument;
+import fr.icam.emit.entities.Environment;
 
-public class ObserverUpdate extends JdbcUpdateServlet<Boolean>{
-	private static final long serialVersionUID = 201703080934L;
+public class EnvironmentUpdate extends JdbcUpdateServlet<Boolean>{
+private static final long serialVersionUID = 201703080901L;
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();		
-		//String Json = this.getStringJson(request); 		
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
-		Type listType = new TypeToken<List<Instrument>>(){}.getType();
-		 // Measurand Measurand = gson.fromJson(request.getInputStream().toString(), Measurand.class);
-		List<Instrument> observer = gson.fromJson(reader,listType);
+		Type listType = new TypeToken<List<Environment>>(){}.getType();
+		List<Environment> environment = gson.fromJson(reader,listType);
 		
-		statement.setString(3, observer.get(0).getUri());
-		statement.setString(1, observer.get(1).getUri());
-		statement.setString(2, observer.get(1).getName());
+		statement.setString(3, environment.get(0).getUri());
+		statement.setString(1, environment.get(1).getUri());
+		statement.setString(2, environment.get(1).getName());
 	}
 
 	@Override

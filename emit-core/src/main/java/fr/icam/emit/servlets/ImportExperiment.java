@@ -17,7 +17,7 @@ import com.github.jeromerocheteau.JdbcServlet;
 
 
 
-public class ImportTest extends JdbcServlet{
+public class ImportExperiment extends JdbcServlet{
 private static final long serialVersionUID = 201703151635L;	
 	
 	

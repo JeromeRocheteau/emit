@@ -26,10 +26,8 @@ public class MeasurementSetCreation extends JdbcUpdateServlet<Boolean>{
 		Gson gson = new Gson();	
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
-		 // Measure measure = gson.fromJson(request.getInputStream().toString(), Measure.class);
 		MeasurementSet measurementSet = gson.fromJson(reader, MeasurementSet.class);
 		Timestamp time = new Timestamp(measurementSet.getAchieved());
-		//statement.setLong(1, measurementSet.getId());
 		statement.setString(1, measurementSet.getData());
 		statement.setTimestamp(2, time);
 		statement.setLong(3, measurementSet.getExperiment());

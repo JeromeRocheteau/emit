@@ -3,7 +3,7 @@ package fr.icam.emit.servlets;
 import java.sql.PreparedStatement;
 import javax.servlet.http.HttpServletRequest;
 
-public class ObserveePage extends ObserveeList {
+public class EnvironmentPage extends EnvironmentList {
 
 	private static final long serialVersionUID = 201703171631L;
 

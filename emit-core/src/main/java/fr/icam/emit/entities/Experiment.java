@@ -34,19 +34,19 @@ public class Experiment {
 	public void setMeasurand(String measurand) {
 		this.measurand = measurand;
 	}
-	public String getObservee() {
+	public String getEnvironment() {
 		return environment;
 	}
-	public void setObservee(String observee_uri) {
-		this.environment = observee_uri;
+	public void setEnvironment(String environment_uri) {
+		this.environment = environment_uri;
 	}
 	
-	public Experiment(long id, long started,long stopped,String measurand,String observee_uri){
+	public Experiment(long id, long started,long stopped,String measurand,String environment_uri){
 		this.setId(id);
 		this.setStarted(started);
 		this.setStopped(stopped);
 		this.setMeasurand(measurand);
-		this.setObservee(observee_uri);
+		this.setEnvironment(environment_uri);
 	}
 	
 

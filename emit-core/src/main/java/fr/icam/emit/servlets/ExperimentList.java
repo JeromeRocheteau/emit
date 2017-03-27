@@ -32,8 +32,8 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
         	long started = (resultSet.getTimestamp("started")).getTime();
         	long stopped = (resultSet.getTimestamp("stopped")).getTime();
             String measurand = resultSet.getString("measurand");
-            String observee = resultSet.getString("observee");
-            experiments.add(new Experiment(id,started,stopped,measurand,observee));
+            String environment = resultSet.getString("environment");
+            experiments.add(new Experiment(id,started,stopped,measurand,environment));
         }
         return experiments;
 	}

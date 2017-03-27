@@ -23,10 +23,8 @@ public class MeasureCreation extends JdbcUpdateServlet<Boolean>{
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();		
-		//String Json = this.getStringJson(request); 		
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
-		 // Measure measure = gson.fromJson(request.getInputStream().toString(), Measure.class);
 		Measure measure = gson.fromJson(reader, Measure.class);
 		statement.setString(1, measure.getName());
 		statement.setString(2, measure.getUnit());

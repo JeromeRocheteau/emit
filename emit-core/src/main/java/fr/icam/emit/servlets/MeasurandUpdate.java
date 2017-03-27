@@ -25,12 +25,10 @@ public class MeasurandUpdate extends JdbcUpdateServlet<Boolean>{
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		Gson gson = new Gson();		
-		//String Json = this.getStringJson(request); 		
+		Gson gson = new Gson();				
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
 		Type listType = new TypeToken<List<Measurand>>(){}.getType();
-		 // Measurand Measurand = gson.fromJson(request.getInputStream().toString(), Measurand.class);
 		List<Measurand> measurand = gson.fromJson(reader,listType);
 		
 		statement.setString(3, measurand.get(0).getProcess());

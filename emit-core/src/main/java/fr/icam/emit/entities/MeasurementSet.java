@@ -34,8 +34,8 @@ public class MeasurementSet {
 	public String getObserver() {
 		return instrument;
 	}
-	public void setObserver(String observer) {
-		this.instrument = observer;
+	public void setInstrument(String instrument) {
+		this.instrument = instrument;
 	}
 	public long getExperiment() {
 		return experiment;
@@ -44,12 +44,11 @@ public class MeasurementSet {
 		this.experiment = experimentId;
 	}
 	
-	public  MeasurementSet(long id,String data,long achieved,String observer,long ExperimentId){
-	//public  MeasurementSet(long id,String data,String observer,long ExperimentId){
+	public  MeasurementSet(long id,String data,long achieved,String instrument,long ExperimentId){
 		this.setId(id);
 		this.setData(data);
 		this.setAchieved(achieved);
-		this.setObserver(observer);
+		this.setInstrument(instrument);
 		this.setExperiment(ExperimentId);
 		
 	}

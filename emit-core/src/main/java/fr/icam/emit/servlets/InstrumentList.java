@@ -14,7 +14,7 @@ import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.Instrument;
 
-public class ObserverList extends JdbcQueryServlet<List<Instrument>> {
+public class InstrumentList extends JdbcQueryServlet<List<Instrument>> {
 
 	private static final long serialVersionUID = 201703011515L;
 
@@ -25,19 +25,19 @@ public class ObserverList extends JdbcQueryServlet<List<Instrument>> {
 
 	@Override
 	protected List<Instrument> doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
-		List<Instrument> observers = new LinkedList<Instrument>();
+		List<Instrument> instruments = new LinkedList<Instrument>();
         while (resultSet.next()) {
             String uri = resultSet.getString("uri");
             String name = resultSet.getString("name");
-            observers.add(new Instrument(uri, name));
+            instruments.add(new Instrument(uri, name));
         }
-        return observers;
+        return instruments;
 	}
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		List<Instrument> observers = this.doProcess(request);
-        this.doWrite(observers, response.getWriter());
+		List<Instrument> instruments = this.doProcess(request);
+        this.doWrite(instruments, response.getWriter());
 	}
 
 }

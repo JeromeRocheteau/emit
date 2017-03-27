@@ -14,7 +14,7 @@ import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.Environment;
 
-public class ObserveeList extends JdbcQueryServlet<List<Environment>>{
+public class EnvironmentList extends JdbcQueryServlet<List<Environment>>{
 	private static final long serialVersionUID = 201703011440L;
 
 	@Override
@@ -24,19 +24,19 @@ public class ObserveeList extends JdbcQueryServlet<List<Environment>>{
 
 	@Override
 	protected List<Environment> doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
-		List<Environment> Observees = new LinkedList<Environment>();
+		List<Environment> Environments = new LinkedList<Environment>();
         while (resultSet.next()) {
             String name = resultSet.getString("name");
             String uri = resultSet.getString("uri");
-            Observees.add(new Environment(name, uri));
+            Environments.add(new Environment(name, uri));
         }
-        return Observees;
+        return Environments;
 	}
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		List<Environment> Observees = this.doProcess(request);
-        this.doWrite(Observees, response.getWriter());
+		List<Environment> Environments = this.doProcess(request);
+        this.doWrite(Environments, response.getWriter());
 	}
 
 }

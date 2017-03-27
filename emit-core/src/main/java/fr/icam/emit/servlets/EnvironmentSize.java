@@ -10,19 +10,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcQueryServlet;
 
-public class ObserverSize extends JdbcQueryServlet<Integer>{
-	
-	private static final long serialVersionUID = 201703171412L;
+public class EnvironmentSize extends JdbcQueryServlet<Integer> {
+
+	private static final long serialVersionUID = 201703171633L;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Integer size = this.doProcess(request);
 		this.doWrite(size, response.getWriter());
 	}
-	
+
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		
+
 	}
 
 	@Override

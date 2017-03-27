@@ -14,19 +14,19 @@ import javax.servlet.http.HttpServletResponse;
 import com.github.jeromerocheteau.JdbcUpdateServlet;
 import com.google.gson.Gson;
 
-import fr.icam.emit.entities.Instrument;
+import fr.icam.emit.entities.Environment;
 
-public class ObserverCreation extends JdbcUpdateServlet<Boolean>  {
-	private static final long serialVersionUID = 201703070926L;
+public class EnvironmentCreation extends JdbcUpdateServlet<Boolean> {
+private static final long serialVersionUID = 201703070926L;
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();		
 		InputStream inputStream = request.getInputStream();
-		Reader reader = new InputStreamReader(inputStream);
-		Instrument observer = gson.fromJson(reader, Instrument.class);
-		statement.setString(1, observer.getUri());
-		statement.setString(2, observer.getName());
+		Reader reader = new InputStreamReader(inputStream);		 
+		Environment environment = gson.fromJson(reader, Environment.class);
+		statement.setString(1, environment.getUri());
+		statement.setString(2, environment.getName());
 	}
 
 	@Override
