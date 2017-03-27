@@ -42,9 +42,9 @@
 	app.controller('myCtrl', function($scope, $http,$q) {	
 		
 		
-		$scope.retrive_observer_name = function(uri){
+		$scope.retrive_instrument_name = function(uri){
 			var name ="";
-			angular.forEach($scope.observerlist, function(value) {//$scope.measurandlist
+			angular.forEach($scope.instrumentlist, function(value) {//$scope.measurandlist
 				if(uri == value.uri){
 					name = value.name;
 				}
@@ -161,7 +161,7 @@
 									measurand:node.measurand,
 									experiment:node.count,
 									count:i,									
-									text:$scope.retrive_observer_name(value.observer),
+									text:$scope.retrive_instrument_name(value.instrument),
 									color:"black",
 									key:value.id,
 									id:"measurementSet",
@@ -247,19 +247,19 @@
 		$scope.refresh = function() {
 			// déclaration des promesses (voir promises)
 			var experiment = $http.get("http://172.21.1.18/emit/experiment/list");
-			var observer = $http.get("http://172.21.1.18/emit/observer/list");
-			var observee = $http.get("http://172.21.1.18/emit/observee/list");
+			var instrument = $http.get("http://172.21.1.18/emit/instrument/list");
+			var environment = $http.get("http://172.21.1.18/emit/environment/list");
 			var measure = $http.get("http://172.21.1.18/emit/measure/list");
 			var measurement = $http.get("http://172.21.1.18/emit/measurement/list");
 			var measurand = $http.get("http://172.21.1.18/emit/measurand/list");
 			var measurementset = $http.get("http://172.21.1.18/emit/measurementSet/list");
 			
 			// attente de la réalisation de toutes les promesses
-			$q.all([experiment,observer,observee,measure,measurement,measurand,measurementset]).then(function(values){
+			$q.all([experiment,instrument,environment,measure,measurement,measurand,measurementset]).then(function(values){
 				//console.log(angular.toJson(values[0].data))
 				$scope.experimentlist = values[0].data;
-				$scope.observerlist = values[1].data;
-				$scope.observeelist= values[2].data;
+				$scope.instrumentlist = values[1].data;
+				$scope.environmentlist= values[2].data;
 				$scope.measurelist=values[3].data;
 				$scope.measurementlist = values[4].data;
 				$scope.measurandlist =  values[5].data;
@@ -317,16 +317,16 @@
 		$scope.deleteobject = function(element, adresse_delete, primarykey) {
 			var can_delete = true;
 			switch (element) {
-			case 'observer':
+			case 'instrument':
 				angular.forEach($scope.measurementsetlist, function(value) {
-					if (value.observer == primarykey) {
+					if (value.instrument == primarykey) {
 						can_delete = false;
 					}
 				});
 				break;
-			case 'observee':
+			case 'environment':
 				angular.forEach($scope.experimentlist, function(value) {
-					if (value.observee == primarykey) {
+					if (value.environment == primarykey) {
 						can_delete = false;
 					}
 				});
@@ -370,7 +370,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-				<a class="navbar-brand" id = "titre_appli">EMIT</a>
+				<a href="./index.html" class="navbar-brand" id = "titre_appli">EMIT</a>
 				<ul id = "menu">
 					<li class="active primaire"><a href="./index.html" class="primaire"><span
 								class="glyphicon glyphicon-home">&ensp;</span> Home</a></li>
@@ -380,8 +380,8 @@
 								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
 								class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="./Observer.html">Observers</a></li>
-								<li><a href="./Observee.html">Observees</a></li>
+								<li><a href="./Instrument.html">Instruments</a></li>
+								<li><a href="./Environment.html">Environments</a></li>
 								<li><a href="./Measurand.html">Measurands</a></li>
 							</ul>
 						</li>

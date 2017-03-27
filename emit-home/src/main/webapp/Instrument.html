@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link href="css/sb-admin-2.css" rel="stylesheet">
+<link href="css/sb-admin-2.css" rel="stylesheet">
 </head>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -31,9 +31,9 @@
 
 						$http
 								.get(
-										"http://172.21.1.18/emit/experiment/list")
+										"http://172.21.1.18/emit/measurementSet/list")
 								.then(function(response) {
-									$scope.experimentlist = response.data;
+									$scope.measurementsetlist = response.data;
 								});
 
 						var empty = {};
@@ -43,8 +43,8 @@
 						$scope.updating = false;
 
 						$scope.alert = {};
-						$scope.observee = {};
-						$scope.observees = [];
+						$scope.observer = {};
+						$scope.observers = [];
 						$scope.size = 0;
 						$scope.offset = 0;
 						$scope.length = 5;
@@ -53,16 +53,16 @@
 							$scope.selected = false;
 							$scope.creating = false;
 							$scope.updating = false;
-							$scope.observee = angular.copy(empty);
+							$scope.observer = angular.copy(empty);
 						}
 						$scope.clean = function() {
 							init();
 						}
-						$scope.select = function(observee) {
-							if (observee) {
+						$scope.select = function(observer) {
+							if (observer) {
 								$scope.creating = false;
 								$scope.updating = true;
-								$scope.observee = observee;
+								$scope.observer = observer;
 							} else {
 								$scope.creating = true;
 								$scope.updating = false;
@@ -72,16 +72,16 @@
 						$scope.create = function() {
 
 							var indata = {
-								uri : $scope.observee.uri,
-								name : $scope.observee.name
+								uri : $scope.observer.uri,
+								name : $scope.observer.name
 							};
 							$http
 									.post(
-											"http://172.21.1.18/emit/observee/create",
+											"http://172.21.1.18/emit/observer/create",
 											indata)
 									.then(
 											function(success) {
-												alert("Environnement created");
+												alert("Instrument created");
 												init();
 												$scope.size = 0;
 												$scope.offset = 0;
@@ -89,40 +89,40 @@
 												page();
 											},
 											function(error) {
-												alert("An error occured during creation of the Environnement.");
+												alert("An error occured during creation of the instrument.");
 											});
 						}
 						$scope.update = function() {
 							var indata = {
-								uri : $scope.observee.uri,
-								name : $scope.observee.name
+								uri : $scope.observer.uri,
+								name : $scope.observer.name
 							};
 
 							$http
 									.post(
-											"http://172.21.1.18/emit/observee/update",
+											"http://172.21.1.18/emit/observer/update",
 											indata)
 									.then(
 											function(success) {
-												alert("Environnement updated");
+												alert("Instrument updated");
 											},
 											function(error) {
-												alert("An error occured during updating of the Environnement.");
+												alert("An error occured during updating of the instrument.");
 											});
 						}
 
-						$scope.remove = function(observee) {
-							$scope.observee = observee;
+						$scope.remove = function(observer) {
+							$scope.observer = observer;
 							$('#modal').modal('show');
 						}
 
 						$scope.erase = function() {
 							$('#modal').modal('hide');
 							var can_delete = true;
-							var uri = $scope.observee.uri;
-							angular.forEach($scope.experimentlist,
+							var uri = $scope.observer.uri;
+							angular.forEach($scope.measurementsetlist,
 									function(value) {
-										if (value.observee == uri) {
+										if (value.observer == uri) {
 											can_delete = false;
 										}
 									});
@@ -132,11 +132,11 @@
 								};
 								$http
 										.post(
-												"http://172.21.1.18/emit/observee/delete",
+												"http://172.21.1.18/emit/observer/delete",
 												data)
 										.then(
 												function(success) {
-													alert("Environnement deleted");
+													alert("Instrument deleted");
 													init();
 													$scope.size = 0;
 													$scope.offset = 0;
@@ -144,7 +144,7 @@
 													page();
 												},
 												function(error) {
-													alert("An error occured during deleting of the Environnement.");
+													alert("An error occured during deleting of the instrument.");
 												});
 							} else {
 								alert("This " + element + " can't be deleted");
@@ -152,7 +152,7 @@
 						}
 
 						var size = function() {
-							$http.get("http://172.21.1.18/emit/observee/size")
+							$http.get("http://172.21.1.18/emit/observer/size")
 									.then(function(success) {
 										$scope.size = success.data;
 									}, function(error) {
@@ -160,15 +160,15 @@
 									});
 						}
 						var page = function() {
-							$http.get("http://172.21.1.18/emit/observee/page",
+							$http.get("http://172.21.1.18/emit/observer/page",
 									{
 										"params" : {
 											"offset" : $scope.offset
 										}
 									}).then(function(success) {
-								$scope.observees = success.data;
+								$scope.observers = success.data;
 							}, function(error) {
-								$scope.observees = [];
+								$scope.observers = [];
 							});
 						}
 						$scope.prev = function() {
@@ -201,6 +201,7 @@
 					});
 </script>
 <body ng-app="app" ng-controller="controller">
+
 <header>
 		<div class="navbar navbar-default navbar-custom navbar-static-top" id="navigation_barre">
 			<div class="container">
@@ -210,7 +211,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-				<a class="navbar-brand" id = "titre_appli">EMIT</a>
+				<a href="./index.html" 	class="navbar-brand" id = "titre_appli">EMIT</a>
 				<ul id = "menu">
 					<li class="active primaire"><a href="./index.html" class="primaire"><span
 								class="glyphicon glyphicon-home">&ensp;</span> Home</a></li>
@@ -220,8 +221,8 @@
 								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
 								class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="./Observer.html">Observers</a></li>
-								<li><a href="./Observee.html">Observees</a></li>
+								<li><a href="./Observer.html">Instruments</a></li>
+								<li><a href="./Observee.html">Environments</a></li>
 								<li><a href="./Measurand.html">Measurands</a></li>
 							</ul>
 						</li>
@@ -234,22 +235,27 @@
 		</div>
 	</header>	
 
+
+
+
+
+
 	<div class="container">
 		<section id="search" class="col-md-4">
 			<form class="form" role="form" name="form" ng-if="selected">
 				<fieldset>
-					<legend ng-if="creating">Creation of a new Environnement</legend>
-					<legend ng-if="updating">Updating an Environnement
-						{{observee.name}}</legend>
+					<legend ng-if="creating">Creation of a new instrument</legend>
+					<legend ng-if="updating">Updating an instrument
+						{{observer.name}}</legend>
 					<div class="form-group">
-						<label for="observee.uri">URI of the Environnement</label> <input
-							type="text" id="observee.uri" class="form-control"
-							ng-model="observee.uri" placeholder="URI" required
+						<label for="observer.uri">URI of the instrument</label> <input
+							type="text" id="observer.uri" class="form-control"
+							ng-model="observer.uri" placeholder="URI" required
 							ng-required="true" />
 					</div>
 					<div class="form-group">
-						<label for="observee.name">Name</label> <input type="text"
-							id="observee.name" class="form-control" ng-model="observee.name"
+						<label for="observer.name">Name</label> <input type="text"
+							id="observer.name" class="form-control" ng-model="observer.name"
 							placeholder="Name" ng-required="true" />
 					</div>
 					<div class="form-group pull-right">
@@ -272,7 +278,7 @@
 		</section>
 		<section id="results" class="col-md-8">
 			<h2>
-				Environnements <small>({{size}} elements)</small>
+				Instruments <small>({{size}} elements)</small>
 			</h2>
 			<nav aria-label="...">
 				<ul class="pager">
@@ -290,20 +296,20 @@
 							aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
 				</ul>
 			</nav>
-			<ul class="list-group" ng-repeat="observee in observees">
+			<ul class="list-group" ng-repeat="observer in observers">
 				<li class="list-group-item">
-					<p class="list-group-item-heading">{{observee.name}}</p>
+					<p class="list-group-item-heading">{{observer.name}}</p>
 					<p class="list-group-item-text">
-						<span ng-if="observee.uri">{{observee.uri}} </span>
+						<span ng-if="observer.uri">{{observer.uri}} </span>
 					</p>
 					<p class="list-group-item-text text-right">
 						<button type="button" class="btn btn-default"
-							ng-click="remove(observee)">
+							ng-click="remove(observer)">
 							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 						</button>
 						<span>&nbsp;</span>
 						<button type="button" class="btn btn-default"
-							ng-click="select(observee)">
+							ng-click="select(observer)">
 							<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 						</button>
 					</p>
@@ -325,11 +331,11 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title">Deleting an Environnement</h4>
+					<h4 class="modal-title">Deleting an instrument</h4>
 				</div>
 				<div class="modal-body">
-					<p>Do you really want to delete : {{observee.name}}&nbsp;?</p>
-					<p>URI&nbsp;: {{observee.uri}}</p>
+					<p>Do you really want to delete : {{observer.name}}&nbsp;?</p>
+					<p>URI&nbsp;: {{observer.uri}}</p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
