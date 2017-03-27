@@ -51,22 +51,21 @@
 				$http.get("http://172.21.1.18/emit/experiment/last").then(
 						function(response) {
 							$scope.last_experiment = response.data;
+							angular.forEach($scope.instrument_selection, function(value, key) {
+								var measurement_data = {
+										data : null,
+										achieved : null,
+										instrument : value.uri,
+										experiment : $scope.last_experiment
+									};
+									console.log(measurement_data);
+								$http.post("http://172.21.1.18/emit/measurementSet/create", measurement_data)
+								.then(function(response) {
+								});
+							});
+							alert("Experiment created");
+							$scope.clear();
 						});
-				
-				angular.forEach($scope.instrument_selection, function(value, key) {
-					var measurement_data = {
-							data : null,
-							achieved : null,
-							instrument : value.uri,
-							experiment : $scope.last_experiment
-						};
-						console.log(measurement_data);
-					$http.post("http://172.21.1.18/emit/measurementSet/create", measurement_data)
-					.then(function(response) {
-					});
-				});
-				alert("Experiment created");
-				$scope.clear();
 			});		
 						
 		};
