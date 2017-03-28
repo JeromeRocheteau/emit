@@ -22,7 +22,7 @@
         <artifactId>tomcat7-maven-plugin</artifactId>
         <version>2.1</version>
         <configuration>
-          <url>http://172.21.1.18/manager/text</url>
+          <url>http://172.21.50.3/manager/text</url>
           <username>manager</username>
           <password>script</password>
           <path>/${project.build.finalName}</path>
@@ -55,7 +55,7 @@
     <repository>
       <id>id</id>
       <name>name</name>
-      <url>http://172.21.50.1/maven/repository</url>
+      <url>http://172.21.50.3/maven/repository</url>
     </repository>
   </repositories>
 </project>

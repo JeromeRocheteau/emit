@@ -13,5 +13,5 @@
             password="emit"
             driverClassName="com.mysql.jdbc.Driver"
             factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
-            url="jdbc:mysql://172.21.1.18:3306/emit" />
+            url="jdbc:mysql://localhost:3306/emit" />
 </Context>
