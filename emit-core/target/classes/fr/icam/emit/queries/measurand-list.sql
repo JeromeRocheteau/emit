@@ -1,4 +1,3 @@
-select 
-  process,
-  name
-from measurands;
+select process,name
+from measurands
+where deleted = 0

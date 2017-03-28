@@ -1,1 +1,3 @@
-UPDATE instruments SET uri=?, name=? WHERE uri=?;
+update instruments 
+set uri=?, name=? 
+where uri=?;

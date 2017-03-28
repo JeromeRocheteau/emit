@@ -1,1 +1,3 @@
-UPDATE environments SET uri=?, name=? WHERE uri=?;
+update environments 
+set uri=?, name=? 
+where uri=?

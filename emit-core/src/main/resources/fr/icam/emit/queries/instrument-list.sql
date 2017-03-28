@@ -1,4 +1,3 @@
-select
-  uri,
-  name
-from instruments;
+select uri, name
+from instruments
+where deleted = 0;

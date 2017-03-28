@@ -1,4 +1,5 @@
 select
   name,
   unit
-from measures;
+from measures
+where deleted = 0;
