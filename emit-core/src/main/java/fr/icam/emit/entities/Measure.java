@@ -3,8 +3,16 @@ package fr.icam.emit.entities;
 public class Measure {
 	
 	private String name;
-	
 	private String unit;
+	private Boolean deleted;
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 
 	public String getName() {
 		return name;
@@ -22,8 +30,9 @@ public class Measure {
 		this.unit = unit;
 	}
 	
-	public Measure(String name, String unit) {
+	public Measure(String name, String unit, Boolean deleted) {
 		this.setName(name);
 		this.setUnit(unit);
+		this.setDeleted(deleted);
 	}
 }

@@ -1,2 +1,3 @@
 select count(process) as size 
-from measurands 
+from measurands
+where deleted = 0

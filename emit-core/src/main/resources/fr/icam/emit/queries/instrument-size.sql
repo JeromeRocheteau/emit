@@ -1,2 +1,3 @@
 select count(uri) as size 
-from instruments 
+from instruments
+where deleted = 0
