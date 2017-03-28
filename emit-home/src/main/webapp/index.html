@@ -106,7 +106,7 @@
 				var $selectableTree = initSelectableTree();
 				var temp = [];
 				
-				$http.get("http://172.21.1.18/emit/measurement/list",
+				$http.get("http://172.21.50.3/emit/measurement/list",
 						{
 							"params" : {
 								"fkey" :node.key
@@ -148,7 +148,7 @@
 				var $selectableTree = initSelectableTree();
 				var temp = [];
 				
-				$http.get("http://172.21.1.18/emit/measurementSet/list",
+				$http.get("http://172.21.50.3/emit/measurementSet/list",
 						{
 							"params" : {
 								"fkey" :node.key
@@ -203,7 +203,7 @@
 				$('#tree').treeview('updateNode', [ node, data_update, { silent: true } ]  );
 				
 				var temp = [];
-				$http.get("http://172.21.1.18/emit/experiment/list",
+				$http.get("http://172.21.50.3/emit/experiment/list",
 						{
 							"params" : {
 								"fkey" :node.key
@@ -267,13 +267,13 @@
 
 		$scope.refresh = function() {
 			// déclaration des promesses (voir promises)
-			var experiment = $http.get("http://172.21.1.18/emit/experiment/list");
-			var instrument = $http.get("http://172.21.1.18/emit/instrument/list");
-			var environment = $http.get("http://172.21.1.18/emit/environment/list");
-			var measure = $http.get("http://172.21.1.18/emit/measure/list");
-			var measurement = $http.get("http://172.21.1.18/emit/measurement/list");
-			var measurand = $http.get("http://172.21.1.18/emit/measurand/list");
-			var measurementset = $http.get("http://172.21.1.18/emit/measurementSet/list");
+			var experiment = $http.get("http://172.21.50.3/emit/experiment/list");
+			var instrument = $http.get("http://172.21.50.3/emit/instrument/list");
+			var environment = $http.get("http://172.21.50.3/emit/environment/list");
+			var measure = $http.get("http://172.21.50.3/emit/measure/list");
+			var measurement = $http.get("http://172.21.50.3/emit/measurement/list");
+			var measurand = $http.get("http://172.21.50.3/emit/measurand/list");
+			var measurementset = $http.get("http://172.21.50.3/emit/measurementSet/list");
 			
 			// attente de la réalisation de toutes les promesses
 			$q.all([experiment,instrument,environment,measure,measurement,measurand,measurementset]).then(function(values){
@@ -300,7 +300,7 @@
 			var globalSerie = [];
 
 			$http.get(
-					"http://172.21.1.18/emit/test/test?file_name=" + file_name)
+					"http://172.21.50.3/emit/test/test?file_name=" + file_name)
 					.then(function(response) {
 						retour_test = response.data;
 						//console.log(retour_test.length);
@@ -368,7 +368,7 @@
 				var data = {
 					uri : primarykey
 				}
-				var url_delete = "http://172.21.1.18/emit" + adresse_delete;
+				var url_delete = "http://172.21.50.3/emit" + adresse_delete;
 				$http.post(url_delete, data).then(function(response) {
 
 				});

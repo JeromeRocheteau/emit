@@ -21,17 +21,17 @@
 
 	app.controller('myCtrl', function($window, $scope, $http) {
 
-		$http.get("http://172.21.1.18/emit/environment/list").then(
+		$http.get("http://172.21.50.3/emit/environment/list").then(
 				function(response) {
 					$scope.environments = response.data;
 				});
 
-		$http.get("http://172.21.1.18/emit/measurand/list").then(
+		$http.get("http://172.21.50.3/emit/measurand/list").then(
 				function(response) {
 					$scope.measurands = response.data;
 				});
 
-		$http.get("http://172.21.1.18/emit/instrument/list").then(
+		$http.get("http://172.21.50.3/emit/instrument/list").then(
 				function(response) {
 					$scope.instruments = response.data;
 				});
@@ -45,10 +45,10 @@
 					environment : $scope.environment_selection.uri
 				};
 			
-			$http.post("http://172.21.1.18/emit/experiment/create", experiment_data)
+			$http.post("http://172.21.50.3/emit/experiment/create", experiment_data)
 			.then(function(response) {
 				
-				$http.get("http://172.21.1.18/emit/experiment/last").then(
+				$http.get("http://172.21.50.3/emit/experiment/last").then(
 						function(response) {
 							$scope.last_experiment = response.data;
 							angular.forEach($scope.instrument_selection, function(value, key) {
@@ -59,7 +59,7 @@
 										experiment : $scope.last_experiment
 									};
 									console.log(measurement_data);
-								$http.post("http://172.21.1.18/emit/measurementSet/create", measurement_data)
+								$http.post("http://172.21.50.3/emit/measurementSet/create", measurement_data)
 								.then(function(response) {
 								});
 							});

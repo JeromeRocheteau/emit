@@ -33,7 +33,7 @@
 
 						$http
 								.get(
-										"http://172.21.1.18/emit/measurementSet/list")
+										"http://172.21.50.3/emit/measurementSet/list")
 								.then(function(response) {
 									$scope.measurementsetlist = response.data;
 								});
@@ -83,7 +83,7 @@
 							};
 							$http
 									.post(
-											"http://172.21.1.18/emit/instrument/create",
+											"http://172.21.50.3/emit/instrument/create",
 											indata)
 									.then(
 											function(success) {
@@ -109,7 +109,7 @@
 
 							$http
 									.post(
-											"http://172.21.1.18/emit/instrument/update",
+											"http://172.21.50.3/emit/instrument/update",
 											indata)
 									.then(
 											function(success) {
@@ -142,7 +142,7 @@
 								};
 								$http
 										.post(
-												"http://172.21.1.18/emit/instrument/delete",
+												"http://172.21.50.3/emit/instrument/delete",
 												data)
 										.then(
 												function(success) {
@@ -164,7 +164,7 @@
 						var size = function() {
 							$http
 									.get(
-											"http://172.21.1.18/emit/instrument/size")
+											"http://172.21.50.3/emit/instrument/size")
 									.then(function(success) {
 										$scope.size = success.data;
 									}, function(error) {
@@ -173,7 +173,7 @@
 						}
 						var page = function() {
 							$http.get(
-									"http://172.21.1.18/emit/instrument/page",
+									"http://172.21.50.3/emit/instrument/page",
 									{
 										"params" : {
 											"offset" : $scope.offset

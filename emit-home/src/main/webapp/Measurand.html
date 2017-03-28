@@ -31,7 +31,7 @@
 					'controller',
 					function($scope, $http) {
 
-						$http.get("http://172.21.1.18/emit/experiment/list")
+						$http.get("http://172.21.50.3/emit/experiment/list")
 								.then(function(response) {
 									$scope.experimentlist = response.data;
 								});
@@ -80,7 +80,7 @@
 							};
 							$http
 									.post(
-											"http://172.21.1.18/emit/measurand/create",
+											"http://172.21.50.3/emit/measurand/create",
 											indata)
 									.then(
 											function(success) {
@@ -106,7 +106,7 @@
 
 							$http
 									.post(
-											"http://172.21.1.18/emit/measurand/update",
+											"http://172.21.50.3/emit/measurand/update",
 											indata)
 									.then(
 											function(success) {
@@ -139,7 +139,7 @@
 								};
 								$http
 										.post(
-												"http://172.21.1.18/emit/measurand/delete",
+												"http://172.21.50.3/emit/measurand/delete",
 												data)
 										.then(
 												function(success) {
@@ -159,7 +159,7 @@
 						}
 
 						var size = function() {
-							$http.get("http://172.21.1.18/emit/measurand/size")
+							$http.get("http://172.21.50.3/emit/measurand/size")
 									.then(function(success) {
 										$scope.size = success.data;
 									}, function(error) {
@@ -167,7 +167,7 @@
 									});
 						}
 						var page = function() {
-							$http.get("http://172.21.1.18/emit/measurand/page",
+							$http.get("http://172.21.50.3/emit/measurand/page",
 									{
 										"params" : {
 											"offset" : $scope.offset

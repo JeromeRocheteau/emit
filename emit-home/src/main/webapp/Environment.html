@@ -33,7 +33,7 @@
 
 						$http
 								.get(
-										"http://172.21.1.18/emit/experiment/list")
+										"http://172.21.50.3/emit/experiment/list")
 								.then(function(response) {
 									$scope.experimentlist = response.data;
 								});
@@ -82,7 +82,7 @@
 							};
 							$http
 									.post(
-											"http://172.21.1.18/emit/environment/create",
+											"http://172.21.50.3/emit/environment/create",
 											indata)
 									.then(
 											function(success) {
@@ -108,7 +108,7 @@
 
 							$http
 									.post(
-											"http://172.21.1.18/emit/environment/update",
+											"http://172.21.50.3/emit/environment/update",
 											indata)
 									.then(
 											function(success) {
@@ -141,7 +141,7 @@
 								};
 								$http
 										.post(
-												"http://172.21.1.18/emit/environment/delete",
+												"http://172.21.50.3/emit/environment/delete",
 												data)
 										.then(
 												function(success) {
@@ -161,7 +161,7 @@
 						}
 
 						var size = function() {
-							$http.get("http://172.21.1.18/emit/environment/size")
+							$http.get("http://172.21.50.3/emit/environment/size")
 									.then(function(success) {
 										$scope.size = success.data;
 									}, function(error) {
@@ -169,7 +169,7 @@
 									});
 						}
 						var page = function() {
-							$http.get("http://172.21.1.18/emit/environment/page",
+							$http.get("http://172.21.50.3/emit/environment/page",
 									{
 										"params" : {
 											"offset" : $scope.offset
