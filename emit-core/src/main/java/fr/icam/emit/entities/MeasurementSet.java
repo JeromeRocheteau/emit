@@ -12,7 +12,6 @@ public class MeasurementSet {
 	private String instrument;
 	private long experiment;
 
-	
 	public long getId() {
 		return id;
 	}
