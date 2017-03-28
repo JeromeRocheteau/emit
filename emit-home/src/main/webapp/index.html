@@ -70,7 +70,8 @@
 	            onNodeSelected: function(event, node) {
 	             console.log(node.id +' was selected')
 	             switch(node.id){
-	             case "measurand":fillExperiment(node);
+	             case "measurand": fillExperiment(node);
+	            
 	             break;
 	             case"experiment":{
 	            	 console.log('resultat en cour de saisie');
@@ -99,6 +100,7 @@
 			
 			
 			function fillMeasurement(node){
+				var old = node;
 				console.log('debut de la fonction');
 				node.selectable  = false;				
 				node.state= { expanded: true };
@@ -141,6 +143,7 @@
 			
 			function fillMeasurementSet(node){
 				console.log('debut de la fonction');
+				
 				node.selectable  = false;				
 				node.state= { expanded: true };
 				var $selectableTree = initSelectableTree();
@@ -181,10 +184,25 @@
 			
 			function fillExperiment(node){
 				
+				//$('#tree').treeview('removeNode', [ node, { silent: true } ]);
+				
+				
+				
 				console.log('debut de la fonction');
-				node.selectable  = false;				
-				node.state= { expanded: true };
-				var $selectableTree = initSelectableTree();
+				//node.selectable  = false;				
+				//node.state= { expanded: true };
+				
+				var data_update = {					
+						
+						text:node.text,
+						color:"black",					
+						id:"measurand",
+						selectable:false,						
+						
+						
+					};				
+				$('#tree').treeview('updateNode', [ node, data_update, { silent: true } ]  );
+				
 				var temp = [];
 				$http.get("http://172.21.1.18/emit/experiment/list",
 						{
@@ -196,41 +214,45 @@
 							var i = 0;
 							angular.forEach(experiment, function(value){
 								var data = {								
-									measurand:node.count,
-									count:i,
+									
 									text:value.started,
 									color:"black",
 									key:value.id,
 									id:"experiment",
 									selectable:true,									
-									state: { expanded: false },	
-									nodes:""
+								
+									
 								}
 								temp[i] = data;
 								i++;
 							});
-							node.nodes= temp;
-							console.log(angular.toJson(node));
-							console.log(angular.toJson(tree));
-							tree[node.count] = node;
+							//data_update.nodes = temp;
+							//console.log(angular.toJson(node));
+							
+							
 							console.log('resultat final');
-							console.log(angular.toJson(tree));
-							var $selectableTree = initSelectableTree();
-						});			
+							
+						$('#tree').treeview('addNode', [ temp, node, false, { silent: true } ]);
+							
+							
+						});	
+				
+			
+			
 			};
 			
 			function fillMeasurand(){
 				var i = 0;
 				angular.forEach($scope.measurandlist, function(value){
 					var data = {							
-						count:i,
+						
 						text:value.name,
 						color:"black",
 						key:value.process,
 						id:"measurand",
 						selectable:true,						
-						state: { expanded: false },
-						nodes:""
+						state: { expanded: false }
+						
 					};				
 					tree[i] =data;
 					

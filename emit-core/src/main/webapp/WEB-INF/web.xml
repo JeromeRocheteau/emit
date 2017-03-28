@@ -414,7 +414,7 @@
 
 	<servlet>
 		<servlet-name>test-fichier</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.ImportTest</servlet-class>
+		<servlet-class>fr.icam.emit.servlets.ImportExperiment</servlet-class>
 
 	</servlet>
 	<servlet-mapping>
