@@ -4,5 +4,5 @@ select
   experiment,
   achieved,
   instrument
-from measurementSets
+from measurementsets
 where experiment=?; 
