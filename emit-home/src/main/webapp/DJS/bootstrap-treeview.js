@@ -1,5 +1,5 @@
 /* =========================================================
- * patternfly-bootstrap-treeview.js v2.1.0
+ * bootstrap-treeview.js v2.0.0
  * =========================================================
  * Copyright 2013 Jonathan Miles
  * Project URL : http://www.jondmiles.com/bootstrap-treeview
@@ -35,18 +35,15 @@
 
 		expandIcon: 'glyphicon glyphicon-plus',
 		collapseIcon: 'glyphicon glyphicon-minus',
-		loadingIcon: 'glyphicon glyphicon-hourglass',
 		emptyIcon: 'glyphicon',
 		nodeIcon: '',
 		selectedIcon: '',
 		checkedIcon: 'glyphicon glyphicon-check',
-		partiallyCheckedIcon: 'glyphicon glyphicon-expand',
 		uncheckedIcon: 'glyphicon glyphicon-unchecked',
 
 		color: undefined,
 		backColor: undefined,
 		borderColor: undefined,
-		changedNodeColor: '#39A5DC',
 		onhoverColor: '#F5F5F5',
 		selectedColor: '#FFFFFF',
 		selectedBackColor: '#428bca',
@@ -57,17 +54,10 @@
 		highlightSearchResults: true,
 		showBorder: true,
 		showIcon: true,
-		showImage: false,
 		showCheckbox: false,
-		checkboxFirst: false,
-		highlightChanges: false,
 		showTags: false,
 		multiSelect: false,
 		preventUnselect: false,
-		allowReselect: false,
-		hierarchicalCheck: false,
-		propagateCheckEvent: false,
-		wrapNodeText: false,
 
 		// Event handlers
 		onLoading: undefined,
@@ -163,7 +153,6 @@
 			uncheckAll: $.proxy(this.uncheckAll, this),
 			uncheckNode: $.proxy(this.uncheckNode, this),
 			toggleNodeChecked: $.proxy(this.toggleNodeChecked, this),
-			unmarkCheckboxChanges: $.proxy(this.unmarkCheckboxChanges, this),
 
 			// Disable / enable methods
 			disableAll: $.proxy(this.disableAll, this),
@@ -183,9 +172,6 @@
 		this._initialized = false;
 
 		this._options = $.extend({}, _default.settings, options);
-
-		// Cache empty icon DOM template
-		this._template.icon.empty.addClass(this._options.emptyIcon);
 
 		this._destroy();
 		this._subscribeEvents();
@@ -231,7 +217,7 @@
 
 	Tree.prototype._loadLocalData = function (options, done) {
 		done.resolve((typeof options.data === 'string') ?
-								JSON.parse(options.data) :
+								$.parseJSON(options.data) :
 								$.extend(true, [], options.data));
 	};
 
@@ -362,7 +348,6 @@
 		return $.when.apply(this, this._setInitialState(node, level))
 			.done($.proxy(function () {
 				this._orderedNodes = this._sortNodes();
-				this._inheritCheckboxChanges();
 				this._triggerEvent('initialized', this._orderedNodes, _default.options);
 				return;
 			}, this));
@@ -397,22 +382,12 @@
 				node.selectable = true;
 			}
 
-			// if not provided set checkable default value
-			if (!node.hasOwnProperty('checkable')) {
-				node.checkable = true;
-			}
-
 			// where provided we should preserve states
 			node.state = node.state || {};
 
 			// set checked state; unless set always false
 			if (!node.state.hasOwnProperty('checked')) {
 				node.state.checked = false;
-			}
-
-			// convert the undefined string if hierarchical checks are enabled
-			if (this._options.hierarchicalCheck && node.state.checked === 'undefined') {
-				node.state.checked = undefined;
 			}
 
 			// set enabled state; unless set always false
@@ -467,20 +442,7 @@
 	};
 
 	Tree.prototype._sortNodes = function () {
-		return $.map(Object.keys(this._nodes).sort(function (a, b) {
-			if (a === b) return 0;
-			var a = a.split('.').map(function (level) { return parseInt(level); });
-			var b = b.split('.').map(function (level) { return parseInt(level); });
-
-			var c = Math.max(a.length, b.length);
-			for (var i=0; i<c; i++) {
-				if (a[i] === undefined) return -1;
-				if (b[i] === undefined) return +1;
-				if (a[i] - b[i] > 0) return +1;
-				if (a[i] - b[i] < 0) return -1;
-			};
-
-		}), $.proxy(function (value, index) {
+		return $.map(Object.keys(this._nodes).sort(), $.proxy(function (value, index) {
 		  return this._nodes[value];
 		}, this));
 	};
@@ -496,9 +458,7 @@
 			this._toggleExpanded(node, $.extend({}, _default.options));
 		}
 		else if ((classList.indexOf('check-icon') !== -1)) {
-			if (node.checkable) {
-				this._toggleChecked(node, $.extend({}, _default.options));
-			}
+			this._toggleChecked(node, $.extend({}, _default.options));
 		}
 		else {
 			if (node.selectable) {
@@ -522,28 +482,7 @@
 
 	Tree.prototype._toggleExpanded = function (node, options) {
 		if (!node) return;
-
-		// Lazy-load the child nodes if possible
-		if (typeof(this._options.lazyLoad) === 'function' && node.lazyLoad) {
-			this._lazyLoad(node);
-		} else {
-			this._setExpanded(node, !node.state.expanded, options);
-		}
-	};
-
-	Tree.prototype._lazyLoad = function (node) {
-		// Show a different icon while loading the child nodes
-		node.$el.children('span.expand-icon')
-			.removeClass(this._options.expandIcon)
-			.addClass(this._options.loadingIcon);
-
-		var _this = this;
-		this._options.lazyLoad(node, function (nodes) {
-			// Adding the node will expand its parent automatically
-			_this.addNode(nodes, node);
-		});
-		// Only the first expand should do a lazy-load
-		delete node.lazyLoad;
+		this._setExpanded(node, !node.state.expanded, options);
 	};
 
 	Tree.prototype._setExpanded = function (node, state, options) {
@@ -561,7 +500,6 @@
 			if (node.$el) {
 				node.$el.children('span.expand-icon')
 					.removeClass(this._options.expandIcon)
-					.removeClass(this._options.loadingIcon)
 					.addClass(this._options.collapseIcon);
 			}
 
@@ -670,10 +608,6 @@
 			if (this._options.preventUnselect &&
 					(options && !options.unselecting) &&
 					(this._findNodes('true', 'state.selected').length === 1)) {
-				// Fire the nodeSelected event if reselection is allowed
-				if (this._options.allowReselect) {
-					this._triggerEvent('nodeSelected', node, options);
-				}
 				return this;
 			}
 
@@ -698,57 +632,8 @@
 		return this;
 	};
 
-	Tree.prototype._inheritCheckboxChanges = function () {
-		if (this._options.showCheckbox && this._options.highlightChanges) {
-			this._checkedNodes = $.grep(this._orderedNodes, function (node) {
-				return node.state.checked;
-			});
-		}
-	};
-
 	Tree.prototype._toggleChecked = function (node, options) {
 		if (!node) return;
-
-		if (this._options.hierarchicalCheck) {
-			// Event propagation to the parent/child nodes
-			var childOptions = $.extend({}, options, {silent: options.silent || !this._options.propagateCheckEvent});
-
-			var state, currentNode = node;
-			// Temporarily swap the tree state
-			node.state.checked = !node.state.checked;
-
-			// Iterate through each parent node
-			while (currentNode = this._nodes[currentNode.parentId]) {
-
-				// Calculate the state
-				state = currentNode.nodes.reduce(function (acc, curr) {
-					return (acc === curr.state.checked) ? acc : undefined;
-				}, currentNode.nodes[0].state.checked);
-
-				// Set the state
-				this._setChecked(currentNode, state, childOptions);
-			}
-
-			if (node.nodes && node.nodes.length > 0) {
-				// Copy the content of the array
-				var child, children = node.nodes.slice();
-				// Iterate through each child node
-				while (children && children.length > 0) {
-					child = children.pop();
-
-					// Set the state
-					this._setChecked(child, node.state.checked, childOptions);
-
-					// Append children to the end of the list
-					if (child.nodes && child.nodes.length > 0) {
-						children = children.concat(child.nodes.slice());
-					}
-				}
-			}
-			// Swap back the tree state
-			node.state.checked = !node.state.checked;
-		}
-
 		this._setChecked(node, !node.state.checked, options);
 	};
 
@@ -758,11 +643,6 @@
 		// we need to validate state is from user interaction
 		if (options && state === node.state.checked) return;
 
-		// Highlight the node if its checkbox has unsaved changes
-		if (this._options.highlightChanges) {
-			node.$el.toggleClass('node-check-changed', (this._checkedNodes.indexOf(node) == -1) == state);
-		}
-
 		if (state) {
 
 			// Set node state
@@ -770,43 +650,25 @@
 
 			// Set element
 			if (node.$el) {
-				node.$el.addClass('node-checked').removeClass('node-checked-partial');
+				node.$el.addClass('node-checked');
 				node.$el.children('span.check-icon')
 					.removeClass(this._options.uncheckedIcon)
-					.removeClass(this._options.partiallyCheckedIcon)
 					.addClass(this._options.checkedIcon);
 			}
 
 			// Optionally trigger event
 			this._triggerEvent('nodeChecked', node, options);
 		}
-		else if (state === undefined && this._options.hierarchicalCheck) {
-
-			// Set node state to partially checked
-			node.state.checked = undefined;
-
-			// Set element
-			if (node.$el) {
-				node.$el.addClass('node-checked-partial').removeClass('node-checked');
-				node.$el.children('span.check-icon')
-					.removeClass(this._options.uncheckedIcon)
-					.removeClass(this._options.checkedIcon)
-					.addClass(this._options.partiallyCheckedIcon);
-			}
-
-			// Optionally trigger event, partially checked is technically unchecked
-			this._triggerEvent('nodeUnchecked', node, options);
-		} else {
+		else {
 
 			// Set node state to unchecked
 			node.state.checked = false;
 
 			// Set element
 			if (node.$el) {
-				node.$el.removeClass('node-checked node-checked-partial');
+				node.$el.removeClass('node-checked');
 				node.$el.children('span.check-icon')
 					.removeClass(this._options.checkedIcon)
-					.removeClass(this._options.partiallyCheckedIcon)
 					.addClass(this._options.uncheckedIcon);
 			}
 
@@ -827,11 +689,9 @@
 			node.state.disabled = true;
 
 			// Disable all other states
-			if (options && !options.keepState) {
-				this._setSelected(node, false, options);
-				this._setChecked(node, false, options);
-				this._setExpanded(node, false, options);
-			}
+			this._setSelected(node, false, options);
+			this._setChecked(node, false, options);
+			this._setExpanded(node, false, options);
 
 			// Set element
 			if (node.$el) {
@@ -881,7 +741,7 @@
 		if (!this._initialized) {
 
 			// Setup first time only components
-			this.$wrapper = this._template.tree.clone();
+			this.$wrapper = $(this._template.tree);
 			this.$element.empty()
 				.addClass(pluginName)
 				.append(this.$wrapper);
@@ -911,65 +771,45 @@
 			node.$el.empty();
 		}
 
-		// Append .classes to the node
-		node.$el.addClass(node.class);
-
-		// Set the #id of the node if specified
-		if (node.id) {
-			node.$el.attr('id', node.id);
-		}
-
-		// Append custom data- attributes to the node
-		if (node.dataAttr) {
-			$.each(node.dataAttr, function (key, value) {
-				node.$el.attr('data-' + key, value);
-			});
-		}
-
 		// Set / update nodeid; it can change as a result of addNode etc.
 		node.$el.attr('data-nodeId', node.nodeId);
 
-		// Set the tooltip attribute if present
-		if (node.tooltip) {
-			node.$el.attr('title', node.tooltip);
-		}
-
 		// Add indent/spacer to mimic tree structure
 		for (var i = 0; i < (node.level - 1); i++) {
-			node.$el.append(this._template.indent.clone());
+			node.$el.append(this._template.indent);
 		}
 
 		// Add expand / collapse or empty spacer icons
 		node.$el
-			.append(
-				node.nodes || node.lazyLoad ? this._template.icon.expand.clone() : this._template.icon.empty.clone()
+			.append($(this._template.icon)
+				.addClass(node.nodes ? 'expand-icon' : this._options.emptyIcon)
 			);
 
-		// Add checkbox and node icons
-		if (this._options.checkboxFirst) {
-			this._addCheckbox(node);
-			this._addIcon(node);
-			this._addImage(node);
-		} else {
-			this._addIcon(node);
-			this._addImage(node);
-			this._addCheckbox(node);
+		// Add node icon
+		if (this._options.showIcon) {
+			node.$el
+				.append($(this._template.icon)
+					.addClass('node-icon')
+					.addClass(node.icon || this._options.nodeIcon)
+				);
+		}
+
+		// Add checkable icon
+		if (this._options.showCheckbox) {
+			node.$el
+				.append($(this._template.icon)
+					.addClass('check-icon')
+				);
 		}
 
 		// Add text
-		if (this._options.wrapNodeText) {
-			var wrapper = this._template.text.clone();
-			node.$el.append(wrapper);
-			wrapper.append(node.text);
-		} else {
-			node.$el.append(node.text);
-		}
+		node.$el.append(node.text);
 
 		// Add tags as badges
 		if (this._options.showTags && node.tags) {
 			$.each(node.tags, $.proxy(function addTag(id, tag) {
 				node.$el
-					.append(this._template.badge.clone()
+					.append($(this._template.badge)
 						.append(tag)
 					);
 			}, this));
@@ -987,43 +827,17 @@
 		this._triggerEvent('nodeRendered', node, _default.options);
 	};
 
-	// Add checkable icon
-	Tree.prototype._addCheckbox = function (node) {
-		if (this._options.showCheckbox && (node.hideCheckbox === undefined || node.hideCheckbox === false)) {
-			node.$el
-				.append(this._template.icon.check.clone());
-		}
-	}
-
-	// Add node icon
-	Tree.prototype._addIcon = function (node) {
-		if (this._options.showIcon && !(this._options.showImage && node.image)) {
-			node.$el
-				.append(this._template.icon.node.clone()
-					.addClass(node.icon || this._options.nodeIcon)
-				);
-		}
-	}
-
-	Tree.prototype._addImage = function (node) {
- 		if (this._options.showImage && node.image) {
- 			node.$el
- 				.append(this._template.image.clone()
- 					.addClass('node-image')
- 					.css('background-image', "url('" + node.image + "')")
- 				);
- 		}
- 	}
-
 	// Creates a new node element from template and
 	// ensures the template is inserted at the correct position
 	Tree.prototype._newNodeEl = function (node, previousNode) {
-		var $el = this._template.node.clone();
+		var $el = $(this._template.node);
 
 		if (previousNode) {
 			// typical usage, as nodes are rendered in
 			// sort order we add after the previous element
-			previousNode.$el.after($el);
+			this.$wrapper.children()
+				.eq(previousNode.$el.index())
+				.after($el);
 		} else {
 			// we use prepend instead of append,
 			// to cater for root inserts i.e. nodeId 0.0
@@ -1119,12 +933,6 @@
 			style += '.node-' + this._elementId + '.node-selected:hover{' + innerStyle + '}';
 		}
 
-		// Style changed nodes
-		if (this._options.highlightChanges) {
-			var innerStyle = 'color: ' + this._options.changedNodeColor + ';';
-			style += '.node-' + this._elementId + '.node-check-changed{' + innerStyle + '}';
-		}
-
 		// Node level style overrides
 		$.each(this._orderedNodes, $.proxy(function (index, node) {
 			if (node.color || node.backColor) {
@@ -1143,18 +951,11 @@
 	};
 
 	Tree.prototype._template = {
-		tree: $('<ul class="list-group"></ul>'),
-		node: $('<li class="list-group-item"></li>'),
-		indent: $('<span class="indent"></span>'),
-		icon: {
-			node: $('<span class="icon node-icon"></span>'),
-			expand: $('<span class="icon expand-icon"></span>'),
-			check: $('<span class="icon check-icon"></span>'),
-			empty: $('<span class="icon"></span>')
-		},
-		image: $('<span class="image"></span>'),
-		badge: $('<span class="badge"></span>'),
-		text: $('<span class="text"></span>')
+		tree: '<ul class="list-group"></ul>',
+		node: '<li class="list-group-item"></li>',
+		indent: '<span class="indent"></span>',
+		icon: '<span class="icon"></span>',
+		badge: '<span class="badge"></span>'
 	};
 
 	Tree.prototype._css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
@@ -1535,13 +1336,6 @@
 		options = $.extend({}, _default.options, options);
 
 		$.each(nodes, $.proxy(function (index, node) {
-			// Do not re-expand already expanded nodes
-			if (node.state.expanded) return;
-
-			if (typeof(this._options.lazyLoad) === 'function' && node.lazyLoad) {
-				this._lazyLoad(node);
-			}
-
 			this._setExpanded(node, true, options);
 			if (node.nodes) {
 				this._expandLevels(node.nodes, options.levels-1, options);
@@ -1611,9 +1405,7 @@
 	Tree.prototype.checkAll = function (options) {
 		options = $.extend({}, _default.options, options);
 
-		var nodes = $.grep(this._orderedNodes, function (node) {
-			return !node.state.checked;
-		});
+		var nodes = this._findNodes('false', 'state.checked');
 		$.each(nodes, $.proxy(function (index, node) {
 			this._setChecked(node, true, options);
 		}, this));
@@ -1643,9 +1435,7 @@
 	Tree.prototype.uncheckAll = function (options) {
 		options = $.extend({}, _default.options, options);
 
-		var nodes = $.grep(this._orderedNodes, function (node) {
-			return node.state.checked || node.state.checked === undefined;
-		});
+		var nodes = this._findNodes('true', 'state.checked');
 		$.each(nodes, $.proxy(function (index, node) {
 			this._setChecked(node, false, options);
 		}, this));
@@ -1685,16 +1475,6 @@
 		}, this));
 	};
 
-	/**
-		Saves the current state of checkboxes as default, cleaning up any highlighted changes
-	*/
-	Tree.prototype.unmarkCheckboxChanges = function () {
-		this._inheritCheckboxChanges();
-
-		$.each(this._nodes, function (index, node) {
-			node.$el.removeClass('node-check-changed');
-		});
-	};
 
 	/**
 		Disable all tree nodes
@@ -1880,7 +1660,7 @@
 			return this._getNodeValue(_obj, _attr);
 		}
 		else {
-			if (obj.hasOwnProperty(attr) && obj[attr] !== undefined) {
+			if (obj.hasOwnProperty(attr)) {
 				return obj[attr].toString();
 			}
 			else {
@@ -1900,9 +1680,6 @@
 	$.fn[pluginName] = function (options, args) {
 
 		var result;
-		if (this.length == 0) {
-			throw "No element has been found!";
-		}
 
 		this.each(function () {
 			var _this = $.data(this, pluginName);

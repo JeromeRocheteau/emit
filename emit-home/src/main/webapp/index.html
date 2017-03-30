@@ -51,216 +51,70 @@
 			return name;
 		}
 		
-		$scope.retrive_measure_name = function(measure){
-			var name ="";
-			angular.forEach($scope.measurelist, function(value) {//$scope.measurandlist
-				if(measure == value.name){
-					name = value.name;
-				}
+		
+		
+		$scope.fill_measurement = function(key){
+			console.log(key);
+			$scope.measurementlist = [];
+			
+			$http.get("http://172.21.50.3:8080/emit/measurement/list",
+					{
+						"params" : {
+							"fkey" : key
+						}
+					}).then(function(success) {
+						$scope.measurementlist = success.data;
+				
+						console.log(angular.toJson(success.data));
+					console.log(angular.toJson($scope.measurementlist));
+			}, function(error) {
+				$scope.measurementlist = [];
+				
 			});
-			return name;
 		}
 		
 		
-		var initSelectableTree = function() {
-	          return $('#tree').treeview({
-	            data: tree,
-	            multiSelect: false,
-	            onNodeSelected: function(event, node) {
-	             console.log(node.id +' was selected')
-	             switch(node.id){
-	             case "measurand": fillExperiment(node);
-	            
-	             break;
-	             case"experiment":{
-	            	 console.log('resultat en cour de saisie');
-	            	 fillMeasurementSet(node);	            	 
-	             }break;
-	             case"measurementSet":fillMeasurement(node);	             
-	             break;
-	             case"measurement":$scope.afficher_test(node.key);
-	             
-	             break;
-	             }
-	             
-	             //$scope.afficher_test(node.text);
-	            },
-	            onNodeUnselected: function (event, node) {
-	             
-	            }
-	          });
-	        };
-	        
-	       
-	        	
-	        
-		
-			
-			
-			
-			function fillMeasurement(node){
-				var old = node;
-				console.log('debut de la fonction');
-				node.selectable  = false;				
-				node.state= { expanded: true };
-				var $selectableTree = initSelectableTree();
-				var temp = [];
-				
-				$http.get("http://172.21.50.3:8080/emit/measurement/list",
-						{
-							"params" : {
-								"fkey" :node.key
-							}
-						}).then(function(success) {
-							var measurement =success.data;
-							
-							var i = 0;
-							angular.forEach(measurement, function(value){
-								
-								var data = {										
-									
-									count:i,									
-									text:$scope.retrive_measure_name(value.measure),
-									color:"black",
-									key:value.data,
-									id:"measurement",
-									selectable:true,									
-									state: { expanded: false },	
-									nodes:""
-								}
-								temp[i] = data;
-								i++;								
-							});
-						node.nodes = temp;
-						tree[node.measurand].nodes[node.experiment].nodes[node.count] =node; 	
-						var $selectableTree = initSelectableTree();
-						console.log("objet intéréssant");
-						
-						});
-			
-			}
-			
-			function fillMeasurementSet(node){
-				console.log('debut de la fonction');
-				
-				node.selectable  = false;				
-				node.state= { expanded: true };
-				var $selectableTree = initSelectableTree();
-				var temp = [];
-				
-				$http.get("http://172.21.50.3:8080/emit/measurementSet/list",
-						{
-							"params" : {
-								"fkey" :node.key
-							}
-						}).then(function(success) {
-							var measurementSet =success.data;
-							
-							var i = 0;
-							angular.forEach(measurementSet, function(value){
-								
-								var data = {										
-									measurand:node.measurand,
-									experiment:node.count,
-									count:i,									
-									text:$scope.retrive_instrument_name(value.instrument),
-									color:"black",
-									key:value.id,
-									id:"measurementSet",
-									selectable:true,									
-									state: { expanded: false },	
-									nodes:""
-								}
-								temp[i] = data;
-								i++;								
-							});
-						node.nodes = temp;
-						tree[node.measurand].nodes[node.count] =node; 	
-						var $selectableTree = initSelectableTree();	
-						});
-			
-			}
-			
-			function fillExperiment(node){
-				
-				//$('#tree').treeview('removeNode', [ node, { silent: true } ]);
-				
-				
-				
-				console.log('debut de la fonction');
-				//node.selectable  = false;				
-				//node.state= { expanded: true };
-				
-				var data_update = {					
-						
-						text:node.text,
-						color:"black",					
-						id:"measurand",
-						selectable:false,						
-						
-						
-					};				
-				$('#tree').treeview('updateNode', [ node, data_update, { silent: true } ]  );
-				
-				var temp = [];
-				$http.get("http://172.21.50.3:8080/emit/experiment/list",
-						{
-							"params" : {
-								"fkey" :node.key
-							}
-						}).then(function(success) {
-							var experiment = success.data;
-							var i = 0;
-							angular.forEach(experiment, function(value){
-								var data = {								
-									
-									text:value.started,
-									color:"black",
-									key:value.id,
-									id:"experiment",
-									selectable:true,									
-								
-									
-								}
-								temp[i] = data;
-								i++;
-							});
-							
-							
-							
-							
-							console.log('resultat final');
-							
-						$('#tree').treeview('addNode', [ temp, node, false, { silent: true } ]);
-							
-							
-						});	
-				
-			
-			
-			};
-			
-			function fillMeasurand(){
-				var i = 0;
-				angular.forEach($scope.measurandlist, function(value){
-					var data = {							
-						
-						text:value.name,
-						color:"black",
-						key:value.process,
-						id:"measurand",
-						selectable:true,						
-						state: { expanded: false }
-						
-					};				
-					tree[i] =data;
-					
+		$scope.fill_measurementset = function(key){
+			var i = 0;
+			$scope.measurementsetlist = [];
+			console.log("je suis bien actif");
+			console.log(key);
+			$http.get("http://172.21.50.3:8080/emit/measurementSet/list",
+					{
+						"params" : {
+							"fkey" : key
+						}
+					}).then(function(success) {
+				var measurementset = success.data;
+				angular.forEach(measurementset, function(value) {					
+					$scope.measurementsetlist[i] = value;
+					$scope.measurementsetlist[i].name = $scope.retrive_instrument_name(value.instrument);
 					i++;
 				});
+				console.log(angular.toJson($scope.measurementsetlist));
+				console.log(success.data);
+			}, function(error) {
+				$scope.measurementsetlist = [];
 				
-				var $selectableTree = initSelectableTree();
-				
-			};
+			});
+			
+			
+		}
+		
+		
+		$scope.fill_experiment = function(key){
+			$scope.measurementsetlist = [];
+			$http.get("http://172.21.50.3:8080/emit/experiment/list",
+					{
+						"params" : {
+							"fkey" : key
+						}
+					}).then(function(success) {
+				$scope.experimentlist = success.data;
+			}, function(error) {
+				$scope.environments = [];
+			});
+		}
 			
 			
 	
@@ -286,7 +140,7 @@
 				$scope.measurandlist =  values[5].data;
 				$scope.measurementsetlist = values[6].data;
 				//réalisation des opérations souaitées
-				fillMeasurand();
+				
 			});
 		
 		}
@@ -417,9 +271,22 @@
 		
 		<div class="navbar-default sidebar" role="navigation">
                 <div  id ="acordion" class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-                     	 <div id="tree"></div>
-                     </ul>                   
+                    <ul class="nav scrollLites" id="side-menu">
+                     	 <li ng-repeat="x in measurandlist">
+                     	 <a ng-click="fill_experiment(x.process)">{{x.name}}</a></li>
+                     </ul>
+                      <ul class="nav scrollLites" id="side-menu">
+                     	 <li ng-repeat="x in experimentlist">
+                     	 <a ng-click="fill_measurementset(x.id)">{{x.started  | date:"MM/dd/yyyy 'at' h:mma"}}</a></li>
+                     </ul> 
+                     <ul class="nav scrollLites" id="side-menu">
+                     	 <li ng-repeat="x in measurementsetlist">
+                     	 <a ng-click="fill_measurement(x.id)">{{x.name}}</a></li>
+                     </ul> 
+                     <ul class="nav scrollLites" id="side-menu">
+                     	 <li ng-repeat="x in measurementlist">
+                     	 <a ng-click="afficher_test(x.data)">{{x.measure}}</a></li>
+                     </ul>                    
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
