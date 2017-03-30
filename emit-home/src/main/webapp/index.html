@@ -271,18 +271,22 @@
 		
 		<div class="navbar-default sidebar" role="navigation">
                 <div  id ="acordion" class="sidebar-nav navbar-collapse">
+                	<b>measurand</b>
                     <ul class="nav scrollLites" id="side-menu">
                      	 <li ng-repeat="x in measurandlist">
                      	 <a ng-click="fill_experiment(x.process)">{{x.name}}</a></li>
                      </ul>
+                     <b>experiment</b>
                       <ul class="nav scrollLites" id="side-menu">
                      	 <li ng-repeat="x in experimentlist">
                      	 <a ng-click="fill_measurementset(x.id)">{{x.started  | date:"MM/dd/yyyy 'at' h:mma"}}</a></li>
-                     </ul> 
+                     </ul>
+                     <b>measurementset</b> 
                      <ul class="nav scrollLites" id="side-menu">
                      	 <li ng-repeat="x in measurementsetlist">
                      	 <a ng-click="fill_measurement(x.id)">{{x.name}}</a></li>
-                     </ul> 
+                     </ul>
+                     <b>measurement</b>  
                      <ul class="nav scrollLites" id="side-menu">
                      	 <li ng-repeat="x in measurementlist">
                      	 <a ng-click="afficher_test(x.data)">{{x.measure}}</a></li>
