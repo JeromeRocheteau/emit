@@ -76,6 +76,7 @@
 		
 		$scope.fill_measurementset = function(key){
 			var i = 0;
+			$scope.measurementlist = [];
 			$scope.measurementsetlist = [];
 			console.log("je suis bien actif");
 			console.log(key);
@@ -104,6 +105,7 @@
 		
 		$scope.fill_experiment = function(key){
 			$scope.measurementsetlist = [];
+			$scope.measurementlist = [];
 			$http.get("http://172.21.50.3:8080/emit/experiment/list",
 					{
 						"params" : {
@@ -183,57 +185,10 @@
 
 						}
 					});
-		}
-
-		$scope.modify = function(primarykey, info) {
-			sessionStorage.setItem("primarykey", primarykey);
-			sessionStorage.setItem("info", info);
-		}
-		$scope.deleteobject = function(element, adresse_delete, primarykey) {
-			var can_delete = true;
-			switch (element) {
-			case 'instrument':
-				angular.forEach($scope.measurementsetlist, function(value) {
-					if (value.instrument == primarykey) {
-						can_delete = false;
-					}
-				});
-				break;
-			case 'environment':
-				angular.forEach($scope.experimentlist, function(value) {
-					if (value.environment == primarykey) {
-						can_delete = false;
-					}
-				});
-				break;
-			case 'measurement':
-				angular.forEach($scope.experimentlist, function(value) {
-					if (value.measurand == primarykey) {
-						can_delete = false;
-					}
-				});
-				break;
-			default:
-				alert("Not possible yet");
-				can_delete = false;
-			}
-
-			if (can_delete == true) {
-				var data = {
-					uri : primarykey
 				}
-				var url_delete = "http://172.21.50.3:8080/emit" + adresse_delete;
-				$http.post(url_delete, data).then(function(response) {
 
-				});
-				alert("This " + element + " is deleted");
-				$scope.refresh();
-			} else {
-				alert("This " + element + " can't be deleted");
-			}
-
-		}
-	});
+	
+		});
 </script>
 <body ng-app="app" ng-controller="myCtrl">
 	<header>
