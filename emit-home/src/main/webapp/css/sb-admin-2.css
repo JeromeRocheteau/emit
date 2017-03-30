@@ -89,6 +89,11 @@ body {
 	
 	}
 	
+/*----------------------------------scroll-list-----------------------------------*/	
 
+.scrollLites{
+	height:200px; 
+	overflow-y:scroll;
+}
 
  
