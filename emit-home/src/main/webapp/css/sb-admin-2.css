@@ -17,7 +17,7 @@ body {
 @media (min-width: 768px) {
   #page-wrapper {
     position: inherit;
-    margin: 0 0 0 300px;
+    margin: 50px 0 0 300px;
     padding: 0 30px;
     border-left: 1px solid #e7e7e7;
   }
@@ -27,6 +27,12 @@ body {
 
 #navigation_barre{
 	background-color: rgb(72, 72, 83);
+	position:fixed;
+	width: 100%;
+	margin: 0 0;
+	top:0;
+
+
 }
 
 .sidebar .sidebar-nav.navbar-collapse {
