@@ -8,10 +8,13 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link href="css/sb-admin-2.css" rel="stylesheet">
+<link href="css/bootstrap-slider.css" rel="stylesheet">
 </head>
 <script type="text/javascript" src="DJS/Chart.min.js"></script>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="DJS/bootstrap-slider.js"></script>
+<script type='text/javascript' src="DJS/highlight.min.js"></script>
 <script type="text/javascript"
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript"
@@ -20,6 +23,7 @@
 
 <script type="text/javascript" src="DJS/sb-admin-2.js"></script>
 <script type="text/javascript" src="DJS/bootstrap-treeview.js"></script>
+
 <script type="text/javascript">
 	var app = angular.module('app', [ 'chart.js' ]);
 
@@ -33,8 +37,6 @@
 			.controller(
 					'controller',
 					function($scope, $http, $q) {
-
-						$("#timeslider").slider({});
 						$scope.afficher_test = function() {
 							var retour = [];
 							var abscissa = [];
@@ -62,26 +64,22 @@
 														points, evt) {
 													console.log(points, evt);
 												}
-												$scope.startedtime = Math.max
-												.apply(
-														Math,
-														abscissa
-																.map(function(
-																		o) {
-																	return o;
-																}));
+												$scope.startedtime = Math.min
+														.apply(
+																Math,
+																abscissa
+																		.map(function(
+																				o) {
+																			return o;
+																		}));
 												$scope.stoppedtime = Math.max
-												.apply(
-														Math,
-														abscissa
-																.map(function(
-																		o) {
-																	return o;
-																}));
-												console.log(abscissa);
-												console.log(points);
-												console.log(points.y);
-												console.log(globalSerie);
+														.apply(
+																Math,
+																abscissa
+																		.map(function(
+																				o) {
+																			return o;
+																		}));
 												$scope.maximum = Math.max
 														.apply(
 																Math,
@@ -100,6 +98,16 @@
 																		}));
 												$scope.average = $scope
 														.calc_average(ordinate);
+												$("#timeslider")
+														.slider(
+																{
+																	id : "timeslider",
+																	min : $scope.startedtime,
+																	max : $scope.stoppedtime,
+																	value : [
+																			$scope.startedtime,
+																			$scope.stoppedtime ]
+																});
 											});
 						}
 						$scope.calc_average = function(data) {
@@ -108,12 +116,19 @@
 								sum += parseInt(data[i], 10);
 							}
 							var avg = sum / data.length;
-							console.log(data);
-							console.log(sum);
-							console.log(avg);
 							return avg;
 						};
-
+						
+						
+						/*$("#timeslider").on('slideStart', Update_values);*/
+						$("#timeslider").on('slideStart', function(slideEvt) {
+							$("#ex6SliderVal").text(slideEvt.value);
+						});
+						var Update_values = function() {
+							console.log('coucou');
+							var value_returned = $("#timeslider").slider('getValue');
+							console.log(value_returned);
+						};
 					});
 </script>
 <body ng-app="app" ng-controller="controller">
@@ -163,26 +178,29 @@
 				chart-labels="labels" chart-series="series" chart-options="options"
 				chart-dataset-override="datasetOverride" chart-click="onClick">
 			</canvas>
-			<li>
-			<b>€ {{ startedtime }}</b> <input id="timeslider" type="text" class="span2" value=""
-				data-slider-min= "{{ startedtime }}" data-slider-max="{{ stoppedtime }}" data-slider-step="0.1"
-				data-slider-value="[{{ startedtime }},{{ stoppedtime }}]" /> <b>€ {{ stoppedtime }}</b>
-			</li>
-			<li	class="list-group-item">
-				<h4 class="list-group-item-heading">Minimum</h4>
-				<p class="list-group-item-text">{{ minimum }}</p>
-			</li>
-			<li class="list-group-item">
-				<h4 class="list-group-item-heading">Average</h4>
-				<p class="list-group-item-text">{{ average }}</p>
-			</li> 
-			<li class="list-group-item">
-				<h4 class="list-group-item-heading">Maximum</h4>
-				<p class="list-group-item-text">{{ maximum }}</p>
-			</li> <a class="list-group-item">
-				<h4 class="list-group-item-heading">Average</h4>
-				<p class="list-group-item-text">{{ average }}</p>
-			</li>
+			<ul>
+				<li class="list-group-item">Time range: <b>{{ startedtime
+						}}</b> <input id="timeslider" type="text" class="span2" value="0"
+					data-slider-min="0" data-slider-max="1" data-slider-step="0.1"
+					data-slider-value="[0,1]" /> <b>{{ stoppedtime }} s.</b>
+				<li />
+				<li class="list-group-item">
+					<h4 class="list-group-item-heading">Minimum</h4>
+					<p class="list-group-item-text">{{ minimum }}</p>
+				</li>
+				<li class="list-group-item">
+					<h4 class="list-group-item-heading">Average</h4>
+					<p class="list-group-item-text">{{ average }}</p>
+				</li>
+				<li class="list-group-item">
+					<h4 class="list-group-item-heading">Maximum</h4>
+					<p class="list-group-item-text">{{ maximum }}</p>
+				</li>
+				<a class="list-group-item">
+					<h4 class="list-group-item-heading">Average</h4>
+					<p class="list-group-item-text">{{ average }}</p>
+					</li>
+			</ul>
 		</div>
 	</div>
 </body>
