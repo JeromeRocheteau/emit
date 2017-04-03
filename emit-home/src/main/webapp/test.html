@@ -9,6 +9,7 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link href="css/sb-admin-2.css" rel="stylesheet">
 <link href="css/bootstrap-slider.css" rel="stylesheet">
+<link href="css/rzslider.css" rel="stylesheet">
 </head>
 <script type="text/javascript" src="DJS/Chart.min.js"></script>
 <script type="text/javascript"
@@ -21,11 +22,12 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript" src="DJS/angular-chart.min.js"></script>
 
+<script type="text/javascript" src="DJS/rzslider.js"></script>
 <script type="text/javascript" src="DJS/sb-admin-2.js"></script>
 <script type="text/javascript" src="DJS/bootstrap-treeview.js"></script>
 
 <script type="text/javascript">
-	var app = angular.module('app', [ 'chart.js' ]);
+	var app = angular.module('app', [ 'chart.js','rzModule']);
 
 	app.filter('ceil', function() {
 		return function(input) {
@@ -118,17 +120,25 @@
 							var avg = sum / data.length;
 							return avg;
 						};
+						$scope.slider = {					
+							    minValue: 10,
+							    maxValue: 90,
+							   
+							    options: {						    	
+							        floor: 0,
+							        ceil: 100,
+							        step: 1,
+							        onEnd: function(value) {
+							            console.log($scope.slider.minValue+$scope.slider.maxValue); // logs 'on end slider-id'
+							        },
+							        translate: function(value) {
+							            return '$' + value;
+							          }
+							    }
+							};
 						
 						
-						/*$("#timeslider").on('slideStart', Update_values);*/
-						$("#timeslider").on('slideStart', function(slideEvt) {
-							$("#ex6SliderVal").text(slideEvt.value);
-						});
-						var Update_values = function() {
-							console.log('coucou');
-							var value_returned = $("#timeslider").slider('getValue');
-							console.log(value_returned);
-						}; 
+						
 					});
 </script>
 <body ng-app="app" ng-controller="controller">
@@ -180,9 +190,13 @@
 			</canvas>
 			<ul>
 				<li class="list-group-item">Time range: <b>{{ startedtime
-						}}</b> <input id="timeslider" type="text" class="span2" value="0"
-					data-slider-min="0" data-slider-max="1" data-slider-step="0.1"
-					data-slider-value="[0,1]" /> <b>{{ stoppedtime }} s.</b>
+						}}</b> <rzslider  rz-slider-model="slider.minValue"
+          					rz-slider-high="slider.maxValue"
+          					rz-slider-options="slider.options"></rzslider> <b>{{ stoppedtime }} s.</b>
+					<button type="reset" class="btn btn-default"
+						ng-click="afficher_test()">
+				<strong>refresh</strong>
+			</button>
 				<li />
 				<li class="list-group-item">
 					<h4 class="list-group-item-heading">Minimum</h4>
