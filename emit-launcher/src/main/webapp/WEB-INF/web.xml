@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+	version="3.0">
+
+  <servlet>
+    <servlet-name>type</servlet-name>
+    <servlet-class>fr.icam.emit.spy.SpyTypeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>type</servlet-name>
+    <url-pattern>/type</url-pattern>
+  </servlet-mapping>
+	
+
+  <servlet>
+    <servlet-name>info</servlet-name>
+    <servlet-class>fr.icam.emit.spy.SpyInfoServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>info</servlet-name>
+    <url-pattern>/info</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>check</servlet-name>
+    <servlet-class>fr.icam.emit.spy.SpyCheckServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>check</servlet-name>
+    <url-pattern>/check</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>launch</servlet-name>
+    <servlet-class>fr.icam.emit.spy.SpyLaunchServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>launch</servlet-name>
+    <url-pattern>/launch</url-pattern>
+  </servlet-mapping>
+
+</web-app>
