@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="css/sb-admin-2.css" rel="stylesheet">
 </head>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -20,54 +21,53 @@
 
 	app.controller('myCtrl', function($window, $scope, $http) {
 
-		$http.get("http://172.21.1.18/emit/observee/list").then(
+		$http.get("http://172.21.50.3:8080/emit/environment/list").then(
 				function(response) {
-					$scope.observees = response.data;
+					$scope.environments = response.data;
 				});
 
-		$http.get("http://172.21.1.18/emit/measurand/list").then(
+		$http.get("http://172.21.50.3:8080/emit/measurand/list").then(
 				function(response) {
 					$scope.measurands = response.data;
 				});
 
-		$http.get("http://172.21.1.18/emit/observer/list").then(
+		$http.get("http://172.21.50.3:8080/emit/instrument/list").then(
 				function(response) {
-					$scope.observers = response.data;
+					$scope.instruments = response.data;
 				});
-
+		
 		$scope.create = function() {
 			var today = new Date(); 
 			var experiment_data = {
-					id : $scope.id_experiment,
 					started : today.getTime(),
 					stopped : null,
 					measurand : $scope.measurand_selection.process,
-					observee : $scope.observee_selection.uri
+					environment : $scope.environment_selection.uri
 				};
 			
-			$http.post("http://172.21.1.18/emit/experiment/create", experiment_data)
+			$http.post("http://172.21.50.3:8080/emit/experiment/create", experiment_data)
 			.then(function(response) {
+				
+				$http.get("http://172.21.50.3:8080/emit/experiment/last").then(
+						function(response) {
+							$scope.last_experiment = response.data;
+							angular.forEach($scope.instrument_selection, function(value, key) {
+								var measurement_data = {
+										data : null,
+										achieved : null,
+										instrument : value.uri,
+										experiment : $scope.last_experiment
+									};
+									console.log(measurement_data);
+								$http.post("http://172.21.50.3:8080/emit/measurementSet/create", measurement_data)
+								.then(function(response) {
+								});
+							});
+							alert("Experiment created");
+							$scope.clear();
+						});
 			});		
-			
-			var compteur = parseInt($scope.id_experiment);
-			
-			angular.forEach($scope.observer_selection, function(value, key) {
-				var measurement_data = {
-						id : compteur,
-						data : null,
-						achieved : null,
-						observer : value.uri,
-						experiment : $scope.id_experiment
-					};
-					console.log(measurement_data);
-				$http.post("http://172.21.1.18/emit/measurementSet/create", measurement_data)
-				.then(function(response) {
-				});
-
-				compteur = compteur + 1;
-			});
-			alert("Experiment created");
-			$scope.clear();	
+						
 		};
 		
 		$scope.clear = function() {
@@ -80,21 +80,34 @@
 
 <body ng-app="app" ng-controller="myCtrl">
 	<header>
-	<a href="./index.html"><img src="./png/logo_measure.png"
-			height="100" alt="Measure" /></a>
-		<div class="navbar navbar-default navbar-custom navbar-static-top">
+		<div class="navbar navbar-default navbar-custom navbar-static-top" id="navigation_barre">
 			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed"
-						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-						aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span> <span
-							class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a href="./index.html"><span
-								class="glyphicon glyphicon-home">&ensp;</span> EMIT Home</a>
-				</div>
+				 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+				<a href="./index.html" class="navbar-brand" id = "titre_appli">EMIT</a>
+				<ul id = "menu">
+					<li class="active primaire"><a href="./index.html" class="primaire"><span
+								class="glyphicon glyphicon-home">&ensp;</span> Home</a></li>
+					
+					<li class= "dropdown primaire"> <a href="#" class="dropdown-toggle primaire"
+							data-toggle="dropdown" role="button" aria-expanded="false"><span
+								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
+								class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="./Instrument.html">Instruments</a></li>
+								<li><a href="./Environment.html">Environments</a></li>
+								<li><a href="./Measurand.html">Measurands</a></li>
+							</ul>
+						</li>
+						<li class="active primaire"><a href="./CreateExperiment.html" class="primaire"><span
+							class="glyphicon glyphicon-plus">&ensp;</span>Add experiment</a></li>
+				</ul>
+				
+				
 			</div>
 		</div>
 	</header>
@@ -104,11 +117,7 @@
 				<fieldset>
 					<legend>Plan an experiment</legend>
 					<div class="row col-md-12">
-						<input type="text" class="form-control" ng-model="id_experiment"
-							placeholder="Id of the experiment" ng-required="true" required>
-					</div>
-					<div class="row col-md-12">
-						<label>Measurands</label>
+						<label>Measurand</label>
 					</div>
 					<div class="row">
 						<div class="col-md-12 form-group">
@@ -121,26 +130,26 @@
 						</div>
 					</div>
 					<div class="row col-md-12">
-						<label>Observee</label>
+						<label>Environment</label>
 					</div>
 					<div class="row">
 						<div class="col-md-12 form-group">
 							<select class="form-control selectpicker"
-								ng-options="observee.name for observee in observees"
-								ng-model="observee_selection" title="Observee"
+								ng-options="environment.name for environment in environments"
+								ng-model="environment_selection" title="Environment"
 								ng-required="true" required>
-								<option value="" disabled>-- choose an observee --</option>
+								<option value="" disabled>-- choose an environment --</option>
 							</select>
 						</div>
 					</div>
 					<div class="row col-md-12">
-						<label>Observers</label>
+						<label>Instrument</label>
 					</div>
 					<div class="row">
 						<div class="col-md-12 form-group">
 							<select class="form-control selectpicker"
-								ng-options="observer.name for observer in observers"
-								ng-model="observer_selection" title="Observer"
+								ng-options="instrument.name for instrument in instruments"
+								ng-model="instrument_selection" title="instrument"
 								ng-required="true" required multiple>
 							</select>
 						</div>
@@ -149,7 +158,7 @@
 						<button type="reset" ng-click="clear()" class="btn btn-default">
 							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
 						</button>
-						<button ng-click="create(observer_selection)" class="btn btn">
+						<button ng-click="create(instrument_selection)" class="btn btn">
 							<span class="glyphicon glyphicon-send">&ensp;</span> Send
 						</button>
 					</div>

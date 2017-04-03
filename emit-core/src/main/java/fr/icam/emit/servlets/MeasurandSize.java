@@ -8,7 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcQueryServlet;
+import com.github.jeromerocheteau.JdbcQueryServlet;
 
 public class MeasurandSize extends JdbcQueryServlet<Integer>{
 	
@@ -17,7 +17,7 @@ public class MeasurandSize extends JdbcQueryServlet<Integer>{
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Integer size = this.doProcess(request);
-		this.doPrint(size, response);
+		this.doWrite(size, response.getWriter());
 	}
 	
 	@Override

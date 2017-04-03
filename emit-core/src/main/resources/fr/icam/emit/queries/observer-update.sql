@@ -1,1 +1,0 @@
-UPDATE observers SET uri=?, name=? WHERE uri=?;

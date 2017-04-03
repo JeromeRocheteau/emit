@@ -1,3 +1,4 @@
-select process, name  
+select process, name, deleted  
 from measurands
-limit ?,5
+where deleted = 0
+limit ?,5;

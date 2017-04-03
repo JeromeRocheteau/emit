@@ -10,7 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcQueryServlet;
+import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.Measurand;
 
@@ -20,24 +20,25 @@ public class MeasurandList extends JdbcQueryServlet<List<Measurand>> {
 
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		
+
 	}
 
 	@Override
 	protected List<Measurand> doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
 		List<Measurand> measurands = new LinkedList<Measurand>();
-        while (resultSet.next()) {
-            String process = resultSet.getString("process");
-            String name = resultSet.getString("name");
-            measurands.add(new Measurand(process, name));
-        }
-        return measurands;
+		while (resultSet.next()) {
+			String process = resultSet.getString("process");
+			String name = resultSet.getString("name");
+			Boolean deleted = resultSet.getBoolean("deleted");
+			measurands.add(new Measurand(process, name, deleted));
+		}
+		return measurands;
 	}
-	
+
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		List<Measurand> measurands = this.doProcess(request);
-        this.doPrint(measurands, response);
+		this.doWrite(measurands, response.getWriter());
 	}
 
 }

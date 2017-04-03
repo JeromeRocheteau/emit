@@ -1,1 +1,3 @@
-UPDATE measures SET name=?, unit=? WHERE name=?;
+UPDATE measures 
+SET name=?, unit=? 
+WHERE name=?;

@@ -10,7 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcQueryServlet;
+import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.Experiment;
 
@@ -19,8 +19,9 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
 	private static final long serialVersionUID = 201703011635L;
 	
 	@Override
-	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		
+	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {		 
+	            String fkey = request.getParameter("fkey");
+	            statement.setString(1,fkey);		
 	}
 
 	@Override
@@ -31,8 +32,8 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
         	long started = (resultSet.getTimestamp("started")).getTime();
         	long stopped = (resultSet.getTimestamp("stopped")).getTime();
             String measurand = resultSet.getString("measurand");
-            String observee = resultSet.getString("observee");
-            experiments.add(new Experiment(id,started,stopped,measurand,observee));
+            String environment = resultSet.getString("environment");
+            experiments.add(new Experiment(id,started,stopped,measurand,environment));
         }
         return experiments;
 	}
@@ -40,7 +41,7 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		List<Experiment> experiments = this.doProcess(request);
-        this.doPrint(experiments, response);
+        this.doWrite(experiments, response.getWriter());
 	}	
 
 }

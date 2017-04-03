@@ -5,12 +5,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcUpdateServlet;
+import com.github.jeromerocheteau.JdbcUpdateServlet;
 import com.google.gson.Gson;
 
 import fr.icam.emit.entities.Measurement;
@@ -24,9 +25,7 @@ private static final long serialVersionUID = 201703071443L;
 		Gson gson = new Gson();	
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
-		 // Measure measure = gson.fromJson(request.getInputStream().toString(), Measure.class);
 		Measurement measurement = gson.fromJson(reader, Measurement.class);
-		//statement.setLong(1, measurement.getId());
 		statement.setString(1, measurement.getData());
 		statement.setLong(2, measurement.getMeasurementSet());
 		statement.setString(3, measurement.getMeasure());			
@@ -34,7 +33,7 @@ private static final long serialVersionUID = 201703071443L;
 	}
 
 	@Override
-	protected Boolean doMap(HttpServletRequest request, int count) throws Exception {
+	protected Boolean doMap(HttpServletRequest request, int count,ResultSet resultSet) throws Exception {
 		return count > 0;
 	}
 	
@@ -42,6 +41,6 @@ private static final long serialVersionUID = 201703071443L;
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		boolean done = this.doProcess(request);
-		this.doPrint(done, response);
+		this.doWrite(done, response.getWriter());
 	}
 }

@@ -3,5 +3,6 @@ select
   data,  
   experiment,
   achieved,
-  observer
-from measurementSets;
+  instrument
+from measurementsets
+where experiment=?; 

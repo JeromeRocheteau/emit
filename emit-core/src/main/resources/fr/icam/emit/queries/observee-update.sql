@@ -1,1 +1,0 @@
-UPDATE observees SET uri=?, name=? WHERE uri=?;

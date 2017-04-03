@@ -22,7 +22,7 @@
         <artifactId>tomcat7-maven-plugin</artifactId>
         <version>2.1</version>
         <configuration>
-          <url>http://172.21.1.18/manager/text</url>
+          <url>http://172.21.50.3:8080/manager/text</url>
           <username>manager</username>
           <password>script</password>
           <path>/${project.build.finalName}</path>
@@ -33,9 +33,10 @@
 
   <dependencies>
   	<dependency>
-  		<groupId>com.github.servlet.jdbc</groupId>
+  		<groupId>com.github.jeromerocheteau</groupId>
   		<artifactId>jdbc-servlet-api</artifactId>
   		<version>1.0</version>
+  		<scope>provided</scope>
   	</dependency>
   	<dependency>
   		<groupId>javax.servlet</groupId>
@@ -50,4 +51,11 @@
   		<scope>provided</scope>
   	</dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>id</id>
+      <name>name</name>
+      <url>http://172.21.50.3/maven/repository</url>
+    </repository>
+  </repositories>
 </project>

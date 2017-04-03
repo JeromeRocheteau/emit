@@ -1,4 +1,3 @@
-select
-  name,
-  unit
-from measures;
+select name, unit, deleted
+from measures
+where deleted = 0;

@@ -1,1 +1,0 @@
-DELETE FROM observers WHERE uri=?;

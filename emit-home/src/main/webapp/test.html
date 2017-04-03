@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>EMIT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link href="css/sb-admin-2.css" rel="stylesheet">
+<link href="css/bootstrap-slider.css" rel="stylesheet">
+</head>
+<script type="text/javascript" src="DJS/Chart.min.js"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="DJS/bootstrap-slider.js"></script>
+<script type='text/javascript' src="DJS/highlight.min.js"></script>
+<script type="text/javascript"
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+<script type="text/javascript" src="DJS/angular-chart.min.js"></script>
+
+<script type="text/javascript" src="DJS/sb-admin-2.js"></script>
+<script type="text/javascript" src="DJS/bootstrap-treeview.js"></script>
+
+<script type="text/javascript">
+	var app = angular.module('app', [ 'chart.js' ]);
+
+	app.filter('ceil', function() {
+		return function(input) {
+			return Math.ceil(input);
+		};
+	});
+
+	app
+			.controller(
+					'controller',
+					function($scope, $http, $q) {
+						$scope.afficher_test = function() {
+							var retour = [];
+							var abscissa = [];
+							var ordinate = [];
+							var points = [];
+							var globalSerie = [];
+
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/test/test?file_name=emit-1464192786377.json")
+									.then(
+											function(response) {
+												retour = response.data;
+												for (var i = 0; i < retour.length; i++) {
+													abscissa[i] = retour[i].x / 1000;
+													ordinate[i] = retour[i].y;
+													points[i] = retour[i];
+												}
+												$scope.loaded_file = "Loaded file : emit-1464192786377.json";
+												globalSerie.push(points);
+												$scope.labels = abscissa
+												$scope.series = [ 'Series A' ];
+												$scope.data = globalSerie;
+												$scope.onClick = function(
+														points, evt) {
+													console.log(points, evt);
+												}
+												$scope.startedtime = Math.min
+														.apply(
+																Math,
+																abscissa
+																		.map(function(
+																				o) {
+																			return o;
+																		}));
+												$scope.stoppedtime = Math.max
+														.apply(
+																Math,
+																abscissa
+																		.map(function(
+																				o) {
+																			return o;
+																		}));
+												$scope.maximum = Math.max
+														.apply(
+																Math,
+																ordinate
+																		.map(function(
+																				o) {
+																			return o;
+																		}));
+												$scope.minimum = Math.min
+														.apply(
+																Math,
+																ordinate
+																		.map(function(
+																				o) {
+																			return o;
+																		}));
+												$scope.average = $scope
+														.calc_average(ordinate);
+												$("#timeslider")
+														.slider(
+																{
+																	id : "timeslider",
+																	min : $scope.startedtime,
+																	max : $scope.stoppedtime,
+																	value : [
+																			$scope.startedtime,
+																			$scope.stoppedtime ]
+																});
+											});
+						}
+						$scope.calc_average = function(data) {
+							var sum = 0;
+							for (var i = 0; i < data.length; i++) {
+								sum += parseInt(data[i], 10);
+							}
+							var avg = sum / data.length;
+							return avg;
+						};
+						
+						
+						/*$("#timeslider").on('slideStart', Update_values);*/
+						$("#timeslider").on('slideStart', function(slideEvt) {
+							$("#ex6SliderVal").text(slideEvt.value);
+						});
+						var Update_values = function() {
+							console.log('coucou');
+							var value_returned = $("#timeslider").slider('getValue');
+							console.log(value_returned);
+						}; 
+					});
+</script>
+<body ng-app="app" ng-controller="controller">
+	<header>
+		<div class="navbar navbar-default navbar-custom navbar-static-top"
+			id="navigation_barre">
+			<div class="container">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
+				<ul id="menu">
+					<li class="active primaire"><a href="./index.html"
+						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
+							Home</a></li>
+
+					<li class="dropdown primaire"><a href="#"
+						class="dropdown-toggle primaire" data-toggle="dropdown"
+						role="button" aria-expanded="false"><span
+							class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="./Instrument.html">Instruments</a></li>
+							<li><a href="./Environment.html">Environments</a></li>
+							<li><a href="./Measurand.html">Measurands</a></li>
+						</ul></li>
+					<li class="active primaire"><a href="./CreateExperiment.html"
+						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
+							experiment</a></li>
+				</ul>
+
+
+			</div>
+		</div>
+	</header>
+	<div id="page-wrapper">
+		<div col-md-10>
+			<button type="reset" class="btn btn-default"
+				ng-click="afficher_test()">
+				<strong>Go</strong>
+			</button>
+			<legend ng-model="loaded_file"> {{ loaded_file }} </legend>
+			<canvas id="line" class="chart chart-line" chart-data="data"
+				chart-labels="labels" chart-series="series" chart-options="options"
+				chart-dataset-override="datasetOverride" chart-click="onClick">
+			</canvas>
+			<ul>
+				<li class="list-group-item">Time range: <b>{{ startedtime
+						}}</b> <input id="timeslider" type="text" class="span2" value="0"
+					data-slider-min="0" data-slider-max="1" data-slider-step="0.1"
+					data-slider-value="[0,1]" /> <b>{{ stoppedtime }} s.</b>
+				<li />
+				<li class="list-group-item">
+					<h4 class="list-group-item-heading">Minimum</h4>
+					<p class="list-group-item-text">{{ minimum }}</p>
+				</li>
+				<li class="list-group-item">
+					<h4 class="list-group-item-heading">Average</h4>
+					<p class="list-group-item-text">{{ average }}</p>
+				</li>
+				<li class="list-group-item">
+					<h4 class="list-group-item-heading">Maximum</h4>
+					<p class="list-group-item-text">{{ maximum }}</p>
+				</li>
+				<a class="list-group-item">
+					<h4 class="list-group-item-heading">Average</h4>
+					<p class="list-group-item-text">{{ average }}</p>
+					</li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>

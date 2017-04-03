@@ -3,5 +3,6 @@ select
   started,
   stopped,
   measurand,
-  observee
-from experiments;
+  environment
+from experiments
+where measurand = ?;

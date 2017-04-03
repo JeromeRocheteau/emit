@@ -1,1 +1,3 @@
-UPDATE measurands SET process=?, name=? WHERE process=?;
+update measurands 
+set process=?, name=? 
+where process=?;

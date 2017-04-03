@@ -1,1 +1,0 @@
-DELETE FROM observees WHERE uri=?;

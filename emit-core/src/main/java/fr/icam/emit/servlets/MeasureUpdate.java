@@ -6,13 +6,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.servlet.jdbc.JdbcUpdateServlet;
+import com.github.jeromerocheteau.JdbcUpdateServlet;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -24,20 +25,18 @@ public class MeasureUpdate extends JdbcUpdateServlet<Boolean>{
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();		
-		//String Json = this.getStringJson(request); 		
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
 		Type listType = new TypeToken<List<Measure>>(){}.getType();
-		 // Measurand Measurand = gson.fromJson(request.getInputStream().toString(), Measurand.class);
-		List<Measure> observer = gson.fromJson(reader,listType);
+		List<Measure> instrument = gson.fromJson(reader,listType);
 		
-		statement.setString(3, observer.get(0).getName());
-		statement.setString(1, observer.get(1).getName());
-		statement.setString(2, observer.get(1).getUnit());
+		statement.setString(3, instrument.get(0).getName());
+		statement.setString(1, instrument.get(1).getName());
+		statement.setString(2, instrument.get(1).getUnit());
 	}
 
 	@Override
-	protected Boolean doMap(HttpServletRequest request, int count) throws Exception {
+	protected Boolean doMap(HttpServletRequest request, int count,ResultSet resultSet) throws Exception {
 		return count > 0;
 	}
 	
@@ -45,6 +44,6 @@ public class MeasureUpdate extends JdbcUpdateServlet<Boolean>{
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		boolean done = this.doProcess(request);
-		this.doPrint(done, response);
+		this.doWrite(done, response.getWriter());
 	}
 }
