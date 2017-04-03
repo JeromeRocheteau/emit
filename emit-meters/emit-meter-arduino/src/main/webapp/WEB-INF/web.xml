@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+	version="3.0">
+
+  <servlet>
+    <servlet-name>type</servlet-name>
+    <servlet-class>fr.icam.emit.arduino.ArduinoTypeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>type</servlet-name>
+    <url-pattern>/type</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>meta</servlet-name>
+    <servlet-class>fr.icam.emit.arduino.ArduinoMetaServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>meta</servlet-name>
+    <url-pattern>/meta</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>start</servlet-name>
+    <servlet-class>fr.icam.emit.arduino.ArduinoStartServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>start</servlet-name>
+    <url-pattern>/start</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>stop</servlet-name>
+    <servlet-class>fr.icam.emit.arduino.ArduinoStopServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>stop</servlet-name>
+    <url-pattern>/stop</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>data</servlet-name>
+    <servlet-class>fr.icam.emit.arduino.ArduinoDataServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>data</servlet-name>
+    <url-pattern>/data</url-pattern>
+  </servlet-mapping>
+
+</web-app>
