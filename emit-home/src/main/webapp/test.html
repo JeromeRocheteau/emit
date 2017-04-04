@@ -8,26 +8,34 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link href="css/sb-admin-2.css" rel="stylesheet">
-<link href="css/bootstrap-slider.css" rel="stylesheet">
 <link href="css/rzslider.css" rel="stylesheet">
 </head>
 <script type="text/javascript" src="DJS/Chart.min.js"></script>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="DJS/bootstrap-slider.js"></script>
-<script type='text/javascript' src="DJS/highlight.min.js"></script>
 <script type="text/javascript"
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript" src="DJS/angular-chart.min.js"></script>
-
 <script type="text/javascript" src="DJS/rzslider.js"></script>
 <script type="text/javascript" src="DJS/sb-admin-2.js"></script>
 <script type="text/javascript" src="DJS/bootstrap-treeview.js"></script>
+<script type="text/javascript" src="DJS/bootstrap-checkbox.min.js" defer></script>
 
 <script type="text/javascript">
-	var app = angular.module('app', [ 'chart.js','rzModule']);
+	var retrieved_json = [];
+
+	var ANALYSE =  {
+		general : false,
+		analyse : 'Pheasant',
+		total_conso : 54,
+		time : '15s',
+		sloc : 15,
+		std_dev : 115.1012		
+	};
+
+	var app = angular.module('app', [ 'chart.js', 'rzModule' ]);
 
 	app.filter('ceil', function() {
 		return function(input) {
@@ -39,37 +47,37 @@
 			.controller(
 					'controller',
 					function($scope, $http, $q) {
-						$scope.afficher_test = function() {
-							var retour = [];
-							var abscissa = [];
-							var ordinate = [];
-							var points = [];
-							var globalSerie = [];
-
+						$scope.an_general = ANALYSE.general;
+						$scope.an_analyse = ANALYSE.analyse;
+						$scope.an_total_conso = ANALYSE.total_conso;
+						$scope.an_time = ANALYSE.time;
+						$scope.an_sloc = ANALYSE.sloc;
+						$scope.an_std_dev = ANALYSE.std_dev;
+						$scope.retrieve_json = function() {
 							$http
 									.get(
 											"http://172.21.50.3:8080/emit/test/test?file_name=emit-1464192786377.json")
 									.then(
 											function(response) {
-												retour = response.data;
-												for (var i = 0; i < retour.length; i++) {
-													abscissa[i] = retour[i].x / 1000;
-													ordinate[i] = retour[i].y;
-													points[i] = retour[i];
-												}
+												var all_abscissa = [];
+												var all_ordinate = [];
+
 												$scope.loaded_file = "Loaded file : emit-1464192786377.json";
-												globalSerie.push(points);
-												$scope.labels = abscissa
-												$scope.series = [ 'Series A' ];
-												$scope.data = globalSerie;
-												$scope.onClick = function(
-														points, evt) {
-													console.log(points, evt);
+												$scope.series = [ 'Data',
+														'Minimum', 'Maximum',
+														'Average' ];
+
+												retrieved_json = response.data;
+
+												for (var i = 0; i < retrieved_json.length; i++) {
+													all_abscissa[i] = retrieved_json[i].x / 1000;
+													all_ordinate[i] = retrieved_json[i].y;
 												}
+
 												$scope.startedtime = Math.min
 														.apply(
 																Math,
-																abscissa
+																all_abscissa
 																		.map(function(
 																				o) {
 																			return o;
@@ -77,68 +85,96 @@
 												$scope.stoppedtime = Math.max
 														.apply(
 																Math,
-																abscissa
+																all_abscissa
 																		.map(function(
 																				o) {
 																			return o;
 																		}));
-												$scope.maximum = Math.max
-														.apply(
-																Math,
-																ordinate
-																		.map(function(
-																				o) {
-																			return o;
-																		}));
-												$scope.minimum = Math.min
-														.apply(
-																Math,
-																ordinate
-																		.map(function(
-																				o) {
-																			return o;
-																		}));
-												$scope.average = $scope
-														.calc_average(ordinate);
-												$("#timeslider")
-														.slider(
-																{
-																	id : "timeslider",
-																	min : $scope.startedtime,
-																	max : $scope.stoppedtime,
-																	value : [
-																			$scope.startedtime,
-																			$scope.stoppedtime ]
-																});
+
+												$scope.MAJ_slider();
+												$scope.refresh_chart();
 											});
-						}
-						$scope.calc_average = function(data) {
-							var sum = 0;
-							for (var i = 0; i < data.length; i++) {
-								sum += parseInt(data[i], 10);
+						};
+						$scope.refresh_chart = function() {
+							var abscissa = [];
+							var ordinate = [];
+							var minimum = [];
+							var maximum = [];
+							var average = [];
+							var points = [];
+							var serie = [];
+							var cpt = 0;
+
+							for (var i = 0; i < retrieved_json.length; i++) {
+								if ($scope.slider.minValue < (retrieved_json[i].x / 1000)
+										&& (retrieved_json[i].x / 1000) < $scope.slider.maxValue) {
+									abscissa[cpt] = retrieved_json[i].x / 1000;
+									ordinate[cpt] = retrieved_json[i].y;
+									points[cpt] = retrieved_json[i];
+									cpt++;
+								}
 							}
-							var avg = sum / data.length;
+							$scope.minimum = Math.min.apply(Math, ordinate
+									.map(function(min) {
+										return min;
+									}));
+							$scope.maximum = Math.max.apply(Math, ordinate
+									.map(function(max) {
+										return max;
+									}));
+							$scope.average = $scope.calc_average(ordinate);
+							for (var i = 0; i < ordinate.length; i++) {
+								minimum[i] = $scope.minimum;
+								maximum[i] = $scope.maximum;
+								average[i] = $scope.average;
+							}
+							serie = [ ordinate, minimum, maximum, average ];
+							$scope.labels = abscissa
+							$scope.data = serie;
+							$scope.datasetOverride = [ {
+								pointRadius : 3,
+							}, {
+								pointRadius : 0,
+								fill : false,
+							}, {
+								pointRadius : 0,
+								fill : false,
+							}, {
+								pointRadius : 0,
+								fill : false,
+							} ];
+
+						};
+						$scope.calc_average = function(values) {
+							var sum = 0;
+							for (var i = 0; i < values.length; i++) {
+								sum += parseInt(values[i], 10);
+							}
+							var avg = sum / values.length;
 							return avg;
 						};
-						$scope.slider = {					
-							    minValue: 10,
-							    maxValue: 90,
-							   
-							    options: {						    	
-							        floor: 0,
-							        ceil: 100,
-							        step: 1,
-							        onEnd: function(value) {
-							            console.log($scope.slider.minValue+$scope.slider.maxValue); // logs 'on end slider-id'
-							        },
-							        translate: function(value) {
-							            return '$' + value;
-							          }
-							    }
+						$scope.MAJ_slider = function() {
+							$scope.slider = {
+								minValue : $scope.startedtime,
+								maxValue : $scope.stoppedtime,
+
+								options : {
+									floor : $scope.startedtime,
+									ceil : $scope.stoppedtime,
+									step : 0.1,
+									precision : 1,
+									onEnd : function() {
+										$scope.refresh_chart();
+									}
+								}
 							};
-						
-						
-						
+						};
+						$scope.retrieve_json();
+						$(':checkbox').checkboxpicker();
+						$('#cb1').prop('checked', $scope.an_general);
+						$('#cb1').on('change', function() {
+							$('#cb1').prop('checked', $scope.an_general);
+						});
 					});
 </script>
 <body ng-app="app" ng-controller="controller">
@@ -171,6 +207,9 @@
 					<li class="active primaire"><a href="./CreateExperiment.html"
 						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
 							experiment</a></li>
+					<li class="active primaire"><a href="./test.html"
+						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
+							Test</a></li>
 				</ul>
 
 
@@ -180,7 +219,7 @@
 	<div id="page-wrapper">
 		<div col-md-10>
 			<button type="reset" class="btn btn-default"
-				ng-click="afficher_test()">
+				ng-click="refresh_chart()">
 				<strong>Go</strong>
 			</button>
 			<legend ng-model="loaded_file"> {{ loaded_file }} </legend>
@@ -188,33 +227,47 @@
 				chart-labels="labels" chart-series="series" chart-options="options"
 				chart-dataset-override="datasetOverride" chart-click="onClick">
 			</canvas>
-			<ul>
-				<li class="list-group-item">Time range: <b>{{ startedtime
-						}}</b> <rzslider  rz-slider-model="slider.minValue"
-          					rz-slider-high="slider.maxValue"
-          					rz-slider-options="slider.options"></rzslider> <b>{{ stoppedtime }} s.</b>
-					<button type="reset" class="btn btn-default"
-						ng-click="afficher_test()">
-				<strong>refresh</strong>
-			</button>
-				<li />
-				<li class="list-group-item">
-					<h4 class="list-group-item-heading">Minimum</h4>
-					<p class="list-group-item-text">{{ minimum }}</p>
-				</li>
-				<li class="list-group-item">
-					<h4 class="list-group-item-heading">Average</h4>
-					<p class="list-group-item-text">{{ average }}</p>
-				</li>
-				<li class="list-group-item">
-					<h4 class="list-group-item-heading">Maximum</h4>
-					<p class="list-group-item-text">{{ maximum }}</p>
-				</li>
-				<a class="list-group-item">
-					<h4 class="list-group-item-heading">Average</h4>
-					<p class="list-group-item-text">{{ average }}</p>
-					</li>
-			</ul>
+			<rzslider
+					rz-slider-model="slider.minValue" rz-slider-high="slider.maxValue"
+					rz-slider-options="slider.options"></rzslider>
+			<br>
+			<br>
+			<li class="list-group-item">
+				<h4 class="list-group-item-heading">Minimum</h4>
+				<p class="list-group-item-text">{{ minimum }}</p>
+			</li>
+			<li class="list-group-item">
+				<h4 class="list-group-item-heading">Maximum</h4>
+				<p class="list-group-item-text">{{ maximum }}</p>
+			</li>
+			<li class="list-group-item">
+				<h4 class="list-group-item-heading">Average</h4>
+				<p class="list-group-item-text">{{ average }}</p>
+			</li>
+			<li class="list-group-item">
+			<h4 class="list-group-item-heading">General result</h4>
+			<input class="form-control" id="cb1" type="checkbox" onclick="return false" onkeydown="return false">
+			</li>
+			<li class="list-group-item">
+			<h4 class="list-group-item-heading">Analyse</h4>
+			<input class="form-control" type="text" value="{{ an_analyse }}" readonly>
+			</li>
+			<li class="list-group-item">
+			<h4 class="list-group-item-heading">Total consumption</h4>
+			<input class="form-control" type="text" value="{{ an_total_conso }}" readonly>
+			</li>
+			<li class="list-group-item">
+			<h4 class="list-group-item-heading">SLOC</h4>
+			<input class="form-control" type="text" value="{{ an_sloc }}" readonly>
+			</li>
+			<li class="list-group-item">
+			<h4 class="list-group-item-heading">Time</h4>
+			<input class="form-control" type="text" value="{{ an_time }}" readonly>
+			</li>
+			<li class="list-group-item">
+			<h4 class="list-group-item-heading">Standard deviation</h4>
+			<input class="form-control" type="text" value="{{ an_std_dev }}" readonly>
+			</li>
 		</div>
 	</div>
 </body>
