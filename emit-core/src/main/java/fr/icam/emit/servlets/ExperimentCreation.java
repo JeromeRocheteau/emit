@@ -34,12 +34,12 @@ public class ExperimentCreation extends JdbcUpdateServlet<Boolean> {
 		 // Measure measure = gson.fromJson(request.getInputStream().toString(), Measure.class);
 		Experiment experiment = gson.fromJson(reader, Experiment.class);
 		Timestamp started = new Timestamp(experiment.getStarted());
-		Timestamp stopped = new Timestamp(experiment.getStopped());
+		//Timestamp stopped = new Timestamp(experiment.getStopped());
 		//statement.setLong(1, experiment.getId());
 		statement.setTimestamp(1, started);
-		statement.setTimestamp(2, stopped);
-		statement.setString(3, experiment.getMeasurand());
-		statement.setString(4, experiment.getEnvironment());		
+		//statement.setTimestamp(2, stopped);
+		statement.setString(2, experiment.getMeasurand());
+		statement.setString(3, experiment.getEnvironment());		
 		
 	}
 
