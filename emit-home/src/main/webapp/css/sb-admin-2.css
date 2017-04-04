@@ -98,8 +98,31 @@ body {
 /*----------------------------------scroll-list-----------------------------------*/	
 
 .scrollLites{
-	height:200px; 
+	height:150px; 
 	overflow-y:scroll;
+	background-color: rgb(255, 255, 255);
+	
 }
+
+.scrollLites li{
+	
+}
+
+.scrollLites li a{
+	padding:2px 1px 1px 16px;
+}
+
+.scrollLites li:hover{
+	color:#000000;
+}
+
+.scrollLites li:active{
+	color:#000000;
+}
+
+#acordion b{
+	padding-left:20px;
+}
+
 
  
