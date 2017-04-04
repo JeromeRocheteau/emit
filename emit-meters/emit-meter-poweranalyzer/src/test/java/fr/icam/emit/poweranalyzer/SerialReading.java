@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
+import purejavacomm.CommPortIdentifier;
+import purejavacomm.SerialPort;
 
 public class SerialReading implements Runnable {
 
@@ -18,7 +18,6 @@ public class SerialReading implements Runnable {
     
     private InputStreamReader reader;
     
-	 @SuppressWarnings("unchecked")
      private void doList() throws Exception {
 		 Enumeration<CommPortIdentifier> ports = CommPortIdentifier.getPortIdentifiers();
 		 if (ports.hasMoreElements()) {	
