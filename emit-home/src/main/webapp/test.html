@@ -207,9 +207,9 @@
 					<li class="active primaire"><a href="./CreateExperiment.html"
 						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
 							experiment</a></li>
-					<li class="active primaire"><a href="./test.html"
-						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
-							Test</a></li>
+							<li class="active primaire"><a href="./index.html"
+						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
+							Home</a></li>
 				</ul>
 
 
@@ -218,10 +218,6 @@
 	</header>
 	<div id="page-wrapper">
 		<div col-md-10>
-			<button type="reset" class="btn btn-default"
-				ng-click="refresh_chart()">
-				<strong>Go</strong>
-			</button>
 			<legend ng-model="loaded_file"> {{ loaded_file }} </legend>
 			<canvas id="line" class="chart chart-line" chart-data="data"
 				chart-labels="labels" chart-series="series" chart-options="options"
@@ -246,7 +242,7 @@
 			</li>
 			<li class="list-group-item">
 			<h4 class="list-group-item-heading">General result</h4>
-			<input class="form-control" id="cb1" type="checkbox" onclick="return false" onkeydown="return false">
+			<input class="form-control" id="cb1" type="checkbox">
 			</li>
 			<li class="list-group-item">
 			<h4 class="list-group-item-heading">Analyse</h4>
