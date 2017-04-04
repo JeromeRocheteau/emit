@@ -65,10 +65,10 @@
 								$scope.creating = false;
 								$scope.updating = true;
 								$scope.instrument = instrument;
-								old_uri =  instrument.uri;
+								old_uri = instrument.uri;
 								old_name = instrument.name;
 								$scope.old_name = old_name;
-								
+
 							} else {
 								$scope.creating = true;
 								$scope.updating = false;
@@ -172,17 +172,18 @@
 									});
 						}
 						var page = function() {
-							$http.get(
-									"http://172.21.50.3:8080/emit/instrument/page",
-									{
-										"params" : {
-											"offset" : $scope.offset
-										}
-									}).then(function(success) {
-								$scope.instruments = success.data;
-							}, function(error) {
-								$scope.instruments = [];
-							});
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/instrument/page",
+											{
+												"params" : {
+													"offset" : $scope.offset
+												}
+											}).then(function(success) {
+										$scope.instruments = success.data;
+									}, function(error) {
+										$scope.instruments = [];
+									});
 						}
 						$scope.prev = function() {
 							if ($scope.length <= $scope.offset) {
