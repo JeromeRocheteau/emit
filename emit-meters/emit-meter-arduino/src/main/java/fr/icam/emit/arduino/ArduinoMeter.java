@@ -10,12 +10,12 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
+import purejavacomm.CommPortIdentifier;
+import purejavacomm.SerialPort;
 
 public class ArduinoMeter implements Runnable {
 
-	private static final String PORT = "/dev/ttyACM0";
+	private static final String PORT = "COM3"; // "/dev/ttyACM0";
 	
 	private SerialPort port;
 	
@@ -48,7 +48,7 @@ public class ArduinoMeter implements Runnable {
     	this.started = true;
     	stream = port.getInputStream();
     	reader = new InputStreamReader(stream);
-		file = File.createTempFile("emit-arduino-", ".json");
+		file = File.createTempFile("emit-meter-arduino-", ".csv");
 		out = new FileOutputStream(file);
         new Thread(this).start();
     }
