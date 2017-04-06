@@ -5,9 +5,9 @@ package fr.icam.emit.entities;
 public class Experiment {
 	//comment
 	private long id;
-	private long started;
-	private long stopped;
-	private String measurand;
+	private Long started;
+	private Long stopped;
+	private Measurand measurand;
 	private String environment;	
 	
 	public long getId() {
@@ -16,22 +16,22 @@ public class Experiment {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public long getStarted() {
+	public Long getStarted() {
 		return started;
 	}
-	public void setStarted(long started) {
+	public void setStarted(Long started) {
 		this.started = started;
 	}
-	public long getStopped() {
+	public Long getStopped() {
 		return stopped;
 	}
-	public void setStopped(long stopped) {
+	public void setStopped(Long stopped) {
 		this.stopped = stopped;
 	}
-	public String getMeasurand() {
+	public Measurand getMeasurand() {
 		return measurand;
 	}
-	public void setMeasurand(String measurand) {
+	public void setMeasurand(Measurand measurand) {
 		this.measurand = measurand;
 	}
 	public String getEnvironment() {
@@ -41,7 +41,7 @@ public class Experiment {
 		this.environment = environment_uri;
 	}
 	
-	public Experiment(long id, long started,long stopped,String measurand,String environment_uri){
+	public Experiment(long id, Long started,Long stopped,Measurand measurand,String environment_uri){
 		this.setId(id);
 		this.setStarted(started);
 		this.setStopped(stopped);

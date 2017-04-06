@@ -17,6 +17,11 @@
 		</listener-class>
 	</listener>
 
+	<listener>
+		<listener-class>fr.icam.emit.listeners.LaunchListener</listener-class>
+	</listener>
+
+
 	<filter>
 		<filter-name>jdbc-filter</filter-name>
 		<filter-class>com.github.jeromerocheteau.JdbcFilter</filter-class>
@@ -410,6 +415,25 @@
 	<servlet-mapping>
 		<servlet-name>measurementSet-creation</servlet-name>
 		<url-pattern>/measurementSet/create</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>experiment-unprocessed</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.ExperimentUnprocessed</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/experiment-unprocessed.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>experiment-launch</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.ExperimentLaunch</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>experiment-launch</servlet-name>
+		<url-pattern>/experiment/launch</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
