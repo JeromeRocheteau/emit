@@ -20,6 +20,7 @@ public class ExperimentLaunch extends JdbcServlet {
 		this.doCall(request, response, "experiment-unprocessed");
 		Experiment experiment = (Experiment) request.getAttribute("experiment");
 		/* TODO */ 
+		System.out.println("PROCESSED " + experiment.getId());
 		this.doWrite(experiment, response.getWriter());
 	}
 	
