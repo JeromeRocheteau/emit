@@ -19,8 +19,6 @@ public class ExperimentLaunch extends JdbcServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		this.doCall(request, response, "experiment-unprocessed");
 		Experiment experiment = (Experiment) request.getAttribute("experiment");
-		/* TODO */ 
-		System.out.println("PROCESSED " + experiment.getId());
 		this.doWrite(experiment, response.getWriter());
 	}
 	

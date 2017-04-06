@@ -13,9 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-
 public class LaunchListener implements ServletContextListener, Runnable {
 
 	private ServletContext context;
@@ -34,16 +31,15 @@ public class LaunchListener implements ServletContextListener, Runnable {
 	}
 
 	public void run() {
+		System.out.println("DISPATCHER");
 		RequestDispatcher dispatcher = context.getNamedDispatcher("experiment-launch");
-		HttpServletRequest request = new MockHttpServletRequest(context);
+		System.out.println("REQUEST");
+		HttpServletRequest request = new MockHttpServletRequest();
+		System.out.println("RSPONSE");
 		HttpServletResponse response = new MockHttpServletResponse();
-		try {
-			dispatcher.include(request, response);
-		} catch (ServletException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		System.out.println("BEFORE " + dispatcher.getClass().getCanonicalName());
+		// dispatcher.forward(request, response);
+		System.out.println("AFTER " + dispatcher.getClass().getCanonicalName());
 	}
 
 }
