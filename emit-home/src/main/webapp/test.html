@@ -26,15 +26,55 @@
 <script type="text/javascript">
 	var retrieved_json = [];
 
-	var ANALYSE =  {
+	var ANALYSE = {
 		general : false,
 		analyse : 'Pheasant',
 		total_conso : 54,
 		time : '15s',
 		sloc : 15,
-		std_dev : 115.1012		
+		std_dev : 1.10
 	};
+	
+	function f_numerical_int(dx, y_array) {
+	    var maxy = Math.max.apply(null, y_array);
+	    var dy_array = y_array.map(function(num) {
+	        return Math.abs(maxy - num);
+	    });
+	    var profile_integral = 0;
+	    var n = dy_array.length;
+	    for (i = 1; i < n; i++) {
+	        var dy_init = dy_array[i - 1];
+	        var dy_end = dy_array[i];
+	        var darea = dx * (dy_init + dy_end) / 2.;
+	        profile_integral = profile_integral + darea;
+	    }
+	    return profile_integral;
+	}
+	
+	function f_standardDeviation(values){
+		  var avg = f_average(values);
+		  
+		  var squareDiffs = values.map(function(value){
+		    var diff = value - avg;
+		    var sqrDiff = diff * diff;
+		    return sqrDiff;
+		  });
+		  
+		  var avgSquareDiff = f_average(squareDiffs);
 
+		  var stdDev = Math.sqrt(avgSquareDiff);
+		  return stdDev;
+		};
+
+	function f_average(values) {
+		var sum = 0;
+		for (var i = 0; i < values.length; i++) {
+			sum += values[i];
+		}
+		var avg = sum / values.length;
+		return avg;
+	};
+	
 	var app = angular.module('app', [ 'chart.js', 'rzModule' ]);
 
 	app.filter('ceil', function() {
@@ -105,15 +145,18 @@
 							var serie = [];
 							var cpt = 0;
 
+							//Restriction de l'interval de visualisation
 							for (var i = 0; i < retrieved_json.length; i++) {
-								if ($scope.slider.minValue < (retrieved_json[i].x / 1000)
-										&& (retrieved_json[i].x / 1000) < $scope.slider.maxValue) {
+								if ($scope.slider.minValue <= (retrieved_json[i].x / 1000)
+										&& (retrieved_json[i].x / 1000) <= $scope.slider.maxValue) {
 									abscissa[cpt] = retrieved_json[i].x / 1000;
 									ordinate[cpt] = retrieved_json[i].y;
 									points[cpt] = retrieved_json[i];
 									cpt++;
 								}
 							}
+							
+							//Récupération des données remarquables de la courbe (min,max,moy,écart type, aire sous la courbe)
 							$scope.minimum = Math.min.apply(Math, ordinate
 									.map(function(min) {
 										return min;
@@ -122,7 +165,12 @@
 									.map(function(max) {
 										return max;
 									}));
-							$scope.average = $scope.calc_average(ordinate);
+							$scope.average = Math.round(100 * f_average(ordinate)) / 100;
+							$scope.std_dev = Math.round(100 * f_standardDeviation(ordinate)) / 100;
+							console.log(abscissa[1] - abscissa[0]);
+							$scope.AUC = Math.round(100 * f_numerical_int((abscissa[1] - abscissa[0]), ordinate)) / 100;
+							
+							//définition des courbes							
 							for (var i = 0; i < ordinate.length; i++) {
 								minimum[i] = $scope.minimum;
 								maximum[i] = $scope.maximum;
@@ -145,14 +193,8 @@
 							} ];
 
 						};
-						$scope.calc_average = function(values) {
-							var sum = 0;
-							for (var i = 0; i < values.length; i++) {
-								sum += parseInt(values[i], 10);
-							}
-							var avg = sum / values.length;
-							return avg;
-						};
+
+						//Slider
 						$scope.MAJ_slider = function() {
 							$scope.slider = {
 								minValue : $scope.startedtime,
@@ -169,12 +211,15 @@
 								}
 							};
 						};
-						$scope.retrieve_json();
+						
+						//Checkbox stylisées YES/NO
 						$(':checkbox').checkboxpicker();
 						$('#cb1').prop('checked', $scope.an_general);
 						$('#cb1').on('change', function() {
 							$('#cb1').prop('checked', $scope.an_general);
 						});
+						
+						$scope.retrieve_json();
 					});
 </script>
 <body ng-app="app" ng-controller="controller">
@@ -207,7 +252,7 @@
 					<li class="active primaire"><a href="./CreateExperiment.html"
 						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
 							experiment</a></li>
-							<li class="active primaire"><a href="./index.html"
+					<li class="active primaire"><a href="./index.html"
 						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
 							Home</a></li>
 				</ul>
@@ -223,46 +268,54 @@
 				chart-labels="labels" chart-series="series" chart-options="options"
 				chart-dataset-override="datasetOverride" chart-click="onClick">
 			</canvas>
-			<rzslider
-					rz-slider-model="slider.minValue" rz-slider-high="slider.maxValue"
-					rz-slider-options="slider.options"></rzslider>
-			<br>
-			<br>
+			<rzslider rz-slider-model="slider.minValue"
+				rz-slider-high="slider.maxValue" rz-slider-options="slider.options"></rzslider>
+			<br> <br>
 			<li class="list-group-item">
-				<h4 class="list-group-item-heading">Minimum</h4>
-				<p class="list-group-item-text">{{ minimum }}</p>
+				<h4 class="list-group-item-heading">Minimum</h4> <input
+				class="form-control" type="text" value="{{ minimum }}" readonly>
 			</li>
 			<li class="list-group-item">
-				<h4 class="list-group-item-heading">Maximum</h4>
-				<p class="list-group-item-text">{{ maximum }}</p>
+				<h4 class="list-group-item-heading">Maximum</h4> <input
+				class="form-control" type="text" value="{{ maximum }}" readonly>
 			</li>
 			<li class="list-group-item">
-				<h4 class="list-group-item-heading">Average</h4>
-				<p class="list-group-item-text">{{ average }}</p>
+				<h4 class="list-group-item-heading">Average</h4> <input
+				class="form-control" type="text" value="{{ average }}" readonly>
 			</li>
 			<li class="list-group-item">
-			<h4 class="list-group-item-heading">General result</h4>
-			<input class="form-control" id="cb1" type="checkbox">
+				<h4 class="list-group-item-heading">Standard deviation</h4> <input
+				class="form-control" type="text" value="{{ std_dev }}" readonly>
 			</li>
 			<li class="list-group-item">
-			<h4 class="list-group-item-heading">Analyse</h4>
-			<input class="form-control" type="text" value="{{ an_analyse }}" readonly>
+				<h4 class="list-group-item-heading">Area under the curve</h4> <input
+				class="form-control" type="text" value="{{ AUC }}" readonly>
+			</li> <br> <br>
+			<legend>Results of the analysis</legend>
+			<li class="list-group-item">
+				<h4 class="list-group-item-heading">General result</h4> <input
+				class="form-control" id="cb1" type="checkbox">
 			</li>
 			<li class="list-group-item">
-			<h4 class="list-group-item-heading">Total consumption</h4>
-			<input class="form-control" type="text" value="{{ an_total_conso }}" readonly>
+				<h4 class="list-group-item-heading">Analyse</h4> <input
+				class="form-control" type="text" value="{{ an_analyse }}" readonly>
 			</li>
 			<li class="list-group-item">
-			<h4 class="list-group-item-heading">SLOC</h4>
-			<input class="form-control" type="text" value="{{ an_sloc }}" readonly>
+				<h4 class="list-group-item-heading">Total consumption</h4> <input
+				class="form-control" type="text" value="{{ an_total_conso }}"
+				readonly>
 			</li>
 			<li class="list-group-item">
-			<h4 class="list-group-item-heading">Time</h4>
-			<input class="form-control" type="text" value="{{ an_time }}" readonly>
+				<h4 class="list-group-item-heading">SLOC</h4> <input
+				class="form-control" type="text" value="{{ an_sloc }}" readonly>
 			</li>
 			<li class="list-group-item">
-			<h4 class="list-group-item-heading">Standard deviation</h4>
-			<input class="form-control" type="text" value="{{ an_std_dev }}" readonly>
+				<h4 class="list-group-item-heading">Time</h4> <input
+				class="form-control" type="text" value="{{ an_time }}" readonly>
+			</li>
+			<li class="list-group-item">
+				<h4 class="list-group-item-heading">Standard deviation</h4> <input
+				class="form-control" type="text" value="{{ an_std_dev }}" readonly>
 			</li>
 		</div>
 	</div>
