@@ -38,7 +38,7 @@ public class ExperimentCreation extends JdbcUpdateServlet<Boolean> {
 		//statement.setLong(1, experiment.getId());
 		statement.setTimestamp(1, started);
 		//statement.setTimestamp(2, stopped);
-		statement.setString(2, experiment.getMeasurand());
+		statement.setString(2, experiment.getMeasurand().getProcess());
 		statement.setString(3, experiment.getEnvironment());		
 		
 	}

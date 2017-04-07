@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.Experiment;
+import fr.icam.emit.entities.Measurand;
 
 public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> { 
 	
@@ -31,8 +32,9 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
         	int id = resultSet.getInt("id");        	
         	long started = (resultSet.getTimestamp("started")).getTime();
         	long stopped = (resultSet.getTimestamp("stopped")).getTime();
-            String measurand = resultSet.getString("measurand");
+            String process = resultSet.getString("measurand");
             String environment = resultSet.getString("environment");
+            Measurand measurand = new Measurand(process, null, null);
             experiments.add(new Experiment(id,started,stopped,measurand,environment));
         }
         return experiments;

@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.icam.emit.api.Emit;
 import fr.icam.emit.api.Feature;
-import fr.icam.emit.entities.Measure;
+import fr.icam.emit.api.Measure;
 
 public class PowerAnalyzerMetaServlet extends HttpServlet {
 

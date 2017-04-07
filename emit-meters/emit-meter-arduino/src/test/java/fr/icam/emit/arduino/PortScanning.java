@@ -1,8 +1,8 @@
 package fr.icam.emit.arduino;
 
-import gnu.io.CommPortIdentifier;
-
 import java.util.Enumeration;
+
+import purejavacomm.CommPortIdentifier;
 
 public class PortScanning {
 
