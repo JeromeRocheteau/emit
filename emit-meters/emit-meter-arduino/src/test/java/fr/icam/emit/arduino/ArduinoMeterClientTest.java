@@ -18,11 +18,13 @@ public class ArduinoMeterClientTest {
     	Meter app = new Meter(uri);
     	long time = Calendar.getInstance().getTimeInMillis();
     	long stop = time;
+    	
 		System.out.println(app.isMeter());
 		List<Feature> features = app.getFeatures();
 		for (Feature f : features) {
 			System.out.println(f.getName() + " -> " + f.getMeasure().getName());
 		}
+		
     	app.doStart();
     	while ((time - stop) < PROC_TIME) {
     		time = Calendar.getInstance().getTimeInMillis();
