@@ -35,7 +35,7 @@
 		std_dev : 1.10
 	};
 	
-	function f_numerical_int(dx, y_array) {
+	function f_integral(dx, y_array) {
 	    var maxy = Math.max.apply(null, y_array);
 	    var dy_array = y_array.map(function(num) {
 	        return Math.abs(maxy - num);
@@ -110,7 +110,7 @@
 												retrieved_json = response.data;
 
 												for (var i = 0; i < retrieved_json.length; i++) {
-													all_abscissa[i] = retrieved_json[i].x / 1000;
+													all_abscissa[i] = retrieved_json[i].x /*/ 1000*/;
 													all_ordinate[i] = retrieved_json[i].y;
 												}
 
@@ -147,9 +147,9 @@
 
 							//Restriction de l'interval de visualisation
 							for (var i = 0; i < retrieved_json.length; i++) {
-								if ($scope.slider.minValue <= (retrieved_json[i].x / 1000)
-										&& (retrieved_json[i].x / 1000) <= $scope.slider.maxValue) {
-									abscissa[cpt] = retrieved_json[i].x / 1000;
+								if ($scope.slider.minValue <= (retrieved_json[i].x /*/ 1000*/)
+										&& (retrieved_json[i].x /*/ 1000*/) <= $scope.slider.maxValue) {
+									abscissa[cpt] = retrieved_json[i].x /*/ 1000*/;
 									ordinate[cpt] = retrieved_json[i].y;
 									points[cpt] = retrieved_json[i];
 									cpt++;
@@ -168,7 +168,7 @@
 							$scope.average = Math.round(100 * f_average(ordinate)) / 100;
 							$scope.std_dev = Math.round(100 * f_standardDeviation(ordinate)) / 100;
 							console.log(abscissa[1] - abscissa[0]);
-							$scope.AUC = Math.round(100 * f_numerical_int((abscissa[1] - abscissa[0]), ordinate)) / 100;
+							$scope.AUC = Math.round(100 * f_integral((abscissa[1] - abscissa[0]), ordinate)) / 100;
 							
 							//définition des courbes							
 							for (var i = 0; i < ordinate.length; i++) {
