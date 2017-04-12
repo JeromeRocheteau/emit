@@ -34,15 +34,19 @@ public class Calculator extends JdbcServlet {
 	}
 
 	public Double standardDeviation() {
+		
 		int n = serie.size();
-		if (n == 0)
-			return 0.0;
 		double sum = 0;
 		double sq_sum = 0;
+		
+		if (n == 0)
+			return 0.0;
+		
 		for (int i = 0; i < n; ++i) {
 			sum += serie.get(i).getY();
 			sq_sum += serie.get(i).getY() * serie.get(i).getY();
 		}
+		
 		double mean = sum / n;
 		double variance = sq_sum / n - mean * mean;
 		return Math.sqrt(variance);
@@ -96,20 +100,18 @@ public class Calculator extends JdbcServlet {
 	}
 
 	public List<Serie> serialize_gson(String input) {
-		System.out.println("input from serialize === " + input);
+		
 		Gson gson = new Gson();
 		
 		Type listType = new TypeToken<List<Serie>>() {
 		}.getType();
 		List<Serie> serie = gson.fromJson(input, listType);
 
-		System.out.println("return serie === " + serie.get(1).getX());
 		return serie;
 	}
 
 	public String read_file(String file_name) {
-		// String s;
-		// s = "";
+		
 		String file_content = "";
 
 		try {
@@ -125,7 +127,6 @@ public class Calculator extends JdbcServlet {
 			e.printStackTrace();
 		}
 
-		System.out.println("return file_content === " + file_content);
 		return file_content;
 	};
 }
