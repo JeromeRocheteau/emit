@@ -12,15 +12,16 @@ public class InstrumentReader {
 	
 	List<List<String>> lines = new ArrayList<List<String>>();
 
-	public List<List<String>> Read(Scanner inputStream) {
-
+	public List<List<String>> Read(String data) {
+		String my_new_str = data.replaceAll("	", ";");
+		Scanner inputStream = new Scanner(my_new_str);
 		while (inputStream.hasNext()) {
 
 			String line = inputStream.next();
-			String[] values = line.split(" ");
+			String[] values = line.split(";");
 			lines.add(Arrays.asList(values));
 		}
-
+		inputStream.close();
 		return lines;
 	}
 

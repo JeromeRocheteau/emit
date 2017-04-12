@@ -46,6 +46,7 @@ public class Meter extends Instrument {
 		}
 	}
 	
+	//public String doRetrieve(OutputStream out) throws Exception {
 	public String doRetrieve(OutputStream out) throws Exception {
 		String table_string = "";
 		CloseableHttpClient client = HttpClients.createDefault();
