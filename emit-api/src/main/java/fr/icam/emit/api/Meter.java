@@ -2,6 +2,7 @@ package fr.icam.emit.api;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.net.URI;
 import java.util.List;
 
@@ -45,20 +46,26 @@ public class Meter extends Instrument {
 		}
 	}
 	
-	public void doRetrieve(OutputStream out) throws Exception {
+	public String doRetrieve(OutputStream out) throws Exception {
+		String table_string = "";
 		CloseableHttpClient client = HttpClients.createDefault();
 		try {
 			HttpGet request = new HttpGet(this.uri.toString() + "data");
 			CloseableHttpResponse response = client.execute(request);
 			try {
 				InputStream in = response.getEntity().getContent();
-				IOUtils.copy(in, out);
+				StringWriter writer = new StringWriter();
+				IOUtils.copy(in, writer, "UTF-8");
+				table_string = writer.toString();
+				//IOUtils.copy(in, out);
+				 
 			} finally {
 				response.close();
 			}
 		} finally {
 			client.close();
 		}
+		return table_string;
 	}
 
 	public List<Feature> getFeatures() throws Exception {
