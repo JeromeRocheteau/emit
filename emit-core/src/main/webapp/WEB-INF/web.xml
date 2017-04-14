@@ -445,5 +445,15 @@
 		<servlet-name>test-fichier</servlet-name>
 		<url-pattern>/test/test</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>test-enregistrement</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.TestEnregistrement</servlet-class>
+
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>test-enregistrement</servlet-name>
+		<url-pattern>/test/enregistre</url-pattern>
+	</servlet-mapping>
 
 </web-app>
