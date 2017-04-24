@@ -41,7 +41,7 @@
 			var experiment_data = {
 					started : today.getTime(),
 					stopped : null,
-					measurand : $scope.measurand_selection.process,
+					measurand : {process:$scope.measurand_selection.process},
 					environment : $scope.environment_selection.uri
 				};
 			
