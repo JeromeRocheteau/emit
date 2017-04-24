@@ -3,6 +3,7 @@ package fr.icam.emit.servlets;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcServlet;
 
+import fr.icam.emit.analysis.File_handler;
 import fr.icam.emit.api.Launcher;
 import fr.icam.emit.api.Meter;
 import fr.icam.emit.entities.Experiment_plan;
@@ -27,6 +29,12 @@ public class ExperimentLaunch extends JdbcServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		this.doCall(request, response, "experiment-unprocessed");
 		List<Experiment_plan> experiment = (List<Experiment_plan>) request.getAttribute("experiment_plan");
+		try {
+			this.handle_experiement(experiment,request,response);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.doWrite(experiment, response.getWriter());
 	}
 	
@@ -38,7 +46,6 @@ public class ExperimentLaunch extends JdbcServlet {
 		URI uri = new URI(string_uri);
 		Launcher launcher= new Launcher(uri);
 		canLaunch = this.check_tools(launcher);
-		//comment
 		
 		if (canLaunch == true){
 			measurementSets = this.execut_measure(experiment, launcher);
@@ -83,7 +90,10 @@ public class ExperimentLaunch extends JdbcServlet {
 		//enregistrer les resultats (update measurementSet)
 		for (int i = 0; i<instruments.size();i++){
 			String data = instruments.get(i).doRetrieve(System.out);
-			measurementSets.add(new MeasurementSet(experiment.get(i).getMeasurementSet().getId(),data,0,null,0));
+			String data_name = "emit-"+this.retourner_date()+".csv";
+			File_handler file_handler = new File_handler();
+			file_handler.write_file(data_name, data);
+			measurementSets.add(new MeasurementSet(experiment.get(i).getMeasurementSet().getId(),data_name,0,null,0));
 		}
 		
 		return measurementSets;
@@ -105,5 +115,11 @@ public class ExperimentLaunch extends JdbcServlet {
 		return launch;
 		
 	}
+	public Long retourner_date(){
+		 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		 return timestamp.getTime();
+	}
 	
 }
+
+

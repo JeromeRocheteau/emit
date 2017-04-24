@@ -455,5 +455,15 @@
 		<servlet-name>test-enregistrement</servlet-name>
 		<url-pattern>/test/enregistre</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>measurementSet-update</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.MeasurementSetUpdate</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/measurementSt-update.sql
+			</param-value>
+		</init-param>
+	</servlet>
 
 </web-app>
