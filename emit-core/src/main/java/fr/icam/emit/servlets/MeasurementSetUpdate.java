@@ -20,8 +20,13 @@ public class MeasurementSetUpdate extends JdbcUpdateServlet<Boolean>{
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		MeasurementSet measurementSet = (MeasurementSet) request.getAttribute("measurementSet");
 		
-		statement.setLong(1, measurementSet.getId());
-		statement.setString(2, measurementSet.getData());
+		statement.setLong(2, measurementSet.getId());
+		statement.setString(1, measurementSet.getData());
+		
+		/*
+		statement.setLong(2, 22);
+		statement.setString(1, "bonjour");
+		*/
 	}
 
 	@Override

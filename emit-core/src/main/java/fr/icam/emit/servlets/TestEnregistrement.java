@@ -36,7 +36,7 @@ public class TestEnregistrement extends JdbcServlet{
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
 		//String data = this.read_file("emit-1464192786377.csv");
-		
+		/*
 		try{
 		    PrintWriter writer = new PrintWriter("/var/lib/emit/the-file-name.txt", "UTF-8");
 		    writer.println("The first line");
@@ -45,10 +45,10 @@ public class TestEnregistrement extends JdbcServlet{
 		} catch (IOException e) {
 		   // do something
 		}
-		
+		*/
 		String message = "false";
 	
-		File f = new File("/var/lib/emit/the-file-name.txt");
+		File f = new File("/var/lib/emit/emit-1493121766097.csv");
 		if (f.exists() /*&& f.isDirectory()*/) {		
 		   message = "true";
 		}
@@ -63,6 +63,7 @@ public class TestEnregistrement extends JdbcServlet{
 		Files.write(file, lines, Charset.forName("UTF-8"));
 		*/
 		String message2 = this.read_from_server();
+		response.getWriter().write(message);
 		response.getWriter().write(message2);
 		//response.getWriter().write(message);
 	}
@@ -99,7 +100,7 @@ public class TestEnregistrement extends JdbcServlet{
 	
 	public String read_from_server() throws IOException{
 		String result = "";
-		BufferedReader br = new BufferedReader(new FileReader("/var/lib/emit/the-file-name.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("/var/lib/emit/emit-1493121766097.csv"));
 		try {
 		    StringBuilder sb = new StringBuilder();
 		    String line = br.readLine();

@@ -35,7 +35,7 @@ public class ExperimentLaunch extends JdbcServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.doWrite(experiment, response.getWriter());
+		//this.doWrite(experiment, response.getWriter());
 	}
 	
 	public void handle_experiement(List<Experiment_plan> experiment,HttpServletRequest request, HttpServletResponse response) throws Exception{
@@ -47,17 +47,20 @@ public class ExperimentLaunch extends JdbcServlet {
 		Launcher launcher= new Launcher(uri);
 		canLaunch = this.check_tools(launcher);
 		
+		
 		if (canLaunch == true){
-			measurementSets = this.execut_measure(experiment, launcher);
+			
+			measurementSets = this.execut_measure(experiment, launcher,response);			
 			for (MeasurementSet measurementSet:measurementSets){
+				
 				request.setAttribute("measurementSet",measurementSet );
-			this.doCall(request, response, "MeasurementSetUpdate");
+				this.doCall(request, response, "measurementSet-update");
 			}//else renvoi erreur
 		}
 	};
 	
 	
-	public List<MeasurementSet> execut_measure(List<Experiment_plan> experiment,Launcher launcher) throws Exception{
+	public List<MeasurementSet> execut_measure(List<Experiment_plan> experiment,Launcher launcher,HttpServletResponse response) throws Exception{
 		//liste des instrument
 		List<Meter> instruments = new ArrayList<Meter>();
 		//liste des resulats (sous forme de MeasurementSet)
@@ -91,9 +94,11 @@ public class ExperimentLaunch extends JdbcServlet {
 		for (int i = 0; i<instruments.size();i++){
 			String data = instruments.get(i).doRetrieve(System.out);
 			String data_name = "emit-"+this.retourner_date()+".csv";
+			response.getWriter().write(data);
+			response.getWriter().write(data_name);
 			File_handler file_handler = new File_handler();
 			file_handler.write_file(data_name, data);
-			measurementSets.add(new MeasurementSet(experiment.get(i).getMeasurementSet().getId(),data_name,0,null,0));
+			measurementSets.add(new MeasurementSet(experiment.get(i).getMeasurementSet().getId(),data_name,this.retourner_date(),null,0));
 		}
 		
 		return measurementSets;
