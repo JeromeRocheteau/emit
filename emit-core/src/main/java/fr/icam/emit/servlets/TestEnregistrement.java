@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +24,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcServlet;
+
+import fr.icam.emit.analysis.InstrumentReader;
+import fr.icam.emit.analysis.Serie;
 
 public class TestEnregistrement extends JdbcServlet{
 	/**
@@ -63,8 +67,19 @@ public class TestEnregistrement extends JdbcServlet{
 		Files.write(file, lines, Charset.forName("UTF-8"));
 		*/
 		String message2 = this.read_from_server();
-		response.getWriter().write(message);
-		response.getWriter().write(message2);
+		InstrumentReader reader = new InstrumentReader();
+		List<List<String>> list = new ArrayList<List<String>>();
+		List<Serie> data = new ArrayList<Serie>();
+		list = reader.Read(message2);
+		//this.Afficher(list, response);
+		for (int i = 2; i<list.size();i++){
+			data.add(new Serie( Double.parseDouble(list.get(i).get(0)),Double.parseDouble(list.get(i).get(1))));
+		}
+		
+		String json = reader.create_json(data);
+		response.getWriter().write(json);
+		//response.getWriter().write(message);
+		//response.getWriter().write(message2);
 		//response.getWriter().write(message);
 	}
 	
@@ -116,6 +131,25 @@ public class TestEnregistrement extends JdbcServlet{
 		    br.close();
 		}
 		return result;
+	}
+	
+	public void Afficher(List<List<String>> lines,HttpServletResponse response ) {
+
+		int lineNo = 1;
+		for (List<String> line : lines) {
+			int columnNo = 1;
+			for (String value : line) {
+				try {
+					response.getWriter().write("Line " + lineNo + " Column " + columnNo + ": " + value);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				columnNo++;
+			}
+			lineNo++;
+		}
+
 	}
 	
 	

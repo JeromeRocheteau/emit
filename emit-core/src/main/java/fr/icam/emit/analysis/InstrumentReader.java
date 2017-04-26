@@ -5,15 +5,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import com.google.gson.Gson;
+
 public class InstrumentReader {
 
 	public InstrumentReader() {
+		
+		
 	}
 	
 	List<List<String>> lines = new ArrayList<List<String>>();
 
 	public List<List<String>> Read(String data) {
 		String my_new_str = data.replaceAll("	", ";");
+		 my_new_str = my_new_str.replaceAll(",", ".");
 		Scanner inputStream = new Scanner(my_new_str);
 		while (inputStream.hasNext()) {
 
@@ -38,4 +43,12 @@ public class InstrumentReader {
 		}
 
 	}
+	
+	public String create_json(List<Serie> data){
+		Gson gson = new Gson();
+		String json = gson.toJson(data);
+		return json;
+	}
+	
+	
 }
