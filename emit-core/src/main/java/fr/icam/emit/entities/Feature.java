@@ -1,6 +1,6 @@
 package fr.icam.emit.entities;
 
-public class feature {
+public class Feature {
 	long id;
 	String measure;
 	String instrument;
@@ -31,7 +31,7 @@ public class feature {
 		this.unit = unit;
 	}
 	
-	public feature(long id,String measure,String instrument,String unit){
+	public Feature(long id,String measure,String instrument,String unit){
 		this.setId(id);
 		this.setInstrument(instrument);
 		this.setMeasure(measure);
