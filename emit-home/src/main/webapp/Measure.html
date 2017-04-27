@@ -17,8 +17,8 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
 	var app = angular.module('app', []);
+	var old_uri;
 	var old_name;
-	var old_process;
 
 	app.filter('ceil', function() {
 		return function(input) {
@@ -31,9 +31,11 @@
 					'controller',
 					function($scope, $http) {
 
-						$http.get("http://172.21.50.3:8080/emit/experiment/list")
+						$http
+								.get(
+										"http://172.21.50.3:8080/emit/measure/list")
 								.then(function(response) {
-									$scope.experimentlist = response.data;
+									$scope.measurelist = response.data;
 								});
 
 						var empty = {};
@@ -43,8 +45,8 @@
 						$scope.updating = false;
 
 						$scope.alert = {};
-						$scope.measurand = {};
-						$scope.measurands = [];
+						$scope.measure = {};
+						$scope.measures = [];
 						$scope.size = 0;
 						$scope.offset = 0;
 						$scope.length = 5;
@@ -53,19 +55,20 @@
 							$scope.selected = false;
 							$scope.creating = false;
 							$scope.updating = false;
-							$scope.measurand = angular.copy(empty);
+							$scope.measure = angular.copy(empty);
 						}
 						$scope.clean = function() {
 							init();
 						}
-						$scope.select = function(measurand) {
-							if (measurand) {
+						$scope.select = function(measure) {
+							if (measure) {
 								$scope.creating = false;
 								$scope.updating = true;
-								$scope.measurand = measurand;
-								old_name =  measurand.name;
-								old_process = measurand.process;
-								$scope.old_process = old_process;
+								$scope.measure = measure;
+								old_name = measure.name;
+								old_unit = measure.unit;
+								$scope.old_unit = old_unit;
+
 							} else {
 								$scope.creating = true;
 								$scope.updating = false;
@@ -75,16 +78,16 @@
 						$scope.create = function() {
 
 							var indata = {
-								process : $scope.measurand.process,
-								name : $scope.measurand.name
+								name : $scope.measure.name,
+								unit : $scope.measure.unit
 							};
 							$http
 									.post(
-											"http://172.21.50.3:8080/emit/measurand/create",
+											"http://172.21.50.3:8080/emit/measure/create",
 											indata)
 									.then(
 											function(success) {
-												alert("Measurand created");
+												alert("Instrument created");
 												init();
 												$scope.size = 0;
 												$scope.offset = 0;
@@ -92,58 +95,58 @@
 												page();
 											},
 											function(error) {
-												alert("An error occured during creation of the Measurand.");
+												alert("An error occured during creation of the instrument.");
 											});
 						}
 						$scope.update = function() {
 							var indata = [ {
 								name : old_name,
-								process : old_process
+								unit : old_unit
 							}, {
-								name : $scope.measurand.name,
-								process : $scope.measurand.process
+								name : $scope.instrument.name,
+								unit : $scope.instrument.unit
 							} ];
 
 							$http
 									.post(
-											"http://172.21.50.3:8080/emit/measurand/update",
+											"http://172.21.50.3:8080/emit/measure/update",
 											indata)
 									.then(
 											function(success) {
-												alert("Measurand updated");
+												alert("Measure updated");
 											},
 											function(error) {
-												alert("An error occured during updating of the Measurand.");
+												alert("An error occured during updating of the measure.");
 											});
 							$scope.clean();
 						}
 
-						$scope.remove = function(measurand) {
-							$scope.measurand = measurand;
+						$scope.remove = function(measure) {
+							$scope.measure = measure;
 							$('#modal').modal('show');
 						}
 
 						$scope.erase = function() {
 							$('#modal').modal('hide');
 							var can_delete = true;
-							var process = $scope.measurand.process;
-							angular.forEach($scope.experimentlist, function(
-									value) {
-								if (value.measurand == process) {
-									can_delete = false;
-								}
-							});
+							var name = $scope.measure.name;
+							angular.forEach($scope.measurelist,
+									function(value) {
+										if (value.measure == name) {
+											can_delete = false;
+										}
+									});
 							if (can_delete == true) {
 								var data = {
-									process : process
+									name : name
 								};
 								$http
 										.post(
-												"http://172.21.50.3:8080/emit/measurand/delete",
+												"http://172.21.50.3:8080/emit/measure/delete",
 												data)
 										.then(
 												function(success) {
-													alert("Measurand deleted");
+													alert("Measure deleted");
 													init();
 													$scope.size = 0;
 													$scope.offset = 0;
@@ -151,7 +154,7 @@
 													page();
 												},
 												function(error) {
-													alert("An error occured during deleting of the Measurand.");
+													alert("An error occured during deleting of the measure.");
 												});
 							} else {
 								alert("This " + element + " can't be deleted");
@@ -159,7 +162,9 @@
 						}
 
 						var size = function() {
-							$http.get("http://172.21.50.3:8080/emit/measurand/size")
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/measure/size")
 									.then(function(success) {
 										$scope.size = success.data;
 									}, function(error) {
@@ -167,16 +172,18 @@
 									});
 						}
 						var page = function() {
-							$http.get("http://172.21.50.3:8080/emit/measurand/page",
-									{
-										"params" : {
-											"offset" : $scope.offset
-										}
-									}).then(function(success) {
-								$scope.measurands = success.data;
-							}, function(error) {
-								$scope.measurands = [];
-							});
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/measure/page",
+											{
+												"params" : {
+													"offset" : $scope.offset
+												}
+											}).then(function(success) {
+										$scope.measures = success.data;
+									}, function(error) {
+										$scope.measures = [];
+									});
 						}
 						$scope.prev = function() {
 							if ($scope.length <= $scope.offset) {
@@ -208,6 +215,7 @@
 					});
 </script>
 <body ng-app="app" ng-controller="controller">
+
 	<header>
 		<div class="navbar navbar-default navbar-custom navbar-static-top"
 			id="navigation_barre">
@@ -248,24 +256,23 @@
 		</div>
 	</header>
 
-
 	<div class="container">
 		<section id="search" class="col-md-4">
 			<form class="form" role="form" name="form" ng-if="selected">
 				<fieldset>
-					<legend ng-if="creating">Creation of a new Measurand</legend>
-					<legend ng-if="updating">Updating a Measurand
-						{{old.process}}</legend>
+					<legend ng-if="creating">Creation of a new measure</legend>
+					<legend ng-if="updating">Updating an measure
+						{{old_name}}</legend>
 					<div class="form-group">
-						<label for="measurand.process">Process of the Measurand</label> <input
-							type="text" id="measurand.process" class="form-control"
-							ng-model="measurand.process" placeholder="Process" required
+						<label for="measure.name">Name of the measure</label> <input
+							type="text" id="measure.name" class="form-control"
+							ng-model="measure.name" placeholder="Name" required
 							ng-required="true" />
 					</div>
 					<div class="form-group">
-						<label for="measurand.name">Name</label> <input type="text"
-							id="measurand.name" class="form-control"
-							ng-model="measurand.name" placeholder="Name" ng-required="true" />
+						<label for="measure.unit">Unit</label> <input type="text"
+							id="measure.unit" class="form-control"
+							ng-model="measure.unit" placeholder="Unit" ng-required="true" />
 					</div>
 					<div class="form-group pull-right">
 						<button type="reset" class="btn btn-default" ng-click="clean()">
@@ -287,7 +294,7 @@
 		</section>
 		<section id="results" class="col-md-8">
 			<h2>
-				Measurands <small>({{size}} elements)</small>
+				Measures <small>({{size}} elements)</small>
 			</h2>
 			<nav aria-label="...">
 				<ul class="pager">
@@ -305,20 +312,20 @@
 							aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
 				</ul>
 			</nav>
-			<ul class="list-group" ng-repeat="measurand in measurands">
+			<ul class="list-group" ng-repeat="instrument in instruments">
 				<li class="list-group-item">
-					<p class="list-group-item-heading">{{measurand.name}}</p>
+					<p class="list-group-item-heading">{{measure.unit}}</p>
 					<p class="list-group-item-text">
-						<span ng-if="measurand.process">{{measurand.process}} </span>
+						<span ng-if="measure.name">{{measure.name}} </span>
 					</p>
 					<p class="list-group-item-text text-right">
 						<button type="button" class="btn btn-default"
-							ng-click="remove(measurand)">
+							ng-click="remove(measure)">
 							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 						</button>
 						<span>&nbsp;</span>
 						<button type="button" class="btn btn-default"
-							ng-click="select(measurand)">
+							ng-click="select(measure)">
 							<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 						</button>
 					</p>
@@ -340,11 +347,11 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title">Deleting a Measurand</h4>
+					<h4 class="modal-title">Deleting a measure</h4>
 				</div>
 				<div class="modal-body">
-					<p>Do you really want to delete : {{measurand.name}}&nbsp;?</p>
-					<p>Process&nbsp;: {{measurand.process}}</p>
+					<p>Do you really want to delete : {{measure.name}}&nbsp;?</p>
+					<p>Unit&nbsp;: {{measure.unit}}</p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

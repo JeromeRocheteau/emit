@@ -222,6 +222,32 @@
 		<servlet-name>measure-update</servlet-name>
 		<url-pattern>/measure/update</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>measure-size</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.MeasureSize</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/measure-size.sql</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>measure-size</servlet-name>
+		<url-pattern>/measure/size</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>measure-page</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.MeasurePage</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/measure-page.sql</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>measure-page</servlet-name>
+		<url-pattern>/measure/page</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>instrument-list</servlet-name>
@@ -263,6 +289,62 @@
 	<servlet-mapping>
 		<servlet-name>instrument-delete</servlet-name>
 		<url-pattern>/instrument/delete</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>feature-list</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.FeatureList</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/feature-list.sql</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>feature-list</servlet-name>
+		<url-pattern>/feature/list</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>feature-create</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.FeatureCreation
+		</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/feature-create.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>feature-create</servlet-name>
+		<url-pattern>/feature/create</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>feature-update</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.FeatureUpdate</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/feature-update.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>feature-update</servlet-name>
+		<url-pattern>/feature/update</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>feature-delete</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.FeatureDelete</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/feature-delete.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>feature-delete</servlet-name>
+		<url-pattern>/feature/delete</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
