@@ -4,7 +4,7 @@ public class MeasurementSet {
 	
 	private long id;
 	private String data;
-	private long achieved;
+	private Long achieved;
 	private String instrument;
 	private long experiment;
 
@@ -20,10 +20,10 @@ public class MeasurementSet {
 	public void setData(String data) {
 		this.data = data;
 	}
-	public long getAchieved() {
+	public Long getAchieved() {
 		return achieved;
 	}
-	public void setAchieved(long longtime) {
+	public void setAchieved(Long longtime) {
 		this.achieved = longtime;
 	}
 	public String getInstrument() {
@@ -39,7 +39,7 @@ public class MeasurementSet {
 		this.experiment = experimentId;
 	}
 	
-	public  MeasurementSet(long id,String data,long achieved,String instrument,long ExperimentId){
+	public  MeasurementSet(long id,String data,Long achieved,String instrument,long ExperimentId){
 		this.setId(id);
 		this.setData(data);
 		this.setAchieved(achieved);

@@ -498,6 +498,27 @@
 		<servlet-name>measurementSet-creation</servlet-name>
 		<url-pattern>/measurementSet/create</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>measurementSet-unprocessed</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.MeasurementSetUnprocessed
+		</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/measurementSet-unprocessed.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>measurementSet-launch</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.MeasurementSetLaunch</servlet-class>		
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>measurementSet-launch</servlet-name>
+		<url-pattern>/measurementSet/launch</url-pattern>
+	</servlet-mapping>
+	
 
 	<servlet>
 		<servlet-name>experiment-unprocessed</servlet-name>
@@ -507,7 +528,14 @@
 			<param-value>/fr/icam/emit/queries/experiment-unprocessed.sql
 			</param-value>
 		</init-param>
-	</servlet>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>measurementSet-unprocessed</servlet-name>
+		<url-pattern>/measurementSet/unprocessed</url-pattern>
+	</servlet-mapping>
+	
+	
+	
 	
 	<servlet>
 		<servlet-name>experiment-launch</servlet-name>

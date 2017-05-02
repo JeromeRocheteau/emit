@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,7 +32,11 @@ public class MeasurementSetList extends JdbcQueryServlet<List<MeasurementSet>> {
         while (resultSet.next()) {
         	long id = resultSet.getInt("id");
         	String data = resultSet.getString("data");
-        	long achieved = (resultSet.getTimestamp("achieved")).getTime();
+        	Timestamp timestamp = resultSet.getTimestamp("achieved");
+        	long achieved = 0;
+        	if (timestamp != null){
+        		achieved = timestamp.getTime();
+        	}        	
         	String instrument = resultSet.getString("instrument");
         	long experiment =resultSet.getInt("experiment");        	
             MeasurementSets.add(new MeasurementSet(id, data,achieved,instrument,experiment));

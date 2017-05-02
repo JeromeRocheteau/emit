@@ -36,6 +36,7 @@ public class ExperimentList  extends JdbcQueryServlet<List<Experiment>> {
         	if (timestamp != null){
         	started = timestamp.getTime();
         	}
+        	timestamp = resultSet.getTimestamp("stopped");
         	long stopped =0;
         	if (timestamp != null){
         	stopped = timestamp.getTime();
