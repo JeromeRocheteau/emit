@@ -17,7 +17,7 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
 	var app = angular.module('app', []);
-	var old_uri;
+	var old_unit;
 	var old_name;
 
 	app.filter('ceil', function() {
@@ -87,7 +87,7 @@
 											indata)
 									.then(
 											function(success) {
-												alert("Instrument created");
+												alert("Measure created");
 												init();
 												$scope.size = 0;
 												$scope.offset = 0;
@@ -95,7 +95,7 @@
 												page();
 											},
 											function(error) {
-												alert("An error occured during creation of the instrument.");
+												alert("An error occured during creation of the measure.");
 											});
 						}
 						$scope.update = function() {
@@ -103,8 +103,8 @@
 								name : old_name,
 								unit : old_unit
 							}, {
-								name : $scope.instrument.name,
-								unit : $scope.instrument.unit
+								name : $scope.measure.name,
+								unit : $scope.measure.unit
 							} ];
 
 							$http
@@ -257,7 +257,12 @@
 	</header>
 
 	<div class="container">
+		<br>
+		<br>
+		<br>
 		<section id="search" class="col-md-4">
+			<br>
+			<br>
 			<form class="form" role="form" name="form" ng-if="selected">
 				<fieldset>
 					<legend ng-if="creating">Creation of a new measure</legend>
@@ -312,7 +317,7 @@
 							aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
 				</ul>
 			</nav>
-			<ul class="list-group" ng-repeat="instrument in instruments">
+			<ul class="list-group" ng-repeat="measure in measures">
 				<li class="list-group-item">
 					<p class="list-group-item-heading">{{measure.unit}}</p>
 					<p class="list-group-item-text">

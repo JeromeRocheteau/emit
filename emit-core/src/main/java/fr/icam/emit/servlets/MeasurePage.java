@@ -3,7 +3,7 @@ package fr.icam.emit.servlets;
 import java.sql.PreparedStatement;
 import javax.servlet.http.HttpServletRequest;
 
-public class MeasurePage extends InstrumentList {
+public class MeasurePage extends MeasureList {
 
 	private static final long serialVersionUID = 201703171417L;
 

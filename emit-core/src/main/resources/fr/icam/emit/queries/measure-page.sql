@@ -1,4 +1,4 @@
-select name, unit
+select name, unit, deleted
 from measures
 where deleted = 0
 limit ?,5;
