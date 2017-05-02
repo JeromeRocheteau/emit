@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcServlet;
 
+import fr.icam.emit.analysis.File_handler;
+
 
 
 
@@ -31,6 +33,7 @@ private static final long serialVersionUID = 201703151635L;
 	
 	
 	public String read_file(String file_name){
+		/*
 		String s;
 		s= "";
 		String file_content = "";
@@ -56,5 +59,16 @@ private static final long serialVersionUID = 201703151635L;
 		
 	
 		return file_content;
+		*/
+		File_handler file_handler = new File_handler();
+		String content = "";
+		try {
+			content = file_handler.read_file(file_name);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return content;
 	};
+	
 }

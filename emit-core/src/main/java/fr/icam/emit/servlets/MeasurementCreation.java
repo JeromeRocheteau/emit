@@ -15,6 +15,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 import com.google.gson.Gson;
 
 import fr.icam.emit.entities.Measurement;
+import fr.icam.emit.entities.MeasurementSet;
 
 public class MeasurementCreation extends JdbcUpdateServlet<Boolean>{
 private static final long serialVersionUID = 201703071443L;
@@ -22,14 +23,32 @@ private static final long serialVersionUID = 201703071443L;
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		
-		Gson gson = new Gson();	
+		Measurement measurement = (Measurement) request.getAttribute("measurement");
+		
+		//statement.setLong(1, measurement.getId());
+		
+		statement.setString(1, measurement.getData());
+		statement.setLong(2, measurement.getMeasurementSet());
+		statement.setString(3, measurement.getMeasure());
+		/*
+		statement.setString(1, "emit-1493730523049.json");
+		statement.setLong(2, 22);
+		statement.setString(3, "tention");
+		*/
+		
+		/*
+		statement.setString(1, "tu va marcher");
+		statement.setLong(2, 22);
+		statement.setString(3, "tention");
+		*/
+		
+		
+		/*Gson gson = new Gson();	
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
 		Measurement measurement = gson.fromJson(reader, Measurement.class);
-		statement.setString(1, measurement.getData());
-		statement.setLong(2, measurement.getMeasurementSet());
-		statement.setString(3, measurement.getMeasure());			
-		
+				
+		*/
 	}
 
 	@Override
@@ -39,8 +58,9 @@ private static final long serialVersionUID = 201703071443L;
 	
 	
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		boolean done = this.doProcess(request);
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	
+		boolean done = this.doProcess(request);		
 		this.doWrite(done, response.getWriter());
 	}
 	
