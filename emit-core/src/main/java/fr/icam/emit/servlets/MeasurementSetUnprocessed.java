@@ -26,7 +26,7 @@ public class MeasurementSetUnprocessed  extends JdbcQueryServlet<List<Measuremen
 		List<MeasurementSet_plan> measurementSet_plan = this.doProcess(request);
 		request.setAttribute("measurementSet_plan", measurementSet_plan);
 	}
-	
+	 
 	protected List<MeasurementSet_plan> doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
 		List<MeasurementSet_plan> measurementSet_plan = new LinkedList<MeasurementSet_plan>();
 		while (resultSet.next()) {
