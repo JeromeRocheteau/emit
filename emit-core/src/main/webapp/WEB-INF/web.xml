@@ -575,10 +575,16 @@
 			</param-value>
 		</init-param>
 	</servlet>
-	
+		
 	<servlet-mapping>
 		<servlet-name>measurementSet-update</servlet-name>
 		<url-pattern>/test/update</url-pattern>
 	</servlet-mapping>	
+<<<<<<< HEAD
+=======
+	
+	
+	
+>>>>>>> branch 'master' of https://github.com/JeromeRocheteau/emit.git
 
 </web-app>
