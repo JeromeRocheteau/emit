@@ -575,21 +575,13 @@
 			</param-value>
 		</init-param>
 	</servlet>
-	
+		
 	<servlet-mapping>
 		<servlet-name>measurementSet-update</servlet-name>
 		<url-pattern>/test/update</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>	
 	
 	
-	<servlet>
-		<servlet-name>Import-presentation</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.Importpresentation</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Importpresentation</servlet-name>
-		<url-pattern>/import/presentation</url-pattern>
-	</servlet-mapping>
 	
 
 </web-app>
