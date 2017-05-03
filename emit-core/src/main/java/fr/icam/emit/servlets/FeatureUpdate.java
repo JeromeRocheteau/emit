@@ -35,7 +35,7 @@ public class FeatureUpdate extends JdbcUpdateServlet<Boolean>{
 		statement.setLong(1, feature.get(1).getId());
 		statement.setString(2, feature.get(1).getMeasure());
 		statement.setString(3, feature.get(1).getInstrument());
-		statement.setString(4, feature.get(1).getUnit());
+		statement.setLong(4, feature.get(1).getOrder());
 	}
 
 	@Override

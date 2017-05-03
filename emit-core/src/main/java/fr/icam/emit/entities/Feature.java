@@ -4,7 +4,7 @@ public class Feature {
 	long id;
 	String measure;
 	String instrument;
-	String unit;
+	long order;
 	
 	public long getId() {
 		return id;
@@ -24,18 +24,18 @@ public class Feature {
 	public void setInstrument(String instrument) {
 		this.instrument = instrument;
 	}
-	public String getUnit() {
-		return unit;
+	public long getOrder() {
+		return order;
 	}
-	public void setUnit(String unit) {
-		this.unit = unit;
+	public void setOrder(long order) {
+		this.order = order;
 	}
 	
-	public Feature(long id,String measure,String instrument,String unit){
+	public Feature(long id,String measure,String instrument,long order){
 		this.setId(id);
 		this.setInstrument(instrument);
 		this.setMeasure(measure);
-		this.setUnit(unit);
+		this.setOrder(order);
 	}
 	
 }
