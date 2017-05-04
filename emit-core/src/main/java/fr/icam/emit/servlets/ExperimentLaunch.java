@@ -16,6 +16,7 @@ import com.github.jeromerocheteau.JdbcServlet;
 import fr.icam.emit.analysis.File_handler;
 import fr.icam.emit.api.Launcher;
 import fr.icam.emit.api.Meter;
+import fr.icam.emit.entities.Experiment;
 import fr.icam.emit.entities.Experiment_plan;
 import fr.icam.emit.entities.MeasurementSet;
 
@@ -56,6 +57,10 @@ public class ExperimentLaunch extends JdbcServlet {
 				request.setAttribute("measurementSet",measurementSet );
 				this.doCall(request, response, "measurementSet-update");
 			}//else renvoi erreur
+			//fin de l'experiment
+			Experiment experiment_end = new Experiment(experiment.get(0).getExperiment().getId(),null,this.retourner_date(),null,"");
+			request.setAttribute("experiment",experiment_end );
+			this.doCall(request, response, "experiment-update");
 		}
 	};
 	
@@ -98,7 +103,7 @@ public class ExperimentLaunch extends JdbcServlet {
 			response.getWriter().write(data_name);
 			File_handler file_handler = new File_handler();
 			file_handler.write_file(data_name, data);
-			measurementSets.add(new MeasurementSet(experiment.get(i).getMeasurementSet().getId(),data_name,this.retourner_date(),null,0));
+			measurementSets.add(new MeasurementSet(experiment.get(i).getMeasurementSet().getId(),data_name,null,null,0));
 		}
 		
 		return measurementSets;

@@ -155,6 +155,19 @@
 		<servlet-name>experiment-last</servlet-name>
 		<url-pattern>/experiment/last</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>experiment-update</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.ExperimentUpdate</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/experiment-update.sql</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>experiment-update</servlet-name>
+		<url-pattern>/experiment/update</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>measurement-list</servlet-name>
@@ -580,11 +593,6 @@
 		<servlet-name>measurementSet-update</servlet-name>
 		<url-pattern>/test/update</url-pattern>
 	</servlet-mapping>	
-<<<<<<< HEAD
-=======
-	
-	
-	
->>>>>>> branch 'master' of https://github.com/JeromeRocheteau/emit.git
+
 
 </web-app>

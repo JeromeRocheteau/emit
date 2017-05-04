@@ -1,4 +1,5 @@
 package fr.icam.emit.servlets;
+
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,40 +11,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcUpdateServlet;
 
-import fr.icam.emit.entities.MeasurementSet;
+import fr.icam.emit.entities.Experiment;
 
 
-public class MeasurementSetUpdate extends JdbcUpdateServlet<Boolean>{	
-	private static final long serialVersionUID = 201704241124L;
+public class ExperimentUpdate extends JdbcUpdateServlet<Boolean> {
+	private static final long serialVersionUID = 201705050825L;
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		MeasurementSet measurementSet = (MeasurementSet) request.getAttribute("measurementSet");
+		Experiment experiment = (Experiment) request.getAttribute("experiment");
 		
-		statement.setLong(3, measurementSet.getId());		
-		statement.setString(1, measurementSet.getData());
+		statement.setLong(2, experiment.getId());		
+		statement.setTimestamp(1, new Timestamp(experiment.getStopped()));
 		
-		if (measurementSet.getAchieved()==null){
-			statement.setNString(2, null);
-		}else{
-			statement.setTimestamp(2, (new Timestamp(measurementSet.getAchieved())));
-		}
-		
-		
-		/*
-		statement.setLong(3, 23);		
-		statement.setString(1,"bonjour");
-		Long num = (long) 253456;
-		if (num==null){
-			statement.setNString(2, null);
-		}else{
-			statement.setTimestamp(2, (new Timestamp(num)));
-		}
+			/*
+		statement.setLong(2, 10);		
+		statement.setTimestamp(1, new Timestamp(500000));
 		*/
-		
-	
-		
-		
 	}
 
 	@Override

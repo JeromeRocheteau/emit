@@ -1,3 +1,3 @@
 UPDATE measurementsets 
-SET data=? 
+SET data=?,achieved =? 
 WHERE id=?;

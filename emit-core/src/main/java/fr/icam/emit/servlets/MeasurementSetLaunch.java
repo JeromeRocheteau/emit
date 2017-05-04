@@ -15,6 +15,7 @@ import fr.icam.emit.analysis.File_handler;
 import fr.icam.emit.analysis.InstrumentReader;
 import fr.icam.emit.analysis.Serie;
 import fr.icam.emit.entities.Measurement;
+import fr.icam.emit.entities.MeasurementSet;
 import fr.icam.emit.entities.MeasurementSet_plan;
 
 public class MeasurementSetLaunch extends JdbcServlet {
@@ -28,8 +29,11 @@ public class MeasurementSetLaunch extends JdbcServlet {
 		this.doCall(request, response, "measurementSet-unprocessed");
 		List<MeasurementSet_plan> measurementSet = (List<MeasurementSet_plan>) request.getAttribute("measurementSet_plan");
 		this.task_handler(measurementSet, request, response);
-		//this.doWrite(measurementSet, response.getWriter());
-		
+		this.doWrite(measurementSet, response.getWriter());
+		//indiquer la date de fin
+		MeasurementSet measurementSet_over = new MeasurementSet(measurementSet.get(0).getId(), measurementSet.get(0).getData(), this.retourner_date(), null, 0);
+		request.setAttribute("measurementSet", measurementSet_over);
+		this.doCall(request, response, "measurementSet-update");
 	}
 	
 	
