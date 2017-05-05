@@ -58,7 +58,7 @@
 										instrument : value.uri,
 										experiment : $scope.last_experiment
 									};
-									console.log(measurement_data);
+									//console.log(measurement_data);
 								$http.post("http://172.21.50.3:8080/emit/measurementSet/create", measurement_data)
 								.then(function(response) {
 								});

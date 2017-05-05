@@ -29,13 +29,18 @@
 	app
 			.controller(
 					'controller',
-					function($scope, $http) {
+					function($scope, $http,$q) {
 
 						$http
 								.get(
 										"http://172.21.50.3:8080/emit/measurementSet/list")
 								.then(function(response) {
 									$scope.measurementsetlist = response.data;
+								});
+
+						$http.get("http://172.21.50.3:8080/emit/measure/list")
+								.then(function(response) {
+									$scope.measures = response.data;
 								});
 
 						var empty = {};
@@ -51,11 +56,22 @@
 						$scope.offset = 0;
 						$scope.length = 5;
 
+						$scope.measure_selection = [];
+						$scope.selected_measure = [];
+						$scope.features = [];
+						$scope.feature = {};
+
 						var init = function() {
 							$scope.selected = false;
 							$scope.creating = false;
 							$scope.updating = false;
 							$scope.instrument = angular.copy(empty);
+							$scope.measure_selection = [];
+							$scope.selected_measure = [];
+							$scope.features = [];
+							$scope.feature.factor = 0;
+							$scope.feature.name = "";
+							$scope.feature.no_order = 0;
 						}
 						$scope.clean = function() {
 							init();
@@ -68,6 +84,19 @@
 								old_uri = instrument.uri;
 								old_name = instrument.name;
 								$scope.old_name = old_name;
+								
+								$http
+								.get(
+										"http://172.21.50.3:8080/emit/feature/one-instrument",
+										{
+											"params" : {
+												"instrument" : instrument.uri
+											}
+										}).then(function(success) {
+											$scope.features = success.data
+								}, function(error) {
+									console.log("pas de features définies")
+								});
 
 							} else {
 								$scope.creating = true;
@@ -75,28 +104,82 @@
 							}
 							$scope.selected = true;
 						}
-						$scope.create = function() {
 
+						$scope.create = function() {
+							//console.log($scope.features);
+							var error_flag = false;
+							//console.log($scope.features);
 							var indata = {
 								uri : $scope.instrument.uri,
 								name : $scope.instrument.name
 							};
-							$http
+							var instru = $scope.instrument.uri;
+							var feature_crea = [];
+							var instrument_crea = $http
 									.post(
 											"http://172.21.50.3:8080/emit/instrument/create",
 											indata)
 									.then(
 											function(success) {
-												alert("Instrument created");
-												init();
-												$scope.size = 0;
-												$scope.offset = 0;
-												size();
-												page();
+												angular
+														.forEach(
+																$scope.features,
+																function(value,
+																		key) {
+																	var feature_crea = [];
+																	var feature_data = {
+																		name : value.name,
+																		measure : value.measure,
+																		factor : value.factor,
+																		instrument : instru,
+																		no_order : value.no_order
+																	};
+																	//console.log(feature_data);
+																	feature_crea.push($http
+																			.post(
+																					"http://172.21.50.3:8080/emit/feature/create",
+																					feature_data)
+																			.then(
+																					function(
+																							success) {
+																						//console.log(' feature  --> ' + value.name);
+																					},
+																					function(
+																							error) {
+																						//console.log('feature failed !! ' + value.name);
+																						error_flag = true;
+																					}));
+																});
+												//console.log("instrument created");
 											},
 											function(error) {
-												alert("An error occured during creation of the instrument.");
+												//console.log("instrument failed !!");
+												error_flag = true;
 											});
+							if (error_flag == true) {
+								alert("An error occured during creation of the instrument.");
+							} else {
+								$q.all(
+										[ instrument_crea, feature_crea ]).then(
+										function(values) {
+											alert("Instrument created");
+											$scope.size = 0;
+											$scope.offset = 0;
+											size();
+											page();
+											init();
+
+										});
+								
+								
+
+								/*alert("Instrument created");
+								$scope.size = 0;
+								$scope.offset = 0;
+								size();
+								page();
+								init();*/
+							}
 						}
 						$scope.update = function() {
 							var indata = [ {
@@ -208,6 +291,50 @@
 							page();
 						}
 
+						$scope.add_feature = function(selected_measure) {
+							var msg = "";
+							var error_name = false;
+							var error_no_order = false;
+							angular.forEach($scope.features, function(value,
+									key) {
+								if (value.no_order == $scope.feature.no_order) {
+									error_no_order = true;
+								}
+								if (value.name == $scope.feature.name) {
+									error_name = true;
+								}
+							});
+							if (error_no_order == true || error_name == true) {
+								var msg = "The feature can't be added :";
+								if (error_name == true) {
+									msg = msg + "\n- This name already exists";
+								}
+								if (error_no_order == true) {
+									msg = msg + "\n- This order already exists";
+								}
+								alert(msg);
+							} else {
+								var data = {
+									name : $scope.feature.name,
+									no_order : $scope.feature.no_order,
+									factor : $scope.feature.factor,
+									measure : selected_measure.name
+								};
+								//console.log(data);
+								$scope.features.push(data);
+								//console.log($scope.features);
+							}
+						}
+
+						$scope.delete_feature = function(feature_name) {
+							//console.log($scope.features);
+							$scope.features = $scope.features.filter(function(
+									feature) {
+								return feature.name !== feature_name;
+							});
+							//	console.log($scope.features);
+						}
+
 						init();
 						size();
 						page();
@@ -256,18 +383,10 @@
 		</div>
 	</header>
 
-
-
-
-
-
 	<div class="container">
-	<br>
-	<br>
-	<br>
+		<br> <br> <br>
 		<section id="search" class="col-md-4">
-		<br>
-	<br>
+			<br> <br>
 			<form class="form" role="form" name="form" ng-if="selected">
 				<fieldset>
 					<legend ng-if="creating">Creation of a new instrument</legend>
@@ -284,6 +403,79 @@
 							id="instrument.name" class="form-control"
 							ng-model="instrument.name" placeholder="Name" ng-required="true" />
 					</div>
+					<legend>Linked features</legend>
+					<div class="form-group">
+						<label for="feature.name">Name</label> <input type="text"
+							id="feature.name" class="form-control" ng-model="feature.name"
+							placeholder="Name" ng-required="true" />
+					</div>
+					<div class="form-group">
+						<label for="measure.name">Measure</label> <select
+							id="measure.name" class="form-control selectpicker"
+							ng-options="measure.name for measure in measures"
+							ng-model="selected_measure" title="Available measures"
+							ng-required="true" required>
+							<option value="" disabled>-- Choose a measure --</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="feature.factor">Factor</label> <select
+							id="feature.factor" class="form-control"
+							ng-model="feature.factor" title="Factor" ng-required="true">
+							<option value="12" label="12 = tera">
+							<option value="9" label="9 = giga">
+							<option value="6" label="6 = mega">
+							<option value="3" label="3 = kilo">
+							<option value="2" label="2 = hecto">
+							<option value="1" label="1 = deka	">
+							<option value="0" label="0 = no factor" selected="selected">
+							<option value="-1" label="- 1 = deci">
+							<option value="-2" label="- 2 = centi">
+							<option value="-3" label="- 3 = milli">
+							<option value="-6" label="- 6 = micro">
+							<option value="-9" label="- 9 = nano">
+							<option value="-12" label="- 12 = pico">
+						</select>
+						<div class="form-group">
+							<label for="feature.no_order">Column order</label><input
+								id="feature.no_order" class="form-control" type="number"
+								ng-model="feature.no_order" title="Order" value="0"
+								ng-required="true">
+						</div>
+					</div>
+					<div class="form-group">
+						<button type="button" class="btn btn-default"
+							ng-click="add_feature(selected_measure)">
+							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+							Add feature
+						</button>
+					</div>
+
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Order</th>
+									<th>Name</th>
+									<th>Measure</th>
+									<th>Factor</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="feature in features | orderBy : 'no_order'">
+									<td>{{feature.no_order}}</td>
+									<td>{{feature.name}}</td>
+									<td>{{feature.measure}}</td>
+									<td>{{feature.factor}}</td>
+									<td><button type="button" class="btn btn-default"
+											ng-click="delete_feature(feature.name)">
+											<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+										</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
 					<div class="form-group pull-right">
 						<button type="reset" class="btn btn-default" ng-click="clean()">
 							<strong>Cancel</strong>

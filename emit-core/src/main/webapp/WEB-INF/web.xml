@@ -359,7 +359,22 @@
 		<servlet-name>feature-delete</servlet-name>
 		<url-pattern>/feature/delete</url-pattern>
 	</servlet-mapping>
-
+	
+	
+	<servlet>
+		<servlet-name>feature-one-instrument</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.FeatureOneInstrument</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/feature-one-instrument.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>feature-one-instrument</servlet-name>
+		<url-pattern>/feature/one-instrument</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>instrument-update</servlet-name>
 		<servlet-class>fr.icam.emit.servlets.InstrumentUpdate</servlet-class>

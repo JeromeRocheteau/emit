@@ -29,7 +29,7 @@ public class FeatureCreation extends JdbcUpdateServlet<Boolean>  {
 		//statement.setLong(1, feature.getId());
 		statement.setString(1, feature.getMeasure());
 		statement.setString(2, feature.getInstrument());
-		statement.setLong(3, feature.getOrder());
+		statement.setLong(3, feature.getNo_order());
 		statement.setString(4,feature.getName());
 		statement.setInt(5, feature.getFactor());
 	}

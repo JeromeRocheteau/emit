@@ -25,7 +25,7 @@ public class FeatureDelete  extends JdbcUpdateServlet<Boolean>{
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
 		Feature feature = gson.fromJson(reader, Feature.class);
-		statement.setLong(1, feature.getId());		
+		statement.setLong(1, feature.getId());
 	}
 
 	@Override

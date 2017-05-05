@@ -93,6 +93,7 @@
 						$scope.an_time = ANALYSE.time;
 						$scope.an_sloc = ANALYSE.sloc;
 						$scope.an_std_dev = ANALYSE.std_dev;
+												
 						$scope.retrieve_json = function() {
 							$http
 									.get(
@@ -167,7 +168,7 @@
 									}));
 							$scope.average = Math.round(100 * f_average(ordinate)) / 100;
 							$scope.std_dev = Math.round(100 * f_standardDeviation(ordinate)) / 100;
-							console.log(abscissa[1] - abscissa[0]);
+							//console.log(abscissa[1] - abscissa[0]);
 							$scope.AUC = Math.round(100 * f_integral((abscissa[1] - abscissa[0]), ordinate)) / 100;
 							
 							//définition des courbes							
