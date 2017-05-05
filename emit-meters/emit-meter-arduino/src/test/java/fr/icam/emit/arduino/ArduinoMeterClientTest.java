@@ -18,7 +18,7 @@ public class ArduinoMeterClientTest {
     	Meter app = new Meter(uri);
     	long time = Calendar.getInstance().getTimeInMillis();
     	long stop = time;
-    	
+    	System.out.println("debut");
 		System.out.println(app.isMeter());
 		List<Feature> features = app.getFeatures();
 		for (Feature f : features) {
@@ -26,10 +26,13 @@ public class ArduinoMeterClientTest {
 		}
 		
     	app.doStart();
+    	System.out.println("lancement");
     	while ((time - stop) < PROC_TIME) {
     		time = Calendar.getInstance().getTimeInMillis();
     	}
+    	System.out.println("retrieve");
     	app.doStop();
+    	System.out.println("retrieve 2");
     	String reponce =app.doRetrieve(System.out);
     	System.out.println(reponce);
     	System.out.println("fin");
