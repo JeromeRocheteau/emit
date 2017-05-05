@@ -30,8 +30,10 @@ public class FeatureList extends JdbcQueryServlet<List<Feature>> {
 			int id = resultSet.getInt("id");
 			String measure = resultSet.getString("measure");
 			String instrument = resultSet.getString("instrument");
-			long order = resultSet.getLong("order");
-			features.add(new Feature(id, measure, instrument, order));
+			long order = resultSet.getLong("no_order");
+			String name = resultSet.getString("name");
+			int factor = resultSet.getInt("factor");
+			features.add(new Feature(id, measure, instrument, order,name,factor));
 		}
 		return features;
 	}

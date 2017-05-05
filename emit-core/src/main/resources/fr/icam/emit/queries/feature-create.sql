@@ -1,2 +1,2 @@
-insert into features (id, measure, instrument, unit)
-values (?,?,?,?);
+insert into features (measure, instrument, no_order,name,factor)
+values (?,?,?,?,?);

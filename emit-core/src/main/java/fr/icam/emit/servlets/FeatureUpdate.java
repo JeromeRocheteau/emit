@@ -31,11 +31,13 @@ public class FeatureUpdate extends JdbcUpdateServlet<Boolean>{
 		Type listType = new TypeToken<List<Feature>>(){}.getType();
 		List<Feature> feature = gson.fromJson(reader,listType);
 		
-		statement.setLong(5, feature.get(0).getId());
+		statement.setLong(7, feature.get(0).getId());
 		statement.setLong(1, feature.get(1).getId());
 		statement.setString(2, feature.get(1).getMeasure());
 		statement.setString(3, feature.get(1).getInstrument());
 		statement.setLong(4, feature.get(1).getOrder());
+		statement.setString(5, feature.get(1).getName());
+		statement.setInt(6, feature.get(1).getFactor());
 	}
 
 	@Override

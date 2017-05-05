@@ -30,7 +30,9 @@ public class ArduinoMeterClientTest {
     		time = Calendar.getInstance().getTimeInMillis();
     	}
     	app.doStop();
-    	app.doRetrieve(System.out);
+    	String reponce =app.doRetrieve(System.out);
+    	System.out.println(reponce);
+    	System.out.println("fin");
     }
 
 }

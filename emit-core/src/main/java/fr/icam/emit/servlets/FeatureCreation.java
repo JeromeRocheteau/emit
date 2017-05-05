@@ -26,10 +26,12 @@ public class FeatureCreation extends JdbcUpdateServlet<Boolean>  {
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);
 		Feature feature = gson.fromJson(reader, Feature.class);
-		statement.setLong(1, feature.getId());
-		statement.setString(2, feature.getMeasure());
-		statement.setString(3, feature.getInstrument());
-		statement.setLong(4, feature.getOrder());
+		//statement.setLong(1, feature.getId());
+		statement.setString(1, feature.getMeasure());
+		statement.setString(2, feature.getInstrument());
+		statement.setLong(3, feature.getOrder());
+		statement.setString(4,feature.getName());
+		statement.setInt(5, feature.getFactor());
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -46,12 +47,16 @@ public class ExperimentLaunch extends JdbcServlet {
 		String string_uri = experiment.get(0).getEnvironment().getUri();
 		URI uri = new URI(string_uri);
 		Launcher launcher= new Launcher(uri);
-		canLaunch = this.check_tools(launcher);
-		
+		//String proc = "/var/local/emit/hanoi-tower-java 16";
+		String proc = experiment.get(0).getExperiment().getMeasurand().getProcess();
+		String[] items = proc.split("\\s+");
+		String[] args = Arrays.copyOfRange(items, 1, items.length);
+		String cmd = items[0];
+		canLaunch = this.check_tools(launcher,cmd);	
 		
 		if (canLaunch == true){
 			
-			measurementSets = this.execut_measure(experiment, launcher,response);			
+			measurementSets = this.execut_measure(experiment, launcher,response,cmd,args);			
 			for (MeasurementSet measurementSet:measurementSets){
 				
 				request.setAttribute("measurementSet",measurementSet );
@@ -65,13 +70,13 @@ public class ExperimentLaunch extends JdbcServlet {
 	};
 	
 	
-	public List<MeasurementSet> execut_measure(List<Experiment_plan> experiment,Launcher launcher,HttpServletResponse response) throws Exception{
+	public List<MeasurementSet> execut_measure(List<Experiment_plan> experiment,Launcher launcher,HttpServletResponse response, String command,String... parameter) throws Exception{
 		//liste des instrument
 		List<Meter> instruments = new ArrayList<Meter>();
 		//liste des resulats (sous forme de MeasurementSet)
 		List<MeasurementSet> measurementSets = new ArrayList<MeasurementSet>();
 		
-		String command = "/var/local/emit/hanoi-tower-java";
+		//String command = "/var/local/emit/hanoi-tower-java";
 		
 		
 		//lancement des instruments
@@ -85,9 +90,8 @@ public class ExperimentLaunch extends JdbcServlet {
 			instruments.get(i).doStart();			
 		}
 		//execution mesure
-		Thread.sleep(5000);
-		String nb = "17";
-		launcher.doLaunch((long)500000, command, nb);
+		Thread.sleep(5000);		
+		launcher.doLaunch(0L, command, parameter);
 		Thread.sleep(5000);
 		
 		//stopper les instruments
@@ -110,10 +114,9 @@ public class ExperimentLaunch extends JdbcServlet {
 		
 	}
 	
-	public boolean check_tools(Launcher launcher) throws Exception{
+	public boolean check_tools(Launcher launcher, String command) throws Exception{
 		boolean launch = false;
 		// je ne sais pas comment intéger les commandes de la base de donnée
-		String command = "/var/local/emit/hanoi-tower-java";
 		launch = launcher.canLaunch(command);
 		
 		/*
