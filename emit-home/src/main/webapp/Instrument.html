@@ -87,7 +87,7 @@
 								
 								$http
 								.get(
-										"http://172.21.50.3:8080/emit/feature/one-instrument",
+										"http://172.21.50.3:8080/emit/feature/list-one-instrument",
 										{
 											"params" : {
 												"instrument" : instrument.uri
@@ -170,15 +170,6 @@
 											init();
 
 										});
-								
-								
-
-								/*alert("Instrument created");
-								$scope.size = 0;
-								$scope.offset = 0;
-								size();
-								page();
-								init();*/
 							}
 						}
 						$scope.update = function() {
@@ -223,22 +214,40 @@
 								var data = {
 									uri : uri
 								};
-								$http
-										.post(
-												"http://172.21.50.3:8080/emit/instrument/delete",
-												data)
-										.then(
-												function(success) {
-													alert("Instrument deleted");
-													init();
-													$scope.size = 0;
-													$scope.offset = 0;
-													size();
-													page();
-												},
-												function(error) {
-													alert("An error occured during deleting of the instrument.");
-												});
+								
+								console.log(data);
+								console.log(data.uri);
+								var feature_delete = $http
+								.post(
+										"http://172.21.50.3:8080/emit/feature/delete-one-instrument",
+										data.uri)
+								.then(
+										function(success) {
+											console.log('success delete features');
+										},
+										function(error) {
+											console.log('error delete features');
+										});
+								$q.all(
+										[ feature_delete ]).then(
+										function(values) {
+											$http
+											.post(
+													"http://172.21.50.3:8080/emit/instrument/delete",
+													data)
+											.then(
+													function(success) {
+														alert("Instrument deleted");
+														init();
+														$scope.size = 0;
+														$scope.offset = 0;
+														size();
+														page();
+													},
+													function(error) {
+														alert("An error occured during deleting of the instrument.");
+													});
+										});
 							} else {
 								alert("This " + element + " can't be deleted");
 							}

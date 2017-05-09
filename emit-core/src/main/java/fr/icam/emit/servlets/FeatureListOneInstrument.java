@@ -18,9 +18,9 @@ import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.Feature;
 
-public class FeatureOneInstrument extends JdbcQueryServlet<List<Feature>> {
+public class FeatureListOneInstrument extends JdbcQueryServlet<List<Feature>> {
 
-	private static final long serialVersionUID = 201704261450L;
+	private static final long serialVersionUID = 201705090805L;
 
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {

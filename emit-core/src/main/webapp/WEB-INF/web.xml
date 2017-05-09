@@ -362,17 +362,31 @@
 	
 	
 	<servlet>
-		<servlet-name>feature-one-instrument</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.FeatureOneInstrument</servlet-class>
+		<servlet-name>feature-list-one-instrument</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.FeatureListOneInstrument</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
-			<param-value>/fr/icam/emit/queries/feature-one-instrument.sql
+			<param-value>/fr/icam/emit/queries/feature-list-one-instrument.sql
 			</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>feature-one-instrument</servlet-name>
-		<url-pattern>/feature/one-instrument</url-pattern>
+		<servlet-name>feature-list-one-instrument</servlet-name>
+		<url-pattern>/feature/list-one-instrument</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>feature-delete-one-instrument</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.FeatureDeleteOneInstrument</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/feature-delete-one-instrument.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>feature-delete-one-instrument</servlet-name>
+		<url-pattern>/feature/delete-one-instrument</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>
