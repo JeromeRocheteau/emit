@@ -29,7 +29,7 @@
 	app
 			.controller(
 					'controller',
-					function($scope, $http,$q) {
+					function($scope, $http, $q) {
 
 						$http
 								.get(
@@ -84,19 +84,23 @@
 								old_uri = instrument.uri;
 								old_name = instrument.name;
 								$scope.old_name = old_name;
-								
+
 								$http
-								.get(
-										"http://172.21.50.3:8080/emit/feature/list-one-instrument",
-										{
-											"params" : {
-												"instrument" : instrument.uri
-											}
-										}).then(function(success) {
-											$scope.features = success.data
-								}, function(error) {
-									console.log("pas de features définies")
-								});
+										.get(
+												"http://172.21.50.3:8080/emit/feature/list-one-instrument",
+												{
+													"params" : {
+														"instrument" : instrument.uri
+													}
+												})
+										.then(
+												function(success) {
+													$scope.features = success.data
+												},
+												function(error) {
+													console
+															.log("pas de features définies")
+												});
 
 							} else {
 								$scope.creating = true;
@@ -135,32 +139,31 @@
 																		no_order : value.no_order
 																	};
 																	//console.log(feature_data);
-																	feature_crea.push($http
-																			.post(
-																					"http://172.21.50.3:8080/emit/feature/create",
-																					feature_data)
-																			.then(
-																					function(
-																							success) {
-																						//console.log(' feature  --> ' + value.name);
-																					},
-																					function(
-																							error) {
-																						//console.log('feature failed !! ' + value.name);
-																						error_flag = true;
-																					}));
+																	feature_crea
+																			.push($http
+																					.post(
+																							"http://172.21.50.3:8080/emit/feature/create",
+																							feature_data)
+																					.then(
+																							function(
+																									success) {
+																								//console.log(' feature  --> ' + value.name);
+																							},
+																							function(
+																									error) {
+																								//console.log('feature failed !! ' + value.name);
+																								error_flag = true;
+																							}));
 																});
 												//console.log("instrument created");
-											},
-											function(error) {
+											}, function(error) {
 												//console.log("instrument failed !!");
 												error_flag = true;
 											});
 							if (error_flag == true) {
 								alert("An error occured during creation of the instrument.");
 							} else {
-								$q.all(
-										[ instrument_crea, feature_crea ]).then(
+								$q.all([ instrument_crea, feature_crea ]).then(
 										function(values) {
 											alert("Instrument created");
 											$scope.size = 0;
@@ -173,6 +176,7 @@
 							}
 						}
 						$scope.update = function() {
+							var feature_crea = [];
 							var indata = [ {
 								uri : old_uri,
 								name : old_name
@@ -180,19 +184,87 @@
 								uri : $scope.instrument.uri,
 								name : $scope.instrument.name
 							} ];
-
-							$http
+							var data_feature = {
+									instrument : $scope.instrument.uri
+								};
+							var instru = $scope.instrument.uri; 
+							var list_features = $scope.features; 
+							var feature_delete = $http
 									.post(
-											"http://172.21.50.3:8080/emit/instrument/update",
-											indata)
-									.then(
+											"http://172.21.50.3:8080/emit/feature/delete-one-instrument",
+											data_feature).then(
 											function(success) {
-												alert("Instrument updated");
-											},
-											function(error) {
-												alert("An error occured during updating of the instrument.");
+												console.log('delete feature OK');
+											}, function(error) {
+												console.log('delete feature PAS OK !');
 											});
-							$scope.clean();
+							$q
+									.all([ feature_delete ])
+									.then(
+											function(values) {
+												angular
+												.forEach(
+														list_features,
+														function(
+																value,
+																key) {
+															var feature_crea = [];
+															var feature_data = {
+																name : value.name,
+																measure : value.measure,
+																factor : value.factor,
+																instrument : instru,
+																no_order : value.no_order
+															};
+															console.log(feature_data);
+															feature_crea
+																	.push($http
+																			.post(
+																					"http://172.21.50.3:8080/emit/feature/create",
+																					feature_data)
+																			.then(
+																					function(
+																							success) {
+																						console.log(' feature  --> ' + value.name);
+																					},
+																					function(
+																							error) {
+																						console.log('feature failed !! ' + value.name);
+																						/* error_flag = true; */
+																					}));
+														});
+												
+												
+												$q
+														.all(
+																[ feature_crea ])
+														.then(
+																function(values) {
+																	console.log("creation features sur instrum : " + instru);
+																	console.log(list_features);
+																	var intrument_update = $http
+																	.post(
+																			"http://172.21.50.3:8080/emit/instrument/update",
+																			indata)
+																	.then(
+																			function(
+																					success) {
+																				console.log('update instru OK');
+																			},
+																			function(error) {
+																				console.log('update instru PAS OK !');
+																				/* alert("An error occured during updating of the instrument."); */
+																			});
+																	$q
+																	.all([ intrument_update ])
+																	.then(
+																			function(values) {
+																				alert("Instrument updated");
+																				$scope
+																						.clean();
+																			});																
+																});
+											});
 						}
 
 						$scope.remove = function(instrument) {
@@ -214,40 +286,39 @@
 								var data = {
 									uri : uri
 								};
-								
-								console.log(data);
-								console.log(data.uri);
+								var data_feature = {
+									instrument : uri
+								};
 								var feature_delete = $http
-								.post(
-										"http://172.21.50.3:8080/emit/feature/delete-one-instrument",
-										data.uri)
-								.then(
-										function(success) {
-											console.log('success delete features');
-										},
-										function(error) {
-											console.log('error delete features');
-										});
-								$q.all(
-										[ feature_delete ]).then(
-										function(values) {
-											$http
-											.post(
-													"http://172.21.50.3:8080/emit/instrument/delete",
-													data)
-											.then(
-													function(success) {
-														alert("Instrument deleted");
-														init();
-														$scope.size = 0;
-														$scope.offset = 0;
-														size();
-														page();
-													},
-													function(error) {
-														alert("An error occured during deleting of the instrument.");
-													});
-										});
+										.post(
+												"http://172.21.50.3:8080/emit/feature/delete-one-instrument",
+												data_feature).then(
+												function(success) {
+												}, function(error) {
+												});
+								$q
+										.all([ feature_delete ])
+										.then(
+												function(values) {
+													$http
+															.post(
+																	"http://172.21.50.3:8080/emit/instrument/delete",
+																	data)
+															.then(
+																	function(
+																			success) {
+																		alert("Instrument deleted");
+																		init();
+																		$scope.size = 0;
+																		$scope.offset = 0;
+																		size();
+																		page();
+																	},
+																	function(
+																			error) {
+																		alert("An error occured during deleting of the instrument.");
+																	});
+												});
 							} else {
 								alert("This " + element + " can't be deleted");
 							}
@@ -330,6 +401,8 @@
 									measure : selected_measure.name
 								};
 								//console.log(data);
+								console.log("no_order --> "
+										+ $scope.feature.no_order);
 								$scope.features.push(data);
 								//console.log($scope.features);
 							}
@@ -416,21 +489,20 @@
 					<div class="form-group">
 						<label for="feature.name">Name</label> <input type="text"
 							id="feature.name" class="form-control" ng-model="feature.name"
-							placeholder="Name" ng-required="true" />
+							placeholder="Name" />
 					</div>
 					<div class="form-group">
 						<label for="measure.name">Measure</label> <select
 							id="measure.name" class="form-control selectpicker"
 							ng-options="measure.name for measure in measures"
-							ng-model="selected_measure" title="Available measures"
-							ng-required="true" required>
+							ng-model="selected_measure" title="Available measures">
 							<option value="" disabled>-- Choose a measure --</option>
 						</select>
 					</div>
 					<div class="form-group">
 						<label for="feature.factor">Factor</label> <select
 							id="feature.factor" class="form-control"
-							ng-model="feature.factor" title="Factor" ng-required="true">
+							ng-model="feature.factor" title="Factor">
 							<option value="12" label="12 = tera">
 							<option value="9" label="9 = giga">
 							<option value="6" label="6 = mega">
@@ -448,8 +520,7 @@
 						<div class="form-group">
 							<label for="feature.no_order">Column order</label><input
 								id="feature.no_order" class="form-control" type="number"
-								ng-model="feature.no_order" title="Order" value="0"
-								ng-required="true">
+								ng-model="feature.no_order" title="Order" value="0">
 						</div>
 					</div>
 					<div class="form-group">

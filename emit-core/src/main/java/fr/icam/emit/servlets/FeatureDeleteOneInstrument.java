@@ -1,6 +1,9 @@
 package fr.icam.emit.servlets;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -9,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcUpdateServlet;
+import com.google.gson.Gson;
+
+import fr.icam.emit.entities.Feature;
 
 public class FeatureDeleteOneInstrument extends JdbcUpdateServlet<Boolean> {
 
@@ -16,8 +22,11 @@ public class FeatureDeleteOneInstrument extends JdbcUpdateServlet<Boolean> {
 
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		String instrument = request.getParameter("instrument");
-        statement.setString(1,instrument);	
+		Gson gson = new Gson();		
+		InputStream inputStream = request.getInputStream();
+		Reader reader = new InputStreamReader(inputStream);		 
+		Feature feature = gson.fromJson(reader, Feature.class);
+		statement.setString(1, feature.getInstrument());
 	}
 
 
