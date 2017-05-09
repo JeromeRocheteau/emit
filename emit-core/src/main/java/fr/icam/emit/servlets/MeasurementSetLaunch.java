@@ -41,6 +41,7 @@ public class MeasurementSetLaunch extends JdbcServlet {
 		File_handler file_handler = new File_handler();
 		//rechercher le ficher csv
 		String content = this.retrive_csv_file(measurementSet.get(0).getData(),file_handler);
+		
 		//response.getWriter().write(content);
 		//mapper les donners dans une variable table
 		InstrumentReader reader = new InstrumentReader();
@@ -48,8 +49,9 @@ public class MeasurementSetLaunch extends JdbcServlet {
 		//generation et enregistrement des measurements et des fichiers json
 		List<Serie> data = new ArrayList<Serie>();
 		for (int i = 0; i<measurementSet.size();i++){
+			int order = measurementSet.get(i).getFeature().getNo_order();
 			for (int j = 2;j<table.size();j++){
-				data.add(new Serie( Double.parseDouble(table.get(j).get(0)),Double.parseDouble(table.get(j).get(i+1))));
+				data.add(new Serie( Double.parseDouble(table.get(j).get(0)),Double.parseDouble(table.get(j).get(order))));
 			}
 			String json = reader.create_json(data);
 			data.clear();

@@ -35,7 +35,7 @@ public class FeatureOneInstrument extends JdbcQueryServlet<List<Feature>> {
 			int id = resultSet.getInt("id");
 			String measure = resultSet.getString("measure");
 			String instrument = resultSet.getString("instrument");
-			long order = resultSet.getLong("no_order");
+			int order = resultSet.getInt("no_order");
 			String name = resultSet.getString("name");
 			int factor = resultSet.getInt("factor");
 			features.add(new Feature(id, measure, instrument, order,name,factor));

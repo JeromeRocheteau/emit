@@ -43,7 +43,7 @@ public class MeasurementSetUnprocessed  extends JdbcQueryServlet<List<Measuremen
 			Instrument instrument = new Instrument(uri,name,false);
 			long id_feature =  resultSet.getLong("id_feature");
 			String measure = resultSet.getString("measure");
-			long order = resultSet.getLong("no_order");
+			int order = resultSet.getInt("no_order");
 			Feature feature = new Feature(id_feature,measure,uri,order,null,0);
 			long time = 0;
 			measurementSet_plan.add(new MeasurementSet_plan(id,data,achieved == null ? null : achieved.getTime(),experiment,instrument,feature));
