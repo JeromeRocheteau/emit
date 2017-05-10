@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link href="css/sb-admin-2.css" rel="stylesheet">
+<link rel="stylesheet" href="./css/font-awesome.min.css">
+<link href="css/sb-admin-2.css" rel="stylesheet">
 </head>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -19,7 +20,7 @@
 	var app = angular.module('app', []);
 	var old_uri;
 	var old_name;
-	
+
 	app.filter('ceil', function() {
 		return function(input) {
 			return Math.ceil(input);
@@ -31,9 +32,8 @@
 					'controller',
 					function($scope, $http) {
 
-						$http
-								.get(
-										"http://172.21.50.3:8080/emit/experiment/list")
+						$http.get(
+								"http://172.21.50.3:8080/emit/experiment/list")
 								.then(function(response) {
 									$scope.experimentlist = response.data;
 								});
@@ -65,7 +65,7 @@
 								$scope.creating = false;
 								$scope.updating = true;
 								$scope.environment = environment;
-								old_uri =  environment.uri;
+								old_uri = environment.uri;
 								old_name = environment.name;
 								$scope.old_name = old_name;
 							} else {
@@ -129,12 +129,12 @@
 							$('#modal').modal('hide');
 							var can_delete = true;
 							var uri = $scope.environment.uri;
-							angular.forEach($scope.experimentlist,
-									function(value) {
-										if (value.environment == uri) {
-											can_delete = false;
-										}
-									});
+							angular.forEach($scope.experimentlist, function(
+									value) {
+								if (value.environment == uri) {
+									can_delete = false;
+								}
+							});
 							if (can_delete == true) {
 								var data = {
 									uri : uri
@@ -161,7 +161,9 @@
 						}
 
 						var size = function() {
-							$http.get("http://172.21.50.3:8080/emit/environment/size")
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/environment/size")
 									.then(function(success) {
 										$scope.size = success.data;
 									}, function(error) {
@@ -169,16 +171,18 @@
 									});
 						}
 						var page = function() {
-							$http.get("http://172.21.50.3:8080/emit/environment/page",
-									{
-										"params" : {
-											"offset" : $scope.offset
-										}
-									}).then(function(success) {
-								$scope.environments = success.data;
-							}, function(error) {
-								$scope.environments = [];
-							});
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/environment/page",
+											{
+												"params" : {
+													"offset" : $scope.offset
+												}
+											}).then(function(success) {
+										$scope.environments = success.data;
+									}, function(error) {
+										$scope.environments = [];
+									});
 						}
 						$scope.prev = function() {
 							if ($scope.length <= $scope.offset) {
@@ -210,51 +214,40 @@
 					});
 </script>
 <body ng-app="app" ng-controller="controller">
-<header>
-		<div class="navbar navbar-default navbar-custom navbar-static-top" id="navigation_barre">
+	<header>
+		<div class="navbar navbar-default navbar-custom navbar-static-top"
+			id="navigation_barre">
 			<div class="container">
-				 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-				<a href="./index.html" class="navbar-brand" id = "titre_appli">EMIT</a>
-				<ul id = "menu">
-					<li class="active primaire"><a href="./index.html" class="primaire"><span
-								class="glyphicon glyphicon-home">&ensp;</span> Home</a></li>
-					
-					<li class= "dropdown primaire"> <a href="#" class="dropdown-toggle primaire"
-							data-toggle="dropdown" role="button" aria-expanded="false"><span
-								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
-								class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="./Instrument.html">Instruments</a></li>
-								<li><a href="./Environment.html">Environments</a></li>
-								<li><a href="./Measurand.html">Measurands</a></li>
-								<li><a href="./Measure.html">Measures</a></li>
-							</ul>
-						</li>
-						<li class="active primaire"><a href="./CreateExperiment.html" class="primaire"><span
-							class="glyphicon glyphicon-plus">&ensp;</span>Add experiment</a></li>
-						<li class="active primaire"><a href="./test.html"
+				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
+				<ul id="menu">
+					<li class="active primaire"><a href="./index.html"
+						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
+							Home</a></li>
+					<li class="dropdown primaire"><a href="#"
+						class="dropdown-toggle primaire" data-toggle="dropdown"
+						role="button" aria-expanded="false"><span
+							class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="./Instrument.html">Instruments</a></li>
+							<li><a href="./Environment.html">Environments</a></li>
+							<li><a href="./Measurand.html">Measurands</a></li>
+							<li><a href="./Measure.html">Measures</a></li>
+						</ul></li>
+					<li class="active primaire"><a href="./CreateExperiment.html"
+						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
+							experiment</a></li>
+					<li class="active primaire"><a href="./test.html"
 						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
 							Test</a></li>
 				</ul>
-				
-				
 			</div>
 		</div>
-	</header>	
+	</header>
 
-	<div class="container" >
-	<br>
-	<br>
-	<br>
+	<div id = "content" class="container">
 		<section id="search" class="col-md-4">
-		<br>
-		<br>
-			<form class="form" role="form" name="form" ng-if="selected">
+			<form class="form" name="form" ng-if="selected">
 				<fieldset>
 					<legend ng-if="creating">Creation of a new Environment</legend>
 					<legend ng-if="updating">Updating an Environment
@@ -267,8 +260,8 @@
 					</div>
 					<div class="form-group">
 						<label for="environment.name">Name</label> <input type="text"
-							id="environment.name" class="form-control" ng-model="environment.name"
-							placeholder="Name" ng-required="true" />
+							id="environment.name" class="form-control"
+							ng-model="environment.name" placeholder="Name" ng-required="true" />
 					</div>
 					<div class="form-group pull-right">
 						<button type="reset" class="btn btn-default" ng-click="clean()">
@@ -327,7 +320,7 @@
 					</p>
 				</li>
 			</ul>
-			<div class="">
+			<div class="pull-right">
 				<button type="button" class="btn btn-info pull-right"
 					ng-click="select()">
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -356,5 +349,31 @@
 			</div>
 		</div>
 	</div>
+	<footer id = "footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<p class="text-left">Copyright © 2015-2017. ICAM. Tous droits
+						réservés.</p>
+				</div>
+				<div class="col-md-6">
+					<div class="text-right">
+						<a href="https://www.facebook.com/icam.nantes" target="_blank"><i
+							class="fa fa-facebook-square fa-2x text-muted"></i></a> <span>&emsp;</span>
+						<a href="https://twitter.com/icam_fr" target="_blank"><i
+							class="fa fa-twitter fa-2x text-muted"></i></a> <span>&emsp;</span> <a
+							href="https://plus.google.com/118426909654384683619/about"
+							target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers"
+							target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"
+							target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>

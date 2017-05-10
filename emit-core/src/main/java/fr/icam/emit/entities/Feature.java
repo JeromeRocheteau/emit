@@ -4,7 +4,7 @@ public class Feature {
 	long id;
 	String measure;
 	String instrument;
-	long no_order;
+	int no_order;
 	String name;
 	int factor;
 	
@@ -38,14 +38,14 @@ public class Feature {
 	public void setInstrument(String instrument) {
 		this.instrument = instrument;
 	}
-	public long getNo_order() {
+	public int getNo_order() {
 		return no_order;
 	}
-	public void setNo_order(long no_order) {
+	public void setNo_order(int no_order) {
 		this.no_order = no_order;
 	}
 	
-	public Feature(long id,String measure,String instrument,long no_order, String name,int factor){
+	public Feature(long id,String measure,String instrument,int no_order, String name,int factor){
 		this.setId(id);
 		this.setInstrument(instrument);
 		this.setMeasure(measure);

@@ -1,10 +1,6 @@
 package fr.icam.emit.servlets;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.LinkedList;
@@ -35,7 +31,7 @@ public class FeatureListOneInstrument extends JdbcQueryServlet<List<Feature>> {
 			int id = resultSet.getInt("id");
 			String measure = resultSet.getString("measure");
 			String instrument = resultSet.getString("instrument");
-			long order = resultSet.getLong("no_order");
+			int order = resultSet.getInt("no_order");
 			String name = resultSet.getString("name");
 			int factor = resultSet.getInt("factor");
 			features.add(new Feature(id, measure, instrument, order,name,factor));

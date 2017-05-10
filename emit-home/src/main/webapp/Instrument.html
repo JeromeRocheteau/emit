@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="./css/font-awesome.min.css">
 <link href="css/sb-admin-2.css" rel="stylesheet">
 </head>
 <script type="text/javascript"
@@ -185,7 +186,7 @@
 								name : $scope.instrument.name
 							} ];
 							var data_feature = {
-									instrument : $scope.instrument.uri
+									instrument : old_uri
 								};
 							var instru = $scope.instrument.uri; 
 							var list_features = $scope.features; 
@@ -202,61 +203,54 @@
 									.all([ feature_delete ])
 									.then(
 											function(values) {
-												angular
-												.forEach(
-														list_features,
+												var intrument_update = $http
+												.post(
+														"http://172.21.50.3:8080/emit/instrument/update",
+														indata)
+												.then(
 														function(
-																value,
-																key) {
-															var feature_crea = [];
-															var feature_data = {
-																name : value.name,
-																measure : value.measure,
-																factor : value.factor,
-																instrument : instru,
-																no_order : value.no_order
-															};
-															console.log(feature_data);
-															feature_crea
-																	.push($http
-																			.post(
-																					"http://172.21.50.3:8080/emit/feature/create",
-																					feature_data)
-																			.then(
-																					function(
-																							success) {
-																						console.log(' feature  --> ' + value.name);
-																					},
-																					function(
-																							error) {
-																						console.log('feature failed !! ' + value.name);
-																						/* error_flag = true; */
-																					}));
+																success) {
+															console.log('update instru OK');
+														},
+														function(error) {
+															console.log('update instru PAS OK !');
+															/* alert("An error occured during updating of the instrument."); */
 														});
-												
-												
 												$q
 														.all(
-																[ feature_crea ])
+																[ intrument_update ])
 														.then(
 																function(values) {
-																	console.log("creation features sur instrum : " + instru);
-																	console.log(list_features);
-																	var intrument_update = $http
-																	.post(
-																			"http://172.21.50.3:8080/emit/instrument/update",
-																			indata)
-																	.then(
+																	angular
+																	.forEach(
+																			list_features,
 																			function(
-																					success) {
-																				console.log('update instru OK');
-																			},
-																			function(error) {
-																				console.log('update instru PAS OK !');
-																				/* alert("An error occured during updating of the instrument."); */
+																					value,
+																					key) {
+																				var feature_crea = [];
+																				var feature_data = {
+																					name : value.name,
+																					measure : value.measure,
+																					factor : value.factor,
+																					instrument : instru,
+																					no_order : value.no_order
+																				};
+																				feature_crea
+																						.push($http
+																								.post(
+																										"http://172.21.50.3:8080/emit/feature/create",
+																										feature_data)
+																								.then(
+																										function(
+																												success) {
+																										},
+																										function(
+																												error) {
+																											/* error_flag = true; */
+																										}));
 																			});
 																	$q
-																	.all([ intrument_update ])
+																	.all([ feature_crea ])
 																	.then(
 																			function(values) {
 																				alert("Instrument updated");
@@ -429,12 +423,6 @@
 		<div class="navbar navbar-default navbar-custom navbar-static-top"
 			id="navigation_barre">
 			<div class="container">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
 				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
 				<ul id="menu">
 					<li class="active primaire"><a href="./index.html"
@@ -465,11 +453,9 @@
 		</div>
 	</header>
 
-	<div class="container">
-		<br> <br> <br>
+	<div id = "content" class="container">
 		<section id="search" class="col-md-4">
-			<br> <br>
-			<form class="form" role="form" name="form" ng-if="selected">
+			<form class="form" name="form" ng-if="selected">
 				<fieldset>
 					<legend ng-if="creating">Creation of a new instrument</legend>
 					<legend ng-if="updating">Updating an instrument
@@ -520,7 +506,7 @@
 						<div class="form-group">
 							<label for="feature.no_order">Column order</label><input
 								id="feature.no_order" class="form-control" type="number"
-								ng-model="feature.no_order" title="Order" value="0">
+								ng-model="feature.no_order" title="Order" value="1" min="1">
 						</div>
 					</div>
 					<div class="form-group">
@@ -531,7 +517,7 @@
 						</button>
 					</div>
 
-					<div class="table-responsive">
+					<div class="table-responsive" ng-if = "features.length > 0">
 						<table class="table">
 							<thead>
 								<tr>
@@ -613,7 +599,7 @@
 					</p>
 				</li>
 			</ul>
-			<div class="">
+			<div class="pull-right">
 				<button type="button" class="btn btn-info pull-right"
 					ng-click="select()">
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -642,5 +628,27 @@
 			</div>
 		</div>
 	</div>
+	<footer id = "footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6"> 
+              <p class="text-left">Copyright © 2015-2017. ICAM. Tous droits réservés.</p>
+            </div> 
+            <div class="col-md-6"> 
+              <div class="text-right"> 
+                <a href="https://www.facebook.com/icam.nantes" target="_blank"><i class="fa fa-facebook-square fa-2x text-muted"></i></a>
+                <span>&emsp;</span>
+                <a href="https://twitter.com/icam_fr" target="_blank"><i class="fa fa-twitter fa-2x text-muted"></i></a>
+                <span>&emsp;</span>
+                <a href="https://plus.google.com/118426909654384683619/about" target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
+                <span>&emsp;</span>
+                <a href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers" target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
+                <span>&emsp;</span>
+                <a href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"  target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+    </footer>
 </body>
 </html>

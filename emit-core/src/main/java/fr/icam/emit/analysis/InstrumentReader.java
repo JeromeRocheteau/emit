@@ -1,9 +1,13 @@
 package fr.icam.emit.analysis;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
@@ -18,8 +22,9 @@ public class InstrumentReader {
 
 	public List<List<String>> Read(String data) {
 		String my_new_str = data.replaceAll("	", ";");
-		 my_new_str = my_new_str.replaceAll(",", ".");
+		my_new_str = my_new_str.replaceAll(",", ".");
 		Scanner inputStream = new Scanner(my_new_str);
+		
 		while (inputStream.hasNext()) {
 
 			String line = inputStream.next();
@@ -30,15 +35,20 @@ public class InstrumentReader {
 		return lines;
 	}
 
-	public void Afficher() {
+	public void Afficher(HttpServletResponse response) throws IOException {
 
 		int lineNo = 1;
 		for (List<String> line : lines) {
 			int columnNo = 1;
+			//response.getWriter().write("Line " + lineNo + "timestamp" +line.get(lineNo));
+			
+			
 			for (String value : line) {
-				System.out.println("Line " + lineNo + " Column " + columnNo + ": " + value);
+				response.getWriter().write("Line " + lineNo + " Column " + columnNo + ": " + value);			
 				columnNo++;
+			
 			}
+			response.getWriter().println("");
 			lineNo++;
 		}
 

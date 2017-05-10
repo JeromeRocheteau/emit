@@ -32,7 +32,7 @@ public class instrument_call {
     	List<List<String>> lines = new ArrayList<List<String>>();
     	InstrumentReader reader = new InstrumentReader();
     	lines = reader.Read(result);
-    	reader.Afficher();
+    	//reader.Afficher();
     	
     }
 }

@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link href="css/sb-admin-2.css" rel="stylesheet">
+<link rel="stylesheet" href="./css/font-awesome.min.css">
+<link href="css/sb-admin-2.css" rel="stylesheet">
 </head>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -19,159 +20,167 @@
 	var app = angular.module('app', []);
 	var log = [];
 
-	app.controller('myCtrl', function($window, $scope, $http) {
+	app
+			.controller(
+					'myCtrl',
+					function($window, $scope, $http) {
 
-		$http.get("http://172.21.50.3:8080/emit/environment/list").then(
-				function(response) {
-					$scope.environments = response.data;
-				});
-
-		$http.get("http://172.21.50.3:8080/emit/measurand/list").then(
-				function(response) {
-					$scope.measurands = response.data;
-				});
-
-		$http.get("http://172.21.50.3:8080/emit/instrument/list").then(
-				function(response) {
-					$scope.instruments = response.data;
-				});
-		
-		$scope.create = function() {
-			var today = new Date(); 
-			var experiment_data = {
-					started : today.getTime(),
-					stopped : null,
-					measurand : {process:$scope.measurand_selection.process},
-					environment : $scope.environment_selection.uri
-				};
-			
-			$http.post("http://172.21.50.3:8080/emit/experiment/create", experiment_data)
-			.then(function(response) {
-				
-				$http.get("http://172.21.50.3:8080/emit/experiment/last").then(
-						function(response) {
-							$scope.last_experiment = response.data;
-							angular.forEach($scope.instrument_selection, function(value, key) {
-								var measurement_data = {
-										data : null,
-										achieved : null,
-										instrument : value.uri,
-										experiment : $scope.last_experiment
-									};
-									//console.log(measurement_data);
-								$http.post("http://172.21.50.3:8080/emit/measurementSet/create", measurement_data)
+						$http
+								.get(
+										"http://172.21.50.3:8080/emit/environment/list")
 								.then(function(response) {
+									$scope.environments = response.data;
 								});
-							});
-							alert("Experiment created");
-							$scope.clear();
-						});
-			});		
-						
-		};
-		
-		$scope.clear = function() {
-			$scope.id = null;
-		}
-		
-		
-	});
+
+						$http
+								.get(
+										"http://172.21.50.3:8080/emit/measurand/list")
+								.then(function(response) {
+									$scope.measurands = response.data;
+								});
+
+						$http.get(
+								"http://172.21.50.3:8080/emit/instrument/list")
+								.then(function(response) {
+									$scope.instruments = response.data;
+								});
+
+						$scope.create = function() {
+							var today = new Date();
+							var experiment_data = {
+								started : today.getTime(),
+								stopped : null,
+								measurand : {
+									process : $scope.measurand_selection.process
+								},
+								environment : $scope.environment_selection.uri
+							};
+
+							$http
+									.post(
+											"http://172.21.50.3:8080/emit/experiment/create",
+											experiment_data)
+									.then(
+											function(response) {
+
+												$http
+														.get(
+																"http://172.21.50.3:8080/emit/experiment/last")
+														.then(
+																function(
+																		response) {
+																	$scope.last_experiment = response.data;
+																	angular
+																			.forEach(
+																					$scope.instrument_selection,
+																					function(
+																							value,
+																							key) {
+																						var measurement_data = {
+																							data : null,
+																							achieved : null,
+																							instrument : value.uri,
+																							experiment : $scope.last_experiment
+																						};
+																						//console.log(measurement_data);
+																						$http
+																								.post(
+																										"http://172.21.50.3:8080/emit/measurementSet/create",
+																										measurement_data)
+																								.then(
+																										function(
+																												response) {
+																										});
+																					});
+																	alert("Experiment created");
+																	$scope
+																			.clear();
+																});
+											});
+
+						};
+
+						$scope.clear = function() {
+							$scope.id = null;
+						}
+
+						$scope.launch = function() {
+							alert("Là, il faut lancer l'experiment !");
+						}
+
+					});
 </script>
 
 <body ng-app="app" ng-controller="myCtrl">
 	<header>
-		<div class="navbar navbar-default navbar-custom navbar-static-top" id="navigation_barre">
+		<div class="navbar navbar-default navbar-custom navbar-static-top"
+			id="navigation_barre">
 			<div class="container">
-				 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-				<a href="./index.html" class="navbar-brand" id = "titre_appli">EMIT</a>
-				<ul id = "menu">
-					<li class="active primaire"><a href="./index.html" class="primaire"><span
-								class="glyphicon glyphicon-home">&ensp;</span> Home</a></li>
-					
-					<li class= "dropdown primaire"> <a href="#" class="dropdown-toggle primaire"
-							data-toggle="dropdown" role="button" aria-expanded="false"><span
-								class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
-								class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="./Instrument.html">Instruments</a></li>
-								<li><a href="./Environment.html">Environments</a></li>
-								<li><a href="./Measurand.html">Measurands</a></li>
-								<li><a href="./Measure.html">Measures</a></li>
-							</ul>
-						</li>
-						<li class="active primaire"><a href="./CreateExperiment.html" class="primaire"><span
-							class="glyphicon glyphicon-plus">&ensp;</span>Add experiment</a></li>
-						<li class="active primaire"><a href="./test.html"
+				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
+				<ul id="menu">
+					<li class="active primaire"><a href="./index.html"
+						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
+							Home</a></li>
+
+					<li class="dropdown primaire"><a href="#"
+						class="dropdown-toggle primaire" data-toggle="dropdown"
+						role="button" aria-expanded="false"><span
+							class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="./Instrument.html">Instruments</a></li>
+							<li><a href="./Environment.html">Environments</a></li>
+							<li><a href="./Measurand.html">Measurands</a></li>
+							<li><a href="./Measure.html">Measures</a></li>
+						</ul></li>
+					<li class="active primaire"><a href="./CreateExperiment.html"
+						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
+							experiment</a></li>
+					<li class="active primaire"><a href="./test.html"
 						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
 							Test</a></li>
 				</ul>
-				
-				
 			</div>
 		</div>
 	</header>
-	<section id="content" class="container">
-	<br>
-	<br>
-	<br>
-		<div class="col-md-8">
-			<form class="form list-group-item" id="form">
+	<div id = "content" class="container">
+		<div class="col-md-3"></div>
+		<div class="col-md-6">
+			<form class="form" id="form">
 				<fieldset>
 					<legend>Plan an experiment</legend>
-					<div class="row col-md-12">
-						<label>Measurand</label>
+					<div class="form-group">
+						<label>Measurand</label> <select class="form-control selectpicker"
+							ng-options="measurand.name for measurand in measurands"
+							ng-model="measurand_selection" title="Measurand"
+							ng-required="true" required>
+							<option value="" disabled>-- choose a measurand --</option>
+						</select>
 					</div>
-					<div class="row">
-						<div class="col-md-12 form-group">
-							<select class="form-control selectpicker"
-								ng-options="measurand.name for measurand in measurands"
-								ng-model="measurand_selection" title="Measurand"
-								ng-required="true" required>
-								<option value="" disabled>-- choose a measurand --</option>
-							</select>
-						</div>
+					<div class="form-group">
+						<label>Environment</label> <select
+							class="form-control selectpicker"
+							ng-options="environment.name for environment in environments"
+							ng-model="environment_selection" title="Environment"
+							ng-required="true" required>
+							<option value="" disabled>-- choose an environment --</option>
+						</select>
 					</div>
-					<div class="row col-md-12">
-						<label>Environment</label>
+					<div class="form-group">
+						<label>Instrument</label> <select
+							class="form-control selectpicker"
+							ng-options="instrument.name for instrument in instruments"
+							ng-model="instrument_selection" title="instrument"
+							ng-required="true" required multiple>
+						</select>
 					</div>
-					<div class="row">
-						<div class="col-md-12 form-group">
-							<select class="form-control selectpicker"
-								ng-options="environment.name for environment in environments"
-								ng-model="environment_selection" title="Environment"
-								ng-required="true" required>
-								<option value="" disabled>-- choose an environment --</option>
-							</select>
-						</div>
-					</div>
-					<div class="row col-md-12">
-						<label>Instrument</label>
-					</div>
-					<div class="row">
-						<div class="col-md-12 form-group">
-							<select class="form-control selectpicker"
-								ng-options="instrument.name for instrument in instruments"
-								ng-model="instrument_selection" title="instrument"
-								ng-required="true" required multiple>
-							</select>
-						</div>
-					</div>
-					<div class="pull-right">
+					<div class=" form-group pull-right">
 						<button type="reset" ng-click="clear()" class="btn btn-default">
 							<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
 						</button>
 						<button ng-click="create(instrument_selection)" class="btn btn">
 							<span class="glyphicon glyphicon-send">&ensp;</span> Send
 						</button>
-					</div>
-
-					<div class="row">
-						<br />
 					</div>
 				</fieldset>
 			</form>
@@ -183,8 +192,33 @@
 				</button>
 			</div>
 		</div>
-	</section>
-
-	<footer class="footer"> </footer>
+		<div class="col-md-3"></div>
+	</div>
+	<footer class="footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<p class="text-left">Copyright © 2015-2017. ICAM. Tous droits
+						réservés.</p>
+				</div>
+				<div class="col-md-6">
+					<div class="text-right">
+						<a href="https://www.facebook.com/icam.nantes" target="_blank"><i
+							class="fa fa-facebook-square fa-2x text-muted"></i></a> <span>&emsp;</span>
+						<a href="https://twitter.com/icam_fr" target="_blank"><i
+							class="fa fa-twitter fa-2x text-muted"></i></a> <span>&emsp;</span> <a
+							href="https://plus.google.com/118426909654384683619/about"
+							target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers"
+							target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"
+							target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>

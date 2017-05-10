@@ -10,12 +10,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -25,62 +27,51 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcServlet;
 
+import fr.icam.emit.analysis.File_handler;
 import fr.icam.emit.analysis.InstrumentReader;
 import fr.icam.emit.analysis.Serie;
+import fr.icam.emit.api.Feature;
+import fr.icam.emit.api.Meter;
 
 public class TestEnregistrement extends JdbcServlet{
-	/**
+	/*
 	 * 
 	 */
+	
+	private final static String HOST = "http://172.16.220.250:8088/arduinometer/";
+	private static final int PROC_TIME = 3000; 
 	private static final long serialVersionUID = 2017041201530L;
 
 
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		
-		//String data = this.read_file("emit-1464192786377.csv");
 		/*
-		try{
-		    PrintWriter writer = new PrintWriter("/var/lib/emit/the-file-name.txt", "UTF-8");
-		    writer.println("The first line");
-		    writer.println("The second line");
-		    writer.close();
-		} catch (IOException e) {
-		   // do something
+		String content = "";
+		try {
+			content = this.get_arduino_file();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		File_handler handler = new File_handler();
+		handler.write_file("arduino-file.csv", content);		
+		response.getWriter().write("done");
 		*/
-		String message = "false";
-	
-		File f = new File("/var/lib/emit/emit-1493121766097.csv");
-		if (f.exists() /*&& f.isDirectory()*/) {		
-		   message = "true";
+		String content = "";
+		File_handler handler = new File_handler();
+		try {
+			content = handler.read_file("arduino-file.csv");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		
-
-		
-		
-		/*
-		List<String> lines = Arrays.asList("var/lib/emit/The first line", "The second line");
-		Path file = Paths.get("var/lib/emit/the-file-name.txt");
-		Files.write(file, lines, Charset.forName("UTF-8"));
-		*/
-		String message2 = this.read_from_server();
+		//response.getWriter().write(content);
 		InstrumentReader reader = new InstrumentReader();
-		List<List<String>> list = new ArrayList<List<String>>();
-		List<Serie> data = new ArrayList<Serie>();
-		list = reader.Read(message2);
-		//this.Afficher(list, response);
-		for (int i = 2; i<list.size();i++){
-			data.add(new Serie( Double.parseDouble(list.get(i).get(0)),Double.parseDouble(list.get(i).get(1))));
-		}
+		reader.Read(content);
+		reader.Afficher(response);
 		
-		String json = reader.create_json(data);
-		response.getWriter().write(json);
-		//response.getWriter().write(message);
-		//response.getWriter().write(message2);
-		//response.getWriter().write(message);
+		
 	}
 	
 	
@@ -140,7 +131,7 @@ public class TestEnregistrement extends JdbcServlet{
 			int columnNo = 1;
 			for (String value : line) {
 				try {
-					response.getWriter().write("Line " + lineNo + " Column " + columnNo + ": " + value);
+					response.getWriter().println("Line " + lineNo + " Column " + columnNo + ": " + value);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -151,6 +142,26 @@ public class TestEnregistrement extends JdbcServlet{
 		}
 
 	}
+	
+	public String get_arduino_file() throws Exception{	
+		
+		URI uri = URI.create(HOST);
+    	Meter app = new Meter(uri);
+    	long time = Calendar.getInstance().getTimeInMillis();
+    	long stop = time;		
+    	app.doStart();
+    	
+    	while ((time - stop) < PROC_TIME) {
+    		time = Calendar.getInstance().getTimeInMillis();
+    	}
+    	
+    	app.doStop();
+    	
+    	String reponce =app.doRetrieve(System.out);    	
+		return reponce;
+	}
+	
+	
 	
 	
 }

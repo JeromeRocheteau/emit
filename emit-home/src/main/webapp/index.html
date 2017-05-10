@@ -7,13 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-
-
+<link rel="stylesheet" href="./css/font-awesome.min.css">
 <link href="css/sb-admin-2.css" rel="stylesheet">
-
-
-
 </head>
 
 <script type="text/javascript" src="DJS/Chart.min.js"></script>
@@ -34,6 +29,7 @@
 
 	app.controller('myCtrl', function($scope, $http, $q) {
 
+		$scope.loaded_file = "- None -";
 		$scope.retrive_instrument_name = function(uri) {
 			var name = "";
 			angular.forEach($scope.instrumentlist, function(value) {//$scope.measurandlist
@@ -180,6 +176,12 @@
 				}
 			});
 		}
+		$scope.launchexp = function() {
+			alert('lancer experiment');
+		}
+		$scope.launchmeas = function() {
+			alert('lancer creation measurementset');
+		}
 
 	});
 </script>
@@ -188,12 +190,6 @@
 		<div class="navbar navbar-default navbar-custom navbar-static-top"
 			id="navigation_barre">
 			<div class="container">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
 				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
 				<ul id="menu">
 					<li class="active primaire"><a href="./index.html"
@@ -218,13 +214,9 @@
 						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
 							Test</a></li>
 				</ul>
-
-
 			</div>
 		</div>
-
-
-		<div class="navbar-default sidebar" role="navigation">
+		<!-- <div class="navbar-default sidebar" role="navigation">
 			<div id="acordion" class="sidebar-nav navbar-collapse">
 				<b>measurand</b>
 				<ul class="nav scrollLites" id="side-menu">
@@ -248,20 +240,89 @@
 						ng-click="afficher_test(x.data)">{{x.measure}}</a></li>
 				</ul>
 			</div>
-			<!-- /.sidebar-collapse -->
-		</div>
+		</div> -->
 		<!-- /.navbar-static-side -->
 	</header>
-	<div id="page-wrapper">
-
-		<div col-md-10>
-			<legend ng-model="loaded_file"> {{ loaded_file }} </legend>
+	<div id = "content" class="container">
+		<section class="col-md-4">
+			<div class="form-group">
+			<legend>Load a file : </legend>
+				<div id="acordion" class="sidebar-nav navbar-collapse">
+					<b>Measurand selection :</b>
+					<ul class="nav scrollLites" id="side-menu">
+						<li ng-repeat="x in measurandlist"><a
+							ng-click="fill_experiment(x.process)">{{x.name}}</a></li>
+					</ul>
+					<b>Experiment selection :</b>
+					<ul class="nav scrollLites" id="side-menu">
+						<li ng-repeat="x in experimentlist"><a
+							ng-click="fill_measurementset(x.id)">{{x.started |
+								date:"MM/dd/yyyy 'at' h:mma"}}</a></li>
+					</ul>
+					<b>Measurementset selection :</b>
+					<ul class="nav scrollLites" id="side-menu">
+						<li ng-repeat="x in measurementsetlist"><a
+							ng-click="fill_measurement(x.id)">{{x.name}}</a></li>
+					</ul>
+					<b>Measurement selection :</b>
+					<ul class="nav scrollLites" id="side-menu">
+						<li ng-repeat="x in measurementlist"><a
+							ng-click="afficher_test(x.data)">{{x.measure}}</a></li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section class="col-md-8">
+			<!-- <div id="page-wrapper">
+				<div col-md-10> -->
+			<div class="form-group">
+				<legend>Quick launch : </legend>
+				<button ng-click="launchexp()" class="btn btn">
+					<span class="glyphicon glyphicon-expand">&ensp;</span> Launch an
+					unprocessed experiment
+				</button>
+				<br>
+				<button ng-click="launchmeas()" class="btn btn">
+					<span class="glyphicon glyphicon-expand">&ensp;</span> Launch
+					measurementSets creation
+				</button>
+			</div>
+			<legend ng-model="loaded_file"> Loaded file : {{ loaded_file
+				}} </legend>
 			<canvas id="line" class="chart chart-line" chart-data="data"
 				chart-labels="labels" chart-series="series" chart-options="options"
 				chart-dataset-override="datasetOverride" chart-click="onClick">
 			</canvas>
-		</div>
+			<!-- </div>
+			</div> -->
+		</section>
 	</div>
-	<footer class="footer"> </footer>
+	<footer class = "footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<p class="text-left">Copyright © 2015-2017. ICAM. Tous droits
+						réservés.</p>
+				</div>
+				<div class="col-md-6">
+					<div class="text-right">
+						<a href="https://www.facebook.com/icam.nantes" target="_blank"><i
+							class="fa fa-facebook-square fa-2x text-muted"></i></a> <span>&emsp;</span>
+						<a href="https://twitter.com/icam_fr" target="_blank"><i
+							class="fa fa-twitter fa-2x text-muted"></i></a> <span>&emsp;</span> <a
+							href="https://plus.google.com/118426909654384683619/about"
+							target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers"
+							target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"
+							target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 </body>
+
 </html>

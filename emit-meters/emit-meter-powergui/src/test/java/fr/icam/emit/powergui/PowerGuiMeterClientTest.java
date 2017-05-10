@@ -23,6 +23,7 @@ public class PowerGuiMeterClientTest {
     		time = Calendar.getInstance().getTimeInMillis();
     	}
     	app.doStop();
+    	    	
     	OutputStream out = System.out;
     	result =app.doRetrieve(out);
     	System.out.println("information");
