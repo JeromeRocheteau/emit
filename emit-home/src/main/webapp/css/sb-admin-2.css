@@ -34,9 +34,9 @@ body {
 
 
 
-.sidebar .sidebar-nav.navbar-collapse {
-  padding-left: 0;
-  padding-right: 0;
+div.sidebar-nav.navbar-collapse {
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 @media (min-width: 768px) {
@@ -69,11 +69,16 @@ body {
 	right: 0; 
 	background-color: #f8f8f8;
 }
+
 legend {
     border-bottom: 1px solid;
     border-bottom-color:#000000
 }
 
+canvas {
+	background-color: #f8f8f8;
+	padding:5px 5px 5px 5px;
+}
 #content{
 	padding-top:30px;
 	padding-bottom:30px;
@@ -122,6 +127,7 @@ legend {
 	height:140px; 
 	overflow-y:scroll;
 	background-color: rgb(255, 255, 255);
+	margin-bottom:20px;
 	
 }
 
@@ -130,7 +136,7 @@ legend {
 }
 
 .scrollLites li a{
-	padding:2px 1px 1px 16px;
+	padding:2px 1px 1px 2px;
 }
 
 .scrollLites li:hover{
@@ -141,7 +147,4 @@ legend {
 	color:#000000;
 }
 
-#acordion b{
-	padding-left:20px;
-}
  

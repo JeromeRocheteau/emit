@@ -221,7 +221,7 @@
 		<section class="col-md-4">
 			<div class="form-group">
 			<legend>Load a file : </legend>
-				<div id="acordion" class="sidebar-nav navbar-collapse">
+				<div class="sidebar-nav navbar-collapse">
 					<b>Measurand selection :</b>
 					<ul class="nav scrollLites" id="side-menu">
 						<li ng-repeat="x in measurandlist"><a
@@ -247,8 +247,6 @@
 			</div>
 		</section>
 		<section class="col-md-8">
-			<!-- <div id="page-wrapper">
-				<div col-md-10> -->
 			<div class="form-group">
 				<legend>Quick launch : </legend>
 				<button ng-click="launchexp()" class="btn btn">
@@ -261,14 +259,14 @@
 					measurementSets creation
 				</button>
 			</div>
-			<legend ng-model="loaded_file"> Loaded file : {{ loaded_file
-				}} </legend>
-			<canvas id="line" class="chart chart-line" chart-data="data"
-				chart-labels="labels" chart-series="series" chart-options="options"
-				chart-dataset-override="datasetOverride" chart-click="onClick">
-			</canvas>
-			<!-- </div>
-			</div> -->
+			<div class="form-group">
+				<legend ng-model="loaded_file"> Loaded file : {{ loaded_file
+					}} </legend>
+				<canvas ng-if="loaded_file != '- None -'"id="line" class="chart chart-line" chart-data="data"
+					chart-labels="labels" chart-series="series" chart-options="options"
+					chart-dataset-override="datasetOverride" chart-click="onClick">
+				</canvas>
+			</div>
 		</section>
 	</div>
 	<footer id = "footer">
