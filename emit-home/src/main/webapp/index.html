@@ -23,12 +23,13 @@
 <script type="text/javascript" src="DJS/sb-admin-2.js"></script>
 
 <script type="text/javascript">
+
 	var app = angular.module('app', [ 'chart.js' ]);
 	// tableau de navigation des items et ses variables	
 	var tree = [];
-
+	
 	app.controller('myCtrl', function($scope, $http, $q) {
-
+		
 		$scope.loaded_file = "- None -";
 		$scope.retrive_instrument_name = function(uri) {
 			var name = "";
@@ -40,31 +41,42 @@
 			return name;
 		}
 
+		$(function(){
+		    var ins = $("#selector1 li a").on( "click", function(e) {
+		        ins.not(this).removeClass('active1')
+		        $(this).addClass("active1");
+		    });
+		});
+		
 		$scope.fill_measurement = function(key) {
-			console.log(key);
+			//console.log(key);
 			$scope.measurementlist = [];
-
 			$http.get("http://172.21.50.3:8080/emit/measurement/list", {
 				"params" : {
 					"fkey" : key
 				}
 			}).then(function(success) {
 				$scope.measurementlist = success.data;
-
-				console.log(angular.toJson(success.data));
-				console.log(angular.toJson($scope.measurementlist));
+				$(function(){
+				    var ins = $("#selector4 li a").on( "click", function(e) {
+				        ins.not(this).removeClass('active4')
+				        $(this).addClass("active4");
+				    });
+				});
+				//console.log(angular.toJson(success.data));
+				//console.log(angular.toJson($scope.measurementlist));
 			}, function(error) {
 				$scope.measurementlist = [];
-
 			});
 		}
 
 		$scope.fill_measurementset = function(key) {
 			var i = 0;
+			
 			$scope.measurementlist = [];
 			$scope.measurementsetlist = [];
-			console.log("je suis bien actif");
-			console.log(key);
+			//console.log("je suis bien actif");
+			//console.log(key);
 			$http.get("http://172.21.50.3:8080/emit/measurementSet/list", {
 				"params" : {
 					"fkey" : key
@@ -78,16 +90,22 @@
 									.retrive_instrument_name(value.instrument);
 							i++;
 						});
-						console.log(angular.toJson($scope.measurementsetlist));
-						console.log(success.data);
+						$(function(){
+						    var ins = $("#selector3 li a").on( "click", function(e) {
+						        ins.not(this).removeClass('active3')
+						        $(this).addClass("active3");
+						    });
+						});
+						//console.log(angular.toJson($scope.measurementsetlist));
+						//console.log(success.data);
 					}, function(error) {
 						$scope.measurementsetlist = [];
 
 					});
-
 		}
 
 		$scope.fill_experiment = function(key) {
+			
 			$scope.measurementsetlist = [];
 			$scope.measurementlist = [];
 			$http.get("http://172.21.50.3:8080/emit/experiment/list", {
@@ -96,9 +114,16 @@
 				}
 			}).then(function(success) {
 				$scope.experimentlist = success.data;
+				$(function(){
+				    var ins = $("#selector2 li a").on( "click", function(e) {
+				        ins.not(this).removeClass('active2')
+				        $(this).addClass("active2");
+				    });
+				});
 			}, function(error) {
 				$scope.environments = [];
 			});
+			
 		}
 
 		$scope.refresh = function() {
@@ -156,22 +181,22 @@
 					serie[i] = retour_test[i].x / 1000;
 					serie1[i] = retour_test[i];
 
-					console.log(i);
+					//console.log(i);
 					// renvois
 				}
 
 				$scope.loaded_file = file_name;
-				console.log(angular.toJson(serie1));
+				//console.log(angular.toJson(serie1));
 				globalSerie.push(serie1);
 
 				$scope.labels = serie
 				$scope.series = [ 'Series A' ];
 
-				console.log(serie);
+				//console.log(serie);
 
 				$scope.data = globalSerie;
 				$scope.onClick = function(points, evt) {
-					console.log(points, evt);
+					//console.log(points, evt);
 
 				}
 			});
@@ -217,29 +242,29 @@
 			</div>
 		</div>
 	</header>
-	<div id = "content" class="container">
+	<div id="content" class="container">
 		<section class="col-md-4">
 			<div class="form-group">
-			<legend>Load a file : </legend>
+				<legend>Load a file : </legend>
 				<div class="sidebar-nav navbar-collapse">
 					<b>Measurand selection :</b>
-					<ul class="nav scrollLites" id="side-menu">
+					<ul class="nav scrollLites" id="selector1">
 						<li ng-repeat="x in measurandlist"><a
 							ng-click="fill_experiment(x.process)">{{x.name}}</a></li>
 					</ul>
 					<b>Experiment selection :</b>
-					<ul class="nav scrollLites" id="side-menu">
+					<ul class="nav scrollLites" id="selector2">
 						<li ng-repeat="x in experimentlist"><a
 							ng-click="fill_measurementset(x.id)">{{x.started |
 								date:"MM/dd/yyyy 'at' h:mma"}}</a></li>
 					</ul>
 					<b>Measurementset selection :</b>
-					<ul class="nav scrollLites" id="side-menu">
+					<ul class="nav scrollLites" id="selector3">
 						<li ng-repeat="x in measurementsetlist"><a
 							ng-click="fill_measurement(x.id)">{{x.name}}</a></li>
 					</ul>
 					<b>Measurement selection :</b>
-					<ul class="nav scrollLites" id="side-menu">
+					<ul class="nav scrollLites" id="selector4">
 						<li ng-repeat="x in measurementlist"><a
 							ng-click="afficher_test(x.data)">{{x.measure}}</a></li>
 					</ul>
@@ -260,42 +285,49 @@
 				</button>
 			</div>
 			<div class="form-group">
-				<legend ng-model="loaded_file"> Loaded file : {{ loaded_file
-					}} </legend>
-				<canvas ng-if="loaded_file != '- None -'"id="line" class="chart chart-line" chart-data="data"
-					chart-labels="labels" chart-series="series" chart-options="options"
+				<legend ng-model="loaded_file"> Loaded file : {{
+					loaded_file }} </legend>
+				<canvas ng-if="loaded_file != '- None -'" id="line"
+					class="chart chart-line" chart-data="data" chart-labels="labels"
+					chart-series="series" chart-options="options"
 					chart-dataset-override="datasetOverride" chart-click="onClick">
 				</canvas>
 			</div>
 		</section>
 	</div>
-	<footer id = "footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-4">
-            	<br>
-              	<span class="text-left">Copyright © 2015-2017. ICAM. Tous droits réservés.</span>
-            </div>
-            <div class="col-md-4">
-           		<a href="https://www.icam.fr/icam/les-campus-icam/icam-site-de-nantes" target="_blank"><img class="center-block" src="./png/icam.png" height="60" alt="Icam" /></a>
-            </div>  
-            <div class="col-md-4"> 
-              <div class="text-right">
-              <br>
-                <a href="https://www.facebook.com/icam.nantes" target="_blank"><i class="fa fa-facebook-square fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://twitter.com/icam_fr" target="_blank"><i class="fa fa-twitter fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://plus.google.com/118426909654384683619/about" target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers" target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"  target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-    </footer>
+	<footer id="footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<br> <span class="text-left">Copyright © 2015-2017.
+						ICAM. Tous droits réservés.</span>
+				</div>
+				<div class="col-md-4">
+					<a
+						href="https://www.icam.fr/icam/les-campus-icam/icam-site-de-nantes"
+						target="_blank"><img class="center-block" src="./png/icam.png"
+						height="60" alt="Icam" /></a>
+				</div>
+				<div class="col-md-4">
+					<div class="text-right">
+						<br> <a href="https://www.facebook.com/icam.nantes"
+							target="_blank"><i
+							class="fa fa-facebook-square fa-2x text-muted"></i></a> <span>&emsp;</span>
+						<a href="https://twitter.com/icam_fr" target="_blank"><i
+							class="fa fa-twitter fa-2x text-muted"></i></a> <span>&emsp;</span> <a
+							href="https://plus.google.com/118426909654384683619/about"
+							target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers"
+							target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"
+							target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 </body>
 
 </html>
