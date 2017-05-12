@@ -46,12 +46,12 @@ public class MeasurementSetLaunch extends JdbcServlet {
 		//mapper les donners dans une variable table
 		InstrumentReader reader = new InstrumentReader();
 		List<List<String>> table = reader.Read(content);
+		
 		//generation et enregistrement des measurements et des fichiers json
 		List<Serie> data = new ArrayList<Serie>();
-		for (int i = 0; i<measurementSet.size();i++){
-			int order = measurementSet.get(i).getFeature().getNo_order();
+		for (int i = 0; i<measurementSet.size();i++){			
 			for (int j = 2;j<table.size();j++){
-				data.add(new Serie( Double.parseDouble(table.get(j).get(0)),Double.parseDouble(table.get(j).get(order))));
+				data.add(new Serie( Double.parseDouble(table.get(j).get(0)),Double.parseDouble(table.get(j).get(i+1))));
 			}
 			String json = reader.create_json(data);
 			data.clear();
