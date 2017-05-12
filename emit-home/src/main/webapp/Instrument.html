@@ -93,15 +93,11 @@
 													"params" : {
 														"instrument" : instrument.uri
 													}
-												})
-										.then(
-												function(success) {
-													$scope.features = success.data
-												},
-												function(error) {
-													console
-															.log("pas de features définies")
-												});
+												}).then(function(success) {
+											$scope.features = success.data
+										}, function(error) {
+											//console.log("pas de features définies")
+										});
 
 							} else {
 								$scope.creating = true;
@@ -186,77 +182,78 @@
 								name : $scope.instrument.name
 							} ];
 							var data_feature = {
-									instrument : old_uri
-								};
-							var instru = $scope.instrument.uri; 
-							var list_features = $scope.features; 
+								instrument : old_uri
+							};
+							var instru = $scope.instrument.uri;
+							var list_features = $scope.features;
 							var feature_delete = $http
 									.post(
 											"http://172.21.50.3:8080/emit/feature/delete-one-instrument",
 											data_feature).then(
 											function(success) {
-												console.log('delete feature OK');
+												//console.log('delete feature OK');
 											}, function(error) {
-												console.log('delete feature PAS OK !');
+												//console.log('delete feature PAS OK !');
 											});
 							$q
 									.all([ feature_delete ])
 									.then(
 											function(values) {
 												var intrument_update = $http
-												.post(
-														"http://172.21.50.3:8080/emit/instrument/update",
-														indata)
-												.then(
-														function(
-																success) {
-															console.log('update instru OK');
-														},
-														function(error) {
-															console.log('update instru PAS OK !');
-															/* alert("An error occured during updating of the instrument."); */
-														});
+														.post(
+																"http://172.21.50.3:8080/emit/instrument/update",
+																indata)
+														.then(
+																function(
+																		success) {
+																	//console.log('update instru OK');
+																},
+																function(error) {
+																	//console.log('update instru PAS OK !');
+																});
 												$q
 														.all(
 																[ intrument_update ])
 														.then(
 																function(values) {
 																	angular
-																	.forEach(
-																			list_features,
-																			function(
-																					value,
-																					key) {
-																				var feature_crea = [];
-																				var feature_data = {
-																					name : value.name,
-																					measure : value.measure,
-																					factor : value.factor,
-																					instrument : instru,
-																					no_order : value.no_order
-																				};
-																				feature_crea
-																						.push($http
-																								.post(
-																										"http://172.21.50.3:8080/emit/feature/create",
-																										feature_data)
-																								.then(
-																										function(
-																												success) {
-																										},
-																										function(
-																												error) {
-																											/* error_flag = true; */
-																										}));
-																			});
+																			.forEach(
+																					list_features,
+																					function(
+																							value,
+																							key) {
+																						var feature_crea = [];
+																						var feature_data = {
+																							name : value.name,
+																							measure : value.measure,
+																							factor : value.factor,
+																							instrument : instru,
+																							no_order : value.no_order
+																						};
+																						feature_crea
+																								.push($http
+																										.post(
+																												"http://172.21.50.3:8080/emit/feature/create",
+																												feature_data)
+																										.then(
+																												function(
+																														success) {
+																												},
+																												function(
+																														error) {
+																													/* error_flag = true; */
+																												}));
+																					});
 																	$q
-																	.all([ feature_crea ])
-																	.then(
-																			function(values) {
-																				alert("Instrument updated");
-																				$scope
-																						.clean();
-																			});																
+																			.all(
+																					[ feature_crea ])
+																			.then(
+																					function(
+																							values) {
+																						alert("Instrument updated");
+																						$scope
+																								.clean();
+																					});
 																});
 											});
 						}
@@ -395,8 +392,7 @@
 									measure : selected_measure.name
 								};
 								//console.log(data);
-								console.log("no_order --> "
-										+ $scope.feature.no_order);
+								//console.log("no_order --> "	+ $scope.feature.no_order);
 								$scope.features.push(data);
 								//console.log($scope.features);
 							}
@@ -439,10 +435,14 @@
 							<li><a href="./Environment.html">Environments</a></li>
 							<li><a href="./Measurand.html">Measurands</a></li>
 							<li><a href="./Measure.html">Measures</a></li>
+							<li><a href="./Analysis.html">Analyses</a></li>
 						</ul></li>
 					<li class="active primaire"><a href="./CreateExperiment.html"
 						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
 							experiment</a></li>
+					<li class="active primaire"><a href="./CreateAnalysis.html"
+						class="primaire"><span class="glyphicon glyphicon-tasks">&ensp;</span>
+							Plan analysis</a></li>
 					<li class="active primaire"><a href="./test.html"
 						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
 							Test</a></li>
@@ -453,7 +453,7 @@
 		</div>
 	</header>
 
-	<div id = "content" class="container">
+	<div id="content" class="container">
 		<section id="search" class="col-md-4">
 			<form class="form" name="form" ng-if="selected">
 				<fieldset>
@@ -517,7 +517,7 @@
 						</button>
 					</div>
 
-					<div class="table-responsive" ng-if = "features.length > 0">
+					<div class="table-responsive" ng-if="features.length > 0">
 						<table class="table">
 							<thead>
 								<tr>
@@ -622,38 +622,45 @@
 					<p>URI&nbsp;: {{instrument.uri}}</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal"
+						ng-click="clean()">Cancel</button>
 					<button type="button" class="btn" ng-click="erase()">Confirm</button>
 				</div>
 			</div>
 		</div>
 	</div>
-	<footer id = "footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-4">
-            	<br>
-              	<span class="text-left">Copyright © 2015-2017. ICAM. Tous droits réservés.</span>
-            </div>
-            <div class="col-md-4">
-           		<a href="https://www.icam.fr/icam/les-campus-icam/icam-site-de-nantes" target="_blank"><img class="center-block" src="./png/icam.png" height="60" alt="Icam" /></a>
-            </div>  
-            <div class="col-md-4"> 
-              <div class="text-right">
-              <br>
-                <a href="https://www.facebook.com/icam.nantes" target="_blank"><i class="fa fa-facebook-square fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://twitter.com/icam_fr" target="_blank"><i class="fa fa-twitter fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://plus.google.com/118426909654384683619/about" target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers" target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"  target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-    </footer>
+	<footer id="footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<br> <span class="text-left">Copyright © 2015-2017.
+						ICAM. Tous droits réservés.</span>
+				</div>
+				<div class="col-md-4">
+					<a
+						href="https://www.icam.fr/icam/les-campus-icam/icam-site-de-nantes"
+						target="_blank"><img class="center-block" src="./png/icam.png"
+						height="45" alt="Icam" /></a>
+				</div>
+				<div class="col-md-4">
+					<div class="text-right">
+						<br> <a href="https://www.facebook.com/icam.nantes"
+							target="_blank"><i
+							class="fa fa-facebook-square fa-2x text-muted"></i></a> <span>&emsp;</span>
+						<a href="https://twitter.com/icam_fr" target="_blank"><i
+							class="fa fa-twitter fa-2x text-muted"></i></a> <span>&emsp;</span> <a
+							href="https://plus.google.com/118426909654384683619/about"
+							target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers"
+							target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"
+							target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" href="./css/font-awesome.min.css">
+<link rel="stylesheet" href="./css/font-awesome.min.css">
 <link href="css/sb-admin-2.css" rel="stylesheet">
 </head>
 <script type="text/javascript"
@@ -32,9 +32,7 @@
 					'controller',
 					function($scope, $http) {
 
-						$http
-								.get(
-										"http://172.21.50.3:8080/emit/measure/list")
+						$http.get("http://172.21.50.3:8080/emit/measure/list")
 								.then(function(response) {
 									$scope.measurelist = response.data;
 								});
@@ -237,10 +235,14 @@
 							<li><a href="./Environment.html">Environments</a></li>
 							<li><a href="./Measurand.html">Measurands</a></li>
 							<li><a href="./Measure.html">Measures</a></li>
+							<li><a href="./Analysis.html">Analyses</a></li>
 						</ul></li>
 					<li class="active primaire"><a href="./CreateExperiment.html"
 						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
 							experiment</a></li>
+					<li class="active primaire"><a href="./CreateAnalysis.html"
+						class="primaire"><span class="glyphicon glyphicon-tasks">&ensp;</span>
+							Plan analysis</a></li>
 					<li class="active primaire"><a href="./test.html"
 						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
 							Test</a></li>
@@ -249,13 +251,12 @@
 		</div>
 	</header>
 
-	<div id = "content" class="container">
+	<div id="content" class="container">
 		<section id="search" class="col-md-4">
 			<form class="form" name="form" ng-if="selected">
 				<fieldset>
 					<legend ng-if="creating">Creation of a new measure</legend>
-					<legend ng-if="updating">Updating an measure
-						{{old_name}}</legend>
+					<legend ng-if="updating">Updating an measure {{old_name}}</legend>
 					<div class="form-group">
 						<label for="measure.name">Name of the measure</label> <input
 							type="text" id="measure.name" class="form-control"
@@ -264,8 +265,8 @@
 					</div>
 					<div class="form-group">
 						<label for="measure.unit">Unit</label> <input type="text"
-							id="measure.unit" class="form-control"
-							ng-model="measure.unit" placeholder="Unit" ng-required="true" />
+							id="measure.unit" class="form-control" ng-model="measure.unit"
+							placeholder="Unit" ng-required="true" />
 					</div>
 					<div class="form-group pull-right">
 						<button type="reset" class="btn btn-default" ng-click="clean()">
@@ -353,32 +354,38 @@
 			</div>
 		</div>
 	</div>
-	<footer id = "footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-4">
-            	<br>
-              	<span class="text-left">Copyright © 2015-2017. ICAM. Tous droits réservés.</span>
-            </div>
-            <div class="col-md-4">
-           		<a href="https://www.icam.fr/icam/les-campus-icam/icam-site-de-nantes" target="_blank"><img class="center-block" src="./png/icam.png" height="60" alt="Icam" /></a>
-            </div>  
-            <div class="col-md-4"> 
-              <div class="text-right">
-              <br>
-                <a href="https://www.facebook.com/icam.nantes" target="_blank"><i class="fa fa-facebook-square fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://twitter.com/icam_fr" target="_blank"><i class="fa fa-twitter fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://plus.google.com/118426909654384683619/about" target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers" target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"  target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-    </footer>
+	<footer id="footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<br> <span class="text-left">Copyright © 2015-2017.
+						ICAM. Tous droits réservés.</span>
+				</div>
+				<div class="col-md-4">
+					<a
+						href="https://www.icam.fr/icam/les-campus-icam/icam-site-de-nantes"
+						target="_blank"><img class="center-block" src="./png/icam.png"
+						height="45" alt="Icam" /></a>
+				</div>
+				<div class="col-md-4">
+					<div class="text-right">
+						<br> <a href="https://www.facebook.com/icam.nantes"
+							target="_blank"><i
+							class="fa fa-facebook-square fa-2x text-muted"></i></a> <span>&emsp;</span>
+						<a href="https://twitter.com/icam_fr" target="_blank"><i
+							class="fa fa-twitter fa-2x text-muted"></i></a> <span>&emsp;</span> <a
+							href="https://plus.google.com/118426909654384683619/about"
+							target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers"
+							target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"
+							target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>

@@ -18,8 +18,8 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
 <script type="text/javascript">
 	var app = angular.module('app', []);
-	var old_uri;
 	var old_name;
+	var old_url;
 
 	app.filter('ceil', function() {
 		return function(input) {
@@ -32,12 +32,6 @@
 					'controller',
 					function($scope, $http) {
 
-						$http.get(
-								"http://172.21.50.3:8080/emit/experiment/list")
-								.then(function(response) {
-									$scope.experimentlist = response.data;
-								});
-
 						var empty = {};
 
 						$scope.selected = false;
@@ -45,8 +39,8 @@
 						$scope.updating = false;
 
 						$scope.alert = {};
-						$scope.environment = {};
-						$scope.environments = [];
+						$scope.analysis = {};
+						$scope.analyses = [];
 						$scope.size = 0;
 						$scope.offset = 0;
 						$scope.length = 5;
@@ -55,19 +49,19 @@
 							$scope.selected = false;
 							$scope.creating = false;
 							$scope.updating = false;
-							$scope.environment = angular.copy(empty);
+							$scope.analysis = angular.copy(empty);
 						}
 						$scope.clean = function() {
 							init();
 						}
-						$scope.select = function(environment) {
-							if (environment) {
+						$scope.select = function(analysis) {
+							if (analysis) {
 								$scope.creating = false;
 								$scope.updating = true;
-								$scope.environment = environment;
-								old_uri = environment.uri;
-								old_name = environment.name;
-								$scope.old_name = old_name;
+								$scope.analysis = analysis;
+								old_name = analysis.name;
+								old_url = analysis.url;
+								$scope.old_url = old_url;
 							} else {
 								$scope.creating = true;
 								$scope.updating = false;
@@ -75,17 +69,18 @@
 							$scope.selected = true;
 						}
 						$scope.create = function() {
+
 							var indata = {
-								uri : $scope.environment.uri,
-								name : $scope.environment.name
+								url : $scope.analysis.url,
+								name : $scope.analysis.name
 							};
 							$http
 									.post(
-											"http://172.21.50.3:8080/emit/environment/create",
+											"http://172.21.50.3:8080/emit/analysis/create",
 											indata)
 									.then(
 											function(success) {
-												alert("Environnement created");
+												alert("Analysis created");
 												init();
 												$scope.size = 0;
 												$scope.offset = 0;
@@ -93,93 +88,84 @@
 												page();
 											},
 											function(error) {
-												alert("An error occured during creation of the Environnement.");
+												alert("An error occured during creation of the Analysis.");
 											});
 						}
 						$scope.update = function() {
 							var indata = [ {
-								uri : old_uri,
-								name : old_name
+								name : old_name,
+								url : old_url
 							}, {
-								uri : $scope.environment.uri,
-								name : $scope.environment.name
+								name : $scope.analysis.name,
+								url : $scope.analysis.url
 							} ];
 
 							$http
 									.post(
-											"http://172.21.50.3:8080/emit/environment/update",
+											"http://172.21.50.3:8080/emit/analysis/update",
 											indata)
 									.then(
 											function(success) {
-												alert("Environnement updated");
+												alert("Analysis updated");
 											},
 											function(error) {
-												alert("An error occured during updating of the Environnement.");
+												alert("An error occured during updating of the Analysis.");
 											});
 							$scope.clean();
 						}
 
-						$scope.remove = function(environment) {
-							$scope.environment = environment;
+						$scope.remove = function(analysis) {
+							$scope.analysis = analysis;
 							$('#modal').modal('show');
 						}
 
 						$scope.erase = function() {
 							$('#modal').modal('hide');
 							var can_delete = true;
-							var uri = $scope.environment.uri;
-							angular.forEach($scope.experimentlist, function(
-									value) {
-								if (value.environment == uri) {
-									can_delete = false;
-								}
-							});
-							if (can_delete == true) {
-								var data = {
-									uri : uri
-								};
-								$http
-										.post(
-												"http://172.21.50.3:8080/emit/environment/delete",
-												data)
-										.then(
-												function(success) {
-													alert("Environnement deleted");
-													init();
-													$scope.size = 0;
-													$scope.offset = 0;
-													size();
-													page();
-												},
-												function(error) {
-													alert("An error occured during deleting of the Environnement.");
-												});
-							} else {
-								alert("This " + element + " can't be deleted");
-							}
+							var url = $scope.analysis.url;
+							var data = {
+								url : url
+							};
+							$http
+								.post(
+										"http://172.21.50.3:8080/emit/analysis/delete",
+										data)
+								.then(
+										function(success) {
+											alert("Analysis deleted");
+											init();
+											$scope.size = 0;
+											$scope.offset = 0;
+											size();
+											page();
+										},
+										function(error) {
+											alert("An error occured during deleting of the Analysis.");
+										});
 						}
+
 						var size = function() {
 							$http
-									.get(
-											"http://172.21.50.3:8080/emit/environment/size")
-									.then(function(success) {
-										$scope.size = success.data;
-									}, function(error) {
-										$scope.size = 0;
-									});
+								.get(
+										"http://172.21.50.3:8080/emit/analysis/size")
+								.then(function(success) {
+									$scope.size = success.data;
+								}, function(error) {
+									$scope.size = 0;
+								});
 						}
 						var page = function() {
 							$http
 									.get(
-											"http://172.21.50.3:8080/emit/environment/page",
+											"http://172.21.50.3:8080/emit/analysis/page",
 											{
 												"params" : {
 													"offset" : $scope.offset
 												}
 											}).then(function(success) {
-										$scope.environments = success.data;
+										$scope.analyses = success.data;
 									}, function(error) {
-										$scope.environments = [];
+										$scope.analyses = [];
 									});
 						}
 						$scope.prev = function() {
@@ -204,6 +190,7 @@
 									* $scope.length;
 							page();
 						}
+
 						init();
 						size();
 						page();
@@ -220,6 +207,7 @@
 					<li class="active primaire"><a href="./index.html"
 						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
 							Home</a></li>
+
 					<li class="dropdown primaire"><a href="#"
 						class="dropdown-toggle primaire" data-toggle="dropdown"
 						role="button" aria-expanded="false"><span
@@ -242,27 +230,30 @@
 						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
 							Test</a></li>
 				</ul>
+
+
 			</div>
 		</div>
 	</header>
+
 
 	<div id="content" class="container">
 		<section id="search" class="col-md-4">
 			<form class="form" name="form" ng-if="selected">
 				<fieldset>
-					<legend ng-if="creating">Creation of a new Environment</legend>
-					<legend ng-if="updating">Updating an Environment
+					<legend ng-if="creating">Creation of a new Analysis</legend>
+					<legend ng-if="updating">Updating a Analysis
 						{{old.name}}</legend>
 					<div class="form-group">
-						<label for="environment.uri">URI of the Environment</label> <input
-							type="text" id="environment.uri" class="form-control"
-							ng-model="environment.uri" placeholder="URI" required
+						<label for="analysis.url">URL of the Analysis</label> <input
+							type="text" id="analysis.url" class="form-control"
+							ng-model="analysis.url" placeholder="URL" required
 							ng-required="true" />
 					</div>
 					<div class="form-group">
-						<label for="environment.name">Name</label> <input type="text"
-							id="environment.name" class="form-control"
-							ng-model="environment.name" placeholder="Name" ng-required="true" />
+						<label for="analysis.name">Name</label> <input type="text"
+							id="analysis.name" class="form-control"
+							ng-model="analysis.name" placeholder="Name" ng-required="true" />
 					</div>
 					<div class="form-group pull-right">
 						<button type="reset" class="btn btn-default" ng-click="clean()">
@@ -284,7 +275,7 @@
 		</section>
 		<section id="results" class="col-md-8">
 			<h2>
-				Environments <small>({{size}} elements)</small>
+				Analyses <small>({{size}} elements)</small>
 			</h2>
 			<nav aria-label="...">
 				<ul class="pager">
@@ -302,20 +293,20 @@
 							aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
 				</ul>
 			</nav>
-			<ul class="list-group" ng-repeat="environment in environments">
+			<ul class="list-group" ng-repeat="analysis in analyses">
 				<li class="list-group-item">
-					<p class="list-group-item-heading">{{environment.name}}</p>
+					<p class="list-group-item-heading">{{analysis.name}}</p>
 					<p class="list-group-item-text">
-						<span ng-if="environment.uri">{{environment.uri}} </span>
+						<span ng-if="analysis.url">{{analysis.url}} </span>
 					</p>
 					<p class="list-group-item-text text-right">
 						<button type="button" class="btn btn-default"
-							ng-click="remove(environment)">
+							ng-click="remove(analysis)">
 							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 						</button>
 						<span>&nbsp;</span>
 						<button type="button" class="btn btn-default"
-							ng-click="select(environment)">
+							ng-click="select(analysis)">
 							<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 						</button>
 					</p>
@@ -337,11 +328,11 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title">Deleting an Environment</h4>
+					<h4 class="modal-title">Deleting an Analysis</h4>
 				</div>
 				<div class="modal-body">
-					<p>Do you really want to delete : {{environment.name}}&nbsp;?</p>
-					<p>URI&nbsp;: {{environment.uri}}</p>
+					<p>Do you really want to delete : {{analysis.name}}&nbsp;?</p>
+					<p>URL&nbsp;: {{analysis.url}}</p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

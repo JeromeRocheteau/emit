@@ -510,6 +510,88 @@
 		<servlet-name>environment-page</servlet-name>
 		<url-pattern>/environment/page</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>analysis-list</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.AnalysisList</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/analysis-list.sql</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>analysis-list</servlet-name>
+		<url-pattern>/analysis/list</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>analysis-create</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.AnalysisCreation
+		</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/analysis-create.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>analysis-create</servlet-name>
+		<url-pattern>/analysis/create</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>analysis-delete</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.AnalysisDelete</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/analysis-delete.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>analysis-delete</servlet-name>
+		<url-pattern>/analysis/delete</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>analysis-update</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.AnalysisUpdate</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/analysis-update.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>analysis-update</servlet-name>
+		<url-pattern>/analysis/update</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>analysis-size</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.AnalysisSize</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/analysis-size.sql</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>analysis-size</servlet-name>
+		<url-pattern>/analysis/size</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>analysis-page</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.AnalysisPage</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/analysis-page.sql</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>analysis-page</servlet-name>
+		<url-pattern>/analysis/page</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>measurementSet-list</servlet-name>

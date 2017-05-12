@@ -39,12 +39,15 @@ body {
 }
 
 #footer {
-	padding-top: 5ex;
-	height: 100px; 
-	left: 0; 
-	right: 0; 
 	background-color: #f8f8f8;
+	position:absolute; 
+	bottom:0px; 
+	height:50px; 
+	left:0px; 
+	right:0px; 
+	overflow:hidden;
 }
+
 
 #wrapper {
   width: 100%;
@@ -86,8 +89,6 @@ div.sidebar-nav.navbar-collapse {
   }
 }
 
-
-
 legend {
     border-bottom: 1px solid;
     border-bottom-color:#000000
@@ -98,10 +99,22 @@ canvas {
 	padding:5px 5px 5px 5px;
 }
 #content{
-	padding-top:30px;
-	padding-bottom:30px;
-	position: relative;
-    min-height: 100%
+	position:absolute;
+	top:55px; 
+	bottom:55px; 
+	left:0px; 
+	right:0px; 
+	overflow:auto;
+}
+
+#index{
+	position:absolute;
+	top:55px; 
+	bottom:55px; 
+	left:0px; 
+	right:0px; 
+	overflow:auto;
+	margin:0;
 }
 
 #search{

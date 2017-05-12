@@ -32,7 +32,8 @@
 					'controller',
 					function($scope, $http) {
 
-						$http.get("http://172.21.50.3:8080/emit/experiment/list")
+						$http.get(
+								"http://172.21.50.3:8080/emit/experiment/list")
 								.then(function(response) {
 									$scope.experimentlist = response.data;
 								});
@@ -64,7 +65,7 @@
 								$scope.creating = false;
 								$scope.updating = true;
 								$scope.measurand = measurand;
-								old_name =  measurand.name;
+								old_name = measurand.name;
 								old_process = measurand.process;
 								$scope.old_process = old_process;
 							} else {
@@ -160,7 +161,9 @@
 						}
 
 						var size = function() {
-							$http.get("http://172.21.50.3:8080/emit/measurand/size")
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/measurand/size")
 									.then(function(success) {
 										$scope.size = success.data;
 									}, function(error) {
@@ -168,16 +171,18 @@
 									});
 						}
 						var page = function() {
-							$http.get("http://172.21.50.3:8080/emit/measurand/page",
-									{
-										"params" : {
-											"offset" : $scope.offset
-										}
-									}).then(function(success) {
-								$scope.measurands = success.data;
-							}, function(error) {
-								$scope.measurands = [];
-							});
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/measurand/page",
+											{
+												"params" : {
+													"offset" : $scope.offset
+												}
+											}).then(function(success) {
+										$scope.measurands = success.data;
+									}, function(error) {
+										$scope.measurands = [];
+									});
 						}
 						$scope.prev = function() {
 							if ($scope.length <= $scope.offset) {
@@ -229,10 +234,14 @@
 							<li><a href="./Environment.html">Environments</a></li>
 							<li><a href="./Measurand.html">Measurands</a></li>
 							<li><a href="./Measure.html">Measures</a></li>
+							<li><a href="./Analysis.html">Analyses</a></li>
 						</ul></li>
 					<li class="active primaire"><a href="./CreateExperiment.html"
 						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
 							experiment</a></li>
+					<li class="active primaire"><a href="./CreateAnalysis.html"
+						class="primaire"><span class="glyphicon glyphicon-tasks">&ensp;</span>
+							Plan analysis</a></li>
 					<li class="active primaire"><a href="./test.html"
 						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
 							Test</a></li>
@@ -244,7 +253,7 @@
 	</header>
 
 
-	<div id = "content" class="container">
+	<div id="content" class="container">
 		<section id="search" class="col-md-4">
 			<form class="form" name="form" ng-if="selected">
 				<fieldset>
@@ -348,32 +357,38 @@
 			</div>
 		</div>
 	</div>
-	<footer id = "footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-4">
-            	<br>
-              	<span class="text-left">Copyright © 2015-2017. ICAM. Tous droits réservés.</span>
-            </div>
-            <div class="col-md-4">
-           		<a href="https://www.icam.fr/icam/les-campus-icam/icam-site-de-nantes" target="_blank"><img class="center-block" src="./png/icam.png" height="60" alt="Icam" /></a>
-            </div>  
-            <div class="col-md-4"> 
-              <div class="text-right">
-              <br>
-                <a href="https://www.facebook.com/icam.nantes" target="_blank"><i class="fa fa-facebook-square fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://twitter.com/icam_fr" target="_blank"><i class="fa fa-twitter fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://plus.google.com/118426909654384683619/about" target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers" target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
-                <span>&emsp;</span>
-                <a href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"  target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-    </footer>
+	<footer id="footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<br> <span class="text-left">Copyright © 2015-2017.
+						ICAM. Tous droits réservés.</span>
+				</div>
+				<div class="col-md-4">
+					<a
+						href="https://www.icam.fr/icam/les-campus-icam/icam-site-de-nantes"
+						target="_blank"><img class="center-block" src="./png/icam.png"
+						height="45" alt="Icam" /></a>
+				</div>
+				<div class="col-md-4">
+					<div class="text-right">
+						<br> <a href="https://www.facebook.com/icam.nantes"
+							target="_blank"><i
+							class="fa fa-facebook-square fa-2x text-muted"></i></a> <span>&emsp;</span>
+						<a href="https://twitter.com/icam_fr" target="_blank"><i
+							class="fa fa-twitter fa-2x text-muted"></i></a> <span>&emsp;</span> <a
+							href="https://plus.google.com/118426909654384683619/about"
+							target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers"
+							target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"
+							target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>

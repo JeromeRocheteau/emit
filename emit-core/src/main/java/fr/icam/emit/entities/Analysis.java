@@ -1,17 +1,24 @@
 package fr.icam.emit.entities;
 
-
-
 public class Analysis {
 
-	private String path;	
+	private String url;	
 	private String name;
+	private Boolean deleted;
 	
-	public String getPath() {
-		return path;
+	public Boolean getDeleted() {
+		return deleted;
 	}
-	public void setPath(String path) {
-		this.path = path;
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
 	}
 	public String getName() {
 		return name;
@@ -20,9 +27,10 @@ public class Analysis {
 		this.name = name;
 	}
 
-	public Analysis(String path, String name){
-		this.setPath(path);
+	public Analysis(String url, String name, Boolean deleted){
+		this.setUrl(url);
 		this.setName(name);
+		this.setDeleted(deleted);
 	}
 	
 

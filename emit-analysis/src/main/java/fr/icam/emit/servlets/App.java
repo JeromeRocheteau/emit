@@ -1,4 +1,4 @@
-package fr.icam.emit.emit_analysis;
+package fr.icam.emit.servlets;
 
 /**
  * Hello world!
