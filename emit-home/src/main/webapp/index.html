@@ -201,10 +201,18 @@
 			});
 		}
 		$scope.launchexp = function() {
-			alert('lancer experiment');
+			$http.get("http://172.21.50.3:8080/emit/experiment/launch").then(
+					function(success) {
+						alert('lancer experiment');
+					});			
+			
 		}
+		
 		$scope.launchmeas = function() {
-			alert('lancer creation measurementset');
+			$http.get("http://172.21.50.3:8080/emit/measurementSet/launch").then(
+					function(success) {
+						alert('lancer creation measurementset');
+					});			
 		}
 
 	});
