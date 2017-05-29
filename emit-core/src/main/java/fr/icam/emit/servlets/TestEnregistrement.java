@@ -1,22 +1,11 @@
 package fr.icam.emit.servlets;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -29,8 +18,6 @@ import com.github.jeromerocheteau.JdbcServlet;
 
 import fr.icam.emit.analysis.File_handler;
 import fr.icam.emit.analysis.InstrumentReader;
-import fr.icam.emit.analysis.Serie;
-import fr.icam.emit.api.Feature;
 import fr.icam.emit.api.Meter;
 
 public class TestEnregistrement extends JdbcServlet{
