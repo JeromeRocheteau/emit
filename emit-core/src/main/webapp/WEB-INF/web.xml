@@ -659,6 +659,35 @@
 	</servlet-mapping>
 	
 	
+	<servlet>
+		<servlet-name>result-create</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.ResultCreation</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/result-create.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>result-create</servlet-name>
+		<url-pattern>/result/create</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet>
+		<servlet-name>result-list-one-measurement</servlet-name>
+		<servlet-class>fr.icam.emit.servlets.FeatureListOneInstrument</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/result-list-one-measurement.sql
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>result-list-one-measurement</servlet-name>
+		<url-pattern>/result/list-one-measurement</url-pattern>
+	</servlet-mapping>
+	
 	
 	
 	<servlet>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>EMIT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="./css/font-awesome.min.css">
+<link href="css/sb-admin-2.css" rel="stylesheet">
+</head>
+
+<script type="text/javascript" src="DJS/jquery.min.js"></script>
+<script type="text/javascript" src="DJS/moment.min.js"></script>
+<script type="text/javascript" src="DJS/moment.fr.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/angular.min.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/angular-cookies.min.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/angular-sanitize.min.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/i18n/angular-locale_fr-fr.js"></script>
+<script type="text/javascript" src="DJS/angular-md5.min.js"></script>
+
+<script type="text/javascript">
+	var app = angular.module('app',
+			[ 'ngSanitize', 'ngCookies', 'angular-md5' ]);
+	// tableau de navigation des items et ses variables	
+
+	app
+			.controller(
+					'myCtrl',
+					function($scope, $http, $window, $q, $cookieStore, md5) {
+
+						$scope.passphrase = $cookieStore.get('passphrase');
+						$scope.logout = function() {
+							var message = "passphrase=" + $scope.passphrase;
+							$http
+									.post(
+											"http://172.21.50.3:8080/emit-users/revoke",
+											message).then(function(success) {
+									}, function(error) {
+									});
+							$cookieStore.remove('passphrase');
+							$scope.passphrase = null;
+						}
+						$scope.profile = null;
+						var profile = function() {
+							if ($scope.passphrase) {
+								var message = "passphrase=" + $scope.passphrase;
+								$http
+										.post(
+												"http://172.21.50.3:8080/emit-users/profile",
+												message)
+										.then(
+												function(success) {
+													$scope.profile = response.data;
+													$scope.firstname = $scope.profile.firstname;
+													$scope.lastname = $scope.profile.lastname;
+												}, function(error) {
+													$scope.profile = null;
+												});
+							}
+						}
+
+						$scope.alert = {};
+						$scope.setAlert = function(type, message) {
+							$scope.alert.type = type;
+							$scope.alert.message = message;
+							$('#alert').modal('show');
+						}
+
+						$scope.username = null;
+						$scope.firstname = null;
+						$scope.lastname = null;
+						$scope.password = null;
+						$scope.confirm = null;
+						$scope.signup = function() {
+							if ($scope.password === $scope.confirm) {
+						  		var message = "username=" + $scope.username + "&firstname=" + $scope.firstname + "&lastname=" + $scope.lastname + "&password=" + md5.createHash($scope.password);
+						  		$http({method:'POST',url:'/emit-users/register',data:message,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+							  	.then(function onSuccess(response) {
+							  		$scope.setAlert("Success","Inscription confirmed !");
+							  		$window.open("./sign-in.html","_self");
+						  	  	},function onError(response) {
+						  	  		$scope.setAlert("Error","An error occured during your inscription !");
+						  	  	});
+						  		$scope.clear();
+							} else {
+								$scope.setAlert("Warning","Passwords don't match !");
+							}
+						}
+						$scope.clear = function() {
+							$scope.username = null;
+							$scope.firstname = null;
+							$scope.lastname = null;
+							$scope.password = null;
+							$scope.confirm = null;
+						}
+
+						profile();
+					});
+</script>
+<body ng-app="app" ng-controller="myCtrl">
+	<header>
+		<div class="navbar navbar-default navbar-custom navbar-static-top"
+			id="navigation_barre">
+			<div class="container">
+				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
+				<ul id="menu">
+					<li class="active primaire"><a href="./index.html"
+						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
+							Home</a></li>
+
+					<li class="dropdown primaire"><a href="#"
+						class="dropdown-toggle primaire" data-toggle="dropdown"
+						role="button" aria-expanded="false"><span
+							class="glyphicon glyphicon-pushpin">&ensp;</span> Elements<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="./Instrument.html">Instruments</a></li>
+							<li><a href="./Environment.html">Environments</a></li>
+							<li><a href="./Measurand.html">Measurands</a></li>
+							<li><a href="./Measure.html">Measures</a></li>
+							<li><a href="./Analysis.html">Analyses</a></li>
+						</ul></li>
+					<li class="active primaire"><a href="./CreateExperiment.html"
+						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
+							experiment</a></li>
+					<li class="active primaire"><a href="./CreateAnalysis.html"
+						class="primaire"><span class="glyphicon glyphicon-tasks">&ensp;</span>
+							Plan analysis</a></li>
+					<li class="dropdown primaire"><a href="#"
+						class="dropdown-toggle primaire" data-toggle="dropdown"
+						role="button" aria-expanded="false"><span
+							class="glyphicon glyphicon-user">&ensp;</span> Parameters<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-header" ng-if="profile">{{profile.firstname}}
+								{{profile.lastname}}</li>
+							<li ng-if="passphrase"><a href="./index.html"
+								ng-click="logout()"><span
+									class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
+							<li ng-if="!passphrase"><a href="./sign-in.html"><span
+									class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
+						</ul></li>
+				</ul>
+			</div>
+		</div>
+	</header>
+	<section id="content" class="container">
+      <div class="col-md-3"></div>
+      <div class="col-md-6 list-group-item">
+        <form name="form" class="form">
+          <fieldset ng-disabled="passphrase">
+            <legend>Inscription</legend>
+            <div class="form-group">
+              <input type="text" class="form-control" ng-model="username" placeholder="UserID" ng-required="true" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" ng-model="firstname" placeholder="First name" ng-required="true" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" ng-model="lastname" placeholder="Last name" ng-required="true" required>
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" ng-model="password" placeholder="Password" ng-required="true" required>
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" ng-model="confirm" placeholder="Confirm your password" ng-required="true" required>
+            </div>
+            <div class="pull-right">
+              <button type="reset" ng-click="clear()" class="btn btn-default">
+                <span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
+              </button>
+              <button type="submit" ng-click="signup()" ng-disabled="!form.$valid" class="btn btn">
+                <span class="glyphicon glyphicon-send">&ensp;</span> Send
+              </button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      <div class="col-md-3"></div>
+    </section>
+    <div class="modal fade" tabindex="-1" role="dialog" id="alert">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">{{alert.type}}</h4>
+          </div>
+          <div class="modal-body">
+            <p>{{alert.message}}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+	<footer id="footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<br> <span class="text-left">Copyright © 2015-2017.
+						ICAM. Tous droits réservés.</span>
+				</div>
+				<div class="col-md-4">
+					<a
+						href="https://www.icam.fr/icam/les-campus-icam/icam-site-de-nantes"
+						target="_blank"><img class="center-block" src="./png/icam.png"
+						height="45" alt="Icam" /></a>
+				</div>
+				<div class="col-md-4">
+					<div class="text-right">
+						<br> <a href="https://www.facebook.com/icam.nantes"
+							target="_blank"><i
+							class="fa fa-facebook-square fa-2x text-muted"></i></a> <span>&emsp;</span>
+						<a href="https://twitter.com/icam_fr" target="_blank"><i
+							class="fa fa-twitter fa-2x text-muted"></i></a> <span>&emsp;</span> <a
+							href="https://plus.google.com/118426909654384683619/about"
+							target="_blank"><i class="fa fa-google-plus fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.linkedin.com/company/icam-institut-catholique-d%27arts-et-metiers"
+							target="_blank"><i class="fa fa-linkedin fa-2x text-muted"></i></a>
+						<span>&emsp;</span> <a
+							href="https://www.youtube.com/channel/UCQbkQwnly-uMpHTdudW8ocw"
+							target="_blank"><i class="fa fa-youtube fa-2x text-muted"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+</body>
+
+</html>

@@ -12,10 +12,8 @@
 </head>
 
 <script type="text/javascript" src="DJS/Chart.min.js"></script>
-<script type="text/javascript"
-	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script type="text/javascript"
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="DJS/moment.min.js"></script>
 <script type="text/javascript" src="DJS/moment.fr.js"></script>
 <script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular.min.js"></script>
@@ -23,22 +21,25 @@
 <script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular-sanitize.min.js"></script>
 <script type="text/javascript" src="https://code.angularjs.org/1.6.3/i18n/angular-locale_fr-fr.js"></script>
 <script type="text/javascript" src="DJS/angular-chart.min.js"></script>
-
 <script type="text/javascript" src="DJS/sb-admin-2.js"></script>
 
 <script type="text/javascript">
-	var app = angular.module('app', ['ngSanitize','ngCookies']);
+	var app = angular.module('app', [ 'chart.js', 'ngSanitize', 'ngCookies']);
+	// tableau de navigation des items et ses variables	
 	var tree = [];
 
+	app.filter('ceil', function() {
+		return function(input) {
+			return Math.ceil(input);
+		};
+	});
 	app.controller('myCtrl', function($scope, $http, $q, $cookieStore) {
 
 		$scope.passphrase = $cookieStore.get('passphrase');
 		$scope.logout = function() {
 			var message = "passphrase=" + $scope.passphrase;
-			$http
-					.post(
-							"http://172.21.50.3:8080/emit-users/revoke",
-							message).then(function(success) {
+			$http.post("http://172.21.50.3:8080/emit/users/revoke", message)
+					.then(function(success) {
 					}, function(error) {
 					});
 			$cookieStore.remove('passphrase');
@@ -48,21 +49,18 @@
 		var profile = function() {
 			if ($scope.passphrase) {
 				var message = "passphrase=" + $scope.passphrase;
-				$http
-						.post(
-								"http://172.21.50.3:8080/emit-users/profile",
-								message)
-						.then(
-								function(success) {
-									$scope.profile = response.data;
-									$scope.firstname = $scope.profile.firstname;
-									$scope.lastname = $scope.profile.lastname;
-								}, function(error) {
-									$scope.profile = null;
-								});
+				$http.post("http://172.21.50.3:8080/emit/users/profile",
+						message).then(function(success) {
+					$scope.profile = response.data;
+					$scope.firstname = $scope.profile.firstname;
+					$scope.lastname = $scope.profile.lastname;
+				}, function(error) {
+					$scope.profile = null;
+				});
 			}
 		}
-		
+
+		$scope.loaded_file = "- None -";
 		$scope.retrive_instrument_name = function(uri) {
 			var name = "";
 			angular.forEach($scope.instrumentlist, function(value) {
@@ -97,7 +95,6 @@
 
 		$scope.fill_measurementset = function(key) {
 			var i = 0;
-
 			$scope.measurementlist = [];
 			$scope.measurementsetlist = [];
 			//console.log("je suis bien actif");
@@ -126,12 +123,10 @@
 						//console.log(success.data);
 					}, function(error) {
 						$scope.measurementsetlist = [];
-
 					});
 		}
 
 		$scope.fill_experiment = function(key) {
-
 			$scope.measurementsetlist = [];
 			$scope.measurementlist = [];
 			$http.get("http://172.21.50.3:8080/emit/experiment/list", {
@@ -149,6 +144,7 @@
 			}, function(error) {
 				$scope.environments = [];
 			});
+
 		}
 
 		$scope.refresh = function() {
@@ -167,61 +163,78 @@
 					.get("http://172.21.50.3:8080/emit/measurand/list");
 			var measurementset = $http
 					.get("http://172.21.50.3:8080/emit/measurementSet/list");
-			var analysis = $http
-					.get("http://172.21.50.3:8080/emit/analysis/list");
 
 			// attente de la réalisation de toutes les promesses
 			$q.all(
 					[ experiment, instrument, environment, measure,
-							measurement, measurand, measurementset, analysis ])
-					.then(
-							function(values) {
-								//console.log(angular.toJson(values[0].data))
-								$scope.experimentlist = values[0].data;
-								$scope.instrumentlist = values[1].data;
-								$scope.environmentlist = values[2].data;
-								$scope.measurelist = values[3].data;
-								$scope.measurementlist = values[4].data;
-								$scope.measurandlist = values[5].data;
-								$scope.measurementsetlist = values[6].data;
-								$scope.analyses = values[7].data;
-								//réalisation des opérations souaitées
-								$(function() {
-									var ins = $("#selector1 li a").on(
-											"click",
-											function(e) {
-												ins.not(this).removeClass(
-														'active1')
-												$(this).addClass("active1");
-											});
-								});
-							});
+							measurement, measurand, measurementset ]).then(
+					function(values) {
+						//console.log(angular.toJson(values[0].data))
+						$scope.experimentlist = values[0].data;
+						$scope.instrumentlist = values[1].data;
+						$scope.environmentlist = values[2].data;
+						$scope.measurelist = values[3].data;
+						$scope.measurementlist = values[4].data;
+						$scope.measurandlist = values[5].data;
+						$scope.measurementsetlist = values[6].data;
+						//réalisation des opérations souaitées
+						$(function() {
+							var ins = $("#selector1 li a").on("click",
+									function(e) {
+										ins.not(this).removeClass('active1')
+										$(this).addClass("active1");
+									});
+						});
+					});
 
 		}
 
-		$scope.create = function() {
-			angular.forEach($scope.analysis_selection, function(value, key) {
-				var result_data = {
-					measurement : $scope.measurement.id,
-					analysis : value.url
-				};
-				console.log(result_data);
-				$http.post("http://172.21.50.3:8080/emit/result/create",
-						result_data).then(function(success) {
-					//console.log("c'est créé !");
-				}, function(error) {
-					//console.log("oooooops !");
-				});
-			});
-		};
+		$scope.refresh();
 
-		$scope.fill_input = function(measurement) {
-			$scope.measurement = measurement;
+		$scope.afficher_test = function(file_name) {
+			var retour_test = [];
+			var serie = [];
+			var serie1 = [];
+			var globalSerie = [];
+
+			$http.get(
+					"http://172.21.50.3:8080/emit/test/test?file_name="
+							+ file_name).then(function(response) {
+				retour_test = response.data;
+				//console.log(retour_test.length);
+				for (var i = 0; i < retour_test.length; i++) {
+					serie[i] = retour_test[i].x / 1000;
+					serie1[i] = retour_test[i];
+					//console.log(i);
+				}
+				$scope.loaded_file = file_name;
+				//console.log(angular.toJson(serie1));
+				globalSerie.push(serie1);
+				$scope.labels = serie
+				$scope.series = [ 'Data' ];
+				//console.log(serie);
+				$scope.data = globalSerie;
+				$scope.onClick = function(points, evt) {
+					//console.log(points, evt);
+				}
+			});
+		}
+		$scope.launchexp = function() {
+			$http.get("http://172.21.50.3:8080/emit/experiment/launch").then(
+					function(success) {
+						alert('lancer experiment');
+					});
+
+		}
+
+		$scope.launchmeas = function() {
+			$http.get("http://172.21.50.3:8080/emit/measurementSet/launch")
+					.then(function(success) {
+						alert('lancer creation measurementset');
+					});
 		}
 
 		profile();
-		$scope.refresh();
-
 	});
 </script>
 <body ng-app="app" ng-controller="myCtrl">
@@ -247,12 +260,16 @@
 							<li><a href="./Measure.html">Measures</a></li>
 							<li><a href="./Analysis.html">Analyses</a></li>
 						</ul></li>
+						
 					<li class="active primaire"><a href="./CreateExperiment.html"
 						class="primaire"><span class="glyphicon glyphicon-plus">&ensp;</span>Add
 							experiment</a></li>
 					<li class="active primaire"><a href="./CreateAnalysis.html"
 						class="primaire"><span class="glyphicon glyphicon-tasks">&ensp;</span>
 							Plan analysis</a></li>
+					<li class="active primaire"><a href="./test.html"
+						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
+							Test</a></li>
 					<li class="dropdown primaire"><a href="#"
 						class="dropdown-toggle primaire" data-toggle="dropdown"
 						role="button" aria-expanded="false"><span
@@ -268,13 +285,10 @@
 			</div>
 		</div>
 	</header>
-	<div id="content" class="container">
-	<div class="alert alert-danger" role="alert" ng-if="!passphrase">
-			<strong>No Access !</strong> You have to log in before visualize this page. 
-		</div>
-		<section class="col-md-2" ng-if="passphrase">
+	<div id="content" class="index">
+		<section class="col-md-2">
 			<div class="form-group">
-				<legend>Select a measurement : </legend>
+				<legend>Load a file : </legend>
 				<div class="sidebar-nav navbar-collapse">
 					<b>Measurand selection :</b>
 					<ul class="nav scrollLites" id="selector1">
@@ -287,7 +301,7 @@
 							ng-click="fill_measurementset(x.id)">{{x.started |
 								date:"MM/dd/yyyy 'at' h:mma"}}</a></li>
 					</ul>
-					<b>Measurementset selection :</b>
+					<b>Instruments selection :</b>
 					<ul class="nav scrollLites" id="selector3">
 						<li ng-repeat="x in measurementsetlist"><a
 							ng-click="fill_measurement(x.id)">{{x.name}}</a></li>
@@ -295,41 +309,33 @@
 					<b>Measurement selection :</b>
 					<ul class="nav scrollLites" id="selector4">
 						<li ng-repeat="x in measurementlist"><a
-							ng-click="fill_input(x)">{{x.measure}}</a></li>
+							ng-click="afficher_test(x.data)">{{x.measure}}</a></li>
 					</ul>
 				</div>
 			</div>
 		</section>
-		<section class="col-md-10" ng-if="passphrase">
-			<form class="form" name="form">
-				<fieldset>
-					<legend>Plan an analysis</legend>
-					<div class="form-group">
-						<label for="measurement.data">Name</label> <input type="text"
-							id="measurement.data" class="form-control"
-							ng-model="measurement.data" placeholder="Select a measurement"
-							ng-required="true" disabled />
-					</div>
-					<div class="form-group">
-						<label>Analysis</label> <select size="8"
-							class="form-control selectpicker"
-							ng-options="one_analysis.name for one_analysis in analyses"
-							ng-model="analysis_selection" title="Analysis" ng-required="true"
-							required multiple>
-						</select>
-					</div>
-					<div class=" form-group pull-right">
-						<button type="reset" ng-click="clear()" class="btn btn-default">
-							<span class="glyphicon glyphicon-erase">&ensp;</span>
-							<strong>Cancel</strong>
-						</button>
-						<button type="submit" class="btn"
-							ng-click="form.$valid && create()" ng-disabled="form.$invalid">
-							<strong>Send</strong>
-						</button>
-					</div>
-				</fieldset>
-			</form>
+		<section class="col-md-10">
+			<div class="form-group">
+				<legend>Quick launch : </legend>
+				<button ng-click="launchexp()" class="btn btn">
+					<span class="glyphicon glyphicon-expand">&ensp;</span> Launch the
+					last unprocessed experiment
+				</button>
+				<br>
+				<button ng-click="launchmeas()" class="btn btn">
+					<span class="glyphicon glyphicon-expand">&ensp;</span> Launch
+					measurements creation
+				</button>
+			</div>
+			<div class="form-group">
+				<legend ng-model="loaded_file"> Loaded file : {{
+					loaded_file }} </legend>
+				<canvas ng-if="loaded_file != '- None -'" id="line"
+					class="chart chart-line" chart-data="data" chart-labels="labels"
+					chart-series="series" chart-options="options"
+					chart-dataset-override="datasetOverride" chart-click="onClick">
+				</canvas>
+			</div>
 		</section>
 	</div>
 	<footer id="footer">
