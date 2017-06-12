@@ -9,234 +9,461 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="./css/font-awesome.min.css">
 <link href="css/sb-admin-2.css" rel="stylesheet">
+<link href="css/rzslider.css" rel="stylesheet">
 </head>
-
 <script type="text/javascript" src="DJS/Chart.min.js"></script>
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript"
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="DJS/moment.min.js"></script>
 <script type="text/javascript" src="DJS/moment.fr.js"></script>
 <script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular.min.js"></script>
 <script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular-cookies.min.js"></script>
 <script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular-sanitize.min.js"></script>
 <script type="text/javascript" src="https://code.angularjs.org/1.6.3/i18n/angular-locale_fr-fr.js"></script>
+<script type="text/javascript" src="DJS/angular-chart.min.js"></script>
+<script type="text/javascript" src="DJS/rzslider.js"></script>
 <script type="text/javascript" src="DJS/sb-admin-2.js"></script>
+<script type="text/javascript" src="DJS/bootstrap-treeview.js"></script>
+<script type="text/javascript" src="DJS/bootstrap-checkbox.min.js" defer></script>
 
 <script type="text/javascript">
-	var app = angular.module('app', [ 'chart.js', 'ngSanitize', 'ngCookies' ]);
-	// tableau de navigation des items et ses variables	
-	var tree = [];
+	var retrieved_json = [];
+
+	var ANALYSE = {
+		general : false,
+		analyse : 'This is a text',
+		total_conso : 54,
+		time : '15s',
+		sloc : 15,
+		std_dev : 1.10
+	};
+
+	function f_integral(dx, y_array) {
+		var maxy = Math.max.apply(null, y_array);
+		var dy_array = y_array.map(function(num) {
+			return Math.abs(maxy - num);
+		});
+		var profile_integral = 0;
+		var n = dy_array.length;
+		for (i = 1; i < n; i++) {
+			var dy_init = dy_array[i - 1];
+			var dy_end = dy_array[i];
+			var darea = dx * (dy_init + dy_end) / 2.;
+			profile_integral = profile_integral + darea;
+		}
+		return profile_integral;
+	}
+
+	function f_standardDeviation(values) {
+		var avg = f_average(values);
+
+		var squareDiffs = values.map(function(value) {
+			var diff = value - avg;
+			var sqrDiff = diff * diff;
+			return sqrDiff;
+		});
+
+		var avgSquareDiff = f_average(squareDiffs);
+
+		var stdDev = Math.sqrt(avgSquareDiff);
+		return stdDev;
+	};
+
+	function f_average(values) {
+		var sum = 0;
+		for (var i = 0; i < values.length; i++) {
+			sum += values[i];
+		}
+		var avg = sum / values.length;
+		return avg;
+	};
+
+	var app = angular.module('app', [ 'chart.js', 'rzModule','ngSanitize','ngCookies']);
 
 	app.filter('ceil', function() {
 		return function(input) {
 			return Math.ceil(input);
 		};
 	});
-	app.controller('myCtrl', function($scope, $http, $q, $cookieStore) {
 
-		$scope.passphrase = $cookieStore.get('passphrase');
-		$scope.logout = function() {
-			var message = "passphrase=" + $scope.passphrase;
-			$http.post("http://172.21.50.3:8080/emit/users/revoke", message)
-					.then(function(success) {
-					}, function(error) {
-					});
-			$cookieStore.remove('passphrase');
-			$scope.passphrase = null;
-		}
-		$scope.profile = null;
-		var profile = function() {
-			if ($scope.passphrase) {
-				var message = "passphrase=" + $scope.passphrase;
-				$http.post("http://172.21.50.3:8080/emit/users/profile",
-						message).then(function(success) {
-					$scope.profile = response.data;
-					$scope.firstname = $scope.profile.firstname;
-					$scope.lastname = $scope.profile.lastname;
-				}, function(error) {
-					$scope.profile = null;
-				});
-			}
-		}
-
-		$scope.loaded_file = "- None -";
-		$scope.retrive_instrument_name = function(uri) {
-			var name = "";
-			angular.forEach($scope.instrumentlist, function(value) {
-				if (uri == value.uri) {
-					name = value.name;
-				}
-			});
-			return name;
-		}
-
-		$scope.fill_measurement = function(key) {
-			//console.log(key);
-			$scope.measurementlist = [];
-			$http.get("http://172.21.50.3:8080/emit/measurement/list", {
-				"params" : {
-					"fkey" : key
-				}
-			}).then(function(success) {
-				$scope.measurementlist = success.data;
-				$(function() {
-					var ins = $("#selector4 li a").on("click", function(e) {
-						ins.not(this).removeClass('active4')
-						$(this).addClass("active4");
-					});
-				});
-				//console.log(angular.toJson(success.data));
-				//console.log(angular.toJson($scope.measurementlist));
-			}, function(error) {
-				$scope.measurementlist = [];
-			});
-		}
-
-		$scope.fill_measurementset = function(key) {
-			var i = 0;
-			$scope.measurementlist = [];
-			$scope.measurementsetlist = [];
-			//console.log("je suis bien actif");
-			//console.log(key);
-			$http.get("http://172.21.50.3:8080/emit/measurementSet/list", {
-				"params" : {
-					"fkey" : key
-				}
-			}).then(
-					function(success) {
-						var measurementset = success.data;
-						angular.forEach(measurementset, function(value) {
-							$scope.measurementsetlist[i] = value;
-							$scope.measurementsetlist[i].name = $scope
-									.retrive_instrument_name(value.instrument);
-							i++;
-						});
-						$(function() {
-							var ins = $("#selector3 li a").on("click",
-									function(e) {
-										ins.not(this).removeClass('active3')
-										$(this).addClass("active3");
+	app
+			.controller(
+					'controller',
+					function($scope, $http, $q, $cookieStore) {
+						
+						$scope.passphrase = $cookieStore.get('passphrase');
+						$scope.logout = function() {
+							var message = "passphrase=" + $scope.passphrase;
+							$http
+									.post(
+											"http://172.21.50.3:8080/emit-users/revoke",
+											message).then(function(success) {
+									}, function(error) {
 									});
+							$cookieStore.remove('passphrase');
+							$scope.passphrase = null;
+						}
+						$scope.profile = null;
+						var profile = function() {
+							if ($scope.passphrase) {
+								var message = "passphrase=" + $scope.passphrase;
+								$http
+										.post(
+												"http://172.21.50.3:8080/emit-users/profile",
+												message)
+										.then(
+												function(success) {
+													$scope.profile = response.data;
+													$scope.firstname = $scope.profile.firstname;
+													$scope.lastname = $scope.profile.lastname;
+												}, function(error) {
+													$scope.profile = null;
+												});
+							}
+						}
+						
+						$scope.an_general = ANALYSE.general;
+						$scope.an_analyse = ANALYSE.analyse;
+						$scope.an_total_conso = ANALYSE.total_conso;
+						$scope.an_time = ANALYSE.time;
+						$scope.an_sloc = ANALYSE.sloc;
+						$scope.an_std_dev = ANALYSE.std_dev;
+						$scope.loaded = false;
+
+						$scope.retrieve_json = function(data) {
+							console.log(data);
+							var retrieved_data = $http.get(
+									"http://172.21.50.3:8080/emit/test/test?file_name="
+											+ data).then(function(success) {
+								retrieved_json = success.data;
+								console.log("bien vu !");
+							}, function(error) {
+								console.log("c'est un échec");
+							});
+
+							$q
+									.all([ retrieved_data ])
+									.then(
+											function(values) {
+												var all_abscissa = [];
+												var all_ordinate = [];
+
+												$scope.loaded_file = "Loaded file : "
+														+ data;
+												$scope.series = [ 'Data',
+														'Minimum', 'Maximum',
+														'Average' ];
+
+												for (var i = 0; i < retrieved_json.length; i++) {
+													all_abscissa[i] = retrieved_json[i].x /*/ 1000*/;
+													all_ordinate[i] = retrieved_json[i].y;
+												}
+
+												$scope.startedtime = Math.min
+														.apply(
+																Math,
+																all_abscissa
+																		.map(function(
+																				o) {
+																			return o;
+																		}));
+												$scope.stoppedtime = Math.max
+														.apply(
+																Math,
+																all_abscissa
+																		.map(function(
+																				o) {
+																			return o;
+																		}));
+												$scope.loaded = true;
+												$scope.MAJ_slider();
+												$scope.refresh_chart();
+											});
+						};
+						$scope.refresh_chart = function() {
+							var abscissa = [];
+							var ordinate = [];
+							var minimum = [];
+							var maximum = [];
+							var average = [];
+							var points = [];
+							var serie = [];
+							var cpt = 0;
+
+							//Restriction de l'interval de visualisation
+							for (var i = 0; i < retrieved_json.length; i++) {
+								if ($scope.slider.minValue <= (retrieved_json[i].x /*/ 1000*/)
+										&& (retrieved_json[i].x /*/ 1000*/) <= $scope.slider.maxValue) {
+									abscissa[cpt] = retrieved_json[i].x /*/ 1000*/;
+									ordinate[cpt] = retrieved_json[i].y;
+									points[cpt] = retrieved_json[i];
+									cpt++;
+								}
+							}
+
+							//Récupération des données remarquables de la courbe (min,max,moy,écart type, aire sous la courbe)
+							$scope.minimum = Math.min.apply(Math, ordinate
+									.map(function(min) {
+										return min;
+									}));
+							$scope.maximum = Math.max.apply(Math, ordinate
+									.map(function(max) {
+										return max;
+									}));
+							$scope.average = Math
+									.round(100 * f_average(ordinate)) / 100;
+							$scope.std_dev = Math
+									.round(100 * f_standardDeviation(ordinate)) / 100;
+							//console.log(abscissa[1] - abscissa[0]);
+							$scope.AUC = Math.round(100 * f_integral(
+									(abscissa[1] - abscissa[0]), ordinate)) / 100;
+
+							//définition des courbes							
+							for (var i = 0; i < ordinate.length; i++) {
+								minimum[i] = $scope.minimum;
+								maximum[i] = $scope.maximum;
+								average[i] = $scope.average;
+							}
+							serie = [ ordinate, minimum, maximum, average ];
+							$scope.labels = abscissa
+							$scope.data = serie;
+							$scope.datasetOverride = [ {
+								pointRadius : 3,
+							}, {
+								pointRadius : 0,
+								fill : false,
+							}, {
+								pointRadius : 0,
+								fill : false,
+							}, {
+								pointRadius : 0,
+								fill : false,
+							} ];
+
+						};
+
+						//Slider
+						$scope.MAJ_slider = function() {
+							$scope.slider = {
+								minValue : $scope.startedtime,
+								maxValue : $scope.stoppedtime,
+
+								options : {
+									floor : $scope.startedtime,
+									ceil : $scope.stoppedtime,
+									step : 10,
+									precision : 1,
+									onEnd : function() {
+										$scope.refresh_chart();
+									}
+								}
+							};
+						};
+
+						//Checkbox stylisées YES/NO
+						$(':checkbox').checkboxpicker();
+						$('#cb1').prop('checked', $scope.an_general);
+						$('#cb1').on('change', function() {
+							$('#cb1').prop('checked', $scope.an_general);
 						});
-						//console.log(angular.toJson($scope.measurementsetlist));
-						//console.log(success.data);
-					}, function(error) {
-						$scope.measurementsetlist = [];
+
+						$scope.retrive_instrument_name = function(uri) {
+							var name = "";
+							angular.forEach($scope.instrumentlist, function(
+									value) {
+								if (uri == value.uri) {
+									name = value.name;
+								}
+							});
+							return name;
+						}
+
+						$scope.fill_measurement = function(key) {
+							//console.log(key);
+							$scope.measurementlist = [];
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/measurement/list",
+											{
+												"params" : {
+													"fkey" : key
+												}
+											})
+									.then(
+											function(success) {
+												$scope.measurementlist = success.data;
+												$(function() {
+													var ins = $(
+															"#selector4 li a")
+															.on(
+																	"click",
+																	function(e) {
+																		ins
+																				.not(
+																						this)
+																				.removeClass(
+																						'active4')
+																		$(this)
+																				.addClass(
+																						"active4");
+																	});
+												});
+												//console.log(angular.toJson(success.data));
+												//console.log(angular.toJson($scope.measurementlist));
+											}, function(error) {
+												$scope.measurementlist = [];
+											});
+						}
+
+						$scope.fill_measurementset = function(key) {
+							var i = 0;
+							$scope.measurementlist = [];
+							$scope.measurementsetlist = [];
+							//console.log("je suis bien actif");
+							//console.log(key);
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/measurementSet/list",
+											{
+												"params" : {
+													"fkey" : key
+												}
+											})
+									.then(
+											function(success) {
+												var measurementset = success.data;
+												angular
+														.forEach(
+																measurementset,
+																function(value) {
+																	$scope.measurementsetlist[i] = value;
+																	$scope.measurementsetlist[i].name = $scope
+																			.retrive_instrument_name(value.instrument);
+																	i++;
+																});
+												$(function() {
+													var ins = $(
+															"#selector3 li a")
+															.on(
+																	"click",
+																	function(e) {
+																		ins
+																				.not(
+																						this)
+																				.removeClass(
+																						'active3')
+																		$(this)
+																				.addClass(
+																						"active3");
+																	});
+												});
+												//console.log(angular.toJson($scope.measurementsetlist));
+												//console.log(success.data);
+											}, function(error) {
+												$scope.measurementsetlist = [];
+											});
+						}
+
+						$scope.fill_experiment = function(key) {
+							$scope.measurementsetlist = [];
+							$scope.measurementlist = [];
+							$http
+									.get(
+											"http://172.21.50.3:8080/emit/experiment/list",
+											{
+												"params" : {
+													"fkey" : key
+												}
+											})
+									.then(
+											function(success) {
+												$scope.experimentlist = success.data;
+												$(function() {
+													var ins = $(
+															"#selector2 li a")
+															.on(
+																	"click",
+																	function(e) {
+																		ins
+																				.not(
+																						this)
+																				.removeClass(
+																						'active2')
+																		$(this)
+																				.addClass(
+																						"active2");
+																	});
+												});
+											}, function(error) {
+												$scope.environments = [];
+											});
+						}
+
+						$scope.refresh = function() {
+							// déclaration des promesses (voir promises)
+							var experiment = $http
+									.get("http://172.21.50.3:8080/emit/experiment/list");
+							var instrument = $http
+									.get("http://172.21.50.3:8080/emit/instrument/list");
+							var environment = $http
+									.get("http://172.21.50.3:8080/emit/environment/list");
+							var measure = $http
+									.get("http://172.21.50.3:8080/emit/measure/list");
+							var measurement = $http
+									.get("http://172.21.50.3:8080/emit/measurement/list");
+							var measurand = $http
+									.get("http://172.21.50.3:8080/emit/measurand/list");
+							var measurementset = $http
+									.get("http://172.21.50.3:8080/emit/measurementSet/list");
+							var analysis = $http
+									.get("http://172.21.50.3:8080/emit/analysis/list");
+
+							// attente de la réalisation de toutes les promesses
+							$q
+									.all(
+											[ experiment, instrument,
+													environment, measure,
+													measurement, measurand,
+													measurementset, analysis ])
+									.then(
+											function(values) {
+												//console.log(angular.toJson(values[0].data))
+												$scope.experimentlist = values[0].data;
+												$scope.instrumentlist = values[1].data;
+												$scope.environmentlist = values[2].data;
+												$scope.measurelist = values[3].data;
+												$scope.measurementlist = values[4].data;
+												$scope.measurandlist = values[5].data;
+												$scope.measurementsetlist = values[6].data;
+												$scope.analyses = values[7].data;
+												//réalisation des opérations souaitées
+												$(function() {
+													var ins = $(
+															"#selector1 li a")
+															.on(
+																	"click",
+																	function(e) {
+																		ins
+																				.not(
+																						this)
+																				.removeClass(
+																						'active1')
+																		$(this)
+																				.addClass(
+																						"active1");
+																	});
+												});
+											});
+						}
+						
+						profile();
+						$scope.refresh();
+
 					});
-		}
-
-		$scope.fill_experiment = function(key) {
-			$scope.measurementsetlist = [];
-			$scope.measurementlist = [];
-			$http.get("http://172.21.50.3:8080/emit/experiment/list", {
-				"params" : {
-					"fkey" : key
-				}
-			}).then(function(success) {
-				$scope.experimentlist = success.data;
-				$(function() {
-					var ins = $("#selector2 li a").on("click", function(e) {
-						ins.not(this).removeClass('active2')
-						$(this).addClass("active2");
-					});
-				});
-			}, function(error) {
-				$scope.environments = [];
-			});
-
-		}
-
-		$scope.refresh = function() {
-			// déclaration des promesses (voir promises)
-			var experiment = $http
-					.get("http://172.21.50.3:8080/emit/experiment/list");
-			var instrument = $http
-					.get("http://172.21.50.3:8080/emit/instrument/list");
-			var environment = $http
-					.get("http://172.21.50.3:8080/emit/environment/list");
-			var measure = $http
-					.get("http://172.21.50.3:8080/emit/measure/list");
-			var measurement = $http
-					.get("http://172.21.50.3:8080/emit/measurement/list");
-			var measurand = $http
-					.get("http://172.21.50.3:8080/emit/measurand/list");
-			var measurementset = $http
-					.get("http://172.21.50.3:8080/emit/measurementSet/list");
-
-			// attente de la réalisation de toutes les promesses
-			$q.all(
-					[ experiment, instrument, environment, measure,
-							measurement, measurand, measurementset ]).then(
-					function(values) {
-						//console.log(angular.toJson(values[0].data))
-						$scope.experimentlist = values[0].data;
-						$scope.instrumentlist = values[1].data;
-						$scope.environmentlist = values[2].data;
-						$scope.measurelist = values[3].data;
-						$scope.measurementlist = values[4].data;
-						$scope.measurandlist = values[5].data;
-						$scope.measurementsetlist = values[6].data;
-						//réalisation des opérations souaitées
-						$(function() {
-							var ins = $("#selector1 li a").on("click",
-									function(e) {
-										ins.not(this).removeClass('active1')
-										$(this).addClass("active1");
-									});
-						});
-					});
-
-		}
-
-		$scope.refresh();
-
-		$scope.afficher_test = function(file_name) {
-			var retour_test = [];
-			var serie = [];
-			var serie1 = [];
-			var globalSerie = [];
-
-			$http.get(
-					"http://172.21.50.3:8080/emit/test/test?file_name="
-							+ file_name).then(function(response) {
-				retour_test = response.data;
-				//console.log(retour_test.length);
-				for (var i = 0; i < retour_test.length; i++) {
-					serie[i] = retour_test[i].x / 1000;
-					serie1[i] = retour_test[i];
-					//console.log(i);
-				}
-				$scope.loaded_file = file_name;
-				//console.log(angular.toJson(serie1));
-				globalSerie.push(serie1);
-				$scope.labels = serie
-				$scope.series = [ 'Data' ];
-				//console.log(serie);
-				$scope.data = globalSerie;
-				$scope.onClick = function(points, evt) {
-					//console.log(points, evt);
-				}
-			});
-		}
-		$scope.launchexp = function() {
-			$http.get("http://172.21.50.3:8080/emit/experiment/launch").then(
-					function(success) {
-						alert('lancer experiment');
-					});			
-			
-		}
-		
-		$scope.launchmeas = function() {
-			$http.get("http://172.21.50.3:8080/emit/measurementSet/launch").then(
-					function(success) {
-						alert('lancer creation measurementset');
-					});			
-		}
-
-		profile();
-	});
 </script>
-<body ng-app="app" ng-controller="myCtrl">
+<body ng-app="app" ng-controller="controller">
 	<header>
 		<div class="navbar navbar-default navbar-custom navbar-static-top"
 			id="navigation_barre">
@@ -246,7 +473,6 @@
 					<li class="active primaire"><a href="./index.html"
 						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
 							Home</a></li>
-
 					<li class="dropdown primaire"><a href="#"
 						class="dropdown-toggle primaire" data-toggle="dropdown"
 						role="button" aria-expanded="false"><span
@@ -265,20 +491,16 @@
 					<li class="active primaire"><a href="./CreateAnalysis.html"
 						class="primaire"><span class="glyphicon glyphicon-tasks">&ensp;</span>
 							Plan analysis</a></li>
-					<li class="active primaire"><a href="./test.html"
-						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
-							Test</a></li>
 					<li class="dropdown primaire"><a href="#"
 						class="dropdown-toggle primaire" data-toggle="dropdown"
 						role="button" aria-expanded="false"><span
 							class="glyphicon glyphicon-user">&ensp;</span> Parameters<span
 							class="caret"></span></a>
 						<ul class="dropdown-menu">
+							<li class="dropdown-header" ng-if="profile">{{profile.firstname}} {{profile.lastname}}</li>
 							<li ng-if="passphrase"><a href="./index.html"
-								ng-click="logout()"><span
-									class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
-							<li ng-if="!passphrase"><a href="./sign-in.html"><span
-									class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
+								ng-click="logout()"><span class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
+							<li ng-if="!passphrase"><a href="./sign-in.html"><span class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
 						</ul></li>
 				</ul>
 			</div>
@@ -308,32 +530,50 @@
 					<b>Measurement selection :</b>
 					<ul class="nav scrollLites" id="selector4">
 						<li ng-repeat="x in measurementlist"><a
-							ng-click="afficher_test(x.data)">{{x.measure}}</a></li>
+							ng-click="retrieve_json(x.data)">{{x.measure}}</a></li>
 					</ul>
 				</div>
 			</div>
 		</section>
 		<section class="col-md-10">
-			<div class="form-group">
-				<legend>Quick launch : </legend>
-				<button ng-click="launchexp()" class="btn btn">
-					<span class="glyphicon glyphicon-expand">&ensp;</span> Launch the
-					last unprocessed experiment
-				</button>
-				<br>
-				<button ng-click="launchmeas()" class="btn btn">
-					<span class="glyphicon glyphicon-expand">&ensp;</span> Launch
-					measurements creation
-				</button>
-			</div>
-			<div class="form-group">
-				<legend ng-model="loaded_file"> Loaded file : {{
-					loaded_file }} </legend>
-				<canvas ng-if="loaded_file != '- None -'" id="line"
-					class="chart chart-line" chart-data="data" chart-labels="labels"
-					chart-series="series" chart-options="options"
-					chart-dataset-override="datasetOverride" chart-click="onClick">
-				</canvas>
+			<div class="form-group" ng-if="loaded">
+				<fieldset>
+					<legend ng-model="loaded_file"> {{ loaded_file }} </legend>
+					<canvas id="line" class="chart chart-line" chart-data="data"
+						chart-labels="labels" chart-series="series"
+						chart-options="options" chart-dataset-override="datasetOverride"
+						chart-click="onClick">
+					</canvas>
+					<rzslider rz-slider-model="slider.minValue"
+						rz-slider-high="slider.maxValue"
+						rz-slider-options="slider.options"></rzslider>
+					<br> <br>
+				</fieldset>
+				<fieldset>
+					<legend> Observations </legend>
+					<div class="form-group">
+						<label class="list-group-item-heading">Minimum</label> <input
+							class="form-control" type="text" value="{{ minimum }}" readonly>
+					</div>
+					<div class="form-group">
+						<label class="list-group-item-heading">Maximum</label> <input
+							class="form-control" type="text" value="{{ maximum }}" readonly>
+					</div>
+					<div class="form-group">
+						<label class="list-group-item-heading">Average</label> <input
+							class="form-control" type="text" value="{{ average }}" readonly>
+					</div>
+					<div class="form-group">
+						<label class="list-group-item-heading">Standard deviation</label>
+						<input class="form-control" type="text" value="{{ std_dev }}"
+							readonly>
+					</div>
+					<div class="form-group">
+						<label class="list-group-item-heading">Area under the
+							curve</label> <input class="form-control" type="text" value="{{ AUC }}"
+							readonly>
+					</div>
+				</fieldset>
 			</div>
 		</section>
 	</div>
@@ -371,5 +611,4 @@
 		</div>
 	</footer>
 </body>
-
 </html>

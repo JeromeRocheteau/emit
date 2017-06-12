@@ -14,17 +14,52 @@
 	src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript"
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script type="text/javascript"
-	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+<script type="text/javascript" src="DJS/moment.min.js"></script>
+<script type="text/javascript" src="DJS/moment.fr.js"></script>
+<script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular.min.js"></script>
+<script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular-cookies.min.js"></script>
+<script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular-sanitize.min.js"></script>
+<script type="text/javascript" src="https://code.angularjs.org/1.6.3/i18n/angular-locale_fr-fr.js"></script>
 <script type="text/javascript">
-	var app = angular.module('app', []);
+	var app = angular.module('app', ['ngSanitize','ngCookies']);
 	var log = [];
 
 	app
 			.controller(
 					'myCtrl',
-					function($window, $scope, $http) {
+					function($window, $scope, $http, $cookieStore) {
 
+						$scope.passphrase = $cookieStore.get('passphrase');
+						$scope.logout = function() {
+							var message = "passphrase=" + $scope.passphrase;
+							$http
+									.post(
+											"http://172.21.50.3:8080/emit-users/revoke",
+											message).then(function(success) {
+									}, function(error) {
+									});
+							$cookieStore.remove('passphrase');
+							$scope.passphrase = null;
+						}
+						$scope.profile = null;
+						var profile = function() {
+							if ($scope.passphrase) {
+								var message = "passphrase=" + $scope.passphrase;
+								$http
+										.post(
+												"http://172.21.50.3:8080/emit-users/profile",
+												message)
+										.then(
+												function(success) {
+													$scope.profile = response.data;
+													$scope.firstname = $scope.profile.firstname;
+													$scope.lastname = $scope.profile.lastname;
+												}, function(error) {
+													$scope.profile = null;
+												});
+							}
+						}
+						
 						$http
 								.get(
 										"http://172.21.50.3:8080/emit/environment/list")
@@ -108,6 +143,7 @@
 							alert("Là, il faut lancer l'experiment !");
 						}
 
+						profile();
 					});
 </script>
 
@@ -140,16 +176,28 @@
 					<li class="active primaire"><a href="./CreateAnalysis.html"
 						class="primaire"><span class="glyphicon glyphicon-tasks">&ensp;</span>
 							Plan analysis</a></li>
-					<li class="active primaire"><a href="./test.html"
-						class="primaire"><span class="glyphicon glyphicon-dashboard">&ensp;</span>
-							Test</a></li>
+					<li class="dropdown primaire"><a href="#"
+						class="dropdown-toggle primaire" data-toggle="dropdown"
+						role="button" aria-expanded="false"><span
+							class="glyphicon glyphicon-user">&ensp;</span> Parameters<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-header" ng-if="profile">{{profile.firstname}} {{profile.lastname}}</li>
+							<li ng-if="passphrase"><a href="./index.html"
+								ng-click="logout()"><span class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
+							<li ng-if="!passphrase"><a href="./sign-in.html"><span class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
+						</ul></li>
 				</ul>
 			</div>
 		</div>
 	</header>
 	<div id="content" class="container">
+	
 		<div class="col-md-3"></div>
-		<div class="col-md-6">
+		<div class="alert alert-danger" role="alert" ng-if="!passphrase">
+			<strong>No Access !</strong> You have to log in before visualize this page. 
+		</div>		
+		<div class="col-md-6" ng-if="passphrase">
 			<form class="form" name="form">
 				<fieldset>
 					<legend>Plan an experiment</legend>
