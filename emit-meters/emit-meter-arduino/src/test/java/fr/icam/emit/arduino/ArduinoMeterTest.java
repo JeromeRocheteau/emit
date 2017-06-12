@@ -20,7 +20,7 @@ public class ArduinoMeterTest {
     public static void main(String[] args) throws Exception {
     	ObjectMapper map = new ObjectMapper();
     	ArduinoMeter app = new ArduinoMeter();
-    	app.setUp();
+    	//app.setUp();
     	long time = Calendar.getInstance().getTimeInMillis();
     	long stop = time;
     	app.doStart();
@@ -30,7 +30,7 @@ public class ArduinoMeterTest {
     	app.doStop();
     	ByteArrayOutputStream stream = new ByteArrayOutputStream();
     	app.doRetrieve(stream);
-    	app.tearDown();
+    	//app.tearDown();
 		JavaType longType = map.getTypeFactory().constructFromCanonical(Long.class.getCanonicalName());
 		CollectionType listType = map.getTypeFactory().constructCollectionType(List.class, Double.class);
 		MapType mapType = map.getTypeFactory().constructMapType(TreeMap.class, longType, listType);

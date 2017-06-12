@@ -1,94 +1,85 @@
 package fr.icam.emit.arduino;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
-import org.apache.commons.io.IOUtils;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 
-import purejavacomm.CommPortIdentifier;
-import purejavacomm.SerialPort;
-
-public class ArduinoMeter implements Runnable {
-
-	private static final String PORT = "COM3"; // "/dev/ttyACM0";
+public class ArduinoMeter  {
 	
-	private SerialPort port;
+	private static final String EXCHANGE_NAME = "Arduino";	
 	
-	private CommPortIdentifier identifier;
+	Consumer consumer;
+	Channel channel;
+	String tag;
+	String result;
+	boolean exist ;
+	Connection connection;
+	ConnectionFactory factory;
 	
-    private InputStream stream;
-    
-    private InputStreamReader reader;
+	public ArduinoMeter(){
+		factory = new ConnectionFactory();
+	    factory.setHost("localhost");
+	    factory.setUsername("EMIT");
+		factory.setPassword("m3asur3");		
+		exist = true;
+	}
 
-    public void setUp() throws Exception {
-    	started = false;
-    	identifier = CommPortIdentifier.getPortIdentifier(PORT);
-    	port = (SerialPort) identifier.open(this.getClass().getSimpleName(), 2000);
-    	port.setSerialPortParams(115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-    	port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-    	Thread.sleep(100);
-    }
-    
-    public void tearDown() throws Exception {
-    	port.close();
-    }
-    
-    private boolean started;
-    
-    private File file;
-    
-    private OutputStream out;
-    
-    public final void doStart() throws Exception {
-    	this.started = true;
-    	stream = port.getInputStream();
-    	reader = new InputStreamReader(stream);
-		file = File.createTempFile("emit-meter-arduino-", ".csv");
-		out = new FileOutputStream(file);
-        new Thread(this).start();
-    }
+	public void doStart() throws Exception{
+	// pour explications voir doc Rabbit MQ
+    connection = factory.newConnection();
+    channel = connection.createChannel();
 
-    public void run() {
-       	int intch = -1;
-    	do {
-    		try {
-    			intch = reader.read();
-    			out.write(intch);
-    		} catch (IOException e) { /* TODO */ }
-    	} while (intch != -1 && this.started);
-    }
-	    
-    public final void doStop() throws Exception {
-    	Thread.currentThread().interrupt();
-    	this.started = false;
-		out.close();
-		reader.close();
-		stream.close();
-    }
+    channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+    String queueName = channel.queueDeclare().getQueue();
+    channel.queueBind(queueName, EXCHANGE_NAME, "");
+    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
     
-    public void doRetrieve(OutputStream stream) throws Exception {
-    	InputStream in = new FileInputStream(file);
-    	IOUtils.copy(in, stream);
-    	in.close();
-    	file.delete();
-    }
+   
+    consumer = new DefaultConsumer(channel){
+    String message = "";
+    	// on écrase les méthodes de DefalltConsummer dont on a besoin pour récupérer les résultats.
+    	  @Override
+    	  public void handleDelivery(String consumerTag, Envelope envelope,
+    	                             AMQP.BasicProperties properties, byte[] body)
+    	      throws IOException {
+    	    message =  message + new String(body, "UTF-8")+"\r\n";
+    	    //System.out.println(" [x] Received '" + message + "'");
+    	  }
+    	  
+    	  @Override
+    	  public String toString(){
+    		  
+    		  return message;
+    	  }
+    	  
+    	};
+    	
+    	tag = channel.basicConsume(queueName, true, consumer);
+	}
 	
-    /*
-    @Override
-    public void interrupt() {
-    	super.interrupt();
-    	try {
-    	    stream.close();
-    		reader.close();
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
-    */
-    
-}
+	public void doStop() throws IOException{
+    	 
+    	
+    	//String result = get_content();   	
+    	result = consumer.toString();    	
+    	channel.basicCancel(tag);
+    	connection.close();
+	}
+	
+	public void doRetrieve(OutputStream out) throws Exception{
+		out.write(result.getBytes(Charset.forName("UTF-8")));
+		result = "";
+	}
+	
+	
+    	
+   }
+

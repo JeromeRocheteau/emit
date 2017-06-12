@@ -11,21 +11,13 @@ public class ArduinoServlet extends HttpServlet {
 	
 	@Override
 	public void init() throws ServletException {
-		try {
-			if (meter == null) {
-				meter = new ArduinoMeter();
-				meter.setUp();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ServletException(e);
-		}
+		meter = new ArduinoMeter();
 	}
 	
 	@Override
 	public void destroy() {
 		try {
-			meter.tearDown();
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

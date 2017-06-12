@@ -1,5 +1,16 @@
 package fr.icam.emit.servlets;
 
+import javax.jms.DeliveryMode;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
+import javax.jms.TopicPublisher;
+import javax.jms.TopicSession;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -38,128 +50,69 @@ public class TestEnregistrement extends JdbcServlet{
 	 * 
 	 */
 	
-	private final static String HOST = "http://172.16.220.250:8088/arduinometer/";
-	private static final int PROC_TIME = 3000; 
+	
 	private static final long serialVersionUID = 2017041201530L;
 
 
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		/*
-		String content = "";
-		try {
-			content = this.get_arduino_file();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		File_handler handler = new File_handler();
-		handler.write_file("arduino-file.csv", content);		
-		response.getWriter().write("done");
-		*/
-		String content = "";
-		File_handler handler = new File_handler();
-		try {
-			content = handler.read_file("arduino-file.csv");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//response.getWriter().write(content);
-		InstrumentReader reader = new InstrumentReader();
-		reader.Read(content);
-		reader.Afficher(response);
 		
-		
-	}
-	
-	
-	
-	public String read_file(String file_name){
-		String s;
-		s= "";
-		String file_content = "";
-		 
-		ServletContext context = getServletContext();
-		InputStream is = context.getResourceAsStream("WEB-INF/classes/"+file_name);
-		if (is != null) {
-			InputStreamReader isr = new InputStreamReader(is);
-			BufferedReader reader = new BufferedReader(isr);
+		String context = "";
+		InitialContext ctx;
+		try {
 						
-			try {
-				while ((s = reader.readLine()) != null) {
-					//writer.println(s);
-					file_content = s+ file_content;
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else {
-			file_content = "le fichier n'existe pas";
-		}
+	       // get the initial context
+	       ctx = new InitialContext();
+	       //context = "Message published: " + ctx.getNameInNamespace();
+	       response.getWriter().write("M du programme");                                               
+	       // lookup the topic object
+	       Topic topic = (Topic) ctx.lookup("topic/topic0");
+	       response.getWriter().write("M du programme");                                                             
+	       // lookup the topic connection factory
+	       TopicConnectionFactory connFactory = (TopicConnectionFactory) ctx.
+	           lookup("topic/connectionFactory");
+	                                                                           
+	       // create a topic connection
+	       TopicConnection topicConn = connFactory.createTopicConnection();
+	                                                                           
+	       // create a topic session
+	       TopicSession topicSession = topicConn.createTopicSession(false, 
+	           Session.AUTO_ACKNOWLEDGE);
+	       response.getWriter().write("M du programme");                                                               
+	       // create a topic publisher
+	       TopicPublisher topicPublisher = topicSession.createPublisher(topic);
+	       topicPublisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+	                                                                           
+	       // create the "Hello World" message
+	       TextMessage message = topicSession.createTextMessage();
+	       message.setText("Hello World");
+	                                                                           
+	       // publish the messages
+	       topicPublisher.publish(message);
+	                                                                           
+	       // print what we did
+	       context = context +"Message published: " + message.getText();
+	                                                                           
+	       // close the topic connection
+	       topicConn.close();
+			
+			
 		
-	
-		return file_content;
-	};
-	
-	public String read_from_server() throws IOException{
-		String result = "";
-		BufferedReader br = new BufferedReader(new FileReader("/var/lib/emit/emit-1493121766097.csv"));
-		try {
-		    StringBuilder sb = new StringBuilder();
-		    String line = br.readLine();
-
-		    while (line != null) {
-		        sb.append(line);
-		        sb.append(System.lineSeparator());
-		        line = br.readLine();
-		    }
-		    result = sb.toString();
-		} 
-		finally {
-		    br.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			 e.printStackTrace();
 		}
-		return result;
-	}
+		response.getWriter().write(context);
+		response.getWriter().write("fin du programme");
 	
-	public void Afficher(List<List<String>> lines,HttpServletResponse response ) {
-
-		int lineNo = 1;
-		for (List<String> line : lines) {
-			int columnNo = 1;
-			for (String value : line) {
-				try {
-					response.getWriter().println("Line " + lineNo + " Column " + columnNo + ": " + value);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				columnNo++;
-			}
-			lineNo++;
-		}
-
-	}
-	
-	public String get_arduino_file() throws Exception{	
 		
-		URI uri = URI.create(HOST);
-    	Meter app = new Meter(uri);
-    	long time = Calendar.getInstance().getTimeInMillis();
-    	long stop = time;		
-    	app.doStart();
-    	
-    	while ((time - stop) < PROC_TIME) {
-    		time = Calendar.getInstance().getTimeInMillis();
-    	}
-    	
-    	app.doStop();
-    	
-    	String reponce =app.doRetrieve(System.out);    	
-		return reponce;
+		
 	}
+	
+	
+	
+	
 	
 	
 	

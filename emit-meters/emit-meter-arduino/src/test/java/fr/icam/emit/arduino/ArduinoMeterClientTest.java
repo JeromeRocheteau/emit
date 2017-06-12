@@ -11,7 +11,7 @@ public class ArduinoMeterClientTest {
 	
 	private final static String HOST = "http://172.16.220.250:8088/arduinometer/";
 
-	private static final int PROC_TIME = 3000; 
+	private static final int PROC_TIME = 10000; 
 	
     public static void main(String[] args) throws Exception {
     	URI uri = URI.create(HOST);

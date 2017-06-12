@@ -1,24 +1,16 @@
 package fr.icam.emit.analysis;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.lang.reflect.Type;
+
 import java.util.List;
 import java.util.ArrayList;
 
+public class Calculator  {
 
-import com.github.jeromerocheteau.JdbcServlet;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-public class Calculator extends JdbcServlet {
-
-	private static final long serialVersionUID = 201704110909L;
+	
 	private static List<Serie> serie;
 
-	public Calculator(String fichier_source) {
-		String input = read_file(fichier_source);
-		serie = serialize_gson(input);
+	public Calculator(List<Serie> serie) {		
+		this.serie = serie;
 	}
 
 	public Double average() {
@@ -99,34 +91,7 @@ public class Calculator extends JdbcServlet {
 		return profile_integral;
 	}
 
-	public List<Serie> serialize_gson(String input) {
-		
-		Gson gson = new Gson();
-		
-		Type listType = new TypeToken<List<Serie>>() {
-		}.getType();
-		List<Serie> serie = gson.fromJson(input, listType);
+	
 
-		return serie;
-	}
-
-	public String read_file(String file_name) {
-		
-		String file_content = "";
-
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("src/main/webapp/WEB-INF/classes/" + file_name));
-			StringBuilder sb = new StringBuilder();
-			String line = br.readLine();
-			while (line != null) {
-				sb.append(line);
-				line = br.readLine();
-			}
-			file_content = sb.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return file_content;
-	};
+	
 }
