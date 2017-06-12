@@ -18,51 +18,49 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="DJS/moment.min.js"></script>
 <script type="text/javascript" src="DJS/moment.fr.js"></script>
-<script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular.min.js"></script>
-<script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular-cookies.min.js"></script>
-<script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular-sanitize.min.js"></script>
-<script type="text/javascript" src="https://code.angularjs.org/1.6.3/i18n/angular-locale_fr-fr.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/angular.min.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/angular-cookies.min.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/angular-sanitize.min.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/i18n/angular-locale_fr-fr.js"></script>
 <script type="text/javascript" src="DJS/angular-chart.min.js"></script>
 
 <script type="text/javascript" src="DJS/sb-admin-2.js"></script>
 
 <script type="text/javascript">
-	var app = angular.module('app', ['ngSanitize','ngCookies']);
+	var app = angular.module('app', [ 'ngSanitize', 'ngCookies' ]);
 	var tree = [];
 
 	app.controller('myCtrl', function($scope, $http, $q, $cookieStore) {
 
 		$scope.passphrase = $cookieStore.get('passphrase');
 		$scope.logout = function() {
-			var message = "passphrase=" + $scope.passphrase;
-			$http
-					.post(
-							"http://172.21.50.3:8080/emit-users/revoke",
-							message).then(function(success) {
-					}, function(error) {
-					});
+			$http.post(
+					"http://172.21.50.3:8080/emit-users/revoke?passphrase="
+							+ $scope.passphrase).then(function(success) {
+			}, function(error) {
+			});
 			$cookieStore.remove('passphrase');
 			$scope.passphrase = null;
 		}
 		$scope.profile = null;
 		var profile = function() {
 			if ($scope.passphrase) {
-				var message = "passphrase=" + $scope.passphrase;
-				$http
-						.post(
-								"http://172.21.50.3:8080/emit-users/profile",
-								message)
-						.then(
-								function(success) {
-									$scope.profile = response.data;
-									$scope.firstname = $scope.profile.firstname;
-									$scope.lastname = $scope.profile.lastname;
-								}, function(error) {
-									$scope.profile = null;
-								});
+				$http.post(
+						"http://172.21.50.3:8080/emit-users/profile?passphrase="
+								+ $scope.passphrase).then(function(success) {
+					$scope.profile = success.data;
+					$scope.firstname = $scope.profile.firstname;
+					$scope.lastname = $scope.profile.lastname;
+				}, function(error) {
+					$scope.profile = null;
+				});
 			}
 		}
-		
+
 		$scope.retrive_instrument_name = function(uri) {
 			var name = "";
 			angular.forEach($scope.instrumentlist, function(value) {
@@ -169,11 +167,13 @@
 					.get("http://172.21.50.3:8080/emit/measurementSet/list");
 			var analysis = $http
 					.get("http://172.21.50.3:8080/emit/analysis/list");
+			var feature = $http
+					.get("http://172.21.50.3:8080/emit/feature/list");
 
 			// attente de la réalisation de toutes les promesses
 			$q.all(
 					[ experiment, instrument, environment, measure,
-							measurement, measurand, measurementset, analysis ])
+							measurement, measurand, measurementset, analysis, feature])
 					.then(
 							function(values) {
 								//console.log(angular.toJson(values[0].data))
@@ -185,6 +185,7 @@
 								$scope.measurandlist = values[5].data;
 								$scope.measurementsetlist = values[6].data;
 								$scope.analyses = values[7].data;
+								$scope.featurelist = values[8].data;
 								//réalisation des opérations souaitées
 								$(function() {
 									var ins = $("#selector1 li a").on(
@@ -256,81 +257,156 @@
 					<li class="dropdown primaire"><a href="#"
 						class="dropdown-toggle primaire" data-toggle="dropdown"
 						role="button" aria-expanded="false"><span
-							class="glyphicon glyphicon-user">&ensp;</span> Parameters<span
+							class="glyphicon glyphicon-user">&ensp;</span> User<span
 							class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li class="dropdown-header" ng-if="profile">{{profile.firstname}} {{profile.lastname}}</li>
+							<li class="dropdown-header" ng-if="profile">{{profile.firstname}}
+								{{profile.lastname}}</li>
+							<li ng-if="passphrase"><a href="./settings.html""><span
+									class="glyphicon glyphicon-cog">&ensp;</span> Parameters</a></li>
 							<li ng-if="passphrase"><a href="./index.html"
-								ng-click="logout()"><span class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
-							<li ng-if="!passphrase"><a href="./sign-in.html"><span class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
+								ng-click="logout()"><span
+									class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
+							<li ng-if="!passphrase"><a href="./sign-in.html"><span
+									class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
+							<li ng-if="!passphrase"><a href="./sign-up.html"><span
+									class="glyphicon glyphicon-edit">&ensp;</span> Register</a></li>
 						</ul></li>
 				</ul>
 			</div>
 		</div>
 	</header>
-	<div id="content" class="container">
-	<div class="alert alert-danger" role="alert" ng-if="!passphrase">
-			<strong>No Access !</strong> You have to log in before visualize this page. 
+	<div id="content" class="index">
+		<div class="alert alert-danger" role="alert" ng-if="!passphrase">
+			<strong>No Access !</strong> You have to <a href="./sign-in.html">log
+				in</a> before visualize this page.
 		</div>
-		<section class="col-md-2" ng-if="passphrase">
-			<div class="form-group">
-				<legend>Select a measurement : </legend>
-				<div class="sidebar-nav navbar-collapse">
-					<b>Measurand selection :</b>
-					<ul class="nav scrollLites" id="selector1">
-						<li ng-repeat="x in measurandlist"><a
-							ng-click="fill_experiment(x.process)">{{x.name}}</a></li>
-					</ul>
-					<b>Experiment selection :</b>
-					<ul class="nav scrollLites" id="selector2">
-						<li ng-repeat="x in experimentlist"><a
-							ng-click="fill_measurementset(x.id)">{{x.started |
-								date:"MM/dd/yyyy 'at' h:mma"}}</a></li>
-					</ul>
-					<b>Measurementset selection :</b>
-					<ul class="nav scrollLites" id="selector3">
-						<li ng-repeat="x in measurementsetlist"><a
-							ng-click="fill_measurement(x.id)">{{x.name}}</a></li>
-					</ul>
-					<b>Measurement selection :</b>
-					<ul class="nav scrollLites" id="selector4">
-						<li ng-repeat="x in measurementlist"><a
-							ng-click="fill_input(x)">{{x.measure}}</a></li>
-					</ul>
-				</div>
+		<div class="col-md-12" ng-if="passphrase">
+			<ul class="nav nav-tabs nav-stacked" role="tablist">
+				<li role="presentation" class="active"><a
+					href="#simple_analysis" aria-controls="simple_analysis" role="tab"
+					data-toggle="tab">Plan a simple analysis</a></li>
+				<li role="presentation" class=""><a href="#complex_analysis"
+					aria-controls="complex_analysis" role="tab" data-toggle="tab">Plan
+						a complex analysis</a></li>
+			</ul>
+		</div>
+		<div class="tab-content" ng-if="passphrase">
+			<div role="tabpanel" class="tab-pane active" id="simple_analysis">
+				<section class="col-md-2">
+					<div class="form-group">
+						<legend>Select a measurement : </legend>
+						<div class="sidebar-nav navbar-collapse">
+							<b>Measurand selection :</b>
+							<ul class="nav scrollLites" id="selector1">
+								<li ng-repeat="x in measurandlist"><a
+									ng-click="fill_experiment(x.process)">{{x.name}}</a></li>
+							</ul>
+							<b>Experiment selection :</b>
+							<ul class="nav scrollLites" id="selector2">
+								<li ng-repeat="x in experimentlist"><a
+									ng-click="fill_measurementset(x.id)">{{x.started |
+										date:"MM/dd/yyyy 'at' h:mma"}}</a></li>
+							</ul>
+							<b>Measurementset selection :</b>
+							<ul class="nav scrollLites" id="selector3">
+								<li ng-repeat="x in measurementsetlist"><a
+									ng-click="fill_measurement(x.id)">{{x.name}}</a></li>
+							</ul>
+							<b>Measurement selection :</b>
+							<ul class="nav scrollLites" id="selector4">
+								<li ng-repeat="x in measurementlist"><a
+									ng-click="fill_input(x)">{{x.measure}}</a></li>
+							</ul>
+						</div>
+					</div>
+				</section>
+				<section class="col-md-10">
+					<form class="form" name="form">
+						<fieldset>
+							<legend>Plan an analysis</legend>
+							<div class="form-group">
+								<label for="measurement.data">Name</label> <input type="text"
+									id="measurement.data" class="form-control"
+									ng-model="measurement.data" placeholder="Select a measurement in the tree"
+									ng-required="true" disabled />
+							</div>
+							<div class="form-group">
+								<label>Analysis</label> <select size="8"
+									class="form-control selectpicker"
+									ng-options="one_analysis.name for one_analysis in analyses"
+									ng-model="analysis_selection" title="Analysis"
+									ng-required="true" required multiple>
+								</select>
+							</div>
+							<div class=" form-group pull-right">
+								<button type="reset" ng-click="clear()" class="btn btn-default">
+									<span class="glyphicon glyphicon-erase">&ensp;</span> <strong>Cancel</strong>
+								</button>
+								<button type="submit" class="btn"
+									ng-click="form.$valid && create()" ng-disabled="form.$invalid">
+									<strong>Send</strong>
+								</button>
+							</div>
+						</fieldset>
+					</form>
+				</section>
 			</div>
-		</section>
-		<section class="col-md-10" ng-if="passphrase">
-			<form class="form" name="form">
-				<fieldset>
-					<legend>Plan an analysis</legend>
-					<div class="form-group">
-						<label for="measurement.data">Name</label> <input type="text"
-							id="measurement.data" class="form-control"
-							ng-model="measurement.data" placeholder="Select a measurement"
-							ng-required="true" disabled />
-					</div>
-					<div class="form-group">
-						<label>Analysis</label> <select size="8"
-							class="form-control selectpicker"
-							ng-options="one_analysis.name for one_analysis in analyses"
-							ng-model="analysis_selection" title="Analysis" ng-required="true"
-							required multiple>
-						</select>
-					</div>
-					<div class=" form-group pull-right">
-						<button type="reset" ng-click="clear()" class="btn btn-default">
-							<span class="glyphicon glyphicon-erase">&ensp;</span>
-							<strong>Cancel</strong>
-						</button>
-						<button type="submit" class="btn"
-							ng-click="form.$valid && create()" ng-disabled="form.$invalid">
-							<strong>Send</strong>
-						</button>
-					</div>
-				</fieldset>
-			</form>
-		</section>
+			<div role="tabpanel" class="tab-pane" id="complex_analysis">
+				<section class="col-md-10">
+					<form class="form" name="form">
+						<fieldset>
+							<legend>Plan an analysis</legend>
+
+							<div class="form-group">
+								<label>Measurand</label> <select
+									class="form-control selectpicker"
+									ng-options="measurand.name for measurand in measurandlist"
+									ng-model="measurand_selection" title="Measurand"
+									ng-required="true" required>
+									<option value="" disabled>-- choose a measurand --</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Environment</label> <select
+									class="form-control selectpicker"
+									ng-options="environment.name for environment in environmentlist"
+									ng-model="environment_selection" title="Environment"
+									ng-required="true" required>
+									<option value="" disabled>-- choose an environment --</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Feature</label> <select class="form-control selectpicker"
+									ng-options="feature.name for feature in featurelist"
+									ng-model="feature_selection" title="Feature" ng-required="true"
+									required>
+									<option value="" disabled>-- choose a feature --</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Analysis</label> <select size="8"
+									class="form-control selectpicker"
+									ng-options="one_analysis.name for one_analysis in analyses"
+									ng-model="analysis_selection" title="Analysis"
+									ng-required="true" required multiple>
+								</select>
+							</div>
+							<div class=" form-group pull-right">
+								<button type="reset" ng-click="clear()" class="btn">
+									<span class="glyphicon glyphicon-erase">&ensp;</span> <strong>Cancel</strong>
+								</button>
+								<button type="submit"
+									ng-click="form.$valid"
+									ng-disabled="form.$invalid" class="btn">
+									<span class="glyphicon glyphicon-send">&ensp;</span> <strong>Send</strong>
+								</button>
+							</div>
+						</fieldset>
+					</form>
+				</section>
+			</div>
+		</div>
 	</div>
 	<footer id="footer">
 		<div class="container">
