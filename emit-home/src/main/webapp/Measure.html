@@ -38,11 +38,9 @@
 
 						$scope.passphrase = $cookieStore.get('passphrase');
 						$scope.logout = function() {
-							var message = "passphrase=" + $scope.passphrase;
 							$http
 									.post(
-											"http://172.21.50.3:8080/emit/users-revoke",
-											message).then(function(success) {
+											"http://172.21.50.3:8080/emit-users/revoke?passphrase=" + $scope.passphrase).then(function(success) {
 									}, function(error) {
 									});
 							$cookieStore.remove('passphrase');
@@ -51,14 +49,12 @@
 						$scope.profile = null;
 						var profile = function() {
 							if ($scope.passphrase) {
-								var message = "passphrase=" + $scope.passphrase;
 								$http
 										.post(
-												"http://172.21.50.3:8080/emit/users-profile",
-												message)
+												"http://172.21.50.3:8080/emit-users/profile?passphrase=" + $scope.passphrase)
 										.then(
 												function(success) {
-													$scope.profile = response.data;
+													$scope.profile = success.data;
 													$scope.firstname = $scope.profile.firstname;
 													$scope.lastname = $scope.profile.lastname;
 												}, function(error) {
@@ -282,13 +278,16 @@
 					<li class="dropdown primaire"><a href="#"
 						class="dropdown-toggle primaire" data-toggle="dropdown"
 						role="button" aria-expanded="false"><span
-							class="glyphicon glyphicon-user">&ensp;</span> Parameters<span
+							class="glyphicon glyphicon-user">&ensp;</span> User<span
 							class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li class="dropdown-header" ng-if="profile">{{profile.firstname}} {{profile.lastname}}</li>
+							<li class="dropdown-header" ng-if="profile">{{profile.firstname}}
+								{{profile.lastname}}</li>
+							<li ng-if="passphrase"><a href="./settings.html""><span class="glyphicon glyphicon-cog">&ensp;</span> Parameters</a></li>
 							<li ng-if="passphrase"><a href="./index.html"
 								ng-click="logout()"><span class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
 							<li ng-if="!passphrase"><a href="./sign-in.html"><span class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
+							<li ng-if="!passphrase"><a href="./sign-up.html"><span class="glyphicon glyphicon-edit">&ensp;</span> Register</a></li>
 						</ul></li>
 				</ul>
 			</div>
@@ -297,7 +296,7 @@
 
 	<div id="content" class="container">
 	<div class="alert alert-danger" role="alert" ng-if="!passphrase">
-			<strong>No Access !</strong> You have to log in before visualize this page. 
+			<strong>No Access !</strong> You have to <a href="./sign-in.html">log in</a> before visualize this page. 
 		</div>
 		<section id="search" class="col-md-4" ng-if="passphrase">
 			<form class="form" name="form" ng-if="selected">

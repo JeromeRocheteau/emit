@@ -12,8 +12,7 @@
 </head>
 
 <script type="text/javascript" src="DJS/jquery.min.js"></script>
-<script type="text/javascript"
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="DJS/moment.min.js"></script>
 <script type="text/javascript" src="DJS/moment.fr.js"></script>
 <script type="text/javascript"
@@ -29,16 +28,24 @@
 <script type="text/javascript">
 	var app = angular.module('app',
 			[ 'ngSanitize', 'ngCookies', 'angular-md5' ]);
+
+	app.filter('ceil', function() {
+		return function(input) {
+			return Math.ceil(input);
+		};
+	});
+
 	app
 			.controller(
-					'myCtrl',
-					function($scope, $http, $window, $q, $cookieStore, md5) {
+					'controller',
+					function($scope, $http, $cookieStore, md5) {
 
 						$scope.passphrase = $cookieStore.get('passphrase');
 						$scope.logout = function() {
-							$http
-									.post(
-											"http://172.21.50.3:8080/emit-users/revoke?passphrase=" + $scope.passphrase).then(function(success) {
+							$http.post(
+									"http://172.21.50.3:8080/emit-users/revoke?passphrase="
+											+ $scope.passphrase).then(
+									function(success) {
 									}, function(error) {
 									});
 							$cookieStore.remove('passphrase');
@@ -49,7 +56,8 @@
 							if ($scope.passphrase) {
 								$http
 										.post(
-												"http://172.21.50.3:8080/emit-users/profile?passphrase=" + $scope.passphrase)
+												"http://172.21.50.3:8080/emit-users/profile?passphrase="
+														+ $scope.passphrase)
 										.then(
 												function(success) {
 													$scope.profile = success.data;
@@ -61,39 +69,73 @@
 							}
 						}
 
-
-						$scope.username = null;
 						$scope.firstname = null;
 						$scope.lastname = null;
+						$scope.updateProfile = function() {
+							var message = "username=" + $scope.profile.username
+									+ "&firstname=" + $scope.firstname
+									+ "&lastname=" + $scope.lastname;
+							$http(
+									{
+										method : 'POST',
+										url : '/emit-users/settings/name',
+										data : message,
+										headers : {
+											'Content-Type' : 'application/x-www-form-urlencoded'
+										}
+									})
+									.then(
+											function onSuccess(response) {
+												profile();
+												alert("Your profile has been successfully updated.");
+											},
+											function onError(response) {
+												alert("An error occured during the update of your profile.");
+											});
+						}
+						$scope.clearProfile = function() {
+							$scope.firstname = null;
+							$scope.lastname = null;
+						}
+
 						$scope.password = null;
 						$scope.confirm = null;
-						$scope.signup = function() {
+						$scope.updatePassword = function() {
 							if ($scope.password === $scope.confirm) {
-						  		var message = "username=" + $scope.username + "&firstname=" + $scope.firstname + "&lastname=" + $scope.lastname + "&password=" + md5.createHash($scope.password);
-						  		$http({method:'POST',url:'/emit-users/register',data:message,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-							  	.then(function onSuccess(response) {
-							  		alert("Inscription confirmed !");
-							  		$window.open("./sign-in.html","_self");
-						  	  	},function onError(response) {
-						  	  		alert("An error occured during your inscription !");
-						  	  	});
-						  		$scope.clear();
+								var message = "username="
+										+ $scope.profile.username
+										+ "&password="
+										+ md5.createHash($scope.password);
+								$http(
+										{
+											method : 'POST',
+											url : '/emit-users/settings/auth',
+											data : message,
+											headers : {
+												'Content-Type' : 'application/x-www-form-urlencoded'
+											}
+										})
+										.then(
+												function onSuccessfunction(
+														response) {
+													alert("Your password has been successfully updated");
+												},
+												function onError(response) {
+													alert("An error occured during the update of your password.");
+												});
 							} else {
 								alert("Passwords don't match !");
 							}
 						}
-						$scope.clear = function() {
-							$scope.username = null;
-							$scope.firstname = null;
-							$scope.lastname = null;
-							$scope.password = null;
+						$scope.clearPassword = function() {
 							$scope.confirm = null;
+							$scope.password = null;
 						}
 
 						profile();
 					});
 </script>
-<body ng-app="app" ng-controller="myCtrl">
+<body ng-app="app" ng-controller="controller">
 	<header>
 		<div class="navbar navbar-default navbar-custom navbar-static-top"
 			id="navigation_barre">
@@ -130,53 +172,97 @@
 						<ul class="dropdown-menu">
 							<li class="dropdown-header" ng-if="profile">{{profile.firstname}}
 								{{profile.lastname}}</li>
-							<li ng-if="passphrase"><a href="./settings.html""><span class="glyphicon glyphicon-cog">&ensp;</span> Parameters</a></li>
+							<li ng-if="passphrase"><a href="./settings.html""><span
+									class="glyphicon glyphicon-cog">&ensp;</span> Parameters</a></li>
 							<li ng-if="passphrase"><a href="./index.html"
 								ng-click="logout()"><span
 									class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
 							<li ng-if="!passphrase"><a href="./sign-in.html"><span
 									class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
-							<li ng-if="!passphrase"><a href="./sign-up.html"><span class="glyphicon glyphicon-edit">&ensp;</span> Register</a></li>
+							<li ng-if="!passphrase"><a href="./sign-up.html"><span
+									class="glyphicon glyphicon-edit">&ensp;</span> Register</a></li>
 						</ul></li>
 				</ul>
 			</div>
 		</div>
 	</header>
 	<section id="content" class="container">
-      <div class="col-md-3"></div>
-      <div class="col-md-6 list-group-item">
-        <form name="form" class="form">
-          <fieldset ng-disabled="passphrase">
-            <legend>Inscription</legend>
-            <div class="form-group">
-              <input type="text" class="form-control" ng-model="username" placeholder="UserID" ng-required="true" required>
-            </div>
-            <div class="form-group">
-              <input type="text" class="form-control" ng-model="firstname" placeholder="First name" ng-required="true" required>
-            </div>
-            <div class="form-group">
-              <input type="text" class="form-control" ng-model="lastname" placeholder="Last name" ng-required="true" required>
-            </div>
-            <div class="form-group">
-              <input type="password" class="form-control" ng-model="password" placeholder="Password" ng-required="true" required>
-            </div>
-            <div class="form-group">
-              <input type="password" class="form-control" ng-model="confirm" placeholder="Confirm your password" ng-required="true" required>
-            </div>
-            <div class="pull-right">
-              <button type="reset" ng-click="clear()" class="btn btn-default">
-                <span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
-              </button>
-              <button type="submit" ng-click="signup()" ng-disabled="!form.$valid" class="btn btn">
-                <span class="glyphicon glyphicon-send">&ensp;</span> Send
-              </button>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-      <div class="col-md-3"></div>
-    </section>
-    <footer id="footer">
+		<div class="row">
+			<div class="col-md-10">
+				<ul class="nav nav-tabs nav-stacked" role="tablist">
+					<li role="presentation" class="active"><a href="#profile"
+						aria-controls="profile" role="tab" data-toggle="tab">First and
+							last name</a></li>
+					<li role="presentation" class=""><a href="#password"
+						aria-controls="password" role="tab" data-toggle="tab">Password</a></li>
+				</ul>
+			</div>
+			<div class="col-md-8 list-group-item">
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="profile">
+						<form name="profileForm" class="form">
+							<fieldset ng-disabled="!passphrase">
+								<legend>First and last name</legend>
+								<div class="form-group">
+									<input type="text" class="form-control"
+										ng-model="profile.username" readonly>
+								</div>
+								<div class="form-group">
+									<input type="text" class="form-control" ng-model="firstname"
+										placeholder="First name" ng-required="true" required>
+								</div>
+								<div class="form-group">
+									<input type="text" class="form-control" ng-model="lastname"
+										placeholder="Last name" ng-required="true" required>
+								</div>
+								<div class="pull-right">
+									<button type="button" ng-click="clearProfile()"
+										class="btn btn-default">
+										<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
+									</button>
+									<button type="submit" ng-click="updateProfile()"
+										ng-disabled="!profileForm.$valid" class="btn btn">
+										<span class="glyphicon glyphicon-send">&ensp;</span> Send
+									</button>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+					<div role="tabpanel" class="tab-pane" id="password">
+						<form name="passwordForm" class="form">
+							<fieldset ng-disabled="!passphrase">
+								<legend>Password</legend>
+								<div class="form-group">
+									<input type="text" class="form-control"
+										ng-model="profile.username" readonly>
+								</div>
+								<div class="form-group">
+									<input type="password" class="form-control" ng-model="password"
+										placeholder="Password" ng-required="true" required>
+								</div>
+								<div class="form-group">
+									<input type="password" class="form-control" ng-model="confirm"
+										placeholder="Confirm your password" ng-required="true"
+										required>
+								</div>
+								<div class="pull-right">
+									<button type="button" ng-click="clearPassword()"
+										class="btn btn-default">
+										<span class="glyphicon glyphicon-erase">&ensp;</span> Cancel
+									</button>
+									<button type="submit" ng-click="updatePassword()"
+										ng-disabled="!passwordForm.$valid" class="btn btn">
+										<span class="glyphicon glyphicon-send">&ensp;</span> Send
+									</button>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<footer id="footer">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-4">
@@ -210,5 +296,4 @@
 		</div>
 	</footer>
 </body>
-
 </html>
