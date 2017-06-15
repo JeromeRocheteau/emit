@@ -23,7 +23,7 @@ public class Integral extends JdbcServlet{
 	private static final long serialVersionUID = 201705121725L;
 	
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
 		Gson gson = new Gson();		
 		InputStream inputStream = request.getInputStream();

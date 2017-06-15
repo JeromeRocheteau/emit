@@ -17,9 +17,6 @@
 		</listener-class>
 	</listener>
 
-	
-
-
 	<filter>
 		<filter-name>jdbc-filter</filter-name>
 		<filter-class>com.github.jeromerocheteau.JdbcFilter</filter-class>
@@ -33,6 +30,7 @@
 		<filter-name>filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
 	
 	<servlet>
 		<servlet-name>average</servlet-name>
@@ -50,16 +48,7 @@
 	<servlet-mapping>
 		<servlet-name>integral</servlet-name>
 		<url-pattern>/algorithm/integral</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>integral</servlet-name>
-		<servlet-class>fr.icam.emit.servlets.Integral</servlet-class>
-	</servlet>	
-	<servlet-mapping>
-		<servlet-name>integral</servlet-name>
-		<url-pattern>/algorithm/integral</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>	
 	
 	<servlet>
 		<servlet-name>maximum</servlet-name>
@@ -87,6 +76,85 @@
 		<servlet-name>StandardDeviation</servlet-name>
 		<url-pattern>/algorithm/StDev</url-pattern>
 	</servlet-mapping>
+	
+	
+	
+	
+	<servlet>
+		<servlet-name>ComplexeContextList</servlet-name>
+		<servlet-class>fr.icam.emit.process.ComplexeContextList</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/measurement-retrive-id.sql</param-value>
+		</init-param>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>ComplexeContextList</servlet-name>
+		<url-pattern>/algorithm/ComplexeList</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ComplexeResultCreate</servlet-name>
+		<servlet-class>fr.icam.emit.process.ComplexeResultCreate</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/result-create.sql</param-value>
+		</init-param>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>ComplexeResultCreate</servlet-name>
+		<url-pattern>/algorithm/ComplexeResultCreate</url-pattern>
+	</servlet-mapping>
+	
+		<servlet>
+		<servlet-name>SimpleResultCreate</servlet-name>
+		<servlet-class>fr.icam.emit.process.SimpleResultCreate</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/result-create.sql</param-value>
+		</init-param>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>SimpleResultCreate</servlet-name>
+		<url-pattern>/algorithm/SimpleResultCreate</url-pattern>
+	</servlet-mapping>
+	
+	
+	
+	<servlet>
+		<servlet-name>MeasurementListFile</servlet-name>
+		<servlet-class>fr.icam.emit.process.MeasurementListFile</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/measurement-list-file.sql</param-value>
+		</init-param>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>MeasurementListFile</servlet-name>
+		<url-pattern>/algorithm/MeasurementListFile</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ResultUnprocessed</servlet-name>
+		<servlet-class>fr.icam.emit.process.ResultUnprocessed</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/result-unprocessed.sql</param-value>
+		</init-param>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>ResultUnprocessed</servlet-name>
+		<url-pattern>/algorithm/ResultUnprocessed</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ResultCalculate</servlet-name>
+		<servlet-class>fr.icam.emit.process.ResultCalculate</servlet-class>		
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>ResultCalculate</servlet-name>
+		<url-pattern>/algorithm/ResultCalculate</url-pattern>
+	</servlet-mapping>	
 	
 	
 	
