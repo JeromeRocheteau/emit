@@ -24,16 +24,23 @@ public class ComplexeResultCreate extends JdbcUpdateServlet<Boolean> {
 	
 private static final long serialVersionUID = 201706141441L;
 private Result result;	
+HttpServletResponse responsebis;
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
+		
+		
+		
 		Gson gson = new Gson();		
 		InputStream inputStream = request.getInputStream();
 		Reader reader = new InputStreamReader(inputStream);		 
 		result = gson.fromJson(reader, Result.class);
+		request.setAttribute("reasult_plan", result);
+		
 		statement.setString(1,result.getAnalysis());
 		statement.setString(2,result.getMeasure());
 		
+		this.doCall(request, responsebis, "ComplexeContextList");
 		List<Measurement> measurement = (List<Measurement>) request.getAttribute("measurement");
 		
 		File_handler file_handler = new File_handler();
@@ -60,8 +67,8 @@ private Result result;
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		request.setAttribute("reasult_plan", result);
-		this.doCall(request, response, "ComplexeContextList");
+		responsebis =  response;
+		
 		boolean done = this.doProcess(request);
 		this.doWrite(done, response.getWriter());
 	}
