@@ -36,6 +36,16 @@
 
 	app.controller('myCtrl', function($scope, $http, $q, $cookieStore) {
 
+		$scope.env_filter = {
+			availableOptions: [
+				{uri: '#NONE#', name: '-- ALL --'}
+           	],
+            selectedOption: {uri: '#NONE#', name: '-- ALL --'}
+        };
+		$scope.env_filter.selectedOption = $scope.env_filter.availableOptions[0];
+		
+		var clicked_measurand = "";
+		
 		$scope.passphrase = $cookieStore.get('passphrase');
 		$scope.logout = function() {
 			$http.post(
@@ -53,8 +63,6 @@
 						"http://172.21.50.3:8080/emit-users/profile?passphrase="
 								+ $scope.passphrase).then(function(success) {
 					$scope.profile = success.data;
-					$scope.firstname = $scope.profile.firstname;
-					$scope.lastname = $scope.profile.lastname;
 				}, function(error) {
 					$scope.profile = null;
 				});
@@ -128,25 +136,51 @@
 					});
 		}
 
+		$scope.refill_experiment = function(){
+			if (clicked_measurand != ""){
+				$scope.fill_experiment(clicked_measurand);
+			}
+		}
+		
 		$scope.fill_experiment = function(key) {
-
+			
+			clicked_measurand = key;  
+			
 			$scope.measurementsetlist = [];
 			$scope.measurementlist = [];
 			$http.get("http://172.21.50.3:8080/emit/experiment/list", {
 				"params" : {
 					"fkey" : key
 				}
-			}).then(function(success) {
-				$scope.experimentlist = success.data;
-				$(function() {
-					var ins = $("#selector2 li a").on("click", function(e) {
-						ins.not(this).removeClass('active2')
-						$(this).addClass("active2");
+			}).then(
+					function(success) {
+						$scope.experimentlist = success.data;
+						if ($scope.env_filter.selectedOption.uri != "#NONE#") {
+							var to_delete = [];
+							angular.forEach($scope.experimentlist, function(value, key) {
+								/*Les index des expériences n'ayant le même environnement que celui choisi sont mis dans une liste*/
+								if (value.environment != $scope.env_filter.selectedOption.uri){
+									//console.log(value.environment != $scope.env_filter.selectedOption.uri);
+									to_delete.push(key);
+								} 
+							});
+							/*On inverse la liste d'index à supprimer (parcourir les index dans l'ordre décroissant)*/
+							to_delete.reverse();
+							/*Suppression des valeurs dans la liste d'expériment*/
+							angular.forEach(to_delete, function(value, key) {
+								$scope.experimentlist.splice(value,1);
+							});
+						}
+						$(function() {
+							var ins = $("#selector2 li a").on("click",
+									function(e) {
+										ins.not(this).removeClass('active2')
+										$(this).addClass("active2");
+									});
+						});
+					}, function(error) {
+						$scope.environments = [];
 					});
-				});
-			}, function(error) {
-				$scope.environments = [];
-			});
 		}
 
 		$scope.refresh = function() {
@@ -173,30 +207,33 @@
 			// attente de la réalisation de toutes les promesses
 			$q.all(
 					[ experiment, instrument, environment, measure,
-							measurement, measurand, measurementset, analysis, feature])
-					.then(
-							function(values) {
-								//console.log(angular.toJson(values[0].data))
-								$scope.experimentlist = values[0].data;
-								$scope.instrumentlist = values[1].data;
-								$scope.environmentlist = values[2].data;
-								$scope.measurelist = values[3].data;
-								$scope.measurementlist = values[4].data;
-								$scope.measurandlist = values[5].data;
-								$scope.measurementsetlist = values[6].data;
-								$scope.analyses = values[7].data;
-								$scope.featurelist = values[8].data;
-								//réalisation des opérations souaitées
-								$(function() {
-									var ins = $("#selector1 li a").on(
-											"click",
-											function(e) {
-												ins.not(this).removeClass(
-														'active1')
-												$(this).addClass("active1");
-											});
-								});
-							});
+							measurement, measurand, measurementset, analysis,
+							feature ]).then(
+					function(values) {
+						//console.log(angular.toJson(values[0].data))
+						$scope.experimentlist = values[0].data;
+						$scope.instrumentlist = values[1].data;
+						$scope.environmentlist = values[2].data;
+						//console.log($scope.env_filter);
+						angular.forEach(values[2].data, function(value, key) {
+							$scope.env_filter.availableOptions.push(value);
+						});
+						//console.log($scope.env_filter);
+						$scope.measurelist = values[3].data;
+						$scope.measurementlist = values[4].data;
+						$scope.measurandlist = values[5].data;
+						$scope.measurementsetlist = values[6].data;
+						$scope.analyses = values[7].data;
+						$scope.featurelist = values[8].data;
+						//réalisation des opérations souaitées
+						$(function() {
+							var ins = $("#selector1 li a").on("click",
+									function(e) {
+										ins.not(this).removeClass('active1')
+										$(this).addClass("active1");
+									});
+						});
+					});
 
 		}
 
@@ -206,7 +243,7 @@
 					measurement : $scope.measurement.id,
 					analysis : value.url
 				};
-				console.log(result_data);
+				//console.log(result_data);
 				$http.post("http://172.21.50.3:8080/emit/result/create",
 						result_data).then(function(success) {
 					//console.log("c'est créé !");
@@ -276,12 +313,21 @@
 			</div>
 		</div>
 	</header>
-	<div id="content" class="index">
+	<div id="content" class="container"
+		ng-if="!passphrase || (passphrase && profile.type == 'account')">
+		<div class="col-md-3"></div>
 		<div class="alert alert-danger" role="alert" ng-if="!passphrase">
 			<strong>No Access !</strong> You have to <a href="./sign-in.html">log
 				in</a> before visualize this page.
 		</div>
-		<div class="col-md-12" ng-if="passphrase">
+		<div class="alert alert-danger" role="alert"
+			ng-if="passphrase && profile.type == 'account'">
+			<strong>Not Allowed !</strong> You are not allowed to see this page.
+		</div>
+		<div class="col-md-3"></div>
+	</div>
+	<div id="content" class="index" ng-if="passphrase && profile.type == 'manager'">
+		<div class="col-md-12">
 			<ul class="nav nav-tabs nav-stacked" role="tablist">
 				<li role="presentation" class="active"><a
 					href="#simple_analysis" aria-controls="simple_analysis" role="tab"
@@ -291,13 +337,19 @@
 						a complex analysis</a></li>
 			</ul>
 		</div>
-		<div class="tab-content" ng-if="passphrase">
+		<div class="tab-content">
 			<div role="tabpanel" class="tab-pane active" id="simple_analysis">
 				<section class="col-md-2">
 					<div class="form-group">
 						<legend>Select a measurement : </legend>
 						<div class="sidebar-nav navbar-collapse">
-							<b>Measurand selection :</b>
+							<label>Environment</label> <select
+								class="form-control selectpicker"
+								ng-options="environment.name for environment in env_filter.availableOptions"
+								ng-model="env_filter.selectedOption" title="Environment"
+								ng-change = "refill_experiment()"
+								ng-required="true" required>
+							</select> <b>Measurand selection :</b>
 							<ul class="nav scrollLites" id="selector1">
 								<li ng-repeat="x in measurandlist"><a
 									ng-click="fill_experiment(x.process)">{{x.name}}</a></li>
@@ -328,7 +380,8 @@
 							<div class="form-group">
 								<label for="measurement.data">Name</label> <input type="text"
 									id="measurement.data" class="form-control"
-									ng-model="measurement.data" placeholder="Select a measurement in the tree"
+									ng-model="measurement.data"
+									placeholder="Select a measurement in the tree"
 									ng-required="true" disabled />
 							</div>
 							<div class="form-group">
@@ -353,11 +406,11 @@
 				</section>
 			</div>
 			<div role="tabpanel" class="tab-pane" id="complex_analysis">
+				<section class="col-md-2"></section>
 				<section class="col-md-10">
 					<form class="form" name="form">
 						<fieldset>
 							<legend>Plan an analysis</legend>
-
 							<div class="form-group">
 								<label>Measurand</label> <select
 									class="form-control selectpicker"
@@ -396,8 +449,7 @@
 								<button type="reset" ng-click="clear()" class="btn">
 									<span class="glyphicon glyphicon-erase">&ensp;</span> <strong>Cancel</strong>
 								</button>
-								<button type="submit"
-									ng-click="form.$valid"
+								<button type="submit" ng-click="form.$valid"
 									ng-disabled="form.$invalid" class="btn">
 									<span class="glyphicon glyphicon-send">&ensp;</span> <strong>Send</strong>
 								</button>

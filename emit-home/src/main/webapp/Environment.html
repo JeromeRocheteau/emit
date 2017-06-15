@@ -55,8 +55,6 @@
 										.then(
 												function(success) {
 													$scope.profile = success.data;
-													$scope.firstname = $scope.profile.firstname;
-													$scope.lastname = $scope.profile.lastname;
 												}, function(error) {
 													$scope.profile = null;
 												});
@@ -294,7 +292,10 @@
 	<div class="alert alert-danger" role="alert" ng-if="!passphrase">
 			<strong>No Access !</strong> You have to <a href="./sign-in.html">log in</a> before visualize this page. 
 		</div>
-		<section id="search" class="col-md-4" ng-if="passphrase">
+		<div class="alert alert-danger" role="alert" ng-if="passphrase && profile.type == 'account'">
+			<strong>Not Allowed !</strong> You are not allowed to see this page. 
+		</div>		
+		<section id="search" class="col-md-4" ng-if="passphrase && profile.type == 'manager'">
 			<form class="form" name="form" ng-if="selected">
 				<fieldset>
 					<legend ng-if="creating">Creation of a new Environment</legend>
@@ -329,7 +330,7 @@
 				</fieldset>
 			</form>
 		</section>
-		<section id="results" class="col-md-8" ng-if="passphrase">
+		<section id="results" class="col-md-8" ng-if="passphrase && profile.type == 'manager'">
 			<h2>
 				Environments <small>({{size}} elements)</small>
 			</h2>
