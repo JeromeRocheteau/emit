@@ -6,7 +6,7 @@ import java.util.List;
 import fr.icam.emit.entities.Serie;
 
 
-
+// bonjour
 public class Calculator {
 	
 	private List<Serie> serie;
