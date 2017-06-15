@@ -18,10 +18,18 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="DJS/moment.min.js"></script>
 <script type="text/javascript" src="DJS/moment.fr.js"></script>
-<script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular.min.js"></script>
-<script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular-cookies.min.js"></script>
-<script type="text/javascript" src="https://code.angularjs.org/1.6.3/angular-sanitize.min.js"></script>
-<script type="text/javascript" src="https://code.angularjs.org/1.6.3/i18n/angular-locale_fr-fr.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/angular.min.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/angular-cookies.min.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/angular-sanitize.min.js"></script>
+<script type="text/javascript"
+	src="https://code.angularjs.org/1.6.3/i18n/angular-locale_fr-fr.js"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/ng-csv/0.3.6/ng-csv.js"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/ng-csv/0.3.6/ng-csv.min.js"></script>
 <script type="text/javascript" src="DJS/angular-chart.min.js"></script>
 <script type="text/javascript" src="DJS/rzslider.js"></script>
 <script type="text/javascript" src="DJS/sb-admin-2.js"></script>
@@ -80,7 +88,8 @@
 		return avg;
 	};
 
-	var app = angular.module('app', [ 'chart.js', 'rzModule','ngSanitize','ngCookies']);
+	var app = angular.module('app', [ 'chart.js', 'rzModule', 'ngSanitize',
+			'ngCookies', "ngCsv" ]);
 
 	app.filter('ceil', function() {
 		return function(input) {
@@ -88,16 +97,36 @@
 		};
 	});
 
+	var app = angular.module('app', [ 'chart.js', 'rzModule', 'ngSanitize',
+			'ngCsv', 'ngCookies' ]);
+
 	app
 			.controller(
 					'controller',
 					function($scope, $http, $q, $cookieStore) {
-						
+
+						$scope.env_filter = {
+							availableOptions : [ {
+								uri : '#NONE#',
+								name : '-- ALL --'
+							} ],
+							selectedOption : {
+								uri : '#NONE#',
+								name : '-- ALL --'
+							}
+						};
+						$scope.env_filter.selectedOption = $scope.env_filter.availableOptions[0];
+
+						var clicked_measurand = {
+							process : '#NONE#'
+						};
+
 						$scope.passphrase = $cookieStore.get('passphrase');
 						$scope.logout = function() {
-							$http
-									.post(
-											"http://172.21.50.3:8080/emit-users/revoke?passphrase=" + $scope.passphrase).then(function(success) {
+							$http.post(
+									"http://172.21.50.3:8080/emit-users/revoke?passphrase="
+											+ $scope.passphrase).then(
+									function(success) {
 									}, function(error) {
 									});
 							$cookieStore.remove('passphrase');
@@ -106,20 +135,22 @@
 						$scope.profile = null;
 						var profile = function() {
 							if ($scope.passphrase) {
-								$http
-										.post(
-												"http://172.21.50.3:8080/emit-users/profile?passphrase=" + $scope.passphrase)
-										.then(
-												function(success) {
-													$scope.profile = success.data;
-													$scope.firstname = $scope.profile.firstname;
-													$scope.lastname = $scope.profile.lastname;
-												}, function(error) {
-													$scope.profile = null;
-												});
+								$http.post(
+										"http://172.21.50.3:8080/emit-users/profile?passphrase="
+												+ $scope.passphrase).then(
+										function(success) {
+											$scope.profile = success.data;
+										}, function(error) {
+											$scope.profile = null;
+										});
 							}
 						}
-						
+
+						$scope.filename = "- blank -";
+						$scope.getHeader = function() {
+							return [ "Timestamp", "Data" ]
+						};
+
 						$scope.an_general = ANALYSE.general;
 						$scope.an_analyse = ANALYSE.analyse;
 						$scope.an_total_conso = ANALYSE.total_conso;
@@ -128,15 +159,16 @@
 						$scope.an_std_dev = ANALYSE.std_dev;
 						$scope.loaded = false;
 
-						$scope.retrieve_json = function(data) {
-							console.log(data);
+						$scope.retrieve_json = function(key) {
+							//console.log(key);
+							export_unit = " // Unit = " + key.measure;
 							var retrieved_data = $http.get(
 									"http://172.21.50.3:8080/emit/test/test?file_name="
-											+ data).then(function(success) {
+											+ key.data).then(function(success) {
 								retrieved_json = success.data;
-								console.log("bien vu !");
+								//console.log("bien vu !");
 							}, function(error) {
-								console.log("c'est un échec");
+								//console.log("c'est un échec");
 							});
 
 							$q
@@ -147,7 +179,8 @@
 												var all_ordinate = [];
 
 												$scope.loaded_file = "Loaded file : "
-														+ data;
+														+ key.data;
+												$scope.filename = key.data;
 												$scope.series = [ 'Data',
 														'Minimum', 'Maximum',
 														'Average' ];
@@ -179,6 +212,14 @@
 											});
 						};
 						$scope.refresh_chart = function() {
+							var export_Array = [];
+							export_info = "EXPERIMENT DATA :"
+									+ export_measurand + export_experiment
+									+ export_instrument + export_unit;
+							export_Array.push({
+								a : export_info,
+								b : ""
+							});
 							var abscissa = [];
 							var ordinate = [];
 							var minimum = [];
@@ -195,9 +236,16 @@
 									abscissa[cpt] = retrieved_json[i].x /*/ 1000*/;
 									ordinate[cpt] = retrieved_json[i].y;
 									points[cpt] = retrieved_json[i];
+									/*toFixed(2) permet d'éviter un problème d'export (par exemple 70,00 qui se transforme en 7)*/
+									export_Array.push({
+										a : abscissa[cpt],
+										b : ordinate[cpt].toFixed(2)
+									});
 									cpt++;
 								}
 							}
+							$scope.getArray = export_Array;
+							console.log($scope.getArray);
 
 							//Récupération des données remarquables de la courbe (min,max,moy,écart type, aire sous la courbe)
 							$scope.minimum = Math.min.apply(Math, ordinate
@@ -276,15 +324,26 @@
 							return name;
 						}
 
+						$scope.retrive_environment_name = function(uri) {
+							var name = "";
+							angular.forEach($scope.environmentlist, function(
+									value) {
+								if (uri == value.uri) {
+									name = value.name;
+								}
+							});
+							return name;
+						}
+
 						$scope.fill_measurement = function(key) {
-							//console.log(key);
+							export_instrument = "// Instrument = " + key.name;
 							$scope.measurementlist = [];
 							$http
 									.get(
 											"http://172.21.50.3:8080/emit/measurement/list",
 											{
 												"params" : {
-													"fkey" : key
+													"fkey" : key.id
 												}
 											})
 									.then(
@@ -317,14 +376,21 @@
 							var i = 0;
 							$scope.measurementlist = [];
 							$scope.measurementsetlist = [];
+							export_experiment = " // Started = "
+									+ key.started
+									+ " // Stopped = "
+									+ key.stopped
+									+ " // Environment = "
+									+ $scope
+											.retrive_environment_name(key.environment);
 							//console.log("je suis bien actif");
-							//console.log(key);
+							//console.log(key.id);
 							$http
 									.get(
 											"http://172.21.50.3:8080/emit/measurementSet/list",
 											{
 												"params" : {
-													"fkey" : key
+													"fkey" : key.id
 												}
 											})
 									.then(
@@ -362,7 +428,19 @@
 											});
 						}
 
+						$scope.refill_experiment = function() {
+							//console.log(clicked_measurand);
+							if (clicked_measurand.process != "#NONE#") {
+								//console.log('if');
+								$scope.fill_experiment(clicked_measurand);
+							} else {
+								//console.log('else');								
+							}
+						}
+
 						$scope.fill_experiment = function(key) {
+							clicked_measurand = key;
+							export_measurand = " // Measurand = " + key.name;
 							$scope.measurementsetlist = [];
 							$scope.measurementlist = [];
 							$http
@@ -370,12 +448,42 @@
 											"http://172.21.50.3:8080/emit/experiment/list",
 											{
 												"params" : {
-													"fkey" : key
+													"fkey" : key.process
 												}
 											})
 									.then(
 											function(success) {
 												$scope.experimentlist = success.data;
+												if ($scope.env_filter.selectedOption.uri != "#NONE#") {
+													var to_delete = [];
+													angular
+															.forEach(
+																	$scope.experimentlist,
+																	function(
+																			value,
+																			key) {
+																		/*Les index des expériences n'ayant le même environnement que celui choisi sont mis dans une liste*/
+																		if (value.environment != $scope.env_filter.selectedOption.uri) {
+																			//console.log(value.environment != $scope.env_filter.selectedOption.uri);
+																			to_delete
+																					.push(key);
+																		}
+																	});
+													/*On inverse la liste d'index à supprimer (parcourir les index dans l'ordre décroissant)*/
+													to_delete.reverse();
+													/*Suppression des valeurs dans la liste d'expériment*/
+													angular
+															.forEach(
+																	to_delete,
+																	function(
+																			value,
+																			key) {
+																		$scope.experimentlist
+																				.splice(
+																						value,
+																						1);
+																	});
+												}
 												$(function() {
 													var ins = $(
 															"#selector2 li a")
@@ -429,6 +537,14 @@
 												$scope.experimentlist = values[0].data;
 												$scope.instrumentlist = values[1].data;
 												$scope.environmentlist = values[2].data;
+												angular
+														.forEach(
+																values[2].data,
+																function(value,
+																		key) {
+																	$scope.env_filter.availableOptions
+																			.push(value);
+																});
 												$scope.measurelist = values[3].data;
 												$scope.measurementlist = values[4].data;
 												$scope.measurandlist = values[5].data;
@@ -453,7 +569,7 @@
 												});
 											});
 						}
-						
+
 						profile();
 						$scope.refresh();
 
@@ -495,41 +611,60 @@
 						<ul class="dropdown-menu">
 							<li class="dropdown-header" ng-if="profile">{{profile.firstname}}
 								{{profile.lastname}}</li>
-							<li ng-if="passphrase"><a href="./settings.html""><span class="glyphicon glyphicon-cog">&ensp;</span> Parameters</a></li>
+							<li ng-if="passphrase"><a href="./settings.html""><span
+									class="glyphicon glyphicon-cog">&ensp;</span> Parameters</a></li>
 							<li ng-if="passphrase"><a href="./index.html"
-								ng-click="logout()"><span class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
-							<li ng-if="!passphrase"><a href="./sign-in.html"><span class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
-							<li ng-if="!passphrase"><a href="./sign-up.html"><span class="glyphicon glyphicon-edit">&ensp;</span> Register</a></li>
+								ng-click="logout()"><span
+									class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
+							<li ng-if="!passphrase"><a href="./sign-in.html"><span
+									class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
+							<li ng-if="!passphrase"><a href="./sign-up.html"><span
+									class="glyphicon glyphicon-edit">&ensp;</span> Register</a></li>
 						</ul></li>
 				</ul>
 			</div>
 		</div>
 	</header>
-	<div id="content" class="index">
+	<div id="content" class="container"
+		ng-if="!passphrase || (passphrase && profile.type == 'account')">
+		<div class="col-md-3"></div>
+		<div class="alert alert-danger" role="alert" ng-if="!passphrase">
+			<strong>No Access !</strong> You have to <a href="./sign-in.html">log
+				in</a> before visualize this page.
+		</div>
+		<div class="col-md-3"></div>
+	</div>
+
+	<div id="content" class="index" ng-if="passphrase">
 		<section class="col-md-2">
 			<div class="form-group">
 				<legend>Load a file : </legend>
 				<div class="sidebar-nav navbar-collapse">
-					<b>Measurand selection :</b>
+					<label>Environment</label> <select
+						class="form-control selectpicker"
+						ng-options="environment.name for environment in env_filter.availableOptions"
+						ng-model="env_filter.selectedOption" title="Environment"
+						ng-change="refill_experiment()" ng-required="true" required>
+					</select> <b>Measurand selection :</b>
 					<ul class="nav scrollLites" id="selector1">
 						<li ng-repeat="x in measurandlist"><a
-							ng-click="fill_experiment(x.process)">{{x.name}}</a></li>
+							ng-click="fill_experiment(x)">{{x.name}}</a></li>
 					</ul>
 					<b>Experiment selection :</b>
 					<ul class="nav scrollLites" id="selector2">
 						<li ng-repeat="x in experimentlist"><a
-							ng-click="fill_measurementset(x.id)">{{x.started |
+							ng-click="fill_measurementset(x)">{{x.started |
 								date:"MM/dd/yyyy 'at' h:mma"}}</a></li>
 					</ul>
 					<b>Measurementset selection :</b>
 					<ul class="nav scrollLites" id="selector3">
 						<li ng-repeat="x in measurementsetlist"><a
-							ng-click="fill_measurement(x.id)">{{x.name}}</a></li>
+							ng-click="fill_measurement(x)">{{x.name}}</a></li>
 					</ul>
 					<b>Measurement selection :</b>
 					<ul class="nav scrollLites" id="selector4">
 						<li ng-repeat="x in measurementlist"><a
-							ng-click="retrieve_json(x.data)">{{x.measure}}</a></li>
+							ng-click="retrieve_json(x)">{{x.measure}}</a></li>
 					</ul>
 				</div>
 			</div>
@@ -537,7 +672,14 @@
 		<section class="col-md-10">
 			<div class="form-group" ng-if="loaded">
 				<fieldset>
-					<legend ng-model="loaded_file"> {{ loaded_file }} </legend>
+					<legend ng-model="loaded_file">
+						{{ loaded_file }}
+						<button class="btn btn-default" ng-csv="getArray"
+							csv-header="getHeader()" filename="{{ filename }}.csv"
+							field-separator="," decimal-separator=".">
+							<span class="glyphicon glyphicon-save">&ensp;</span>Export to CSV
+						</button>
+					</legend>
 					<canvas id="line" class="chart chart-line" chart-data="data"
 						chart-labels="labels" chart-series="series"
 						chart-options="options" chart-dataset-override="datasetOverride"

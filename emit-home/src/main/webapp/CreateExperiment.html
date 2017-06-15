@@ -39,6 +39,7 @@
 							$cookieStore.remove('passphrase');
 							$scope.passphrase = null;
 						}
+						
 						$scope.profile = null;
 						var profile = function() {
 							if ($scope.passphrase) {
@@ -47,35 +48,53 @@
 												"http://172.21.50.3:8080/emit-users/profile?passphrase=" + $scope.passphrase)
 										.then(
 												function(success) {
-													console.log(success);
 													$scope.profile = success.data;
-													$scope.firstname = $scope.profile.firstname;
-													$scope.lastname = $scope.profile.lastname;
 												}, function(error) {
-													console.log(error);
 													$scope.profile = null;
 												});
 							}
 						}
 						
-						$http
-								.get(
-										"http://172.21.50.3:8080/emit/environment/list")
+						$scope.measurands = {
+							availableOptions: [],
+				            selectedOption: {}
+				        }
+						
+						$scope.environments = {
+							availableOptions: [],
+				            selectedOption: {}
+				        }
+						
+						$scope.instruments = {
+							availableOptions: [],
+				            selectedOption: {}
+			        	}
+						
+						$http.get(
+								"http://172.21.50.3:8080/emit/environment/list")
 								.then(function(response) {
-									$scope.environments = response.data;
+									//$scope.environments = response.data;																
+									angular.forEach(response.data, function(value, key) {
+										$scope.environments.availableOptions.push(value);
+									});
 								});
 
-						$http
-								.get(
-										"http://172.21.50.3:8080/emit/measurand/list")
+						$http.get(
+								"http://172.21.50.3:8080/emit/measurand/list")
 								.then(function(response) {
-									$scope.measurands = response.data;
+									//$scope.measurands = response.data;
+									angular.forEach(response.data, function(value, key) {
+										$scope.measurands.availableOptions.push(value);
+									});
 								});
 
 						$http.get(
 								"http://172.21.50.3:8080/emit/instrument/list")
 								.then(function(response) {
-									$scope.instruments = response.data;
+									//$scope.instruments = response.data;
+									angular.forEach(response.data, function(value, key) {
+										$scope.instruments.availableOptions.push(value);
+									});
 								});
 
 						$scope.create = function() {
@@ -84,28 +103,26 @@
 								started : today.getTime(),
 								stopped : null,
 								measurand : {
-									process : $scope.measurand_selection.process
+									process : $scope.measurands.selectedOption.process
 								},
-								environment : $scope.environment_selection.uri
+								environment : $scope.environments.selectedOption.uri
 							};
 
-							$http
-									.post(
-											"http://172.21.50.3:8080/emit/experiment/create",
-											experiment_data)
+							$http.post(
+										"http://172.21.50.3:8080/emit/experiment/create",
+										experiment_data)
 									.then(
 											function(response) {
 
-												$http
-														.get(
-																"http://172.21.50.3:8080/emit/experiment/last")
+												$http.get(
+														"http://172.21.50.3:8080/emit/experiment/last")
 														.then(
 																function(
 																		response) {
 																	$scope.last_experiment = response.data;
 																	angular
 																			.forEach(
-																					$scope.instrument_selection,
+																					$scope.instruments.selectedOption,
 																					function(
 																							value,
 																							key) {
@@ -131,7 +148,7 @@
 																});
 											});
 
-						};
+						}
 
 						$scope.clear = function() {
 							$scope.id = null;
@@ -193,19 +210,21 @@
 		</div>
 	</header>
 	<div id="content" class="container">
-	
 		<div class="col-md-3"></div>
 		<div class="alert alert-danger" role="alert" ng-if="!passphrase">
 			<strong>No Access !</strong> You have to <a href="./sign-in.html">log in</a> before visualize this page. 
+		</div>
+		<div class="alert alert-danger" role="alert" ng-if="passphrase && profile.type == 'account'">
+			<strong>Not Allowed !</strong> You are not allowed to see this page. 
 		</div>		
-		<div class="col-md-6" ng-if="passphrase">
+		<div class="col-md-6" ng-if="passphrase && profile.type == 'manager'">
 			<form class="form" name="form">
 				<fieldset>
 					<legend>Plan an experiment</legend>
 					<div class="form-group">
 						<label>Measurand</label> <select class="form-control selectpicker"
-							ng-options="measurand.name for measurand in measurands"
-							ng-model="measurand_selection" title="Measurand"
+							ng-options="measurand.name for measurand in measurands.availableOptions"
+							ng-model="measurands.selectedOption" title="Measurand"
 							ng-required="true" required>
 							<option value="" disabled>-- choose a measurand --</option>
 						</select>
@@ -213,8 +232,8 @@
 					<div class="form-group">
 						<label>Environment</label> <select
 							class="form-control selectpicker"
-							ng-options="environment.name for environment in environments"
-							ng-model="environment_selection" title="Environment"
+							ng-options="environment.name for environment in environments.availableOptions"
+							ng-model="environments.selectedOption" title="Environment"
 							ng-required="true" required>
 							<option value="" disabled>-- choose an environment --</option>
 						</select>
@@ -222,8 +241,8 @@
 					<div class="form-group">
 						<label>Instrument</label> <select size="8"
 							class="form-control selectpicker"
-							ng-options="instrument.name for instrument in instruments"
-							ng-model="instrument_selection" title="instrument"
+							ng-options="instrument.name for instrument in instruments.availableOptions"
+							ng-model="instruments.selectedOption" title="Instrument"
 							ng-required="true" required multiple>
 						</select>
 					</div>
@@ -231,7 +250,7 @@
 						<button type="reset" ng-click="clear()" class="btn">
 							<span class="glyphicon glyphicon-erase">&ensp;</span> <strong>Cancel</strong>
 						</button>
-						<button type="submit" ng-click="form.$valid && create(instrument_selection)" ng-disabled="form.$invalid" class="btn">
+						<button type="submit" ng-click="form.$valid && create(instruments.selectedOption)" ng-disabled="form.$invalid" class="btn">
 							<span class="glyphicon glyphicon-send">&ensp;</span> <strong>Send</strong>
 						</button>
 					</div>
