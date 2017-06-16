@@ -32,6 +32,7 @@ public class SimpleResultCreate extends JdbcUpdateServlet<Boolean>{
 		statement.setString(2,result.getMeasure());
 		
 		File_handler file_handler = new File_handler();
+		Thread.sleep(50);
 		String file_name = "Context-"+this.retourner_date()+".txt";
 		file_handler.write_file(file_name,result.getContext());		
 		statement.setString(3,file_name);

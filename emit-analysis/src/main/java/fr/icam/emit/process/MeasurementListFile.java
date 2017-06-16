@@ -14,14 +14,15 @@ import com.github.jeromerocheteau.JdbcQueryServlet;
 
 import fr.icam.emit.entities.Measurement;
 
-public class MeasurementListFile {
+public class MeasurementListFile extends JdbcQueryServlet<List<Measurement>> {
 	
-	public class MeasurementList extends JdbcQueryServlet<List<Measurement>> {
+
 
 		private static final long serialVersionUID = 201703011438L;
 
 		@Override
 		protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
+			 //String fkey = request.getParameter("context"); 
 			 String fkey = (String) request.getAttribute("context");
 	         statement.setString(1,fkey);
 		}
@@ -44,9 +45,9 @@ public class MeasurementListFile {
 			
 			List<Measurement> measurements = this.doProcess(request);
 			request.setAttribute("measurements", measurements);
-	        //this.doWrite(measurements, response.getWriter());
+	        this.doWrite(measurements, response.getWriter());
 		}
 
-	}
+	
 
 }

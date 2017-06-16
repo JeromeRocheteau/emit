@@ -44,6 +44,7 @@ HttpServletResponse responsebis;
 		List<Measurement> measurement = (List<Measurement>) request.getAttribute("measurement");
 		
 		File_handler file_handler = new File_handler();
+		
 		String file_name = "Context-"+this.retourner_date()+".txt";
 		
 		String context = "";
