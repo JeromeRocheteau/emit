@@ -6,8 +6,12 @@ L'image suivante donne un aperçu de l'installation physique de la plate-forme. 
 
 [![Design EMIT.jpg](https://s1.postimg.org/rqxo6fudb/Design_EMIT.jpg)](https://postimg.org/image/p9lwz6agr/)
 
+La documentation relative à EMIT est disponible en suivant ce lien : https://github.com/JeromeRocheteau/emit/wiki
+
+***
+
 Cette plate-forme s'inscrit dans un projet européen de recherche sur l'ingénierie logicielle visant à augmenter la qualité et l'efficacité des logiciels tout en réduisant leurs coûts et le time-to-market. Ce travail passe par la mise en place d'outils de collecte automatisés et continus sur des métriques définies par ce même projet. Les données ainsi récoltées seront utilisées par des outils d'analyse qui fourniront des indicateurs précieux pour le management de projet de l'ingénierie logicielle. 
 
-Pour plus d'informations sur le projet MEASURE : Documentation : http://measure.softeam-rd.eu/
+[![Logo Measure.png](https://s21.postimg.org/4xyesai5j/Logo_Measure.png)](https://postimg.org/image/qx4tfhyzn/)
 
-La documentation relative à EMIT est disponible en suivant ce lien : https://github.com/JeromeRocheteau/emit/wiki
+Pour plus d'informations sur le projet MEASURE : Documentation : http://measure.softeam-rd.eu/
