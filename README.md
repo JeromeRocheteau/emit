@@ -14,4 +14,4 @@ Cette plate-forme s'inscrit dans un projet européen de recherche sur l'ingénie
 
 [![Logo Measure.png](https://s21.postimg.org/4xyesai5j/Logo_Measure.png)](https://postimg.org/image/qx4tfhyzn/)
 
-Pour plus d'informations sur le projet MEASURE : Documentation : http://measure.softeam-rd.eu/
+Pour plus d'informations sur le projet MEASURE : http://measure.softeam-rd.eu/
