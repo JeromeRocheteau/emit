@@ -32,7 +32,8 @@ public class MeasurementList extends JdbcQueryServlet<List<Measurement>> {
             String data = resultSet.getString("data");
             String name = resultSet.getString("measure");
             int measurementSetId = resultSet.getInt("measurementset");
-            measurements.add(new Measurement(id, measurementSetId,data, name));
+            int featureID = resultSet.getInt("feature");
+            measurements.add(new Measurement(id, measurementSetId,data, name,featureID));
         }
         return measurements;
 	}

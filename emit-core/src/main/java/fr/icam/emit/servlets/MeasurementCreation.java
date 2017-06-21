@@ -30,6 +30,8 @@ private static final long serialVersionUID = 201703071443L;
 		statement.setString(1, measurement.getData());
 		statement.setLong(2, measurement.getMeasurementSet());
 		statement.setString(3, measurement.getMeasure());
+		statement.setLong(4, measurement.getFeature());
+		
 		/*
 		statement.setString(1, "emit-1493730523049.json");
 		statement.setLong(2, 22);

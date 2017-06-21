@@ -66,6 +66,11 @@ public class ExperimentLaunch extends JdbcServlet {
 			Experiment experiment_end = new Experiment(experiment.get(0).getExperiment().getId(),null,this.retourner_date(),null,"");
 			request.setAttribute("experiment",experiment_end );
 			this.doCall(request, response, "experiment-update");
+		}else{
+			Experiment experiment_end = new Experiment(experiment.get(0).getExperiment().getId(),null,(long)0,null,"");
+			request.setAttribute("experiment",experiment_end );
+			this.doCall(request, response, "experiment-update");
+			
 		}
 	};
 	
@@ -116,7 +121,7 @@ public class ExperimentLaunch extends JdbcServlet {
 	
 	public boolean check_tools(Launcher launcher, String command) throws Exception{
 		boolean launch = false;
-		// je ne sais pas comment intéger les commandes de la base de donnée
+		
 		launch = launcher.canLaunch(command);
 		
 		/*

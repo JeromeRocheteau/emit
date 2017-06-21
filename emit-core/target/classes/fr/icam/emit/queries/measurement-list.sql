@@ -2,6 +2,7 @@ select
   id,
   data,
   measurementset,
-  measure
+  measure,
+  feature
 from measurements
 where measurementset =?; 

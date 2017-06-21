@@ -58,7 +58,7 @@ public class MeasurementSetLaunch extends JdbcServlet {
 			String file_name = "emit-"+this.retourner_date()+".json";
 			//response.getWriter().write(json);
 			file_handler.write_file(file_name, json);
-			Measurement measurement = new Measurement(0,measurementSet.get(i).getId(),file_name,measurementSet.get(i).getFeature().getMeasure());
+			Measurement measurement = new Measurement(0,measurementSet.get(i).getId(),file_name,measurementSet.get(i).getFeature().getMeasure(),measurementSet.get(i).getFeature().getId());
 			request.setAttribute("measurement", measurement);
 			this.doWrite(measurement, response.getWriter());
 			this.doCall(request, response, "measurement-create");
