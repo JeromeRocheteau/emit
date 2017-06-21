@@ -76,7 +76,7 @@ public class ExperimentLaunch extends JdbcServlet {
 	
 	
 	public List<MeasurementSet> execut_measure(List<Experiment_plan> experiment,Launcher launcher,HttpServletResponse response, String command,String... parameter) throws Exception{
-		//liste des instrument
+		//liste des instrument 
 		List<Meter> instruments = new ArrayList<Meter>();
 		//liste des resulats (sous forme de MeasurementSet)
 		List<MeasurementSet> measurementSets = new ArrayList<MeasurementSet>();
