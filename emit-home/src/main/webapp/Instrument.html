@@ -45,6 +45,7 @@
 									});
 							$cookieStore.remove('passphrase');
 							$scope.passphrase = null;
+							$window.open("http://172.21.50.3:8080/emit-home/index.html","_self");
 						}
 						$scope.profile = null;
 						var profile = function() {
@@ -61,6 +62,25 @@
 							}
 						}
 						
+						$scope.factors = {
+							availableOptions: [{value : 12,name : "12 tera"},
+							                   {value : 9,name : "9 giga"},
+							                   {value : 6,name : "6 mega"},
+							                   {value : 3, name : "3 kilo"},
+							                   {value : 2, name : "2 hecto"},
+							                   {value : 1,name : "1 deka"},
+							                   {value : 0,name : "no factor"},
+							                   {value : -1,name : "-1 deci"},
+							                   {value : -2,name : "-2 centi"},
+							                   {value : -3,name : "-3 milli"},
+							                   {value : -6,name : "-6 micro"},
+							                   {value : -9,name : "-9 nano"},
+							                   {value : -12,name : "-12 pico"}],
+				            selectedOption: {}
+				        }
+						
+						$scope.factors.selectedOption = $scope.factors.availableOptions[6];
+					
 						$http
 								.get(
 										"http://172.21.50.3:8080/emit/measurementSet/list")
@@ -99,9 +119,8 @@
 							$scope.measure_selection = [];
 							$scope.selected_measure = [];
 							$scope.features = [];
-							$scope.feature.factor = 0;
 							$scope.feature.name = "";
-							$scope.feature.no_order = 0;
+							$scope.feature.no_order = 1;
 						}
 						$scope.clean = function() {
 							init();
@@ -417,9 +436,11 @@
 								var data = {
 									name : $scope.feature.name,
 									no_order : $scope.feature.no_order,
-									factor : $scope.feature.factor,
+									factor : $scope.factors.selectedOption.value,
 									measure : selected_measure.name
 								};
+								/* factor : $scope.feature.factor, */
+								
 								//console.log(data);
 								//console.log("no_order --> "	+ $scope.feature.no_order);
 								$scope.features.push(data);
@@ -449,9 +470,9 @@
 		<div class="navbar navbar-default navbar-custom navbar-static-top"
 			id="navigation_barre">
 			<div class="container">
-				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
+				<a href="./home.html" class="navbar-brand" id="titre_appli">EMIT</a>
 				<ul id="menu">
-					<li class="active primaire"><a href="./index.html"
+					<li class="active primaire"><a href="./home.html"
 						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
 							Home</a></li>
 
@@ -484,7 +505,7 @@
 							<li ng-if="passphrase"><a href="./settings.html""><span class="glyphicon glyphicon-cog">&ensp;</span> Parameters</a></li>
 							<li ng-if="passphrase"><a href="./index.html"
 								ng-click="logout()"><span class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
-							<li ng-if="!passphrase"><a href="./sign-in.html"><span class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
+							<li ng-if="!passphrase"><a href="./index.html"><span class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
 							<li ng-if="!passphrase"><a href="./sign-up.html"><span class="glyphicon glyphicon-edit">&ensp;</span> Register</a></li>
 						</ul></li>
 				</ul>
@@ -533,6 +554,19 @@
 						</select>
 					</div>
 					<div class="form-group">
+						<label>Factor</label> <select
+							class="form-control selectpicker"
+							ng-options="factor.name for factor in factors.availableOptions"
+							ng-model="factors.selectedOption" title="Factor"
+							ng-required="true" required>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="feature.no_order">Column order</label><input
+						id="feature.no_order" class="form-control" type="number"
+						ng-model="feature.no_order" title="Order" min="1" value="1">
+					</div>
+					<!-- <div class="form-group">
 						<label for="feature.factor">Factor</label> <select
 							id="feature.factor" class="form-control"
 							ng-model="feature.factor" title="Factor">
@@ -550,12 +584,8 @@
 							<option value="-9" label="- 9 = nano">
 							<option value="-12" label="- 12 = pico">
 						</select>
-						<div class="form-group">
-							<label for="feature.no_order">Column order</label><input
-								id="feature.no_order" class="form-control" type="number"
-								ng-model="feature.no_order" title="Order" value="1" min="1">
-						</div>
-					</div>
+						
+					</div> -->
 					<div class="form-group">
 						<button type="button" class="btn btn-default"
 							ng-click="add_feature(selected_measure)">
