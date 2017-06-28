@@ -40,9 +40,31 @@
 			availableOptions: [
 				{uri: '#NONE#', name: '-- ALL --'}
            	],
-            selectedOption: {uri: '#NONE#', name: '-- ALL --'}
+            selectedOption: {}
         };
 		$scope.env_filter.selectedOption = $scope.env_filter.availableOptions[0];
+		
+		$scope.analyses = {
+			availableOptions: [],
+            selectedOption: {}
+       	};
+
+		$scope.features = {
+				availableOptions: [],
+	            selectedOption: {}
+	       	};
+		
+		$scope.environments = {
+				availableOptions: [],
+	            selectedOption: {}
+	       	};
+		
+		$scope.measurands = {
+				availableOptions: [],
+	            selectedOption: {}
+	       	};
+		
+		console.log($scope.analyses);
 		
 		var clicked_measurand = "";
 		
@@ -55,6 +77,7 @@
 			});
 			$cookieStore.remove('passphrase');
 			$scope.passphrase = null;
+			$window.open("http://172.21.50.3:8080/emit-home/index.html","_self");
 		}
 		$scope.profile = null;
 		var profile = function() {
@@ -217,14 +240,24 @@
 						//console.log($scope.env_filter);
 						angular.forEach(values[2].data, function(value, key) {
 							$scope.env_filter.availableOptions.push(value);
+							$scope.environments.availableOptions.push(value);
 						});
 						//console.log($scope.env_filter);
 						$scope.measurelist = values[3].data;
 						$scope.measurementlist = values[4].data;
 						$scope.measurandlist = values[5].data;
+						angular.forEach(values[5].data, function(value, key) {
+							$scope.measurands.availableOptions.push(value);
+						});
 						$scope.measurementsetlist = values[6].data;
-						$scope.analyses = values[7].data;
+						angular.forEach(values[7].data, function(value, key) {
+							$scope.analyses.availableOptions.push(value);
+						});
+						console.log($scope.analyses);
 						$scope.featurelist = values[8].data;
+						angular.forEach(values[8].data, function(value, key) {
+							$scope.features.availableOptions.push(value);
+						});
 						//réalisation des opérations souaitées
 						$(function() {
 							var ins = $("#selector1 li a").on("click",
@@ -237,14 +270,21 @@
 
 		}
 
-		$scope.create = function() {
-			angular.forEach($scope.analysis_selection, function(value, key) {
+		$scope.fill_input = function(measurement) {
+			$scope.measurement = measurement;
+		}
+		
+		$scope.create_simple = function() {
+			console.log($scope.analyses.selectedOption);
+			angular.forEach($scope.analyses.selectedOption, function(value, key) {
 				var result_data = {
-					measurement : $scope.measurement.id,
-					analysis : value.url
+					context : $scope.measurement.id,
+					measure : $scope.measurement.measure,
+					analysis : value.url,
+					condition : "this is a test"
 				};
-				//console.log(result_data);
-				$http.post("http://172.21.50.3:8080/emit/result/create",
+				console.log(result_data);
+				$http.post("http://172.21.50.3:8080/analysis/algorithm/SimpleResultCreate",
 						result_data).then(function(success) {
 					//console.log("c'est créé !");
 				}, function(error) {
@@ -252,10 +292,26 @@
 				});
 			});
 		};
-
-		$scope.fill_input = function(measurement) {
-			$scope.measurement = measurement;
-		}
+		
+		$scope.create_complex = function() {
+			angular.forEach($scope.analyses.selectedOption, function(value, key) {
+				var result_data = {
+					measure : $scope.features.selectedOption.measure,
+					analysis : value.url,
+					measurand : $scope.measurands.selectedOption.process,
+					environment : $scope.environments.selectedOption.uri,
+					features : $scope.features.selectedOption.id,
+					condition : "this is another test"
+				};
+				console.log(result_data);
+				$http.post("http://172.21.50.3:8080/analysis/algorithm/ComplexeResultCreate",
+						result_data).then(function(success) {
+					//console.log("c'est créé !");
+				}, function(error) {
+					//console.log("oooooops !");
+				});
+			});
+		};
 
 		profile();
 		$scope.refresh();
@@ -267,9 +323,9 @@
 		<div class="navbar navbar-default navbar-custom navbar-static-top"
 			id="navigation_barre">
 			<div class="container">
-				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
+				<a href="./home.html" class="navbar-brand" id="titre_appli">EMIT</a>
 				<ul id="menu">
-					<li class="active primaire"><a href="./index.html"
+					<li class="active primaire"><a href="./home.html"
 						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
 							Home</a></li>
 
@@ -304,7 +360,7 @@
 							<li ng-if="passphrase"><a href="./index.html"
 								ng-click="logout()"><span
 									class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
-							<li ng-if="!passphrase"><a href="./sign-in.html"><span
+							<li ng-if="!passphrase"><a href="./index.html"><span
 									class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
 							<li ng-if="!passphrase"><a href="./sign-up.html"><span
 									class="glyphicon glyphicon-edit">&ensp;</span> Register</a></li>
@@ -387,8 +443,8 @@
 							<div class="form-group">
 								<label>Analysis</label> <select size="8"
 									class="form-control selectpicker"
-									ng-options="one_analysis.name for one_analysis in analyses"
-									ng-model="analysis_selection" title="Analysis"
+									ng-options="one_analysis.name for one_analysis in analyses.availableOptions"
+									ng-model="analyses.selectedOption" title="Analysis"
 									ng-required="true" required multiple>
 								</select>
 							</div>
@@ -397,7 +453,7 @@
 									<span class="glyphicon glyphicon-erase">&ensp;</span> <strong>Cancel</strong>
 								</button>
 								<button type="submit" class="btn"
-									ng-click="form.$valid && create()" ng-disabled="form.$invalid">
+									ng-click="create_simple()">
 									<strong>Send</strong>
 								</button>
 							</div>
@@ -414,8 +470,8 @@
 							<div class="form-group">
 								<label>Measurand</label> <select
 									class="form-control selectpicker"
-									ng-options="measurand.name for measurand in measurandlist"
-									ng-model="measurand_selection" title="Measurand"
+									ng-options="measurand.name for measurand in measurands.availableOptions"
+									ng-model="measurands.selectedOption" title="Measurand"
 									ng-required="true" required>
 									<option value="" disabled>-- choose a measurand --</option>
 								</select>
@@ -423,8 +479,8 @@
 							<div class="form-group">
 								<label>Environment</label> <select
 									class="form-control selectpicker"
-									ng-options="environment.name for environment in environmentlist"
-									ng-model="environment_selection" title="Environment"
+									ng-options="environment.name for environment in environments.availableOptions"
+									ng-model="environments.selectedOption" title="Environment"
 									ng-required="true" required>
 									<option value="" disabled>-- choose an environment --</option>
 								</select>
@@ -432,7 +488,7 @@
 							<div class="form-group">
 								<label>Feature</label> <select class="form-control selectpicker"
 									ng-options="feature.name for feature in featurelist"
-									ng-model="feature_selection" title="Feature" ng-required="true"
+									ng-model="features.selectedOption" title="Feature" ng-required="true"
 									required>
 									<option value="" disabled>-- choose a feature --</option>
 								</select>
@@ -440,8 +496,8 @@
 							<div class="form-group">
 								<label>Analysis</label> <select size="8"
 									class="form-control selectpicker"
-									ng-options="one_analysis.name for one_analysis in analyses"
-									ng-model="analysis_selection" title="Analysis"
+									ng-options="analysis.name for analysis in analyses.availableOptions"
+									ng-model="analyses.selectedOption" title="Analysis"
 									ng-required="true" required multiple>
 								</select>
 							</div>
@@ -449,7 +505,7 @@
 								<button type="reset" ng-click="clear()" class="btn">
 									<span class="glyphicon glyphicon-erase">&ensp;</span> <strong>Cancel</strong>
 								</button>
-								<button type="submit" ng-click="form.$valid"
+								<button type="submit" ng-click="create_complex()"
 									ng-disabled="form.$invalid" class="btn">
 									<span class="glyphicon glyphicon-send">&ensp;</span> <strong>Send</strong>
 								</button>

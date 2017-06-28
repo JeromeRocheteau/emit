@@ -1,0 +1,1 @@
+insert into cookie (passphrase,username,issued) values (?,?,now());

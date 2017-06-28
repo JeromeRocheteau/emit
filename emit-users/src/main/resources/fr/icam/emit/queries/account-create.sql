@@ -1,0 +1,1 @@
+insert into account (username,password) values (?,?);

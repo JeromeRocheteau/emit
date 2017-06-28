@@ -43,6 +43,7 @@
 									});
 							$cookieStore.remove('passphrase');
 							$scope.passphrase = null;
+							$window.open("http://172.21.50.3:8080/emit-home/index.html","_self");
 						}
 						$scope.profile = null;
 						var profile = function() {
@@ -73,7 +74,7 @@
 						  		$http({method:'POST',url:'/emit-users/register',data:message,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
 							  	.then(function onSuccess(response) {
 							  		alert("Inscription confirmed !");
-							  		$window.open("./sign-in.html","_self");
+							  		$window.open("./index.html","_self");
 						  	  	},function onError(response) {
 						  	  		alert("An error occured during your inscription !");
 						  	  	});
@@ -100,7 +101,7 @@
 			<div class="container">
 				<a href="./index.html" class="navbar-brand" id="titre_appli">EMIT</a>
 				<ul id="menu">
-					<li class="active primaire"><a href="./index.html"
+					<!-- <li class="active primaire"><a href="./home.html"
 						class="primaire"><span class="glyphicon glyphicon-home">&ensp;</span>
 							Home</a></li>
 
@@ -121,7 +122,7 @@
 							experiment</a></li>
 					<li class="active primaire"><a href="./CreateAnalysis.html"
 						class="primaire"><span class="glyphicon glyphicon-tasks">&ensp;</span>
-							Plan analysis</a></li>
+							Plan analysis</a></li> -->
 					<li class="dropdown primaire"><a href="#"
 						class="dropdown-toggle primaire" data-toggle="dropdown"
 						role="button" aria-expanded="false"><span
@@ -134,7 +135,7 @@
 							<li ng-if="passphrase"><a href="./index.html"
 								ng-click="logout()"><span
 									class="glyphicon glyphicon-log-out">&ensp;</span> Log out</a></li>
-							<li ng-if="!passphrase"><a href="./sign-in.html"><span
+							<li ng-if="!passphrase"><a href="./index.html"><span
 									class="glyphicon glyphicon-log-in">&ensp;</span> Log in</a></li>
 							<li ng-if="!passphrase"><a href="./sign-up.html"><span class="glyphicon glyphicon-edit">&ensp;</span> Register</a></li>
 						</ul></li>
