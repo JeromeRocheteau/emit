@@ -1,3 +1,3 @@
-update result 
-set value=?,  
+update results 
+set value=?  
 where id=?;

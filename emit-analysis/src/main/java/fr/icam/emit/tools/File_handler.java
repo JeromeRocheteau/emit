@@ -1,6 +1,7 @@
 package fr.icam.emit.tools;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -43,6 +44,13 @@ public File_handler(){
 		
 		return content;
 		
+	}
+	
+	public boolean check_file_existance(String file_name){
+		boolean exist = false;
+		File file = new File("/var/lib/emit/"+file_name);
+		exist = file.exists();
+		return exist;
 	}
 
 }

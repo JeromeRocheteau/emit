@@ -43,7 +43,7 @@ public class ArduinoMetaServlet extends ArduinoServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
 			OutputStream out = response.getOutputStream();
-			mapper.writeValue(out, features);
+			mapper.writeValue(out, features);			
 			out.flush();
 		} catch (Exception e) {
 			e.printStackTrace();

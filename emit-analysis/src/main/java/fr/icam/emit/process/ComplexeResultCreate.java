@@ -46,6 +46,11 @@ HttpServletResponse responsebis;
 		File_handler file_handler = new File_handler();
 		
 		String file_name = "Context-"+this.retourner_date()+".txt";
+		//vérifer que le fichier est bien unique et qu'il nb'y en a pas un autre de créé
+		while (file_handler.check_file_existance(file_name)){
+			Thread.sleep(50);
+			file_name = "Context-"+this.retourner_date()+".txt";
+		};
 		
 		String context = "";
 		for (int i = 0;i<measurement.size()-1;i++){

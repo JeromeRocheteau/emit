@@ -26,6 +26,7 @@ public class ResultUnprocessed  extends JdbcQueryServlet<List<Result>> {
 		List<Result> result_plan = this.doProcess(request);
 		request.setAttribute("result_plan", result_plan);
 		this.doWrite(result_plan, response.getWriter());
+		response.getWriter().write("done");
 	}
 	
 	@Override
@@ -41,9 +42,9 @@ public class ResultUnprocessed  extends JdbcQueryServlet<List<Result>> {
 			String measure = resultSet.getString("measure");
 			String context = resultSet.getString("context");
 			String condition = "";
-			Long id = (long) 0;
+			Long id = resultSet.getLong("id");
 			
-			result.add(new Result(id,analysis, measure, context,0,condition));
+			result.add(new Result(id,analysis, context, measure,0,condition));
 		}
 		return result;
 	}

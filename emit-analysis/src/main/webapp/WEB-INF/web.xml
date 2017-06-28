@@ -81,7 +81,7 @@
 	
 	
 	<servlet>
-		<servlet-name>ComplexeContextList</servlet-name>
+		<servlet-name>complexe-context-list</servlet-name>
 		<servlet-class>fr.icam.emit.process.ComplexeContextList</servlet-class>
 		<init-param>
 			<param-name>sql-query</param-name>
@@ -89,8 +89,8 @@
 		</init-param>
 	</servlet>	
 	<servlet-mapping>
-		<servlet-name>ComplexeContextList</servlet-name>
-		<url-pattern>/algorithm/ComplexeList</url-pattern>
+		<servlet-name>complexe-context-list</servlet-name>
+		<url-pattern>/algorithm/ComplexeContextList</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>
@@ -101,10 +101,7 @@
 			<param-value>/fr/icam/emit/queries/result-create.sql</param-value>
 		</init-param>
 	</servlet>	
-	<servlet-mapping>
-		<servlet-name>ComplexeResultCreate</servlet-name>
-		<url-pattern>/algorithm/ComplexeResultCreate</url-pattern>
-	</servlet-mapping>
+	
 	
 		<servlet>
 		<servlet-name>SimpleResultCreate</servlet-name>
@@ -155,6 +152,30 @@
 		<servlet-name>ResultCalculate</servlet-name>
 		<url-pattern>/algorithm/ResultCalculate</url-pattern>
 	</servlet-mapping>	
+	
+	<servlet>
+		<servlet-name>ResultUpdate</servlet-name>
+		<servlet-class>fr.icam.emit.process.ResultUpdate</servlet-class>
+		<init-param>
+			<param-name>sql-query</param-name>
+			<param-value>/fr/icam/emit/queries/result-update.sql</param-value>
+		</init-param>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>ResultUpdate</servlet-name>
+		<url-pattern>/algorithm/ResultUpdate</url-pattern>
+	</servlet-mapping>
+	
+	
+	
+	<servlet>
+		<servlet-name>ComplexeReasultManage</servlet-name>
+		<servlet-class>fr.icam.emit.process.ComplexeReasultManage</servlet-class>
+	</servlet>	
+	<servlet-mapping>
+		<servlet-name>ComplexeReasultManage</servlet-name>
+		<url-pattern>/algorithm/ComplexeResultCreate</url-pattern>
+	</servlet-mapping>
 	
 	
 	

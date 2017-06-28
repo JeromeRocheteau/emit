@@ -12,4 +12,4 @@ inner join emit.instruments inst
 on inst.uri = mest.instrument
 inner join emit.features fe
 on fe.instrument = inst.uri
-where med.name = ? and fe.name =?  and env.name = ?;
+where med.process = ? and fe.id =? and env.uri = ?;
