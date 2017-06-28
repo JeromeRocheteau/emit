@@ -28,7 +28,7 @@ public class ComplexeReasultManage extends JdbcServlet{
 		response.getWriter().write("début");
 		this.doCall(request, response, "ResultUnprocessed");
 		//List<Result> result = (List<Result>)request.getAttribute("result_plan");
-		
+		//
 		// retrive teh tata fom client
 		Gson gson = new Gson();		
 		InputStream inputStream = request.getInputStream();
