@@ -70,10 +70,6 @@ body {
 	top:0;
 }
 
-div.sidebar-nav.navbar-collapse {
-  padding-left: 0px;
-  padding-right: 0px;
-}
 
 @media (min-width: 768px) {
   .sidebar {
@@ -121,8 +117,13 @@ canvas {
 	padding-top:50px;
 }
 
+div.sidebar-nav.navbar-collapse {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 .scrollLites{
-	height:140px; 
+	height:95px; 
 	overflow-y:scroll;
 	background-color: rgb(255, 255, 255);
 	margin-bottom:20px;

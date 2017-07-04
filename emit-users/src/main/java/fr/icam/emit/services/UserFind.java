@@ -17,7 +17,6 @@ public class UserFind extends JdbcQueryServlet<String> {
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		String username = request.getParameter("username");
-		System.out.println("username === " + username);
 		statement.setString(1, username);
 	}
 	
