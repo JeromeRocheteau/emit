@@ -19,30 +19,33 @@ import fr.icam.emit.entities.Result;
 
 public class ComplexeContextList  extends JdbcQueryServlet<List<Measurement>> {
 private static final long serialVersionUID = 201706130922L;
+		
 
 		@Override
-		public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-			response.getWriter().write("hello");
-			List<Measurement> measurment = this.doProcess(request);
-			request.setAttribute("measurment", measurment);
-			this.doWrite(measurment, response.getWriter());
+		public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+			//response.getWriter().write("hello");			
+			
+		
+			List<Measurement> measurement = this.doProcess(request);
+			request.setAttribute("measurement", measurement);
+			
 		}
 		
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-			/*
-			Result result = (Result)request.getAttribute("result_plan");
-			statement.setString(3, result.getMeasurand());
-			statement.setString(1, result.getEnvironment());
-			statement.setInt(2, result.getFeatures());
-			*/
-				
 			
+			Result result = (Result)request.getAttribute("result_plan");
+			statement.setString(1, result.getMeasurand());
+			statement.setString(3, result.getEnvironment());
+			statement.setInt(2, result.getFeatures());
+			
+				
+			/*
 			statement.setString(3, "http://172.16.220.253:8080/emitlauncher/");
 			statement.setString(1,"/var/local/emit/hanoi-tower 17" );
 			statement.setInt(2, 8);
-			
+			*/
 		}
 		
 		@Override

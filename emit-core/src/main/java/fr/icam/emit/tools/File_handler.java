@@ -1,4 +1,4 @@
-package fr.icam.emit.analysis;
+package fr.icam.emit.tools;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

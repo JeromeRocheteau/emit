@@ -23,45 +23,38 @@ import fr.icam.emit.tools.File_handler;
 public class ComplexeResultCreate extends JdbcUpdateServlet<Boolean> {
 	
 private static final long serialVersionUID = 201706141441L;
-private Result result;	
-HttpServletResponse responsebis;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		
 		
 		
-		Gson gson = new Gson();		
-		InputStream inputStream = request.getInputStream();
-		Reader reader = new InputStreamReader(inputStream);		 
-		result = gson.fromJson(reader, Result.class);
-		request.setAttribute("reasult_plan", result);
+		Result result = (Result) request.getAttribute("result_plan");
 		
 		statement.setString(1,result.getAnalysis());
-		statement.setString(2,result.getMeasure());
+		statement.setString(2,result.getMeasure());		
 		
-		this.doCall(request, responsebis, "ComplexeContextList");
-		List<Measurement> measurement = (List<Measurement>) request.getAttribute("measurement");
 		
 		File_handler file_handler = new File_handler();
 		
 		String file_name = "Context-"+this.retourner_date()+".txt";
+		int i = 0;
 		//vérifer que le fichier est bien unique et qu'il nb'y en a pas un autre de créé
 		while (file_handler.check_file_existance(file_name)){
+			
 			Thread.sleep(50);
-			file_name = "Context-"+this.retourner_date()+".txt";
+			file_name = "Context-"+this.retourner_date()+"("+i+").txt";
+			i++;
 		};
 		
-		String context = "";
-		for (int i = 0;i<measurement.size()-1;i++){
-			context = context +measurement.get(i).getId() ;
-			context = context +","; 
-		}
-		context = context + measurement.get(measurement.size()-1).getId(); 
+		String context = result.getContext();
+		
+		
 		
 		file_handler.write_file(file_name,context);		
 		statement.setString(3,file_name);
-		statement.setString(4,result.getCondition());
+		statement.setString(4,result.getMeasurand()+" "+result.getEnvironment()+" "+result.getFeatures());
 		
 	}
 
@@ -72,15 +65,15 @@ HttpServletResponse responsebis;
 	
 	
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		responsebis =  response;
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {		
 		
 		boolean done = this.doProcess(request);
 		this.doWrite(done, response.getWriter());
+		response.getWriter().write("finish");
 	}
 	
 	public Long retourner_date(){
-		 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		 Timestamp timestamp = new Timestamp(System.nanoTime());
 		 return timestamp.getTime();
 	}	
 

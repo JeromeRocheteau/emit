@@ -22,11 +22,11 @@ public class ComplexeReasultManage extends JdbcServlet{
 
 
 	@SuppressWarnings("unchecked")
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
 		
-		response.getWriter().write("début");
-		this.doCall(request, response, "ResultUnprocessed");
+		//response.getWriter().write("début");
+		//this.doCall(request, response, "ResultUnprocessed");
 		//List<Result> result = (List<Result>)request.getAttribute("result_plan");
 		//
 		// retrive teh tata fom client
@@ -36,13 +36,29 @@ public class ComplexeReasultManage extends JdbcServlet{
 		Result result = gson.fromJson(reader, Result.class);
 		
 		//retrieve the list of context 
-		//request.setAttribute("result_plan", result);
+		request.setAttribute("result_plan", result);
 		this.doCall(request, response, "complexe-context-list");		
-		List<Measurement> measurment = (List<Measurement>) request.getAttribute("measurement");
-		this.doWrite(measurment, response.getWriter());
-		response.getWriter().write("fin");
+		List<Measurement> measurement = (List<Measurement>) request.getAttribute("measurement");
+		//this.doWrite(measurement, response.getWriter());
+		//response.getWriter().write("fin");
 		
 		
+		//Si on a bien un resultat
+		if (measurement.size() >0){
+			String context = "";
+			for (int i = 0; i<measurement.size()-1;i++){
+				context = context + measurement.get(i).getId()+",";
+				}
+			context = context + measurement.get(measurement.size()-1).getId();
+			result.setContext(context);
+			
+			
+			response.getWriter().write(context);
+			
+			request.setAttribute("result_plan", result);
+			this.doCall(request, response, "ComplexeResultCreate");		
+			
+		}
 				
 	
 	}

@@ -28,9 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcServlet;
 
-import fr.icam.emit.analysis.File_handler;
-import fr.icam.emit.analysis.InstrumentReader;
 import fr.icam.emit.api.Meter;
+import fr.icam.emit.tools.File_handler;
+import fr.icam.emit.tools.InstrumentReader;
 
 public class TestEnregistrement extends JdbcServlet{
 	/*

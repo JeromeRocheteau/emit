@@ -34,9 +34,11 @@ public class SimpleResultCreate extends JdbcUpdateServlet<Boolean>{
 		File_handler file_handler = new File_handler();		
 		String file_name = "Context-"+this.retourner_date()+".txt";
 		
+		int i = 1;
 		while (file_handler.check_file_existance(file_name)){
 			Thread.sleep(50);
-			file_name = "Context-"+this.retourner_date()+".txt";
+			file_name = "Context-"+this.retourner_date()+"("+i+").txt";
+			i++;
 		};
 		file_handler.write_file(file_name,result.getContext());		
 		statement.setString(3,file_name);
@@ -57,7 +59,7 @@ public class SimpleResultCreate extends JdbcUpdateServlet<Boolean>{
 	}
 	
 	public Long retourner_date(){
-		 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		 Timestamp timestamp = new Timestamp(System.nanoTime());
 		 return timestamp.getTime();
 	}
 

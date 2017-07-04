@@ -31,7 +31,7 @@ private static final long serialVersionUID = 201706131132L;
 			this.doCalculation(result, request,response);
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch blockv
 			e.printStackTrace();
 		}
 		
@@ -80,7 +80,7 @@ private static final long serialVersionUID = 201706131132L;
 			
 		}
 		
-		double resultf = somme/list.length;
+		double resultf = somme/(list.length);
 		response.getWriter().write("responce final: "+resultf);
 		
 		//enregistrer le resultat
