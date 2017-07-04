@@ -6,9 +6,9 @@ public class Result {
 	private String analysis;
 	private String context;
 	private String measure;
-	private double result;
+	private double value;
 	private String condition;
-	private String features;
+	private int features;
 	private String measurand;
 	private String environment;
 	
@@ -40,11 +40,11 @@ public class Result {
 	public void setMeasure(String measure) {
 		this.measure = measure;
 	}
-	public double getResult() {
-		return result;
+	public double getValue() {
+		return value;
 	}
-	public void setResult(double result) {
-		this.result = result;
+	public void setValue(double result) {
+		this.value = result;
 	}		
 	public String getCondition() {
 		return condition;
@@ -52,10 +52,10 @@ public class Result {
 	public void setCondition(String condition) {
 		this.condition = condition;
 	}	
-	public String getFeatures() {
+	public int getFeatures() {
 		return features;
 	}
-	public void setFeatures(String features) {
+	public void setFeatures(int features) {
 		this.features = features;
 	}
 	public String getMeasurand() {
@@ -75,15 +75,15 @@ public class Result {
 		this.setAnalysis(analysis);
 		this.setContext(context);
 		this.setMeasure(measure);
-		this.setResult(result);		
+		this.setValue(result);		
 	}
 	
-	public Result(Long id,String analysis,String context,String measure,double result,String condition,String measurand,String environment,String feature){
+	public Result(Long id,String analysis,String context,String measure,double result,String condition,String measurand,String environment,int feature){
 		this.setId(id);
 		this.setAnalysis(analysis);
 		this.setContext(context);
 		this.setMeasure(measure);
-		this.setResult(result);
+		this.setValue(result);
 		this.setMeasurand(measurand);
 		this.setFeatures(feature);
 		this.setEnvironment(environment);		

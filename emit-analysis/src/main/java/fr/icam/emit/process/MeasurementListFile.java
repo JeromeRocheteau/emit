@@ -46,6 +46,7 @@ public class MeasurementListFile extends JdbcQueryServlet<List<Measurement>> {
 			List<Measurement> measurements = this.doProcess(request);
 			request.setAttribute("measurements", measurements);
 	        this.doWrite(measurements, response.getWriter());
+	        response.getWriter().write("name done");
 		}
 
 	

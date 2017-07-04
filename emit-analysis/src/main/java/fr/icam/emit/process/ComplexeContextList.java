@@ -22,6 +22,7 @@ private static final long serialVersionUID = 201706130922L;
 
 		@Override
 		public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+			response.getWriter().write("hello");
 			List<Measurement> measurment = this.doProcess(request);
 			request.setAttribute("measurment", measurment);
 			this.doWrite(measurment, response.getWriter());
@@ -30,10 +31,18 @@ private static final long serialVersionUID = 201706130922L;
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-			List<Result> result = (List<Result>)request.getAttribute("result_plan");
-			statement.setString(1, result.get(0).getMeasurand());
-			statement.setString(3, result.get(0).getEnvironment());
-			statement.setString(2, result.get(0).getFeatures());		
+			/*
+			Result result = (Result)request.getAttribute("result_plan");
+			statement.setString(3, result.getMeasurand());
+			statement.setString(1, result.getEnvironment());
+			statement.setInt(2, result.getFeatures());
+			*/
+				
+			
+			statement.setString(3, "http://172.16.220.253:8080/emitlauncher/");
+			statement.setString(1,"/var/local/emit/hanoi-tower 17" );
+			statement.setInt(2, 8);
+			
 		}
 		
 		@Override
