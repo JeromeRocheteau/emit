@@ -1,70 +1,30 @@
 package fr.icam.emit.entities;
 
-public class Measurement {
+public class Measurement extends Item {
 
-	private long id;
+	private String identifier;
 	
-	private long measurementSet;
+	private Feature feature;
 
-	private String data;
-	
-	private String measure;
-	
-	private long feature;
+	private MeasurementSet measurementSet;
 
-	public long getId() {
-		return id;
+	public String getIdentifier() {
+		return identifier;
 	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getData() {
-		return data;
-	}
-
-	public void setData(String data) {
-		this.data = data;
-	}
-
-	public String getMeasure() {
-		return measure;
-	}
-
-	public void setMeasure(String measure) {
-		this.measure = measure;
-	}
-	
-	public long getMeasurementSet() {
-		return measurementSet;
-	}
-
-	public void setMeasurementSet(long measurementSet) {
-		this.measurementSet = measurementSet;
-	}	
-	
-	public long getFeature() {
+	public Feature getFeature() {
 		return feature;
 	}
 
-	public void setFeature(long feature) {
-		this.feature = feature;
+	public MeasurementSet getMeasurementSet() {
+		return measurementSet;
 	}
 
-	public Measurement(long id,long measurementSet, String data, String measure) {
-		this.setId(id);
-		this.setData(data);
-		this.setMeasure(measure);
-		this.setMeasurementSet(measurementSet);
+	public Measurement(Long id, String identifier, Feature feature, MeasurementSet measurementSet, Long deleted) {
+		super(id, deleted);
+		this.identifier = identifier;
+		this.feature = feature;
+		this.measurementSet = measurementSet;
 	}
-	
-	public Measurement(long id,long measurementSet, String data, String measure,long feature) {
-		this.setId(id);
-		this.setData(data);
-		this.setMeasure(measure);
-		this.setMeasurementSet(measurementSet);
-		this.setFeature(feature);
-	}
-	
+
 }

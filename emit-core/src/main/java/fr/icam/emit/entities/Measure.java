@@ -1,38 +1,23 @@
 package fr.icam.emit.entities;
 
-public class Measure {
+public class Measure extends Item {
 	
 	private String name;
+	
 	private String unit;
-	private Boolean deleted;
-
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
-	}
 
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getUnit() {
 		return unit;
 	}
 
-	public void setUnit(String unit) {
+	public Measure(Long id, String name, String unit, Long deleted) {
+		super(id, deleted);
+		this.name = name;
 		this.unit = unit;
 	}
-	
-	public Measure(String name, String unit, Boolean deleted) {
-		this.setName(name);
-		this.setUnit(unit);
-		this.setDeleted(deleted);
-	}
+
 }

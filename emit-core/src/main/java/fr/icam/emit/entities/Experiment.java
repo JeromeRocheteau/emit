@@ -1,53 +1,37 @@
 package fr.icam.emit.entities;
 
+public class Experiment extends Item {
 
-
-public class Experiment {
-	//comment
-	private long id;
 	private Long started;
+
 	private Long stopped;
-	private Measurand measurand;
-	private String environment;	
 	
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
+	private Measurand measurand;
+	
+	private Environment environment;
+
 	public Long getStarted() {
 		return started;
 	}
-	public void setStarted(Long started) {
-		this.started = started;
-	}
+
 	public Long getStopped() {
 		return stopped;
 	}
-	public void setStopped(Long stopped) {
-		this.stopped = stopped;
-	}
+
 	public Measurand getMeasurand() {
 		return measurand;
 	}
-	public void setMeasurand(Measurand measurand) {
-		this.measurand = measurand;
-	}
-	public String getEnvironment() {
+
+	public Environment getEnvironment() {
 		return environment;
 	}
-	public void setEnvironment(String environment_uri) {
-		this.environment = environment_uri;
+
+	public Experiment(Long id, Long started, Long stopped, Measurand measurand, Environment environment, Long deleted) {
+		super(id, deleted);
+		this.started = started;
+		this.stopped = stopped;
+		this.measurand = measurand;
+		this.environment = environment;
 	}
-	
-	public Experiment(long id, Long started,Long stopped,Measurand measurand,String environment_uri){
-		this.setId(id);
-		this.setStarted(started);
-		this.setStopped(stopped);
-		this.setMeasurand(measurand);
-		this.setEnvironment(environment_uri);
-	}
-	
 
 }

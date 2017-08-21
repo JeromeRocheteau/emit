@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcQueryServlet;
 
-public class InstrumentSize extends JdbcQueryServlet<Integer>{
-	
-	private static final long serialVersionUID = 201703171412L;
+public class Sizer extends JdbcQueryServlet<Integer> {
+
+	private static final long serialVersionUID = 201708211614001L;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -21,9 +21,7 @@ public class InstrumentSize extends JdbcQueryServlet<Integer>{
 	}
 	
 	@Override
-	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		
-	}
+	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception { }
 
 	@Override
 	protected Integer doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
