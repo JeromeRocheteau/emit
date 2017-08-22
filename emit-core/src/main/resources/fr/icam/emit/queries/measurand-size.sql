@@ -1,3 +1,3 @@
-select count(process) as size 
-from measurands
-where deleted = 0;
+SELECT count(`id`) AS size 
+FROM `measurands`
+WHERE `deleted` IS NOT NULL;

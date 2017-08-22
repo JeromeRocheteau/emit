@@ -1,2 +1,2 @@
-insert into measurements (data,measurementset,measure,feature)
-values (?,?,?,?);
+INSERT INTO `measurements` (`measurementSet`,`feature`)
+VALUES (?,?);

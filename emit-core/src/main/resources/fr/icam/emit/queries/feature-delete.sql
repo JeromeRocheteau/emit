@@ -1,1 +1,3 @@
-DELETE FROM features WHERE id=?;
+UPDATE `features`
+SET `deleted` = now()
+WHERE `id` = ?;

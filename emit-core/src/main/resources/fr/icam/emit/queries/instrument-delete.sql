@@ -1,5 +1,3 @@
-/*DELETE FROM instruments WHERE uri=?;*/
-
-UPDATE instruments 
-SET deleted = 1 
-WHERE uri=?;
+UPDATE `instruments`
+SET `deleted` = now()
+WHERE `id` = ?;

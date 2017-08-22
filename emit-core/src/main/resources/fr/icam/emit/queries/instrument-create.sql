@@ -1,2 +1,2 @@
-insert into instruments (uri, name,deleted)
-values (?,?,0);
+INSERT INTO `instruments` (`uri`, `name`)
+VALUES (?,?);

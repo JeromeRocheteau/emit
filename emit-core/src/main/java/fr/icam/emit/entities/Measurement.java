@@ -2,14 +2,20 @@ package fr.icam.emit.entities;
 
 public class Measurement extends Item {
 
-	private String identifier;
+	private Long achieved;
+
+	private String content;
 	
 	private Feature feature;
 
 	private MeasurementSet measurementSet;
 
-	public String getIdentifier() {
-		return identifier;
+	public Long getAchieved() {
+		return achieved;
+	}
+
+	public String getContent() {
+		return content;
 	}
 
 	public Feature getFeature() {
@@ -20,9 +26,10 @@ public class Measurement extends Item {
 		return measurementSet;
 	}
 
-	public Measurement(Long id, String identifier, Feature feature, MeasurementSet measurementSet, Long deleted) {
+	public Measurement(Long id, Long deleted, Long achieved, String content, Feature feature, MeasurementSet measurementSet) {
 		super(id, deleted);
-		this.identifier = identifier;
+		this.achieved = achieved;
+		this.content = content;
 		this.feature = feature;
 		this.measurementSet = measurementSet;
 	}

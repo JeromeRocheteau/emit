@@ -1,2 +1,2 @@
-insert into measurands (process, name,deleted)
-values (?,?,0);
+INSERT INTO `measurands` (`name`)
+VALUES (?);

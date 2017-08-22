@@ -1,3 +1,3 @@
-select process, name, deleted
-from measurands
-where deleted = 0;
+SELECT `id`, `name`
+FROM `measurands`
+WHERE `deleted` IS NOT NULL;

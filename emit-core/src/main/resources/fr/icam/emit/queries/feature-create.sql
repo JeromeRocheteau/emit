@@ -1,2 +1,2 @@
-insert into features (measure, instrument, no_order, name, factor)
-values (?,?,?,?,?);
+INSERT INTO `features` (`name`,`factor`,`measure`,`instrument`)
+VALUES (?,?,?,?);

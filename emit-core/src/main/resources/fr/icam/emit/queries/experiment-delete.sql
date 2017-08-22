@@ -1,3 +1,3 @@
-UPDATE `environments`
+UPDATE `experiments`
 SET `deleted` = now()
 WHERE `id` = ?;

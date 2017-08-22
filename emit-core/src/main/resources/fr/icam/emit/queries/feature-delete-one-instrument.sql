@@ -1,1 +1,0 @@
-DELETE FROM features WHERE features.instrument = ?;

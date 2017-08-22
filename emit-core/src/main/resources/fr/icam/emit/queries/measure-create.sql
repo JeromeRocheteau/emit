@@ -1,2 +1,2 @@
-insert into measures (name, unit,deleted)
-values (?,?,0);
+INSERT INTO `measures` (`name`,`unit`)
+VALUES (?,?);
