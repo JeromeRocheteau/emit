@@ -1,2 +1,2 @@
-INSERT INTO `tokens` (`passphrase`,`account`,`measurand`)
-VALUES (?,?,?);
+INSERT INTO `tokens` (`passphrase`,`account`,`measurand`,`issued`)
+VALUES (?,?,?,now());

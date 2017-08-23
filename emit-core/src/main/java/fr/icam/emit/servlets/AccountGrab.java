@@ -14,7 +14,7 @@ public class AccountGrab extends JdbcServlet {
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String username = (String) request.getAttribute("username");
+		String username = (String) request.getSession().getAttribute("username");
 		this.doWrite(username, response.getWriter());
 	}
 	

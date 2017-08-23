@@ -1,3 +1,4 @@
-SELECT count(`passphrase`) as size
-FROM `tokens` t
-WHERE t.`account` = ?;
+SELECT count(`passphrase`) AS size
+FROM `tokens`
+WHERE `account` = ?
+AND `deleted` IS NULL;

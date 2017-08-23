@@ -15,7 +15,7 @@ public class AccountFind extends JdbcQueryServlet<String> {
 	private static final long serialVersionUID = 201708221657001L;
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String username = this.doProcess(request);
 		request.setAttribute("username", username);
 	}

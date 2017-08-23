@@ -15,9 +15,10 @@ public class AccountCheck extends JdbcQueryServlet<String> {
 	private static final long serialVersionUID = 201708221657002L;
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		this.doCall(request, response, "account-find");
 		String username = this.doProcess(request);
-		request.setAttribute("username", username);
+		request.getSession().setAttribute("username", username);
 	}
 	
 	@Override

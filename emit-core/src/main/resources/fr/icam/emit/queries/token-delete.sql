@@ -1,3 +1,3 @@
 UPDATE `tokens`
-SET `expired` = now()
+SET `deleted` = now()
 WHERE `passphrase` = ?;

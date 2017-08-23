@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Emit | Jetons</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+      html {overflow-y: scroll; height: 100%;}
+    </style>
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
+  <script type="text/javascript">
+  var app = angular.module('app',[]);
+
+  app.filter('ceil', function() {
+    return function(input) {
+	  return Math.ceil(input);
+    };
+  });
+  
+  app.controller('controller', function ($scope, $http, $window) {
+
+	$scope.username = null;
+	  
+  	var grab = function() {
+  		$http({method:'GET',url:'./account/grab'})
+  		.then(function onSuccess(response) {
+  			$scope.username = response.data;
+  		}, function onError(response) {
+  			$scope.username = null;
+  		});
+  	}
+	  
+  	$scope.clear = function() {
+  		$http({method:'GET',url:'./account/clear'})
+  		.then(function onSuccess(response) {
+  			$scope.username = null;
+  			var host = $window.location.host;
+			var path = $window.location.pathname;
+			var url = "http://" + host + path;
+			$window.location.href = url;
+  		}, function onError(response) {
+  			// fixme
+  		});
+  	}
+  	
+  	$scope.measurands = [];
+  	
+  	var list = function() {
+  		$http({method:'GET',url:'./measurand/list'})
+  		.then(function onSuccess(response) {
+  			$scope.measurands = response.data;
+  		}, function onError(response) {
+  			$scope.measurands = [];
+  		});
+  	}
+
+  	$scope.measurand = null;
+    
+    $scope.length = 5;
+    $scope.offset = 0;
+    $scope.size = 0;
+    $scope.items = [];
+    
+    $scope.prev = function() {
+      if ($scope.length <= $scope.offset) {
+        $scope.offset = $scope.offset - $scope.length;
+        page();
+      }
+    }
+    
+    $scope.next = function() {
+      if ($scope.offset + $scope.length < $scope.size) {
+        $scope.offset = $scope.offset + $scope.length;
+        page();                     
+      }
+    }
+    
+    $scope.first = function() {
+      $scope.offset = 0;
+      page();
+    }
+
+    $scope.last = function() {
+      $scope.offset = Math.floor(($scope.size - 1) / $scope.length) * $scope.length;
+      page();
+    }
+
+    var size = function() {
+      $http({method:'GET',url:'./token/size'})
+      .then(function onSuccess(data) {
+        $scope.size = data.data;
+      },function onError(data) {
+        $scope.size = 0;
+      });
+    }
+
+    var page = function() {
+      var content = "length=" + $scope.length + "&offset=" + $scope.offset; 
+      $http({method:'GET',url:'./token/page?' + content})
+      .then(function onSuccess(data) {
+        $scope.items = data.data;
+      },function onError(data) {
+        $scope.items = [];
+      });
+    }
+
+    $scope.create = function() {
+      var content = "measurand=" + $scope.measurand; 
+      $http({method:'POST',url:'./token/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(data) {
+    	$scope.clean();
+    	size();
+    	page();
+      },function onError(data) {
+        $scope.clean();
+      });
+    }
+    
+    $scope.remove = function(passphrase) {
+      var content = "passphrase=" + passphrase; 
+      $http({method:'POST',url:'./token/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(data) {
+        $scope.clean();
+        size();
+       	page();
+      },function onError(data) {
+        $scope.clean();
+      });
+    }
+    
+    $scope.clean = function() {
+      $scope.measurand = null;
+    }
+  
+    $scope.pick = function(measurand) {
+      $scope.measurand = measurand;
+    }
+  	
+  	grab();
+  	list();
+  	size();
+  	page();
+
+  });
+  </script>
+  <body ng-app="app" ng-controller="controller">
+    <header>
+      <div class="navbar navbar-default navbar-custom navbar-static-top">
+        <div class="container">
+          <button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="./index.html"><span class="glyphicon glyphicon-home" aria-hidden="true">&nbsp;Emit</span></a>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-center">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                  <span class="glyphicon glyphicon-user" aria-hidden="true">&nbsp;Compte</span>
+                  <span class="caret"></span>
+                  </a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">{{username}}</li>
+                  <li><a href="#"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;Paramètres</span></a></li>
+                  <li><a href="./token.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;Jetons</span></a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a ng-click="clear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;Déconnexion</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+    <section id="content" class="container ng-cloak">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h3>Mes jetons <small>({{size}} éléments)</small></h3>
+            <nav aria-label="...">
+              <ul class="pager">
+                <li class="previous"><a class="btn btn-default" ng-click="first()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="prev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li>{{(offset + 1) / length | ceil}} / {{size / length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="last()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="next()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="list-group" ng-repeat="item in items">
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">{{item.passphrase}}</h4>
+              <p class="list-group-item-text">{{item.measurand.name}}</p>
+              <p class="list-group-item-text">{{item.issued | date : short}}</p>
+              <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="remove(item.passphrase)">Supprimer</button></p>
+            </li>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <form name="form" class="form list-group-item" id="form">
+          <fieldset>
+            <legend>Création d'un jeton</legend>
+            <div class="form-group">
+              <label for="measurand">Objet</label>
+              <select class="form-control" id="measurand" ng-model="measurand" ng-change="pick(measurand)" ng-options="measurand.id as measurand.name for measurand in measurands" ng-required="true" required>
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group pull-right">
+                  <button type="reset" class="btn btn-default" ng-click="clean()"><strong>Effacer</strong></button>
+                  <button type="submit" class="btn btn-primary" ng-click="create()" ng-disabled="!form.$valid"><strong>Ajouter</strong></button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>

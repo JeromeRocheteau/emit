@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcQueryServlet;
 
-import fr.icam.emit.entities.Account;
 import fr.icam.emit.entities.Measurand;
 import fr.icam.emit.entities.Token;
 
@@ -42,12 +41,10 @@ public class TokenPage extends JdbcQueryServlet<List<Token>> {
 		List<Token> tokens = new LinkedList<Token>();
 		while (resultSet.next()) {
 			String passphrase = resultSet.getString("passphrase");
-			String username = resultSet.getString("account");
+			Timestamp issued = resultSet.getTimestamp("issued");
 			String name = resultSet.getString("measurand");
-			Timestamp expired = resultSet.getTimestamp("expired");
-			Account account = new Account(username, null, null);
 			Measurand measurand = new Measurand(null, name, null);
-			Token token = new Token(passphrase, account, measurand, expired.getTime());
+			Token token = new Token(passphrase, null, null, measurand, issued.getTime());
 			tokens.add(token);
 		}
 		return tokens;

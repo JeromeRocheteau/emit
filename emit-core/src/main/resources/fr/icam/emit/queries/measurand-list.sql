@@ -1,3 +1,3 @@
 SELECT `id`, `name`
 FROM `measurands`
-WHERE `deleted` IS NOT NULL;
+WHERE `deleted` IS NULL;
