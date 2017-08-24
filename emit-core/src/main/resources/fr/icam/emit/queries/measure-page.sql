@@ -1,4 +1,4 @@
-select name, unit, deleted
-from measures
-where deleted = 0
-limit ?,5;
+SELECT `id`, `name`, `unit` 
+FROM `measures`
+WHERE `deleted` IS NULL
+LIMIT ?,?;

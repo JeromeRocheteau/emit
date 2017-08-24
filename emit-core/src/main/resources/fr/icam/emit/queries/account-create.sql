@@ -1,2 +1,2 @@
-INSERT INTO `accounts` (`username`,`password`) 
-VALUES (?,?);
+INSERT INTO `accounts` (`username`,`rolename`,`password`) 
+VALUES (?,"user",?);

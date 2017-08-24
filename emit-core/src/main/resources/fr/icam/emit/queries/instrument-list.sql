@@ -1,3 +1,3 @@
-select uri, name, deleted
-from instruments
-where deleted = 0;
+SELECT `id`, `uri`, `name`
+FROM `instruments`
+WHERE `deleted` IS NULL;

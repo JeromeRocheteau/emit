@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcServlet;
 
-public class AccountGrab extends JdbcServlet {
+public class AccountUser extends JdbcServlet {
 
 	private static final long serialVersionUID = 201708221657007L;
 

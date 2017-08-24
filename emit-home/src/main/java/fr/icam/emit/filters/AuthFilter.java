@@ -1,6 +1,5 @@
 package fr.icam.emit.filters;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -24,7 +23,7 @@ public class AuthFilter implements Filter {
 	}
 	
 	private boolean canFilter(String path) {
-		if (path.equals(File.separator + landing)) {
+		if (path.equals(landing)) {
 			return true;
 		}
 		for (String filter : filtering) {
@@ -44,7 +43,8 @@ public class AuthFilter implements Filter {
         } else {
         	String username = (String) httpRequest.getSession().getAttribute("username");
         	if (username == null) {
-        		httpResponse.sendRedirect(landing);
+        		String contextPath = httpRequest.getContextPath();
+        		httpResponse.sendRedirect(contextPath + landing);
         	} else {
         		chain.doFilter(request, response);
         	}

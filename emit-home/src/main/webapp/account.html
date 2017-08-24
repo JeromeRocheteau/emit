@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Emit | Accueil</title>
+    <title>Emit | Paramètres</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <style type="text/css">
@@ -15,11 +15,19 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular-sanitize.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-md5/0.1.10/angular-md5.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
   <script type="text/javascript">
-  var app = angular.module('app',[]);
+  var app = angular.module('app',['ngSanitize','angular-md5']);
 
-  app.controller('controller', function ($scope, $http, $window) {
+  app.filter('ceil', function() {
+    return function(input) {
+	  return Math.ceil(input);
+    };
+  });
+  
+  app.controller('controller', function ($scope, $http, $window, md5) {
 
 	$scope.username = null;
 	$scope.rolename = false;
@@ -53,8 +61,43 @@
   		}, function onError(response) {
   			// fixme
   		});
-  	}
-
+ 	}
+  	
+  	var empty = {};
+  	$scope.checked = false;
+  	$scope.password = {};
+  	
+    $scope.update = function() {
+      if ($scope.password.orig && $scope.password.copy && $scope.password.orig === $scope.password.copy) {
+        var content = "password=" + md5.createHash($scope.password.orig);
+        $http({method:'POST',url:'./account/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+        .then(function onSuccess(data) {
+          $scope.clean();
+          display("info", "Le mot de passe a bien été changé.");
+        },function onError(data) {
+          $scope.clean();
+          display("warning", "Une erreur est survenue pendant la modification du mot de passe.");
+        });    		
+      } else {
+    	display("danger", "Les mots de passe ne correspondent pas");
+      }
+    }
+  	
+    $scope.remove = function() {
+      $http({method:'GET',url:'./account/delete'})
+      .then(function onSuccess(data) {
+        $scope.clear();
+      },function onError(data) {
+        $scope.clean();
+        display("warning", "Une erreur est survenue pendant la suppression du compte.");
+      });
+    }
+    
+    $scope.clean = function() {
+    	$scope.checked = false;
+      $scope.password = angular.copy(empty);
+    }
+  
   	user();
   	role();
   	
@@ -70,7 +113,7 @@
         $("#alert").hide();
         $scope.alert = {};
     }
-
+  	
   });
   </script>
   <body ng-app="app" ng-controller="controller">
@@ -118,11 +161,37 @@
       </div>
     </header>
     <section id="content" class="container">
-      <div class="row">
-        <div class="alert alert-{{message.type}} alert-dismissible col-md-6 col-md-offset-3" id="alert" role="alert" style="display:none;margin-top:20px;">
-          <button type="button" class="close" aria-label="close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
-          <p>{{message.content}}</p>
-        </div>
+      <form name="form" role="form" class="form col-md-6 col-md-offset-3 ng-cloak">
+        <fieldset>
+          <legend>Changement du mot de passe</legend>
+          <div class="form-group">
+            <input type="password" class="form-control" name="password.orig" ng-model="password.orig" placeholder="Nouveau mot de passe" ng-required="true" required>
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" name="password.copy" ng-model="password.copy" placeholder="Confirmer le nouveau mot de passe" ng-required="true" required>
+          </div>
+          <div class="form-group pull-right">
+            <button type="reset" ng-click="clean()" class="btn btn-default"><span class="glyphicon glyphicon-erase">&ensp;</span> Annuler</button>
+            <button type="submit" ng-click="update()" ng-disabled="!form.$valid" class="btn"><span class="glyphicon glyphicon-send">&ensp;</span> Envoyer</button>
+          </div>
+        </fieldset>
+      </form>
+      <form name="delete" role="form" class="form col-md-6 col-md-offset-3 ng-cloak">
+        <fieldset>
+          <legend>Suppression du compte</legend>
+          <div class="form-group">
+            <div class="checkbox">
+              <label><input type="checkbox" ng-model="checked"> Voulez-vous supprimer votre compte ?</label>
+            </div>
+          </div>
+          <div class="form-group pull-right">
+            <button type="submit" ng-click="remove()" ng-disabled="!checked" class="btn btn-danger"><span class="glyphicon glyphicon-trash">&ensp;</span> Supprimer</button>
+          </div>
+        </fieldset>
+      </form>
+      <div class="alert alert-{{message.type}} alert-dismissible col-md-6 col-md-offset-3" id="alert" role="alert" style="display:none;margin-top:20px;">
+        <button type="button" class="close" aria-label="close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
+        <p>{{message.content}}</p>
       </div>
     </section>
     <footer class="footer">

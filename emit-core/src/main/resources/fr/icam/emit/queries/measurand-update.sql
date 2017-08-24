@@ -1,3 +1,3 @@
-update measurands 
-set process=?, name=? 
-where process=?;
+UPDATE `measurands`  
+SET `name` = ? 
+WHERE `id` = ?;

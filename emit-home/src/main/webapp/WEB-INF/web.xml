@@ -36,7 +36,7 @@
     <filter-class>fr.icam.emit.filters.AuthFilter</filter-class>
     <init-param>
       <param-name>landing</param-name>
-      <param-value>auth.html</param-value>
+      <param-value>/auth.html</param-value>
     </init-param>
     <init-param>
       <param-name>filtering</param-name>
@@ -47,14 +47,29 @@
     <filter-name>auth-filter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  
+  <!-- accounts -->
 
   <servlet>
-    <servlet-name>account-grab</servlet-name>
-    <servlet-class>fr.icam.emit.servlets.AccountGrab</servlet-class>
+    <servlet-name>account-user</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.AccountUser</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>account-grab</servlet-name>
-    <url-pattern>/account/grab</url-pattern>
+    <servlet-name>account-user</servlet-name>
+    <url-pattern>/account/user</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>account-role</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.AccountRole</servlet-class>
+    <init-param>
+      <param-name>admin-name</param-name>
+      <param-value>admin</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>account-role</servlet-name>
+    <url-pattern>/account/role</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -91,6 +106,34 @@
     <servlet-name>account-check</servlet-name>
     <url-pattern>/account/check</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>account-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.AccountUpdate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/account-update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>account-update</servlet-name>
+    <url-pattern>/account/update</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>account-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.AccountDelete</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/account-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>account-delete</servlet-name>
+    <url-pattern>/account/delete</url-pattern>
+  </servlet-mapping>
+
+  <!-- tokens -->
 
   <servlet>
     <servlet-name>token-size</servlet-name>
@@ -144,6 +187,8 @@
     <url-pattern>/token/create</url-pattern>
   </servlet-mapping>
 
+  <!-- measurands -->
+
   <servlet>
     <servlet-name>measurand-list</servlet-name>
     <servlet-class>fr.icam.emit.servlets.MeasurandList</servlet-class>
@@ -155,6 +200,277 @@
   <servlet-mapping>
     <servlet-name>measurand-list</servlet-name>
     <url-pattern>/measurand/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measurand-size</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurand-size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurand-size</servlet-name>
+    <url-pattern>/measurand/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measurand-page</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurandPage</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurand-page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurand-page</servlet-name>
+    <url-pattern>/measurand/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measurand-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurandCreate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurand-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurand-create</servlet-name>
+    <url-pattern>/measurand/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measurand-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurand-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurand-delete</servlet-name>
+    <url-pattern>/measurand/delete</url-pattern>
+  </servlet-mapping>
+  
+  <!-- measures -->
+
+  <servlet>
+    <servlet-name>measure-list</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasureList</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-list</servlet-name>
+    <url-pattern>/measure/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measure-size</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-size</servlet-name>
+    <url-pattern>/measure/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measure-page</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurePage</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-page</servlet-name>
+    <url-pattern>/measure/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measure-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasureCreate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-create</servlet-name>
+    <url-pattern>/measure/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measure-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-delete</servlet-name>
+    <url-pattern>/measure/delete</url-pattern>
+  </servlet-mapping>
+  
+  <!-- instruments -->
+
+  <servlet>
+    <servlet-name>instrument-list</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.InstrumentList</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-list</servlet-name>
+    <url-pattern>/instrument/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>instrument-size</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-size</servlet-name>
+    <url-pattern>/instrument/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>instrument-page</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.InstrumentPage</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-page</servlet-name>
+    <url-pattern>/instrument/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>instrument-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.InstrumentCreate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-create</servlet-name>
+    <url-pattern>/instrument/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>instrument-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-delete</servlet-name>
+    <url-pattern>/instrument/delete</url-pattern>
+  </servlet-mapping>
+
+  <!-- environments -->
+
+  <servlet>
+    <servlet-name>environment-list</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.EnvironmentList</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/environment-list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>environment-list</servlet-name>
+    <url-pattern>/environment/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>environment-size</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/environment-size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>environment-size</servlet-name>
+    <url-pattern>/environment/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>environment-page</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.EnvironmentPage</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/environment-page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>environment-page</servlet-name>
+    <url-pattern>/environment/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>environment-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.EnvironmentCreate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/environment-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>environment-create</servlet-name>
+    <url-pattern>/environment/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>environment-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/environment-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>environment-delete</servlet-name>
+    <url-pattern>/environment/delete</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>environment-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.EnvironmentUpdate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/environment-update.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>environment-validate</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.EnvironmentValidate</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>environment-validate</servlet-name>
+    <url-pattern>/environment/validate</url-pattern>
   </servlet-mapping>
 
 </web-app>

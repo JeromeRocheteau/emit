@@ -1,3 +1,3 @@
-select name, unit, deleted
-from measures
-where deleted = 0;
+SELECT `id`, `name`, `unit` 
+FROM `measures`
+WHERE `deleted` IS NULL;

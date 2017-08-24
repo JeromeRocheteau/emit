@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Emit | Accueil</title>
+    <title>Emit | Instruments</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <style type="text/css">
@@ -19,6 +19,12 @@
   <script type="text/javascript">
   var app = angular.module('app',[]);
 
+  app.filter('ceil', function() {
+    return function(input) {
+	  return Math.ceil(input);
+    };
+  });
+  
   app.controller('controller', function ($scope, $http, $window) {
 
 	$scope.username = null;
@@ -53,10 +59,99 @@
   		}, function onError(response) {
   			// fixme
   		});
-  	}
+ 	}
 
+  	var empty = {};
+  	$scope.item = {};
+    
+    $scope.length = 5;
+    $scope.offset = 0;
+    $scope.size = 0;
+    $scope.items = [];
+    
+    $scope.prev = function() {
+      if ($scope.length <= $scope.offset) {
+        $scope.offset = $scope.offset - $scope.length;
+        page();
+      }
+    }
+    
+    $scope.next = function() {
+      if ($scope.offset + $scope.length < $scope.size) {
+        $scope.offset = $scope.offset + $scope.length;
+        page();                     
+      }
+    }
+    
+    $scope.first = function() {
+      $scope.offset = 0;
+      page();
+    }
+
+    $scope.last = function() {
+      $scope.offset = Math.floor(($scope.size - 1) / $scope.length) * $scope.length;
+      page();
+    }
+
+    var size = function() {
+      $http({method:'GET',url:'./instrument/size'})
+      .then(function onSuccess(data) {
+        $scope.size = data.data;
+      },function onError(data) {
+        $scope.size = 0;
+      });
+    }
+
+    var page = function() {
+      var content = "length=" + $scope.length + "&offset=" + $scope.offset; 
+      $http({method:'GET',url:'./instrument/page?' + content})
+      .then(function onSuccess(data) {
+        $scope.items = data.data;
+      },function onError(data) {
+        $scope.items = [];
+      });
+    }
+
+    $scope.create = function() {
+      var content = "uri=" + $scope.item.uri + "&name=" + $scope.item.name;
+      $http({method:'POST',url:'./instrument/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(data) {
+    	$scope.clean();
+    	size();
+    	page();
+    	display("info", "L'instrument de mesure a bien été créé.");
+      },function onError(data) {
+        $scope.clean();
+        display("warning", "Une erreur est survenue pendant la création de l'instrument de mesure.");
+      });
+    }
+
+    $scope.remove = function(item) {
+      var content = "id=" + item.id;
+      $http({method:'POST',url:'./instrument/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(data) {
+    	$scope.clean();
+    	size();
+    	page();
+    	display("info", "L'instrument de mesure a bien été supprimé.");
+      },function onError(data) {
+        $scope.clean();
+        display("warning", "Une erreur est survenue pendant la suppression de l'instrument de mesure.");
+      });
+    }
+    
+    $scope.clean = function() {
+      $scope.item = angular.copy(empty);
+    }
+  
+    $scope.pick = function(item) {
+      $scope.item = item;
+    }
+  	
   	user();
   	role();
+  	size();
+  	page();
   	
     $scope.message = {};
     
@@ -117,9 +212,53 @@
         </div>
       </div>
     </header>
-    <section id="content" class="container">
-      <div class="row">
-        <div class="alert alert-{{message.type}} alert-dismissible col-md-6 col-md-offset-3" id="alert" role="alert" style="display:none;margin-top:20px;">
+    <section id="content" class="container ng-cloak">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h3>Instruments <small>({{size}} éléments)</small></h3>
+            <nav aria-label="...">
+              <ul class="pager">
+                <li class="previous"><a class="btn btn-default" ng-click="first()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="prev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li>{{(offset + 1) / length | ceil}} / {{size / length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="last()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="next()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="list-group" ng-repeat="item in items">
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">{{item.uri}}</h4>
+              <p class="list-group-item-text">{{item.name}}</p>
+              <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="remove(item)">Supprimer</button></p>
+            </li>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <form name="form" class="form list-group-item" id="form">
+          <fieldset>
+            <legend>Création d'un instrument de mesure</legend>
+            <div class="form-group">
+              <label for="instrument.uri">URI de l'instrument de mesure</label>
+              <input type="text" class="form-control" id="instrument.uri" ng-model="item.uri" placeholder="URI de l'instrument de mesure" ng-required="true" required>
+            </div>
+            <div class="form-group">
+              <label for="instrument.name">Nom de l'instrument de mesure</label>
+              <input type="text" class="form-control" id="instrument.name" ng-model="item.name" placeholder="Nom de l'instrument de mesure" ng-required="true" required>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group pull-right">
+                  <button type="reset" class="btn btn-default" ng-click="clean()"><strong>Effacer</strong></button>
+                  <button type="submit" class="btn btn-primary" ng-click="create()" ng-disabled="!form.$valid"><strong>Ajouter</strong></button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
           <button type="button" class="close" aria-label="close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
           <p>{{message.content}}</p>
         </div>

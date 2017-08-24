@@ -1,4 +1,4 @@
-select uri, name, deleted
-from environments
-where deleted = 0
-limit ?,5;
+SELECT `id`, `uri`, `name`, `arch`, `os`, `version`
+FROM `environments`
+WHERE `deleted` IS NULL
+LIMIT ?,?;

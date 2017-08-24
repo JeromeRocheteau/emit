@@ -4,6 +4,8 @@ public class Environment extends Item {
 
 	private String uri;
 	
+	private String name;
+	
 	private String arch;
 	
 	private String os;
@@ -12,6 +14,10 @@ public class Environment extends Item {
 	
 	public String getUri() {
 		return uri;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public String getArch() {
@@ -26,9 +32,10 @@ public class Environment extends Item {
 		return version;
 	}
 
-	public Environment(Long id, String uri, String arch, String os, String version, Long deleted) {
+	public Environment(Long id, String uri, String name, String arch, String os, String version, Long deleted) {
 		super(id, deleted);
 		this.uri = uri;
+		this.name = name;
 		this.arch = arch;
 		this.os = os;
 		this.version = version;

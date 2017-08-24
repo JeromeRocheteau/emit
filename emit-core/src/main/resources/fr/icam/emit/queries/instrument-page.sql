@@ -1,4 +1,4 @@
-select uri, name, deleted
-from instruments
-where deleted = 0
-limit ?,5;
+SELECT `id`, `uri`, `name`
+FROM `instruments`
+WHERE `deleted` IS NULL
+LIMIT ?,?;

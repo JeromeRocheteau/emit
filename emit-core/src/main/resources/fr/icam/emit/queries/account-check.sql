@@ -1,4 +1,4 @@
-SELECT `username`
+SELECT `username`, `rolename`
 FROM `accounts`
 WHERE `username` = ?
 AND `password` = ?

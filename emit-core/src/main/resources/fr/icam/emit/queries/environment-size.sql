@@ -1,3 +1,3 @@
-select count(uri) as size 
-from environments
-where deleted = 0;
+SELECT count(`id`) AS size
+FROM `environments`
+WHERE `deleted` IS NULL;

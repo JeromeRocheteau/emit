@@ -1,2 +1,2 @@
-INSERT INTO `environments` (`uri`,`arch`,`os`,`version`)
-VALUES (?,?,?,?);
+INSERT INTO `environments` (`uri`, `name`)
+VALUES (?,?);
