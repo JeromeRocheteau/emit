@@ -126,6 +126,20 @@
       });
     }
 
+    $scope.validate = function(item) {
+      var content = "id=" + item.id + "&uri=" + item.uri;
+      $http({method:'POST',url:'./environment/validate',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(data) {
+      	$scope.clean();
+    	size();
+    	page();
+    	display("info", "L'environnement de mesure a bien été validé.");
+      },function onError(data) {
+       	$scope.clean();
+        display("warning", "Une erreur est survenue pendant la validation de l'environnement de mesure.");
+      });
+    }
+
     $scope.remove = function(item) {
       var content = "id=" + item.id;
       $http({method:'POST',url:'./environment/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
@@ -198,13 +212,13 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   <span class="glyphicon glyphicon-user" aria-hidden="true">&nbsp;Compte</span>
                   <span class="caret"></span>
-                  </a>
+                </a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">{{username}}</li>
-                  <li><a href="./account.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;Paramètres</span></a></li>
-                  <li><a href="./token.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;Jetons</span></a></li>
+                  <li><a href="./account.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Paramètres</a></li>
+                  <li><a href="./token.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Jetons</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a ng-click="clear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;Déconnexion</span></a></li>
+                  <li><a href="./index.html" ng-click="clear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Déconnexion</a></li>
                 </ul>
               </li>
             </ul>
@@ -231,7 +245,11 @@
             <li class="list-group-item">
               <h4 class="list-group-item-heading">{{item.uri}}</h4>
               <p class="list-group-item-text">{{item.name}}</p>
-              <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="remove(item)">Supprimer</button></p>
+              <p class="list-group-item-text" ng-show="item.arch">Système : {{item.os}} ({{item.version}}) / {{item.arch}}</p>
+              <p class="list-group-item-text text-right">
+                <button class="btn btn-default" ng-click="remove(item)">Supprimer</button>
+                <button class="btn btn" ng-hide="item.arch" ng-click="validate(item)">Valider</button>
+              </p>
             </li>
           </div>
         </div>

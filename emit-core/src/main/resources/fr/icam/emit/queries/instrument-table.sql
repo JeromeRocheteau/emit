@@ -3,6 +3,6 @@ CREATE TABLE `instruments` (
   `deleted` datetime DEFAULT NULL,
   `uri` varchar(90) NOT NULL,
   `name` varchar(254) NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`uri`,`name`),
   UNIQUE KEY (`uri`)
 );

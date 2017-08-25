@@ -22,6 +22,20 @@
     <listener-class>com.github.jeromerocheteau.JdbcListener</listener-class>
   </listener>
   
+  <context-param>
+    <param-name>mongodb-server</param-name>
+    <param-value>mongodb://localhost:27017</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>mongodb-database</param-name>
+    <param-value>emit</param-value>
+  </context-param>
+  
+  <listener>
+    <listener-class>fr.icam.emit.listeners.MongoListener</listener-class>
+  </listener>
+  
   <filter>
     <filter-name>jdbc-filter</filter-name>
     <filter-class>com.github.jeromerocheteau.JdbcFilter</filter-class>
@@ -471,6 +485,47 @@
   <servlet-mapping>
     <servlet-name>environment-validate</servlet-name>
     <url-pattern>/environment/validate</url-pattern>
+  </servlet-mapping>
+
+  <!-- features -->
+
+  <servlet>
+    <servlet-name>feature-list</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureList</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-list</servlet-name>
+    <url-pattern>/feature/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>feature-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureCreate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-create</servlet-name>
+    <url-pattern>/feature/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>feature-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-delete</servlet-name>
+    <url-pattern>/feature/delete</url-pattern>
   </servlet-mapping>
 
 </web-app>

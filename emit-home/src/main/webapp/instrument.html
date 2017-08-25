@@ -60,6 +60,17 @@
   			// fixme
   		});
  	}
+  	
+  	$scope.measures = [];
+
+    var list = function() {
+      $http({method:'GET',url:'./measure/list'})
+      .then(function onSuccess(data) {
+        $scope.measures = data.data;
+      },function onError(data) {
+        $scope.measures = [];
+      });
+    }
 
   	var empty = {};
   	$scope.item = {};
@@ -107,8 +118,21 @@
       $http({method:'GET',url:'./instrument/page?' + content})
       .then(function onSuccess(data) {
         $scope.items = data.data;
+        for (var i = 0; i < $scope.items.length; i++) {
+      	  retrieve($scope.items[i]);
+        }
       },function onError(data) {
         $scope.items = [];
+      });
+    }
+    
+    var retrieve = function(item) {
+      $http({method:'GET',url:'./feature/list?instrument=' + item.id})
+      .then(function onSuccess(data) {
+        item.features = data.data;
+      },function onError(data) {
+        item.features = [];
+        display("warning", "Une erreur est survenue pendant la récupération des entrées de l'instrument de mesure.");
       });
     }
 
@@ -142,14 +166,57 @@
     
     $scope.clean = function() {
       $scope.item = angular.copy(empty);
+      $scope.element = null;
+      $scope.reset();
+    }
+    
+    $scope.reset = function() {
+      $scope.feature = angular.copy(empty);
+      $scope.feature.factor = 0;
     }
   
-    $scope.pick = function(item) {
-      $scope.item = item;
+    $scope.element = null;
+    $scope.feature = null;
+    
+    $scope.edit = function(item) {
+      $scope.element = item;
+      $scope.feature = angular.copy(empty);
+      $scope.feature.factor = 0;
+    }
+    
+    $scope.pick = function(measure) {
+      $scope.feature.measure = measure;
+    }
+
+    $scope.update = function() {
+      var content = "name=" + $scope.feature.name + "&factor=" + $scope.feature.factor + "&measure=" + $scope.feature.measure + "&instrument=" + $scope.element.id;
+      $http({method:'POST',url:'./feature/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(data) {
+    	$scope.clean();
+    	page();
+    	display("info", "Le trait de mesure a bien été créé.");
+      },function onError(data) {
+        $scope.reset();
+        display("warning", "Une erreur est survenue pendant la création du trait de mesure.");
+      });
+    }
+
+    $scope.erase = function(feature) {
+      var content = "id=" + feature.id;
+      $http({method:'POST',url:'./feature/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(data) {
+    	$scope.clean();
+    	page();
+    	display("info", "Le trait de mesure a bien été supprimé.");
+      },function onError(data) {
+        $scope.reset();
+        display("warning", "Une erreur est survenue pendant la suppression du trait de mesure.");
+      });
     }
   	
   	user();
   	role();
+  	list();
   	size();
   	page();
   	
@@ -198,13 +265,13 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   <span class="glyphicon glyphicon-user" aria-hidden="true">&nbsp;Compte</span>
                   <span class="caret"></span>
-                  </a>
+                </a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">{{username}}</li>
-                  <li><a href="./account.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;Paramètres</span></a></li>
-                  <li><a href="./token.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;Jetons</span></a></li>
+                  <li><a href="./account.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Paramètres</a></li>
+                  <li><a href="./token.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Jetons</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a ng-click="clear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;Déconnexion</span></a></li>
+                  <li><a href="./index.html" ng-click="clear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Déconnexion</a></li>
                 </ul>
               </li>
             </ul>
@@ -231,13 +298,22 @@
             <li class="list-group-item">
               <h4 class="list-group-item-heading">{{item.uri}}</h4>
               <p class="list-group-item-text">{{item.name}}</p>
-              <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="remove(item)">Supprimer</button></p>
+              <ul>
+                <li ng-repeat="f in item.features">
+                {{f.name}} ({{f.measure.unit}} avec un facteur de 10<sup>{{f.factor}}</sup>)
+                <a href="#" ng-click="erase(f)" class="btn-link"><span class="glyphicon glyphicon-remove pull-right" aria-hidden="true"></span></a>
+                </li>
+              </ul>
+              <p class="list-group-item-text text-right">
+                <button class="btn btn-default" ng-click="remove(item)">Supprimer</button>
+                <button class="btn btn-primary" ng-click="edit(item)">Éditer</button>
+              </p>
             </li>
           </div>
         </div>
       </div>
       <div class="col-md-6">
-        <form name="form" class="form list-group-item" id="form">
+        <form name="form" class="form list-group-item" ng-hide="element" id="form">
           <fieldset>
             <legend>Création d'un instrument de mesure</legend>
             <div class="form-group">
@@ -253,6 +329,34 @@
                 <div class="form-group pull-right">
                   <button type="reset" class="btn btn-default" ng-click="clean()"><strong>Effacer</strong></button>
                   <button type="submit" class="btn btn-primary" ng-click="create()" ng-disabled="!form.$valid"><strong>Ajouter</strong></button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <form name="featureForm" class="form list-group-item" ng-show="element" id="featureForm">
+          <fieldset>
+            <legend>Création d'un trait<br /><small>pour l'instrument de mesure #{{element.id}}</small></legend>
+            <input type="hidden" ng-model="element.id" ng-required="true" required>
+            <div class="form-group">
+              <label for="feature.name">Nom du trait de mesure</label>
+              <input type="text" class="form-control" id="feature.name" ng-model="feature.name" placeholder="Nom du trait de mesure" ng-required="true" required>
+            </div>
+            <div class="form-group">
+              <label for="feature.factor">Facteur du trait de mesure</label>
+              <input type="number" step="1" value="0" min="-64" max="64" class="form-control" id="feature.factor" ng-model="feature.factor" placeholder="Facteur du trait de mesure" ng-required="true" required>
+            </div>
+            <div class="form-group">
+              <label for="feature.measure">Métrique du trait de mesure</label>
+              <select class="form-control" id="feature.measure" ng-model="feature.measure" ng-change="pick(feature.measure)" ng-options="measure.id as measure.name for measure in measures" ng-required="true" required>
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group pull-right">
+                  <button type="reset" class="btn" ng-click="clean()"><strong>Annuler</strong></button>
+                  <button type="reset" class="btn btn-default" ng-click="reset()"><strong>Effacer</strong></button>
+                  <button type="submit" class="btn btn-primary" ng-click="update()" ng-disabled="!featureForm.$valid"><strong>Ajouter</strong></button>
                 </div>
               </div>
             </div>
