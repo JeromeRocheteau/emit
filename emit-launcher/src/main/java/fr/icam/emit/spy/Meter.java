@@ -1,30 +1,23 @@
 package fr.icam.emit.spy;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+public class Meter implements Runnable {
 
-import fr.icam.emit.api.Environment;
-
-public class SpyMeter implements Runnable {
-
-    private ObjectMapper mapper;
+    private Launcher launcher;
     
-    private SpyLauncher launcher;
-    
-    public void setUp() throws Exception {
-    	mapper = new ObjectMapper();
-    }
+    public void setUp() throws Exception { }
     
     public void tearDown() throws Exception {
     	Thread.currentThread().interrupt();
     }
     
     public final void doLaunch(long timeout, String cmd, String... args) throws Exception {
-    	launcher = new SpyLauncher();
+    	launcher = new Launcher();
     	launcher.setTimeout(timeout);
     	launcher.setCommand(cmd);
     	launcher.setArguments(args);
@@ -33,16 +26,17 @@ public class SpyMeter implements Runnable {
 
     public void run() { }
     
-    public void doRetrieve(OutputStream stream) throws Exception {
-    	mapper.writeValue(stream, launcher.getDuration());    	
+    public void doRetrieve(OutputStream stream) throws IOException {
+    	Long duration = Long.valueOf(launcher.getDuration());
+    	stream.write(duration.toString().getBytes());
     }
     
-	public final void doInfo(OutputStream stream) throws Exception {
-		Environment measurement = new Environment();
-		measurement.setArch(SystemUtils.OS_ARCH);
-		measurement.setSys(SystemUtils.OS_NAME);
-		measurement.setVersion(SystemUtils.OS_VERSION);
-    	mapper.writeValue(stream, measurement);   
+	public final void doInfo(OutputStream stream) throws IOException {
+		String arch = SystemUtils.OS_ARCH;
+		String os = SystemUtils.OS_NAME;
+		String version = SystemUtils.OS_VERSION;
+		String message = "{" + "\"arch\":" + "\"" + arch + "\"" + "," + "\"os\":" + "\"" + os + "\"" + "," + "\"version\":" + "\"" + version + "\"" + "}";
+		stream.write(message.getBytes());
 	}
 
     public final void doCheck(String cmd) throws Exception {

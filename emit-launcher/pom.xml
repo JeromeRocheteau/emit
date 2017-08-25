@@ -4,26 +4,16 @@
   <artifactId>emit-launcher</artifactId>
   <version>1.1</version>
   <packaging>war</packaging>
-  <name>Energy MonIToring Default Launcher</name>
+  <name>Energy MonIToring Launcher</name>
   <properties>
     <encoding>UTF-8</encoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
   </properties>
   <build>
-    <finalName>emitlauncher</finalName>
+    <finalName>launcher</finalName>
   </build>
   <dependencies>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.3.2</version>
-    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -31,14 +21,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.5.3</version>
-    </dependency>
-    <dependency>
-      <groupId>fr.icam.emit</groupId>
-      <artifactId>emit-api</artifactId>
-      <version>1.1</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.3.2</version>
     </dependency>
   </dependencies>
 </project>

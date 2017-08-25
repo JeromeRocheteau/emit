@@ -2,7 +2,7 @@ package fr.icam.emit.spy;
 
 import java.io.IOException;
 
-public class SpyLauncher {
+public class Launcher {
 
 	private String command;
 	private String[] arguments;

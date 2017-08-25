@@ -7,40 +7,12 @@
 	version="3.0">
 
   <servlet>
-    <servlet-name>type</servlet-name>
-    <servlet-class>fr.icam.emit.spy.SpyTypeServlet</servlet-class>
+    <servlet-name>servlet</servlet-name>
+    <servlet-class>fr.icam.emit.spy.Servlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>type</servlet-name>
-    <url-pattern>/type</url-pattern>
-  </servlet-mapping>
-	
-
-  <servlet>
-    <servlet-name>info</servlet-name>
-    <servlet-class>fr.icam.emit.spy.SpyInfoServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>info</servlet-name>
-    <url-pattern>/info</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>check</servlet-name>
-    <servlet-class>fr.icam.emit.spy.SpyCheckServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>check</servlet-name>
-    <url-pattern>/check</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>launch</servlet-name>
-    <servlet-class>fr.icam.emit.spy.SpyLaunchServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>launch</servlet-name>
-    <url-pattern>/launch</url-pattern>
+    <servlet-name>servlet</servlet-name>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
 
 </web-app>
