@@ -2,15 +2,15 @@ package fr.icam.emit.entities;
 
 public class Measurand extends Item {
 
-	private String name;
+	private String process;
 	
-	public String getName() {
-		return name;
+	public String getProcess() {
+		return process;
 	}
 
-	public Measurand(Long id, String name, Long deleted) {
+	public Measurand(Long id, Long deleted, String process) {
 		super(id, deleted);
-		this.name = name;
+		this.process = process;
 	}
 
 }

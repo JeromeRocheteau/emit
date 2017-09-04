@@ -23,9 +23,7 @@ public class EnvironmentCreate extends JdbcUpdateServlet<Boolean> {
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		String uri = request.getParameter("uri");
-		String name = request.getParameter("name");
 		statement.setString(1, uri);
-		statement.setString(2, name);
 	}
 
 	@Override

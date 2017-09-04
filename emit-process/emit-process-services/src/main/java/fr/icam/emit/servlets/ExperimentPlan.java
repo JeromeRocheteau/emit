@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcUpdateServlet;
 
-public class MeasurandCreate extends JdbcUpdateServlet<Boolean> {
+public class ExperimentPlan extends JdbcUpdateServlet<Boolean> {
 
-	private static final long serialVersionUID = 201708221826003L;
+	private static final long serialVersionUID = 201709041420005L;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -22,8 +22,12 @@ public class MeasurandCreate extends JdbcUpdateServlet<Boolean> {
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		String process = request.getParameter("process");
-		statement.setString(1, process);
+		Long measurand = Long.valueOf(request.getParameter("measurand"));
+		Long environment = Long.valueOf(request.getParameter("environment"));
+		Long experiment = Long.valueOf(request.getParameter("experiment"));
+		statement.setLong(1, measurand);
+		statement.setLong(2, environment);
+		statement.setLong(3, experiment);
 	}
 
 	@Override

@@ -18,11 +18,10 @@ public class EnvironmentList extends Lister<Environment> {
 		while (resultSet.next()) {
 			Long id = resultSet.getLong("id");
 			String uri = resultSet.getString("uri");
-			String name = resultSet.getString("name");
 			String arch = resultSet.getString("arch");
 			String os = resultSet.getString("os");
 			String version = resultSet.getString("version");
-			Environment environment = new Environment(id, uri, name, arch, os, version, null);
+			Environment environment = new Environment(id, null, uri, arch, os, version);
 			environments.add(environment);
 		}
 		return environments;

@@ -17,8 +17,8 @@ public class MeasurandList extends Lister<Measurand> {
 		List<Measurand> measurands = new LinkedList<Measurand>();
 		while (resultSet.next()) {
 			Long id = resultSet.getLong("id");
-			String name = resultSet.getString("name");
-			Measurand measurand = new Measurand(id, name, null);
+			String process = resultSet.getString("process");
+			Measurand measurand = new Measurand(id, null, process);
 			measurands.add(measurand);
 		}
 		return measurands;
