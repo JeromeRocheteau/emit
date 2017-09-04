@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcUpdateServlet;
 
-public class FeatureDisable extends JdbcUpdateServlet<Boolean> {
+public class MeasurementUpdate extends JdbcUpdateServlet<Boolean> {
 
-	private static final long serialVersionUID = 201708251500005L;
+	private static final long serialVersionUID = 201709041107003L;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -21,8 +21,8 @@ public class FeatureDisable extends JdbcUpdateServlet<Boolean> {
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		Long id = Long.valueOf(request.getParameter("id"));
-		statement.setLong(1, id);
+		Long measurement = Long.valueOf(request.getParameter("measurement"));
+		statement.setLong(1, measurement);
 	}
 
 	@Override

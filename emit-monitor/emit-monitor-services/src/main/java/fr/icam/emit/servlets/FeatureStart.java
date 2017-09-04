@@ -1,20 +1,20 @@
 package fr.icam.emit.servlets;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.jeromerocheteau.JdbcServlet;
 import com.mongodb.client.MongoDatabase;
 
-import fr.icam.emit.entities.Feature;
 import fr.icam.emit.listeners.MqttListener;
 
-public class FeatureStart extends JdbcServlet {
+public class FeatureStart extends HttpServlet {
 
-	private static final long serialVersionUID = 201708251500007L;
+	private static final long serialVersionUID = 201708251500006L;
 
 	private MongoDatabase database;
 	
@@ -27,15 +27,15 @@ public class FeatureStart extends JdbcServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
-			this.doCall(request, response, "feature-item");
-			Feature feature = (Feature) request.getAttribute("feature");
-			MqttListener client = MqttListener.get(feature, database);
-			client.doStart();
-			this.doCall(request, response, "measurement-create");
-			this.doCall(request, response, "feature-enable");
+			Long id = Long.valueOf(request.getParameter("id"));
+			String uri = request.getParameter("uri");
+			String topic = request.getParameter("topic");
+			String uuid = UUID.randomUUID().toString();
+			request.setAttribute("uuid", uuid);
+			MqttListener.start(id, uri, uuid, topic, database);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
 	}
-		
+
 }

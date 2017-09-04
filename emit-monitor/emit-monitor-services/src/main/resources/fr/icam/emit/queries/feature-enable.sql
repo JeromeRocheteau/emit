@@ -1,3 +1,3 @@
 UPDATE `features`
-SET `measurment` = ?
+SET `measurement` = ?
 WHERE `id` = ?;

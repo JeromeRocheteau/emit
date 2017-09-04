@@ -10,9 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcUpdateServlet;
 
-import fr.icam.emit.entities.Feature;
-import fr.icam.emit.entities.Measurement;
-
 public class FeatureEnable extends JdbcUpdateServlet<Boolean> {
 
 	private static final long serialVersionUID = 201708251500004L;
@@ -24,10 +21,10 @@ public class FeatureEnable extends JdbcUpdateServlet<Boolean> {
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		Feature feature = (Feature) request.getAttribute("feature");
-		Measurement measurement = (Measurement) request.getAttribute("measurement");
-		statement.setLong(1, measurement.getId());
-		statement.setLong(2, feature.getId());
+		Long id = Long.valueOf(request.getParameter("id"));
+		Long measurement = (Long) request.getAttribute("measurement");
+		statement.setLong(1, measurement);
+		statement.setLong(2, id);
 	}
 
 	@Override

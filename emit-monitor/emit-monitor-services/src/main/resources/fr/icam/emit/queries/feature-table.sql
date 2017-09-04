@@ -9,5 +9,6 @@ CREATE TABLE `features` (
   PRIMARY KEY (`id`),
   UNIQUE KEY (`instrument`,`name`),
   FOREIGN KEY (`measure`) REFERENCES `measures` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`instrument`) REFERENCES `instruments` (`id`) ON UPDATE CASCADE
+  FOREIGN KEY (`instrument`) REFERENCES `instruments` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`measurement`) REFERENCES `measurements` (`id`)
 );

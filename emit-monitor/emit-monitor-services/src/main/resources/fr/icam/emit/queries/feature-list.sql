@@ -7,7 +7,7 @@ SELECT
   m.`unit` AS measureUnit,
   i.`id` AS instrumentId,
   i.`uri` AS instrumentUri,
-  i.`name` AS instrumentName
+  i.`name` AS measureName
 FROM `features` f
 INNER JOIN `instruments` i ON i.`id` = f.`instrument`
 INNER JOIN `measures` m ON m.`id` = f.`measure`
