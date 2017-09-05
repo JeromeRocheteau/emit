@@ -96,9 +96,9 @@
 
     var size = function() {
       $http({method:'GET',url:'../measures/size'})
-      .then(function onSuccess(data) {
-        $scope.size = data.data;
-      },function onError(data) {
+      .then(function onSuccess(response) {
+        $scope.size = response.data;
+      },function onError(response) {
         $scope.size = 0;
       });
     }
@@ -106,9 +106,9 @@
     var page = function() {
       var content = "length=" + $scope.length + "&offset=" + $scope.offset; 
       $http({method:'GET',url:'../measures/page?' + content})
-      .then(function onSuccess(data) {
-        $scope.items = data.data;
-      },function onError(data) {
+      .then(function onSuccess(response) {
+        $scope.items = response.data;
+      },function onError(response) {
         $scope.items = [];
       });
     }
@@ -116,45 +116,45 @@
     $scope.doCreate = function() {
       var content = "name=" + encodeURIComponent($scope.item.name) + "&unit=" + encodeURIComponent($scope.item.unit);
       $http({method:'POST',url:'../measures/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(data) {
-    	$scope.doClean();
+      .then(function onSuccess(response) {
+       	display("success", "The measure has been sucessfully created.");
+       	$scope.doClean();
     	size();
     	page();
-    	display("success", "La métrique a bien été créée.");
-      },function onError(data) {
-        $scope.doClean();
-        display("danger", "Une erreur est survenue pendant la création de la métrique.");
+      },function onError(response) {
+          display("danger", "Something wrong happened while creating the measure.");
+          $scope.doClean();
       });
     }
 
     $scope.doUpdate = function() {
       var content = "id=" + $scope.item.id + "&name=" + encodeURIComponent($scope.item.name) + "&unit=" + encodeURIComponent($scope.item.unit);
       $http({method:'POST',url:'../measures/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(data) {
+      .then(function onSuccess(response) {
+       	display("success", "The measure " + $scope.item.id + " has been sucessfully updated.");
     	$scope.doClean();
     	size();
     	page();
-    	display("success", "La métrique a bien été modifiée.");
-      },function onError(data) {
-        $scope.doClean();
-        display("danger", "Une erreur est survenue pendant la modification de la métrique.");
+      },function onError(response) {
+          display("danger", "Something wrong happened while updating the measure #" + $scope.item.id + ".");
+          $scope.doClean();
       });
     }
 
     $scope.doDelete = function() {
       var content = "id=" + $scope.item.id;
       $http({method:'POST',url:'../measures/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(data) {
-    	$scope.doClean();
+      .then(function onSuccess(response) {
+      	display("success", "The measure " + $scope.item.id + " has been sucessfully deleted.");
+      	$scope.doClean();
     	if (Math.ceil($scope.size / $scope.length) < $scope.offset) {
     		$scope.offset = $scope.offset - $scope.length;
     	}
     	size();
     	page();
-    	display("success", "La métrique a bien été supprimée.");
-      },function onError(data) {
+      },function onError(response) {
+        display("danger", "Something wrong happened while deleting the measure #" + $scope.item.id +".");
         $scope.doClean();
-        display("danger", "Une erreur est survenue pendant la suppression de la métrique.");
       });
     }
     
@@ -171,7 +171,6 @@
     
     $scope.canCreate = function() {
       return selected === false;
-      
 	}
     
 	$scope.canUpdate = function() {
@@ -203,6 +202,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="../monitor/measures.html"><span class="glyphicon glyphicon-filter" aria-hidden="true">&nbsp;</span>Measures</a></li>
                   <li><a href="../monitor/instruments.html"><span class="glyphicon glyphicon-scale" aria-hidden="true">&nbsp;</span>Instruments</a></li>
+                  <li><a href="../monitor/features.html"><span class="glyphicon glyphicon-tag" aria-hidden="true">&nbsp;</span>Features</a></li>
                 </ul>
               </li>
             </ul>
@@ -227,12 +227,12 @@
       <div class="col-md-6">
         <div class="panel panel-default">
           <div class="panel-body">
-            <h3>Measures <small>({{size}} éléments)</small></h3>
+            <h3>Measures <small>({{size}} items)</small></h3>
             <nav aria-label="...">
               <ul class="pager">
                 <li class="previous"><a class="btn btn-default" ng-click="doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
                 <li class="previous"><a class="btn btn-default" ng-click="doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
-                <li>{{(offset + 1) / length | ceil}} / {{size / length | ceil}}</li>
+                <li ng-show="size > 0">{{(offset + 1) / length | ceil}} / {{size / length | ceil}}</li>
                 <li class="next"><a class="btn btn-default" ng-click="doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
                 <li class="next"><a class="btn btn-default" ng-click="doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
               </ul>
@@ -255,11 +255,11 @@
             <legend ng-show="canUpdate()">Edit the measure #{{item.id}}</legend>
             <div class="form-group">
               <label for="measure.name">Name</label>
-              <input type="text" class="form-control" id="measure.name" ng-model="item.name" placeholder="Name of measure" ng-required="true" required>
+              <input type="text" class="form-control" id="measure.name" ng-model="item.name" placeholder="Name of the measure" ng-required="true" required>
             </div>
             <div class="form-group">
               <label for="measure.unit">Unit</label>
-              <input type="text" class="form-control" id="measure.unit" ng-model="item.unit" placeholder="Unit of measure" ng-required="true" required>
+              <input type="text" class="form-control" id="measure.unit" ng-model="item.unit" placeholder="Unit of the measure" ng-required="true" required>
             </div>
             <div class="row">
               <div class="col-md-12">

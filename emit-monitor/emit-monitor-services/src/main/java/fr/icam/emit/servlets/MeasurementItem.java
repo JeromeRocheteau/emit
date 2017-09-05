@@ -18,7 +18,7 @@ public class MeasurementItem extends JdbcQueryServlet<Measurement> {
 	private static final long serialVersionUID = 201709041107001L;
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Measurement measurement = this.doProcess(request);
 		this.doWrite(measurement, response.getWriter());
 	}
@@ -42,7 +42,7 @@ public class MeasurementItem extends JdbcQueryServlet<Measurement> {
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		Long id = Long.valueOf(request.getParameter("id"));
+		Long id = Long.valueOf(request.getParameter("feature"));
 		statement.setLong(1, id);
 	}
 	

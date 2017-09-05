@@ -12,7 +12,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 
 public class FeatureDisable extends JdbcUpdateServlet<Boolean> {
 
-	private static final long serialVersionUID = 201708251500005L;
+	private static final long serialVersionUID = 201708251500006L;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

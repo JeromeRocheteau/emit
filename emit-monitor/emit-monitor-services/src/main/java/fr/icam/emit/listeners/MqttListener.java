@@ -34,6 +34,7 @@ public class MqttListener extends MqttClient implements MqttCallback {
 			throw new MqttException(new NullPointerException("No MQTT Client found for feature id = '" + id.toString() +"'"));
 		}
 		listener.disconnect();
+		instances.remove(id);
 	}
 	
 	private MongoCollection<Document> collection;

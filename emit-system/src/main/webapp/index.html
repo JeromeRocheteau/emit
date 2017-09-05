@@ -10,6 +10,8 @@
     <style type="text/css">
       html {overflow-y:scroll;position:relative;height:100%;min-height:100%;}
       footer {padding-top:2ex;padding-bottom:1ex;}
+      table tbody tr td:last-child {text-align:right;}
+      table tbody tr td.vertical-aligned {vertical-align:bottom;}
     </style>
   </head>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -19,6 +21,12 @@
   <script type="text/javascript">
   var app = angular.module('app',[]);
 
+  app.filter('ceil', function() {
+	return function(input) {
+	  return Math.ceil(input);
+	};
+  });
+  
   app.controller('controller', function ($scope, $http) {
 
 	$scope.username = null;
@@ -40,6 +48,119 @@
   	}
 
   	check();
+  	
+  	$scope.message = {};
+    
+    var display = function(type, content) {
+        $scope.message.type = type;
+        $scope.message.content = content;
+        $("#alert").show();
+    }
+    
+    $scope.doClose = function() {
+        $("#alert").hide();
+        $scope.alert = {};
+    }
+  	
+    $scope.length = 5;
+    $scope.offset = 0;
+    $scope.size = 0;
+    $scope.instruments = [];
+    
+    $scope.doPrev = function() {
+      if ($scope.length <= $scope.offset) {
+        $scope.offset = $scope.offset - $scope.length;
+        page();
+      }
+    }
+    
+    $scope.doNext = function() {
+      if ($scope.offset + $scope.length < $scope.size) {
+        $scope.offset = $scope.offset + $scope.length;
+        page();                     
+      }
+    }
+    
+    $scope.doFirst = function() {
+      $scope.offset = 0;
+      page();
+    }
+
+    $scope.doLast = function() {
+      $scope.offset = Math.floor(($scope.size - 1) / $scope.length) * $scope.length;
+      page();
+    }
+
+    var size = function() {
+      $http({method:'GET',url:'./instruments/size'})
+      .then(function onSuccess(response) {
+         $scope.size = response.data;
+      },function onError(response) {
+        $scope.size = 0;
+      });
+    }
+    
+    var page = function() {
+      var content = "length=" + $scope.length + "&offset=" + $scope.offset; 
+      $http({method:'GET',url:'./instruments/page?' + content})
+      .then(function onSuccess(response) {
+        $scope.instruments = response.data;
+        for (var i in $scope.instruments) {
+          features($scope.instruments[i]);
+        }
+      },function onError(response) {
+        $scope.instruments = [];
+      });
+    }
+    
+    var features = function(instrument) {
+      var content = "instrument=" + instrument.id; 
+      $http({method:'GET',url:'./features/list?' + content})
+      .then(function onSuccess(response) {
+        instrument.features = response.data;
+        for (var i in instrument.features) {
+          measurement(instrument.features[i]);
+        }
+      },function onError(response) {
+      	instrument.features = [];
+      });
+    }
+    
+    var measurement = function(feature) {
+      var content = "feature=" + feature.id; 
+      $http({method:'GET',url:'./measurements/item?' + content})
+      .then(function onSuccess(response) {
+        feature.measurement = response.data;
+      },function onError(response) {
+    	feature.measurement = null;
+      });
+    }
+    
+    size();
+    page();
+    
+    $scope.doStart = function(feature) {
+      var content = "id=" + feature.id + "&uri=" + encodeURIComponent(feature.instrument.uri) + "&topic=" + encodeURIComponent(feature.instrument.name + '/' + feature.name);
+      $http({method:'POST',url:'./monitor/start',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+       	display("success", "The monitoring has been sucessfully started.");
+       	feature.measurement = {};
+    	measurement(feature);
+      },function onError(response) {
+          display("danger", "Something wrong happened while starting the monitoring.");
+      });
+   }
+    
+    $scope.doStop = function(feature) {
+        var content = "id=" + feature.id + "&measurement=" + feature.measurement.id;
+        $http({method:'POST',url:'./monitor/stop',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+        .then(function onSuccess(response) {
+          display("success", "The monitoring has been sucessfully stopped.");
+          feature.measurement = null;  
+        },function onError(response) {
+          display("danger", "Something wrong happened while stopping the monitoring.");
+        });
+    }
 
   });
   </script>
@@ -63,6 +184,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="./monitor/measures.html"><span class="glyphicon glyphicon-filter" aria-hidden="true">&nbsp;</span>Measures</a></li>
                   <li><a href="./monitor/instruments.html"><span class="glyphicon glyphicon-scale" aria-hidden="true">&nbsp;</span>Instruments</a></li>
+                  <li><a href="./monitor/features.html"><span class="glyphicon glyphicon-tag" aria-hidden="true">&nbsp;</span>Features</a></li>
                 </ul>
               </li>
             </ul>
@@ -83,7 +205,55 @@
         </div>
       </div>
     </header>
-    <section id="content" class="container">
+    <section id="content" class="container ng-cloak">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h3>Instruments <small>({{size}} items)</small></h3>
+            <nav aria-label="...">
+              <ul class="pager">
+                <li class="previous"><a class="btn btn-default" ng-click="doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li ng-show="size > 0">{{(offset + 1) / length | ceil}} / {{size / length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="panel panel-default" ng-repeat="instrument in instruments">
+            <div class="panel-heading"><h4>{{instrument.name}} <small>{{instrument.uri}}</small></h4></div>
+            <table class="table" ng-show="instrument.features.length > 0">
+              <thead>
+                <tr>
+                  <th>name</th>
+                  <th>measure</th>
+                  <th>unit</th>
+                  <th>factor</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="feature in instrument.features">
+                  <td>{{feature.name}}</td>
+                  <td>{{feature.measure.name}}</td>
+                  <td>{{feature.measure.unit}}</td>
+                  <td>10<sup>{{feature.factor}}</sup></td>
+                  <td>
+                    <button class="btn btn-success btn-sm" ng-click="doStart(feature)" ng-show="!feature.measurement">Start</button>
+                    <button class="btn btn-danger btn-sm" ng-click="doStop(feature)" ng-show="feature.measurement.started && !feature.measurement.stopped">Stop</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
+          <button type="button" class="close" aria-label="close" ng-click="doClose()"><span aria-hidden="true">&times;</span></button>
+          <p>{{message.content}}</p>
+        </div>
+      </div>
     </section>
     <footer class="footer navbar-default navbar-fixed-bottom">
       <div class="container">

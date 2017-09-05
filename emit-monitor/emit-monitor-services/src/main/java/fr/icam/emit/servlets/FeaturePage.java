@@ -11,9 +11,9 @@ import fr.icam.emit.entities.Feature;
 import fr.icam.emit.entities.Instrument;
 import fr.icam.emit.entities.Measure;
 
-public class FeatureList extends Lister<Feature> {
+public class FeaturePage extends Pager<Feature> {
 
-	private static final long serialVersionUID = 201708251500001L;
+	private static final long serialVersionUID = 201708251500002L;
 
 	@Override
 	protected List<Feature> doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
@@ -42,7 +42,11 @@ public class FeatureList extends Lister<Feature> {
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Long instrument = Long.valueOf(request.getParameter("instrument"));
+		Integer offset = Integer.valueOf(request.getParameter("offset"));
+		Integer length = Integer.valueOf(request.getParameter("length"));
 		statement.setLong(1, instrument);
+		statement.setInt(2, offset);
+		statement.setInt(3, length);
 	}
 	
 }

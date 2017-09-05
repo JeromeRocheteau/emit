@@ -12,4 +12,5 @@ FROM `features` f
 INNER JOIN `instruments` i ON i.`id` = f.`instrument`
 INNER JOIN `measures` m ON m.`id` = f.`measure`
 WHERE f.`instrument` = ? 
-AND f.`deleted` IS NULL;
+AND f.`deleted` IS NULL
+LIMIT ?,?;

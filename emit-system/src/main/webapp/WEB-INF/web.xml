@@ -26,6 +26,20 @@
     <listener-class>com.github.jeromerocheteau.JdbcListener</listener-class>
   </listener>
 
+  <context-param>
+    <param-name>mongodb-server</param-name>
+    <param-value>mongodb://localhost:27017</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>mongodb-database</param-name>
+    <param-value>emit</param-value>
+  </context-param>
+  
+  <listener>
+    <listener-class>fr.icam.emit.listeners.MongoListener</listener-class>
+  </listener>
+
   <filter>
     <filter-name>jdbc-filter</filter-name>
     <filter-class>com.github.jeromerocheteau.JdbcFilter</filter-class>
@@ -133,6 +147,234 @@
   <servlet-mapping>
     <servlet-name>measure-delete</servlet-name>
     <url-pattern>/measures/delete</url-pattern>
+  </servlet-mapping>
+
+  <!-- instruments -->
+
+  <servlet>
+    <servlet-name>instrument-size</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-size</servlet-name>
+    <url-pattern>/instruments/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>instrument-list</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.InstrumentList</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-list</servlet-name>
+    <url-pattern>/instruments/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>instrument-page</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.InstrumentPage</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-page</servlet-name>
+    <url-pattern>/instruments/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>instrument-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.InstrumentCreate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-create</servlet-name>
+    <url-pattern>/instruments/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>instrument-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.InstrumentUpdate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-update</servlet-name>
+    <url-pattern>/instruments/update</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>instrument-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/instrument-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>instrument-delete</servlet-name>
+    <url-pattern>/instruments/delete</url-pattern>
+  </servlet-mapping>
+
+  <!-- features -->
+
+  <servlet>
+    <servlet-name>feature-size</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureSize</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-size</servlet-name>
+    <url-pattern>/features/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>feature-list</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureList</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-list</servlet-name>
+    <url-pattern>/features/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>feature-page</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeaturePage</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-page</servlet-name>
+    <url-pattern>/features/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>feature-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureCreate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-create</servlet-name>
+    <url-pattern>/features/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>feature-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureUpdate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-update</servlet-name>
+    <url-pattern>/features/update</url-pattern>
+  </servlet-mapping>
+
+  <!-- measurement -->
+  
+  <servlet>
+    <servlet-name>measurement-item</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurementItem</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurement-item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurement-item</servlet-name>
+    <url-pattern>/measurements/item</url-pattern>
+  </servlet-mapping>
+
+  <!-- monitor -->
+
+  <servlet>
+    <servlet-name>feature-start</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureStart</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>measurement-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurementCreate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurement-create.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>feature-enable</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureEnable</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-enable.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>monitor-start</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MonitorStart</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>monitor-start</servlet-name>
+    <url-pattern>/monitor/start</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>feature-stop</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureStop</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>measurement-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurementUpdate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurement-update.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>feature-disable</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureDisable</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-disable.sql</param-value>
+    </init-param>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>monitor-stop</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MonitorStop</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>monitor-stop</servlet-name>
+    <url-pattern>/monitor/stop</url-pattern>
   </servlet-mapping>
 
   <!-- security -->

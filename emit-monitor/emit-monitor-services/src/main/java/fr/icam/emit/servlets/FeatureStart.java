@@ -14,7 +14,7 @@ import fr.icam.emit.listeners.MqttListener;
 
 public class FeatureStart extends HttpServlet {
 
-	private static final long serialVersionUID = 201708251500006L;
+	private static final long serialVersionUID = 201708251500007L;
 
 	private MongoDatabase database;
 	

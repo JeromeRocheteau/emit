@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Emit | Instruments</title>
+    <title>Emit | Features</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -60,6 +60,44 @@
         $scope.alert = {};
     }
     
+    $scope.activated = false;
+	$scope.instruments = [];
+	$scope.measures = [];
+
+    var list = function() {
+      $http({method:'GET',url:'../measures/list'})
+        .then(function onSuccess(response) {
+          $scope.measures = response.data;
+        },function onError(response) {
+          $scope.measures = [];
+      });
+      $http({method:'GET',url:'../instruments/list'})
+      .then(function onSuccess(response) {
+        $scope.instruments = response.data;
+      },function onError(response) {
+        $scope.instruments = [];
+      });
+    }
+    
+    list();
+    
+    $scope.setInstrument = function(instrument) {
+    	$scope.activated = true;
+    	$scope.item.instrument = instrument;
+    	size();
+    	page();
+    }
+    
+    $scope.setMeasure = function(measure) {
+    	$scope.item.measure = measure;
+    }
+
+    $scope.doReset = function() {
+    	$scope.activated = false;
+    	$scope.item = angular.copy(empty);
+    	$scope.items = [];
+	}
+    
   	var empty = {};
   	var selected = false;
   	
@@ -95,68 +133,69 @@
     }
 
     var size = function() {
-        $http({method:'GET',url:'../instruments/size'})
-        .then(function onSuccess(response) {
-          $scope.size = response.data;
-        },function onError(response) {
-          $scope.size = 0;
-        });
-      }
+      var content = "instrument=" + $scope.item.instrument.id; 
+      $http({method:'GET',url:'../features/size?' + content})
+      .then(function onSuccess(response) {
+        $scope.size = response.data;
+      },function onError(response) {
+        $scope.size = 0;
+      });
+    }
 
-      var page = function() {
-        var content = "length=" + $scope.length + "&offset=" + $scope.offset; 
-        $http({method:'GET',url:'../instruments/page?' + content})
-        .then(function onSuccess(response) {
-          $scope.items = response.data;
-        },function onError(response) {
-          $scope.items = [];
-        });
-      }
+    var page = function() {
+      var content = "instrument=" + $scope.item.instrument.id + "&length=" + $scope.length + "&offset=" + $scope.offset; 
+      $http({method:'GET',url:'../features/page?' + content})
+      .then(function onSuccess(response) {
+        $scope.items = response.data;
+      },function onError(response) {
+        $scope.items = [];
+      });
+    }
 
-      $scope.doCreate = function() {
-        var content = "name=" + encodeURIComponent($scope.item.name) + "&uri=" + encodeURIComponent($scope.item.uri);
-        $http({method:'POST',url:'../instruments/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-        .then(function onSuccess(response) {
-         	display("success", "The instrument has been sucessfully created.");
-         	$scope.doClean();
-        	size();
-        	page();
-        },function onError(response) {
-            display("danger", "Something wrong happened while creating the instrument.");
-            $scope.doClean();
-        });
-      }
-
-      $scope.doUpdate = function() {
-        var content = "id=" + $scope.item.id + "&name=" + encodeURIComponent($scope.item.name) + "&uri=" + encodeURIComponent($scope.item.uri);
-        $http({method:'POST',url:'../instruments/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-        .then(function onSuccess(response) {
-         	display("success", "The instrument " + $scope.item.id + " has been sucessfully updated.");
-      	$scope.doClean();
-      	size();
-      	page();
-        },function onError(response) {
-            display("danger", "Something wrong happened while updating the instrument #" + $scope.item.id + ".");
-            $scope.doClean();
-        });
-      }
-
-      $scope.doDelete = function() {
-        var content = "id=" + $scope.item.id;
-        $http({method:'POST',url:'../instruments/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-        .then(function onSuccess(response) {
-        	display("success", "The instrument " + $scope.item.id + " has been sucessfully deleted.");
-        	$scope.doClean();
-      	if (Math.ceil($scope.size / $scope.length) < $scope.offset) {
-      		$scope.offset = $scope.offset - $scope.length;
-      	}
-      	size();
-      	page();
-        },function onError(response) {
-          display("danger", "Something wrong happened while deleting the instrument #" + $scope.item.id +".");
+    $scope.doCreate = function() {
+      var content = "name=" + encodeURIComponent($scope.item.name) + "&factor=" + $scope.item.factor + "&measure=" + $scope.item.measure.id + "&instrument=" + $scope.item.instrument.id;
+      $http({method:'POST',url:'../features/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+       	display("success", "The feature has been sucessfully created.");
+       	$scope.doClean();
+    	size();
+    	page();
+      },function onError(response) {
+          display("danger", "Something wrong happened while feature the measure.");
           $scope.doClean();
-        });
-      }
+      });
+    }
+
+    $scope.doUpdate = function() {
+      var content = "id=" + $scope.item.id + "&name=" + encodeURIComponent($scope.item.name) + "&factor=" + $scope.item.factor + "&measure=" + $scope.item.measure.id + "&instrument=" + $scope.item.instrument.id;
+      $http({method:'POST',url:'../features/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+       	display("success", "The feature " + $scope.item.id + " has been sucessfully updated.");
+    	$scope.doClean();
+    	size();
+    	page();
+      },function onError(response) {
+          display("danger", "Something wrong happened while updating the feature #" + $scope.item.id + ".");
+          $scope.doClean();
+      });
+    }
+
+    $scope.doDelete = function() {
+      var content = "id=" + $scope.item.id;
+      $http({method:'POST',url:'../features/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+      	display("success", "The feature " + $scope.item.id + " has been sucessfully deleted.");
+      	$scope.doClean();
+    	if (Math.ceil($scope.size / $scope.length) < $scope.offset) {
+    		$scope.offset = $scope.offset - $scope.length;
+    	}
+    	size();
+    	page();
+      },function onError(response) {
+        display("danger", "Something wrong happened while deleting the feature #" + $scope.item.id +".");
+        $scope.doClean();
+      });
+    }
     
     $scope.doSelect = function(item) {
     	selected = true;
@@ -165,7 +204,9 @@
     
     $scope.doClean = function() {
     	selected = false;
+    	var instrument = angular.copy($scope.item.instrument);
         $scope.item = angular.copy(empty);
+        $scope.item.instrument = instrument;
         $scope.alert = angular.copy(empty);
 	}
     
@@ -177,9 +218,6 @@
 		return selected === true;
 	}
     
-  	size();
-  	page();
-
   });
   </script>
   <body ng-app="app" ng-controller="controller">
@@ -227,21 +265,31 @@
       <div class="col-md-6">
         <div class="panel panel-default">
           <div class="panel-body">
-            <h3>Instruments <small>({{size}} items)</small></h3>
-            <nav aria-label="...">
+            <h3>Features <small>({{size}} items)</small></h3>
+            <div class="form-group">
+              <label for="feature.instrument">Instrument</label>
+              <select class="form-control" id="feature.instrument" ng-model="item.instrument" ng-change="setInstrument(item.instrument)" ng-options="i.name for i in instruments track by i.id">
+              </select>
+            </div>
+            <div class="form-group text-center">
+              <button type="reset" class="btn" ng-click="doReset()"><strong>Reset</strong></button>
+            </div>
+            <nav aria-label="..." ng-show="activated">
               <ul class="pager">
-                <li class="previous"><a class="btn btn-default" ng-click="doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
-                <li class="previous"><a class="btn btn-default" ng-click="doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li ng-disabled="offset - length < 0" class="previous"><a class="btn btn-default" ng-click="doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
+                <li ng-disabled="offset - length < 0" class="previous"><a class="btn btn-default" ng-click="doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
                 <li ng-show="size > 0">{{(offset + 1) / length | ceil}} / {{size / length | ceil}}</li>
-                <li class="next"><a class="btn btn-default" ng-click="doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
-                <li class="next"><a class="btn btn-default" ng-click="doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+                <li ng-disabled="offset + length >= size" class="next"><a class="btn btn-default" ng-click="doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li ng-disabled="offset + length >= size" class="next"><a class="btn btn-default" ng-click="doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
               </ul>
             </nav>
           </div>
           <div class="list-group" ng-repeat="item in items">
             <li class="list-group-item">
               <h4 class="list-group-item-heading">{{item.name}}</h4>
-              <p class="list-group-item-text"><em>uri:</em> {{item.uri}}</p>
+              <p class="list-group-item-text"><em>measure:</em> {{item.measure.name}}</p>
+              <p class="list-group-item-text"><em>unit:</em> {{item.measure.unit}}</p>
+              <p class="list-group-item-text"><em>factor:</em> 10<sup>{{item.factor}}</sup></p>
               <p class="list-group-item-text"><em>id:</em> #{{item.id}}</p>
               <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="doSelect(item)">Edit</button></p>
             </li>
@@ -249,17 +297,22 @@
         </div>
       </div>
       <div class="col-md-6">
-        <form name="form" class="form list-group-item" id="form">
+        <form name="form" class="form list-group-item" id="form" ng-show="activated">
           <fieldset>
-            <legend ng-show="canCreate()">Edit an instrument</legend>
-            <legend ng-show="canUpdate()">Edit the instrument #{{item.id}}</legend>
+            <legend ng-show="canCreate()">Edit a feature</legend>
+            <legend ng-show="canUpdate()">Edit the feature #{{item.id}}</legend>
             <div class="form-group">
-              <label for="instrument.name">Name</label>
-              <input type="text" class="form-control" id="instrument.name" ng-model="item.name" placeholder="Name of the instrument" ng-required="true" required>
+              <label for="feature.name">Name</label>
+              <input type="text" class="form-control" id="feature.name" ng-model="item.name" placeholder="Name of the feature" ng-required="true" required>
             </div>
             <div class="form-group">
-              <label for="instrument.unit">URI</label>
-              <input type="text" class="form-control" id="instrument.uri" ng-model="item.uri" placeholder="URI of the instrument" ng-required="true" required>
+              <label for="feature.factor">Factor</label>
+              <input type="number" min="-16" max="16" step="1" class="form-control" id="feature.factor" ng-model="item.factor" placeholder="Factor of the feature" ng-required="true" required>
+            </div>
+            <div class="form-group">
+              <label for="feature.measure">Measure</label>
+              <select class="form-control" id="feature.measure" ng-model="item.measure" ng-change="setMeasure(item.measure)" ng-options="m.name for m in measures track by m.id" ng-required="true" required>
+              </select>
             </div>
             <div class="row">
               <div class="col-md-12">

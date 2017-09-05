@@ -11,7 +11,7 @@ import fr.icam.emit.listeners.MqttListener;
 
 public class FeatureStop extends HttpServlet {
 
-	private static final long serialVersionUID = 201708251500007L;
+	private static final long serialVersionUID = 201708251500008L;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
