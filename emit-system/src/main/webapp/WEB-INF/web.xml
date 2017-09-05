@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+	version="3.0">
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <resource-ref>
+    <description>JDBC Resource</description>
+    <res-ref-name>jdbc/database</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+  <context-param>
+    <param-name>jdbc-resource</param-name>
+    <param-value>jdbc/database</param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>com.github.jeromerocheteau.JdbcListener</listener-class>
+  </listener>
+
+  <filter>
+    <filter-name>jdbc-filter</filter-name>
+    <filter-class>com.github.jeromerocheteau.JdbcFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>jdbc-filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- user -->
+
+  <servlet>
+    <servlet-name>user-clear</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.UserClear</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-clear</servlet-name>
+    <url-pattern>/user/clear</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-check</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.UserCheck</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-check</servlet-name>
+    <url-pattern>/user/check</url-pattern>
+  </servlet-mapping>
+
+  <!-- measures -->
+
+  <servlet>
+    <servlet-name>measure-size</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-size</servlet-name>
+    <url-pattern>/measures/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measure-list</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasureList</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-list</servlet-name>
+    <url-pattern>/measures/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measure-page</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurePage</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-page</servlet-name>
+    <url-pattern>/measures/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measure-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasureCreate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-create</servlet-name>
+    <url-pattern>/measures/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measure-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasureUpdate</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-update</servlet-name>
+    <url-pattern>/measures/update</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>measure-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measure-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-delete</servlet-name>
+    <url-pattern>/measures/delete</url-pattern>
+  </servlet-mapping>
+
+  <!-- security -->
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>all</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>user</role-name>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-role>
+    <role-name>admin</role-name>
+  </security-role>
+
+  <security-role>
+    <role-name>user</role-name>
+  </security-role>
+
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <form-login-config>
+      <form-login-page>/security/index.html</form-login-page>
+      <form-error-page>/security/failure.html</form-error-page>
+    </form-login-config>
+  </login-config>
+
+</web-app>

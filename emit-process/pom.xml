@@ -13,5 +13,6 @@
   <modules>
     <module>emit-process-entities</module>
     <module>emit-process-services</module>
+    <module>emit-process-launcher</module>
   </modules>
 </project>
