@@ -10,16 +10,17 @@
     <style type="text/css">
       html {overflow-y:scroll;position:relative;height:100%;min-height:100%;}
       footer {padding-top:2ex;padding-bottom:1ex;}
-      table tbody tr td:last-child {text-align:right;}
-      table tbody tr td.vertical-aligned {vertical-align:bottom;}
     </style>
   </head>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-chart.js/1.1.1/angular-chart.min.js"></script>
   <script type="text/javascript">
-  var app = angular.module('app',[]);
+  var app = angular.module('app',['chart.js']);
 
   app.filter('ceil', function() {
 	return function(input) {
@@ -62,106 +63,259 @@
         $scope.alert = {};
     }
   	
-    $scope.length = 5;
-    $scope.offset = 0;
-    $scope.size = 0;
-    $scope.instruments = [];
+    $scope.x1 = {};
+    $scope.x1.length = 5;
+    $scope.x1.offset = 0;
+    $scope.x1.size = 0;
+    $scope.x1.item = null;
+    $scope.x1.items = [];
     
-    $scope.doPrev = function() {
-      if ($scope.length <= $scope.offset) {
-        $scope.offset = $scope.offset - $scope.length;
-        page();
+    $scope.x1.doPrev = function() {
+      if ($scope.x1.length <= $scope.x1.offset) {
+        $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+        $scope.x1.doPage();
       }
     }
     
-    $scope.doNext = function() {
-      if ($scope.offset + $scope.length < $scope.size) {
-        $scope.offset = $scope.offset + $scope.length;
-        page();                     
+    $scope.x1.doNext = function() {
+      if ($scope.x1.offset + $scope.x1.length < $scope.x1.size) {
+        $scope.x1.offset = $scope.x1.offset + $scope.x1.length;
+        $scope.x1.doPage();
       }
     }
     
-    $scope.doFirst = function() {
-      $scope.offset = 0;
-      page();
+    $scope.x1.doFirst = function() {
+      $scope.x1.offset = 0;
+      $scope.x1.doPage();
     }
 
-    $scope.doLast = function() {
-      $scope.offset = Math.floor(($scope.size - 1) / $scope.length) * $scope.length;
-      page();
+    $scope.x1.doLast = function() {
+      $scope.x1.offset = Math.floor(($scope.x1.size - 1) / $scope.x1.length) * $scope.x1.length;
+      $scope.x1.doPage();
+    }
+    
+    $scope.x1.doSelect = function(item) {
+      $scope.x1.item = item;
+      $scope.x2.doClean();
+      $scope.x2.doSize();
+      $scope.x2.doPage();
+    }
+    
+    $scope.x1.doClean = function() {
+      $scope.x1.item = null;
+      $scope.x2.doReset();
+    }
+    
+    $scope.x1.doReset = function() {
+      $scope.x1.doClean();
+      $scope.x1.length = 5;
+      $scope.x1.offset = 0;
+      $scope.x1.size = 0;
+      $scope.x1.items = [];
     }
 
-    var size = function() {
+    $scope.x1.doSize = function() { // FIXME
       $http({method:'GET',url:'./instruments/size'})
       .then(function onSuccess(response) {
-         $scope.size = response.data;
+         $scope.x1.size = response.data;
       },function onError(response) {
-        $scope.size = 0;
+        $scope.x1.size = 0;
       });
     }
     
-    var page = function() {
-      var content = "length=" + $scope.length + "&offset=" + $scope.offset; 
+    $scope.x1.doPage = function() { // FIXME
+      var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
       $http({method:'GET',url:'./instruments/page?' + content})
       .then(function onSuccess(response) {
-        $scope.instruments = response.data;
-        for (var i in $scope.instruments) {
-          features($scope.instruments[i]);
-        }
+        $scope.x1.items = response.data;
       },function onError(response) {
-        $scope.instruments = [];
+        $scope.x1.items = [];
       });
-    }
-    
-    var features = function(instrument) {
-      var content = "instrument=" + instrument.id; 
-      $http({method:'GET',url:'./features/list?' + content})
-      .then(function onSuccess(response) {
-        instrument.features = response.data;
-        for (var i in instrument.features) {
-          measurement(instrument.features[i]);
-        }
-      },function onError(response) {
-      	instrument.features = [];
-      });
-    }
-    
-    var measurement = function(feature) {
-      var content = "feature=" + feature.id; 
-      $http({method:'GET',url:'./measurements/item?' + content})
-      .then(function onSuccess(response) {
-        feature.measurement = response.data;
-      },function onError(response) {
-    	feature.measurement = null;
-      });
-    }
-    
-    size();
-    page();
-    
-    $scope.doStart = function(feature) {
-      var content = "id=" + feature.id + "&uri=" + encodeURIComponent(feature.instrument.uri) + "&topic=" + encodeURIComponent(feature.instrument.name + '/' + feature.name);
-      $http({method:'POST',url:'./monitor/start',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-       	display("success", "The monitoring has been sucessfully started.");
-       	feature.measurement = {};
-    	measurement(feature);
-      },function onError(response) {
-          display("danger", "Something wrong happened while starting the monitoring.");
-      });
-   }
-    
-    $scope.doStop = function(feature) {
-        var content = "id=" + feature.id + "&measurement=" + feature.measurement.id;
-        $http({method:'POST',url:'./monitor/stop',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-        .then(function onSuccess(response) {
-          display("success", "The monitoring has been sucessfully stopped.");
-          feature.measurement = null;  
-        },function onError(response) {
-          display("danger", "Something wrong happened while stopping the monitoring.");
-        });
     }
 
+    $scope.x1.doSize();
+    $scope.x1.doPage();
+
+    $scope.x2 = {};
+    $scope.x2.length = 5;
+    $scope.x2.offset = 0;
+    $scope.x2.size = 0;
+    $scope.x2.item = null;
+    $scope.x2.items = [];
+    
+    $scope.x2.doPrev = function() {
+      if ($scope.x2.length <= $scope.x2.offset) {
+        $scope.x2.offset = $scope.x2.offset - $scope.x2.length;
+        $scope.x2.doPage();
+      }
+    }
+    
+    $scope.x2.doNext = function() {
+      if ($scope.x2.offset + $scope.x2.length < $scope.x2.size) {
+        $scope.x2.offset = $scope.x2.offset + $scope.x2.length;
+        $scope.x2.doPage();
+      }
+    }
+    
+    $scope.x2.doFirst = function() {
+      $scope.x2.offset = 0;
+      $scope.x2.doPage();
+    }
+
+    $scope.x2.doLast = function() {
+      $scope.x2.offset = Math.floor(($scope.x2.size - 1) / $scope.x2.length) * $scope.x2.length;
+      $scope.x2.doPage();
+    }
+    
+    $scope.x2.doSelect = function(item) {
+      $scope.x2.item = item;
+      $scope.x3.doClean();
+      $scope.x3.doSize();
+      $scope.x3.doPage();
+    }
+    
+    $scope.x2.doClean = function() {
+      $scope.x2.item = null;
+      $scope.x3.doReset();
+    }
+    
+    $scope.x2.doReset = function() {
+      $scope.x2.doClean();
+      $scope.x2.length = 5;
+      $scope.x2.offset = 0;
+      $scope.x2.size = 0;
+      $scope.x2.items = [];
+    }
+
+    $scope.x2.doSize = function() { // FIXME
+      var content = "instrument=" + $scope.x1.item.id; 
+      $http({method:'GET',url:'./features/size?' + content})
+      .then(function onSuccess(response) {
+         $scope.x2.size = response.data;
+      },function onError(response) {
+        $scope.x2.size = 0;
+      });
+    }
+    
+    $scope.x2.doPage = function() { // FIXME
+      var content = "instrument=" + $scope.x1.item.id + "&length=" + $scope.x2.length + "&offset=" + $scope.x2.offset; 
+      $http({method:'GET',url:'./features/page?' + content})
+      .then(function onSuccess(response) {
+        $scope.x2.items = response.data;
+      },function onError(response) {
+        $scope.x2.items = [];
+      });
+    }
+    
+    $scope.x3 = {};
+    $scope.x3.length = 5;
+    $scope.x3.offset = 0;
+    $scope.x3.size = 0;
+    $scope.x3.item = null;
+    $scope.x3.items = [];
+    
+    $scope.x3.doPrev = function() {
+      if ($scope.x3.length <= $scope.x3.offset) {
+        $scope.x3.offset = $scope.x3.offset - $scope.x3.length;
+        $scope.x3.doPage();
+      }
+    }
+    
+    $scope.x3.doNext = function() {
+      if ($scope.x3.offset + $scope.x3.length < $scope.x3.size) {
+        $scope.x3.offset = $scope.x3.offset + $scope.x3.length;
+        $scope.x3.doPage();
+      }
+    }
+    
+    $scope.x3.doFirst = function() {
+      $scope.x3.offset = 0;
+      $scope.x3.doPage();
+    }
+
+    $scope.x3.doLast = function() {
+      $scope.x3.offset = Math.floor(($scope.x3.size - 1) / $scope.x3.length) * $scope.x3.length;
+      $scope.x3.doPage();
+    }
+    
+    $scope.x3.doSelect = function(item) {
+      $scope.x3.item = item;
+      $scope.x4.load();
+    }
+    
+    $scope.x3.doClean = function() {
+      $scope.x3.item = null;
+      $scope.x4.doReset();
+    }
+    
+    $scope.x3.doReset = function() {
+      $scope.x3.doClean();
+      $scope.x3.length = 5;
+      $scope.x3.offset = 0;
+      $scope.x3.size = 0;
+      $scope.x3.items = [];
+    }
+    
+    $scope.x3.doSize = function() {
+      var content = "feature=" + $scope.x2.item.id; 
+      $http({method:'GET',url:'./measurements/size?' + content})
+      .then(function onSuccess(response) {
+        $scope.x3.size = response.data;
+      },function onError(response) {
+    	  $scope.x3.size = 0;
+      });
+    }
+    
+    $scope.x3.doPage = function() {
+      var content = "feature=" + $scope.x2.item.id + "&length=" + $scope.x3.length + "&offset=" + $scope.x3.offset; 
+      $http({method:'GET',url:'./measurements/page?' + content})
+      .then(function onSuccess(response) {
+    	  $scope.x3.items = response.data;
+      },function onError(response) {
+    	  $scope.x3.items = [];
+      });
+    }
+    
+    $scope.x4 = {};
+    $scope.x4.values = [];
+	$scope.x4.labels = [];
+	$scope.x4.series = [];
+	$scope.x4.data = [$scope.x4.values];
+	
+	$scope.x4.options = {scales: {xAxes: [{type:'time',time:{displayFormats: {'millisecond': 'HH:mm','second': 'HH:mm','minute': 'HH:mm','hour': 'HH:mm','day': 'HH:mm','week': 'HH:mm','month': 'HH:mm','quarter': 'HH:mm','year': 'HH:mm'}}}],yAxes: [{id:'y-axis',type:'linear',display:true,position:'left'}]}};
+
+    $scope.x4.load = function() {
+        var content = "uuid=" + $scope.x3.item.uuid; 
+        $http({method:'GET',url:'./measurements/data?' + content})
+        .then(function onSuccess(response) {
+          $scope.x4.doReset();
+          $scope.x4.doData(response.data);
+        },function onError(response) {
+          $scope.x4.doReset();
+        });
+    }
+    
+    $scope.x4.doReset = function() {
+		while ($scope.x4.labels.length) { 
+			$scope.x4.labels.pop(); 
+		}
+		while ($scope.x4.series.length) { 
+			$scope.x4.series.pop(); 
+		} 
+		while ($scope.x4.values.length) { 
+			$scope.x4.values.pop(); 
+		}    	
+    }
+    
+    $scope.x4.doData = function(items) {
+        $scope.x4.series.push($scope.x3.item.uuid);
+		angular.forEach(items, function(object, index) {
+			$scope.x4.labels.push(object.time);
+			$scope.x4.values.push(object.value);
+		});
+	};
+
+    
   });
   </script>
   <body ng-app="app" ng-controller="controller">
@@ -182,6 +336,8 @@
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
+                  <li><a href="./monitor/index.html"><span class="glyphicon glyphicon-dashboard" aria-hidden="true">&nbsp;</span>Dashboard</a></li>
+                  <li role="separator" class="divider"></li>
                   <li><a href="./monitor/measures.html"><span class="glyphicon glyphicon-filter" aria-hidden="true">&nbsp;</span>Measures</a></li>
                   <li><a href="./monitor/instruments.html"><span class="glyphicon glyphicon-scale" aria-hidden="true">&nbsp;</span>Instruments</a></li>
                   <li><a href="./monitor/features.html"><span class="glyphicon glyphicon-tag" aria-hidden="true">&nbsp;</span>Features</a></li>
@@ -206,54 +362,85 @@
       </div>
     </header>
     <section id="content" class="container ng-cloak">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="panel panel-default">
           <div class="panel-body">
-            <h3>Instruments <small>({{size}} items)</small></h3>
+            <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
+            <h3>Instruments <small>({{x1.size}} items)</small></h3>
             <nav aria-label="...">
               <ul class="pager">
-                <li class="previous"><a class="btn btn-default" ng-click="doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
-                <li class="previous"><a class="btn btn-default" ng-click="doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
-                <li ng-show="size > 0">{{(offset + 1) / length | ceil}} / {{size / length | ceil}}</li>
-                <li class="next"><a class="btn btn-default" ng-click="doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
-                <li class="next"><a class="btn btn-default" ng-click="doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li ng-show="size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="x1.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="x1.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
               </ul>
             </nav>
           </div>
-          <div class="panel panel-default" ng-repeat="instrument in instruments">
-            <div class="panel-heading"><h4>{{instrument.name}} <small>{{instrument.uri}}</small></h4></div>
-            <table class="table" ng-show="instrument.features.length > 0">
-              <thead>
-                <tr>
-                  <th>name</th>
-                  <th>measure</th>
-                  <th>unit</th>
-                  <th>factor</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="feature in instrument.features">
-                  <td>{{feature.name}}</td>
-                  <td>{{feature.measure.name}}</td>
-                  <td>{{feature.measure.unit}}</td>
-                  <td>10<sup>{{feature.factor}}</sup></td>
-                  <td>
-                    <button class="btn btn-success btn-sm" ng-click="doStart(feature)" ng-show="!feature.measurement">Start</button>
-                    <button class="btn btn-danger btn-sm" ng-click="doStop(feature)" ng-show="feature.measurement.started && !feature.measurement.stopped">Stop</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="list-group" >
+            <li class="list-group-item" ng-repeat="item in x1.items">
+              <h4 class="list-group-item-heading">{{item.name}} <small>{{item.uri}}</small></h4>
+              <p class="list-group-item-text text-right"><button class="btn btn-default btn-md" ng-click="x1.doSelect(item)">View</button></p>
+            </li>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
+        <div class="panel panel-default" ng-show="x2.items.length > 0">
+          <div class="panel-body">
+            <a class="pull-right btn btn-default" ng-click="x2.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
+            <h3>Features <small>({{x2.size}} items)</small></h3>
+            <nav aria-label="...">
+              <ul class="pager">
+                <li class="previous"><a class="btn btn-default" ng-click="x2.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x2.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li ng-show="x2.size > 0">{{(x2.offset + 1) / x2.length | ceil}} / {{x2.size / x2.length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="x2.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="x2.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="list-group">
+            <li class="list-group-item" ng-repeat="item in x2.items">
+              <h4 class="list-group-item-heading">{{item.name}} <small>{{item.measure.name}} / 10<sup>{{item.factor}}</sup> {{item.measure.unit}}</small></h4>
+              <p class="list-group-item-text text-right"><button class="btn btn-default btn-md" ng-click="x2.doSelect(item)">View</button></p>
+            </li>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="panel panel-default" ng-show="x3.items.length > 0">
+          <div class="panel-body">
+            <a class="pull-right btn btn-default" ng-click="x3.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
+            <h3>Measurements <small>({{x3.size}} items)</small></h3>
+            <nav aria-label="...">
+              <ul class="pager">
+                <li class="previous"><a class="btn btn-default" ng-click="x3.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x3.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li ng-show="x3.size > 0">{{(x3.offset + 1) / x3.length | ceil}} / {{x3.size / x3.length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="x3.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="x3.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="list-group">
+            <li class="list-group-item" ng-repeat="item in x3.items">
+              <h5 class="list-group-item-heading">{{item.uuid}}</h5>
+              <p class="list-group-item-text text-right"><button class="btn btn-default btn-md" ng-click="x3.doSelect(item)">View</button></p>
+            </li>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-md-offset-3">
         <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
           <button type="button" class="close" aria-label="close" ng-click="doClose()"><span aria-hidden="true">&times;</span></button>
           <p>{{message.content}}</p>
         </div>
       </div>
+    </section>
+    <section id="data" class="container ng-cloak">
+      <canvas id="line" class="chart chart-line" chart-data="x4.data" chart-labels="x4.labels" chart-series="x4.series" chart-options="x4.options" ng-show="x4.labels.length > 0"></canvas>
+      <br/><br/><br/><br/>
     </section>
     <footer class="footer navbar-default navbar-fixed-bottom">
       <div class="container">

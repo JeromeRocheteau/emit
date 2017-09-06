@@ -296,6 +296,47 @@
     <url-pattern>/features/update</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>feature-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-delete</servlet-name>
+    <url-pattern>/features/delete</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>feature-start</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureStart</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>feature-enable</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureEnable</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-enable.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>feature-stop</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureStop</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>feature-disable</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.FeatureDisable</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/feature-disable.sql</param-value>
+    </init-param>
+  </servlet>
+
   <!-- measurement -->
   
   <servlet>
@@ -310,13 +351,45 @@
     <servlet-name>measurement-item</servlet-name>
     <url-pattern>/measurements/item</url-pattern>
   </servlet-mapping>
-
-  <!-- monitor -->
-
+  
   <servlet>
-    <servlet-name>feature-start</servlet-name>
-    <servlet-class>fr.icam.emit.servlets.FeatureStart</servlet-class>
+    <servlet-name>measurement-size</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurementSize</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurement-size.sql</param-value>
+    </init-param>
   </servlet>
+  <servlet-mapping>
+    <servlet-name>measurement-size</servlet-name>
+    <url-pattern>/measurements/size</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>measurement-page</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurementPage</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurement-page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurement-page</servlet-name>
+    <url-pattern>/measurements/page</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>measurement-data</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurementData</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurement-data.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurement-data</servlet-name>
+    <url-pattern>/measurements/data</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>measurement-create</servlet-name>
@@ -328,13 +401,15 @@
   </servlet>
 
   <servlet>
-    <servlet-name>feature-enable</servlet-name>
-    <servlet-class>fr.icam.emit.servlets.FeatureEnable</servlet-class>
+    <servlet-name>measurement-update</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurementUpdate</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
-      <param-value>/fr/icam/emit/queries/feature-enable.sql</param-value>
+      <param-value>/fr/icam/emit/queries/measurement-update.sql</param-value>
     </init-param>
   </servlet>
+
+  <!-- monitor -->
 
   <servlet>
     <servlet-name>monitor-start</servlet-name>
@@ -344,29 +419,6 @@
     <servlet-name>monitor-start</servlet-name>
     <url-pattern>/monitor/start</url-pattern>
   </servlet-mapping>
-
-  <servlet>
-    <servlet-name>feature-stop</servlet-name>
-    <servlet-class>fr.icam.emit.servlets.FeatureStop</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>measurement-update</servlet-name>
-    <servlet-class>fr.icam.emit.servlets.MeasurementUpdate</servlet-class>
-    <init-param>
-      <param-name>sql-query</param-name>
-      <param-value>/fr/icam/emit/queries/measurement-update.sql</param-value>
-    </init-param>
-  </servlet>
-
-  <servlet>
-    <servlet-name>feature-disable</servlet-name>
-    <servlet-class>fr.icam.emit.servlets.FeatureDisable</servlet-class>
-    <init-param>
-      <param-name>sql-query</param-name>
-      <param-value>/fr/icam/emit/queries/feature-disable.sql</param-value>
-    </init-param>
-  </servlet>
   
   <servlet>
     <servlet-name>monitor-stop</servlet-name>
