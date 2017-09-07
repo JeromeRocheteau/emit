@@ -448,12 +448,24 @@
     <web-resource-collection>
       <web-resource-name>user-access</web-resource-name>
       <url-pattern>/index.html</url-pattern>
-      <url-pattern>/*/page</url-pattern>
-      <url-pattern>/*/size</url-pattern>
-      <url-pattern>/*/data</url-pattern>
       <url-pattern>/user/*</url-pattern>
+      <url-pattern>/measures/size</url-pattern>
+      <url-pattern>/measures/page</url-pattern>
+      <url-pattern>/instruments/size</url-pattern>
+      <url-pattern>/instruments/page</url-pattern>
+      <url-pattern>/features/size</url-pattern>
+      <url-pattern>/features/page</url-pattern>
+      <url-pattern>/measurements/size</url-pattern>
+      <url-pattern>/measurements/page</url-pattern>
+      <url-pattern>/measurements/data</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+      <http-method>TRACE</http-method>
+      <http-method>CONNECT</http-method>
+      <http-method>OPTIONS</http-method>
+      <http-method>HEAD</http-method>
     </web-resource-collection>
     <auth-constraint>
       <role-name>user</role-name>
@@ -465,13 +477,18 @@
     <web-resource-collection>
       <web-resource-name>admin-access</web-resource-name>
       <url-pattern>/monitor/*</url-pattern>
-      <url-pattern>/*/create</url-pattern>
-      <url-pattern>/*/update</url-pattern>
-      <url-pattern>/*/delete</url-pattern>
-      <url-pattern>/*/start</url-pattern>
-      <url-pattern>/*/stop</url-pattern>
+      <url-pattern>/measures/*</url-pattern>
+      <url-pattern>/instruments/*</url-pattern>
+      <url-pattern>/features/*</url-pattern>
+      <url-pattern>/measurements/*</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+      <http-method>TRACE</http-method>
+      <http-method>CONNECT</http-method>
+      <http-method>OPTIONS</http-method>
+      <http-method>HEAD</http-method>
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>

@@ -18,8 +18,8 @@
         <artifactId>tomcat7-maven-plugin</artifactId>
         <version>2.1</version>
         <configuration>
-          <url>http://172.21.50.3:8080/manager/text</url>
           <username>manager</username>
+          <url>http://163.172.25.224:8080/manager/text</url>
           <password>script</password>
           <path>/${project.build.finalName}</path>
         </configuration>
@@ -61,6 +61,7 @@
       <groupId>org.eclipse.paho</groupId>
       <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
       <version>1.0.2</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.github.jeromerocheteau</groupId>
@@ -86,16 +87,6 @@
     <dependency>
       <groupId>fr.icam.emit</groupId>
       <artifactId>emit-monitor-services</artifactId>
-      <version>1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>fr.icam.emit</groupId>
-      <artifactId>emit-process-entities</artifactId>
-      <version>1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>fr.icam.emit</groupId>
-      <artifactId>emit-process-services</artifactId>
       <version>1.2</version>
     </dependency>
   </dependencies>
