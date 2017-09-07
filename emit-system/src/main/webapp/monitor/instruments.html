@@ -27,25 +27,36 @@
   
   app.controller('controller', function ($scope, $http) {
 
-	$scope.username = null;
-	  
-  	var check = function() {
-  		$http({method:'GET',url:'../user/check'})
-  		.then(function onSuccess(response) {
-  			$scope.username = response.data;
-  		}, function onError(response) {
-  			$scope.username = null;
-  		});
-  	}
-	  
-  	$scope.doClear = function() {
-  		$http({method:'GET',url:'../user/clear'})
-  		.then(function onSuccess(response) {
-  		}, function onError(response) {
-  		});
-  	}
+		$scope.username = null;
+		$scope.admin = false;
+		  
+	  	var check = function() {
+	  		$http({method:'GET',url:'../user/check'})
+	  		.then(function onSuccess(response) {
+	  			$scope.username = response.data;
+	  		}, function onError(response) {
+	  			$scope.username = null;
+	  		});
+	  	}
 
-  	check();
+	  	var role = function() {
+	  		$http({method:'GET',url:'../user/role'})
+	  		.then(function onSuccess(response) {
+	  			$scope.admin = response.data;
+	  		}, function onError(response) {
+	  			$scope.admin = false;
+	  		});
+	  	}
+	  	
+	  	$scope.doClear = function() {
+	  		$http({method:'GET',url:'../user/clear'})
+	  		.then(function onSuccess(response) {
+	  		}, function onError(response) {
+	  		});
+	  	}
+
+	  	check();
+	  	role();
   	
     $scope.message = {};
     
@@ -183,7 +194,7 @@
   });
   </script>
   <body ng-app="app" ng-controller="controller">
-    <header>
+    <header class="ng-cloak">
       <div class="navbar navbar-default navbar-custom navbar-static-top">
         <div class="container">
           <button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse">
@@ -194,7 +205,7 @@
           <a class="navbar-brand" href="../index.html"><!-- span class="glyphicon glyphicon-home" aria-hidden="true">&nbsp;Emit</span --><strong>Emit</strong></a>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
-              <li class="dropdown">
+              <li class="dropdown" ng-show="admin">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   <!-- span class="glyphicon glyphicon-dashboard" aria-hidden="true">&nbsp;Monitoring</span --> Monitoring
                   <span class="caret"></span>

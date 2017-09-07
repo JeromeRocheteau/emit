@@ -69,6 +69,19 @@
     <url-pattern>/user/check</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>user-role</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.UserRole</servlet-class>
+    <init-param>
+      <param-name>role</param-name>
+      <param-value>admin</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-role</servlet-name>
+    <url-pattern>/user/role</url-pattern>
+  </servlet-mapping>
+
   <!-- measures -->
 
   <servlet>
@@ -433,13 +446,34 @@
 
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>all</web-resource-name>
-      <url-pattern>/*</url-pattern>
+      <web-resource-name>user-access</web-resource-name>
+      <url-pattern>/index.html</url-pattern>
+      <url-pattern>/*/page</url-pattern>
+      <url-pattern>/*/size</url-pattern>
+      <url-pattern>/*/data</url-pattern>
+      <url-pattern>/user/*</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
     </web-resource-collection>
     <auth-constraint>
       <role-name>user</role-name>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>admin-access</web-resource-name>
+      <url-pattern>/monitor/*</url-pattern>
+      <url-pattern>/*/create</url-pattern>
+      <url-pattern>/*/update</url-pattern>
+      <url-pattern>/*/delete</url-pattern>
+      <url-pattern>/*/start</url-pattern>
+      <url-pattern>/*/stop</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
       <role-name>admin</role-name>
     </auth-constraint>
   </security-constraint>
