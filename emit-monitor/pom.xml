@@ -13,5 +13,6 @@
   <modules>
     <module>emit-monitor-entities</module>
     <module>emit-monitor-services</module>
+    <module>emit-monitor-clients</module>
   </modules>
 </project>

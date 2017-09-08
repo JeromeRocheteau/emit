@@ -293,7 +293,12 @@
 	$scope.x4.series = [];
 	$scope.x4.data = [$scope.x4.values];
 	
-	$scope.x4.options = {scales: {xAxes: [{type:'time',time:{displayFormats: {'millisecond': 'HH:mm','second': 'HH:mm','minute': 'HH:mm','hour': 'HH:mm','day': 'HH:mm','week': 'HH:mm','month': 'HH:mm','quarter': 'HH:mm','year': 'HH:mm'}}}],yAxes: [{id:'y-axis',type:'linear',display:true,position:'left'}]}};
+	$scope.x4.options = {
+		scales:{
+			xAxes: [{type:'time',time:{displayFormats: {'millisecond': 'X'}}}],
+			yAxes:[{type:'linear',display:true,position:'left',ticks:{min:0}}]
+		}
+	};
 
     $scope.x4.load = function() {
         var content = "uuid=" + $scope.x3.item.uuid; 
@@ -319,11 +324,16 @@
     }
     
     $scope.x4.doData = function(items) {
+    	var max = 0;
         $scope.x4.series.push($scope.x3.item.uuid);
 		angular.forEach(items, function(object, index) {
 			$scope.x4.labels.push(object.time);
 			$scope.x4.values.push(object.value);
+			if (object.value > max) {
+				max = object.value;
+			}
 		});
+		$scope.x4.options.scales.yAxes.ticks.max = max + Math.ceil(0.1 * max);
 	};
 
     
@@ -373,7 +383,7 @@
       </div>
     </header>
     <section id="content" class="container ng-cloak">
-      <div class="col-md-4">
+      <div class="col-md-6" ng-hide="x3.items.length > 0">
         <div class="panel panel-default">
           <div class="panel-body">
             <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
@@ -396,8 +406,8 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="panel panel-default" ng-show="x2.items.length > 0">
+      <div class="col-md-6" ng-show="x2.items.length > 0">
+        <div class="panel panel-default">
           <div class="panel-body">
             <a class="pull-right btn btn-default" ng-click="x2.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
             <h3>Features <small>({{x2.size}} items)</small></h3>
@@ -419,8 +429,8 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="panel panel-default" ng-show="x3.items.length > 0">
+      <div class="col-md-6" ng-show="x3.items.length > 0">
+        <div class="panel panel-default">
           <div class="panel-body">
             <a class="pull-right btn btn-default" ng-click="x3.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
             <h3>Measurements <small>({{x3.size}} items)</small></h3>

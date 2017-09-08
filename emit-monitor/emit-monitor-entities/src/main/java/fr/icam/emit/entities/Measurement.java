@@ -1,5 +1,7 @@
 package fr.icam.emit.entities;
 
+import java.util.Map;
+
 public class Measurement extends Item {
 
 	private Long started;
@@ -9,6 +11,8 @@ public class Measurement extends Item {
 	private String uuid;
 	
 	private Feature feature;
+	
+	private Map<Long, Double> data;
 
 	public Long getStarted() {
 		return started;
@@ -32,6 +36,14 @@ public class Measurement extends Item {
 		this.stopped = stopped;
 		this.uuid = uuid;
 		this.feature = feature;
+	}
+
+	public Map<Long, Double> getData() {
+		return data;
+	}
+
+	public void setData(Map<Long, Double> data) {
+		this.data = data;
 	}
 
 }

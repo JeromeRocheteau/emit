@@ -422,6 +422,19 @@
     </init-param>
   </servlet>
 
+  <servlet>
+    <servlet-name>measurement-find</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MeasurementFind</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/measurement-find.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measurement-find</servlet-name>
+    <url-pattern>/measurements/find</url-pattern>
+  </servlet-mapping>
+
   <!-- monitor -->
 
   <servlet>
@@ -444,11 +457,20 @@
 
   <!-- security -->
 
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>public-area</web-resource-name>
+      <url-pattern>/measurements/find</url-pattern>
+   </web-resource-collection>
+ </security-constraint>
+
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>user-access</web-resource-name>
+      <web-resource-name>user-area</web-resource-name>
       <url-pattern>/index.html</url-pattern>
-      <url-pattern>/user/*</url-pattern>
+      <url-pattern>/user/clear</url-pattern>
+      <url-pattern>/user/check</url-pattern>
+      <url-pattern>/user/role</url-pattern>
       <url-pattern>/measures/size</url-pattern>
       <url-pattern>/measures/page</url-pattern>
       <url-pattern>/instruments/size</url-pattern>
@@ -460,12 +482,6 @@
       <url-pattern>/measurements/data</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
-      <http-method>PUT</http-method>
-      <http-method>DELETE</http-method>
-      <http-method>TRACE</http-method>
-      <http-method>CONNECT</http-method>
-      <http-method>OPTIONS</http-method>
-      <http-method>HEAD</http-method>
     </web-resource-collection>
     <auth-constraint>
       <role-name>user</role-name>
@@ -475,24 +491,37 @@
 
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>admin-access</web-resource-name>
-      <url-pattern>/monitor/*</url-pattern>
-      <url-pattern>/measures/*</url-pattern>
-      <url-pattern>/instruments/*</url-pattern>
-      <url-pattern>/features/*</url-pattern>
-      <url-pattern>/measurements/*</url-pattern>
+      <web-resource-name>admin-area</web-resource-name>
+      <url-pattern>/monitor/index.html</url-pattern>
+      <url-pattern>/monitor/measures.html</url-pattern>
+      <url-pattern>/monitor/instruments.html</url-pattern>
+      <url-pattern>/monitor/start</url-pattern>
+      <url-pattern>/monitor/stop</url-pattern>
+      <url-pattern>/monitor/features.html</url-pattern>
+      <url-pattern>/measures/create</url-pattern>
+      <url-pattern>/measures/update</url-pattern>
+      <url-pattern>/measures/delete</url-pattern>
+      <url-pattern>/instruments/create</url-pattern>
+      <url-pattern>/instruments/update</url-pattern>
+      <url-pattern>/instruments/delete</url-pattern>
+      <url-pattern>/features/create</url-pattern>
+      <url-pattern>/features/update</url-pattern>
+      <url-pattern>/features/delete</url-pattern>
+      <url-pattern>/measurements/item</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
-      <http-method>PUT</http-method>
-      <http-method>DELETE</http-method>
-      <http-method>TRACE</http-method>
-      <http-method>CONNECT</http-method>
-      <http-method>OPTIONS</http-method>
-      <http-method>HEAD</http-method>
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>
     </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>forbidden-methods</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint/>
   </security-constraint>
 
   <security-role>

@@ -13,5 +13,6 @@
   <modules>
     <module>emit-commons-entities</module>
     <module>emit-commons-services</module>
+    <module>emit-commons-clients</module>
   </modules>
 </project>
