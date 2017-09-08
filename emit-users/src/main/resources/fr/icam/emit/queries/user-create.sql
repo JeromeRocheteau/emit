@@ -1,1 +1,0 @@
-insert into user (username,firstname,lastname,type) values (?,?,?,'account');

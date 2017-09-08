@@ -1,1 +1,0 @@
-delete from cookie where passphrase = ?;
