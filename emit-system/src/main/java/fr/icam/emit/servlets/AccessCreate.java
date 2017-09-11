@@ -15,6 +15,12 @@ public class AccessCreate extends JdbcUpdateServlet<Boolean> {
 	private static final long serialVersionUID = 201709111058002L;
 
 	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		Boolean done = this.doProcess(request);
+		request.setAttribute("access", done);
+	}
+
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Boolean done = this.doProcess(request);
 		this.doWrite(done, response.getWriter());

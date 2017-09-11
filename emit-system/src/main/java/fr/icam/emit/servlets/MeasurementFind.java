@@ -43,10 +43,12 @@ public class MeasurementFind extends JdbcQueryServlet<List<Measurement>> {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Access access = (Access) request.getAttribute("access");
+		request.setAttribute("token", access.getToken().getId());
 		List<Measurement> measurements = this.doProcess(request);
 		for (Measurement measurement : measurements) {
 			this.getData(measurement, access.getIssued());
 		}
+		this.doCall(request, response, "access-create");
 		this.doWrite(measurements, response.getWriter());
 	}
 

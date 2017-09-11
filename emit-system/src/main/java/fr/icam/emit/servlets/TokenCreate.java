@@ -20,6 +20,8 @@ public class TokenCreate extends JdbcUpdateServlet<Long> {
 		Long id = this.doProcess(request);
 		request.setAttribute("token", id);
 		this.doCall(request, response, "access-create");
+		Boolean done = (Boolean) request.getAttribute("access");
+		this.doWrite(done, response.getWriter());
 	}
 	
 	@Override
