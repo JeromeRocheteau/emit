@@ -1,0 +1,1 @@
+INSERT INTO `tokens` (`uuid`,`feature`,`username`) VALUES (?,?,?);

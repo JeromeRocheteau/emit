@@ -20,6 +20,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
+import fr.icam.emit.entities.Access;
 import fr.icam.emit.entities.Feature;
 import fr.icam.emit.entities.Instrument;
 import fr.icam.emit.entities.Measure;
@@ -48,12 +49,9 @@ public class MeasurementFind extends JdbcQueryServlet<List<Measurement>> {
 
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		String measure = request.getParameter("measure");
-		Long started = Long.valueOf(request.getParameter("started"));
-		Long stopped = Long.valueOf(request.getParameter("stopped"));
-		statement.setString(1, measure);
-		statement.setTimestamp(2, new Timestamp(started));
-		statement.setTimestamp(3, new Timestamp(stopped));
+		Access access = (Access) request.getAttribute("access");
+		statement.setLong(1, access.getToken().getFeature().getId());
+		statement.setTimestamp(2, new Timestamp(access.getIssued()));
 	}
 	
 	@Override

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Emit | Features</title>
+    <title>Emit</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -13,52 +13,55 @@
     </style>
   </head>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-chart.js/1.1.1/angular-chart.min.js"></script>
   <script type="text/javascript">
-  var app = angular.module('app',[]);
+  var app = angular.module('app',['chart.js']);
 
   app.filter('ceil', function() {
 	return function(input) {
-      return Math.ceil(input);
+	  return Math.ceil(input);
 	};
   });
   
   app.controller('controller', function ($scope, $http) {
 
-		$scope.username = null;
-		$scope.admin = false;
-		  
-	  	var check = function() {
-	  		$http({method:'GET',url:'../user/check'})
-	  		.then(function onSuccess(response) {
-	  			$scope.username = response.data;
-	  		}, function onError(response) {
-	  			$scope.username = null;
-	  		});
-	  	}
+	$scope.username = null;
+	$scope.admin = false;
+	  
+  	var check = function() {
+  		$http({method:'GET',url:'./user/check'})
+  		.then(function onSuccess(response) {
+  			$scope.username = response.data;
+  		}, function onError(response) {
+  			$scope.username = null;
+  		});
+  	}
 
-	  	var role = function() {
-	  		$http({method:'GET',url:'../user/role'})
-	  		.then(function onSuccess(response) {
-	  			$scope.admin = response.data;
-	  		}, function onError(response) {
-	  			$scope.admin = false;
-	  		});
-	  	}
-	  	
-	  	$scope.doClear = function() {
-	  		$http({method:'GET',url:'../user/clear'})
-	  		.then(function onSuccess(response) {
-	  		}, function onError(response) {
-	  		});
-	  	}
-
-	  	check();
-	  	role();
+  	var role = function() {
+  		$http({method:'GET',url:'./user/role'})
+  		.then(function onSuccess(response) {
+  			$scope.admin = response.data;
+  		}, function onError(response) {
+  			$scope.admin = false;
+  		});
+  	}
   	
-    $scope.message = {};
+  	$scope.doClear = function() {
+  		$http({method:'GET',url:'./user/clear'})
+  		.then(function onSuccess(response) {
+  		}, function onError(response) {
+  		});
+  	}
+
+  	check();
+  	role();
+  	
+  	$scope.message = {};
     
     var display = function(type, content) {
         $scope.message.type = type;
@@ -70,19 +73,6 @@
         $("#alert").hide();
         $scope.alert = {};
     }
-    
-	$scope.measures = [];
-
-    var list = function() {
-      $http({method:'GET',url:'../measures/list'})
-        .then(function onSuccess(response) {
-          $scope.measures = response.data;
-        },function onError(response) {
-          $scope.measures = [];
-      });
-    }
-    
-    list();
     
     $scope.x1 = {};
     $scope.x1.length = 5;
@@ -136,7 +126,7 @@
     }
 
     $scope.x1.doSize = function() { // FIXME
-      $http({method:'GET',url:'../instruments/size'})
+      $http({method:'GET',url:'./instruments/size'})
       .then(function onSuccess(response) {
          $scope.x1.size = response.data;
       },function onError(response) {
@@ -146,7 +136,7 @@
     
     $scope.x1.doPage = function() { // FIXME
       var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
-      $http({method:'GET',url:'../instruments/page?' + content})
+      $http({method:'GET',url:'./instruments/page?' + content})
       .then(function onSuccess(response) {
         $scope.x1.items = response.data;
       },function onError(response) {
@@ -158,11 +148,10 @@
     $scope.x1.doPage();
 
     $scope.x2 = {};
-    $scope.x2.selected = false;
     $scope.x2.length = 5;
     $scope.x2.offset = 0;
     $scope.x2.size = 0;
-    $scope.x2.item = {};
+    $scope.x2.item = null;
     $scope.x2.items = [];
     
     $scope.x2.doPrev = function() {
@@ -189,6 +178,18 @@
       $scope.x2.doPage();
     }
     
+    $scope.x2.doSelect = function(item) {
+      $scope.x2.item = item;
+      // $scope.x3.doClean();
+      // $scope.x3.doSize();
+      // $scope.x3.doPage();
+    }
+    
+    $scope.x2.doClean = function() {
+      $scope.x2.item = null;
+      // $scope.x3.doReset();
+    }
+    
     $scope.x2.doReset = function() {
       $scope.x2.doClean();
       $scope.x2.length = 5;
@@ -199,7 +200,7 @@
 
     $scope.x2.doSize = function() { // FIXME
       var content = "instrument=" + $scope.x1.item.id; 
-      $http({method:'GET',url:'../features/size?' + content})
+      $http({method:'GET',url:'./features/size?' + content})
       .then(function onSuccess(response) {
          $scope.x2.size = response.data;
       },function onError(response) {
@@ -209,81 +210,54 @@
     
     $scope.x2.doPage = function() { // FIXME
       var content = "instrument=" + $scope.x1.item.id + "&length=" + $scope.x2.length + "&offset=" + $scope.x2.offset; 
-      $http({method:'GET',url:'../features/page?' + content})
+      $http({method:'GET',url:'./features/page?' + content})
       .then(function onSuccess(response) {
         $scope.x2.items = response.data;
+        angular.forEach($scope.x2.items, function(item, index) {
+        	$scope.x2.doItem(item);
+        });
       },function onError(response) {
         $scope.x2.items = [];
       });
     }
-
-    $scope.x2.doCreate = function() {
-      var content = "name=" + encodeURIComponent($scope.x2.item.name) + "&factor=" + $scope.x2.item.factor + "&measure=" + $scope.x2.item.measure.id + "&instrument=" + $scope.x1.item.id;
-      $http({method:'POST',url:'../features/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+    
+    $scope.x2.doItem = function(item) {
+      var content = "feature=" + item.id; 
+      $http({method:'GET',url:'./tokens/item?' + content})
       .then(function onSuccess(response) {
-       	display("success", "The feature has been sucessfully created.");
+    	  item.token = response.data;
+      },function onError(response) {
+    	  item.token = null;
+      });
+    }
+    
+    $scope.x2.doEnable = function(item) {
+      var content = "feature=" + item.id;
+      $http({method:'POST',url:'./tokens/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+       	display("success", "The token has been sucessfully created.");
        	$scope.x2.doClean();
-    	$scope.x2.doSize();
-    	$scope.x2.doPage();
+       	$scope.x2.doSize();
+      	$scope.x2.doPage();
       },function onError(response) {
-          display("danger", "Something wrong happened while feature the measure.");
+          display("danger", "Something wrong happened while creating the token.");
           $scope.x2.doClean();
       });
     }
-
-    $scope.x2.doUpdate = function() {
-      var content = "id=" + $scope.x2.item.id + "&name=" + encodeURIComponent($scope.x2.item.name) + "&factor=" + $scope.x2.item.factor + "&measure=" + $scope.x2.item.measure.id + "&instrument=" + $scope.x1.item.id;
-      $http({method:'POST',url:'../features/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+    
+    $scope.x2.doDisable = function(item) {
+      var content = "id=" + item.token.id;
+      $http({method:'POST',url:'./tokens/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
-       	display("success", "The feature " + $scope.x2.item.id + " has been sucessfully updated.");
-    	$scope.x2.doClean();
-    	$scope.x2.doSize();
-    	$scope.x2.doPage();
+       	display("success", "The token has been sucessfully deleted.");
+       	$scope.x2.doClean();
+       	$scope.x2.doSize();
+      	$scope.x2.doPage();
       },function onError(response) {
-          display("danger", "Something wrong happened while updating the feature #" + $scope.x2.item.id + ".");
+          display("danger", "Something wrong happened while deleting the token #" + $scope.x2.item.id + ".");
           $scope.x2.doClean();
       });
     }
-
-    $scope.x2.doDelete = function() {
-      var content = "id=" + $scope.x2.item.id;
-      $http({method:'POST',url:'../features/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-      	display("success", "The feature " + $scope.x2.item.id + " has been sucessfully deleted.");
-      	$scope.x2.doClean();
-    	if (Math.ceil($scope.x2.size / $scope.x2.length) < $scope.x2.offset) {
-    		$scope.x2.offset = $scope.x2.offset - $scope.x2.length;
-    	}
-    	$scope.x2.doSize();
-    	$scope.x2.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while deleting the feature #" + $scope.x2.item.id +".");
-        $scope.x2.doClean();
-      });
-    }
-    
-    $scope.x2.doSelect = function(item) {
-    	$scope.x2.selected = true;
-        $scope.x2.item = angular.copy(item);
-	}
-    
-    $scope.x2.doClean = function() {
-    	$scope.x2.selected = false;
-        $scope.x2.item = angular.copy({});
-        $scope.alert = angular.copy({});
-	}
-    
-    $scope.x2.canCreate = function() {
-      return $scope.x2.selected === false;
-	}
-    
-	$scope.x2.canUpdate = function() {
-		return $scope.x2.selected === true;
-	}
-    
-    $scope.setMeasure = function(measure) {
-    	$scope.x2.item.measure = measure;
-	}
     
   });
   </script>
@@ -296,7 +270,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html"><!-- span class="glyphicon glyphicon-home" aria-hidden="true">&nbsp;Emit</span --><strong>Emit</strong></a>
+          <a class="navbar-brand" href="./index.html"><!-- span class="glyphicon glyphicon-home" aria-hidden="true">&nbsp;Emit</span --><strong>Emit</strong></a>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
               <li class="dropdown" ng-show="admin">
@@ -305,11 +279,11 @@
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="../monitor/index.html"><span class="glyphicon glyphicon-dashboard" aria-hidden="true">&nbsp;</span>Dashboard</a></li>
+                  <li><a href="./monitor/index.html"><span class="glyphicon glyphicon-dashboard" aria-hidden="true">&nbsp;</span>Dashboard</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="../monitor/measures.html"><span class="glyphicon glyphicon-filter" aria-hidden="true">&nbsp;</span>Measures</a></li>
-                  <li><a href="../monitor/instruments.html"><span class="glyphicon glyphicon-scale" aria-hidden="true">&nbsp;</span>Instruments</a></li>
-                  <li><a href="../monitor/features.html"><span class="glyphicon glyphicon-tag" aria-hidden="true">&nbsp;</span>Features</a></li>
+                  <li><a href="./monitor/measures.html"><span class="glyphicon glyphicon-filter" aria-hidden="true">&nbsp;</span>Measures</a></li>
+                  <li><a href="./monitor/instruments.html"><span class="glyphicon glyphicon-scale" aria-hidden="true">&nbsp;</span>Instruments</a></li>
+                  <li><a href="./monitor/features.html"><span class="glyphicon glyphicon-tag" aria-hidden="true">&nbsp;</span>Features</a></li>
                 </ul>
               </li>
             </ul>
@@ -321,9 +295,9 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">{{username}}</li>
-                  <li><a href="../tokens.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Tokens</a></li>
+                  <li><a href="./tokens.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Tokens</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="../index.html" ng-click="doClear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
+                  <li><a href="./index.html" ng-click="doClear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
                 </ul>
               </li>
             </ul>
@@ -332,39 +306,36 @@
       </div>
     </header>
     <section id="content" class="container ng-cloak">
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="panel panel-default">
           <div class="panel-body">
             <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
             <h3>Instruments <small>({{x1.size}} items)</small></h3>
             <nav aria-label="...">
               <ul class="pager">
-                <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
                 <li class="previous"><a class="btn btn-default" ng-click="x1.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
-                <li ng-show="x1.size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
+                <li ng-show="size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
                 <li class="next"><a class="btn btn-default" ng-click="x1.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
                 <li class="next"><a class="btn btn-default" ng-click="x1.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
               </ul>
             </nav>
           </div>
-          <div class="list-group" ng-repeat="item in x1.items">
-            <li class="list-group-item">
-              <h4 class="list-group-item-heading">{{item.name}}</h4>
-              <p class="list-group-item-text"><em>uri:</em> #{{item.uri}}</p>
-              <p class="list-group-item-text"><em>id:</em> #{{item.id}}</p>
-              <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="x1.doSelect(item)">View</button></p>
+          <div class="list-group" >
+            <li class="list-group-item" ng-repeat="item in x1.items">
+              <h4 class="list-group-item-heading">{{item.name}} <small>{{item.uri}}</small></h4>
+              <p class="list-group-item-text text-right"><button class="btn btn-default btn-md" ng-click="x1.doSelect(item)">View</button></p>
             </li>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="panel panel-default" ng-show="x2.items.length > 0">
+      <div class="col-md-6" ng-show="x2.items.length > 0">
+        <div class="panel panel-default">
           <div class="panel-body">
-            <a class="pull-right btn btn-default" ng-click="x2.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
             <h3>Features <small>({{x2.size}} items)</small></h3>
             <nav aria-label="...">
               <ul class="pager">
-                <li class="previous"><a class="btn btn-default" ng-click="x2.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x2.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
                 <li class="previous"><a class="btn btn-default" ng-click="x2.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
                 <li ng-show="x2.size > 0">{{(x2.offset + 1) / x2.length | ceil}} / {{x2.size / x2.length | ceil}}</li>
                 <li class="next"><a class="btn btn-default" ng-click="x2.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
@@ -372,48 +343,17 @@
               </ul>
             </nav>
           </div>
-          <div class="list-group" ng-repeat="item in x2.items">
-            <li class="list-group-item">
-              <h4 class="list-group-item-heading">{{item.name}}</h4>
-              <p class="list-group-item-text"><em>measure:</em> {{item.measure.name}}</p>
-              <p class="list-group-item-text"><em>unit:</em> {{item.measure.unit}}</p>
-              <p class="list-group-item-text"><em>factor:</em> 10<sup>{{item.factor}}</sup></p>
-              <p class="list-group-item-text"><em>id:</em> #{{item.id}}</p>
-              <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="x2.doSelect(item)">Edit</button></p>
+          <div class="list-group">
+            <li class="list-group-item" ng-repeat="item in x2.items">
+              <h4 class="list-group-item-heading">{{item.name}} <small>{{item.measure.name}} / 10<sup>{{item.factor}}</sup> {{item.measure.unit}}</small></h4>
+              <p class="list-group-item-text"><span ng-show="item.token">{{item.token.uuid}}</span></p>
+              <p class="list-group-item-text text-right" ng-hide="item.token"><button class="btn btn-success btn-md" ng-click="x2.doEnable(item)">Enable</button></p>
+              <p class="list-group-item-text text-right" ng-show="item.token"><button class="btn btn-warning btn-md" ng-click="x2.doDisable(item)">Disable</button></p>
             </li>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <form name="form" class="form list-group-item" id="form" ng-show="x1.item">
-          <fieldset>
-            <legend ng-show="x2.canCreate()">Edit a feature</legend>
-            <legend ng-show="x2.canUpdate()">Edit the feature #{{item.id}}</legend>
-            <div class="form-group">
-              <label for="feature.name">Name</label>
-              <input type="text" class="form-control" id="feature.name" ng-model="x2.item.name" placeholder="Name of the feature" ng-required="true" required>
-            </div>
-            <div class="form-group">
-              <label for="feature.factor">Factor</label>
-              <input type="number" min="-16" max="16" step="1" class="form-control" id="feature.factor" ng-model="x2.item.factor" placeholder="Factor of the feature" ng-required="true" required>
-            </div>
-            <div class="form-group">
-              <label for="feature.measure">Measure</label>
-              <select class="form-control" id="feature.measure" ng-model="x2.item.measure" ng-change="setMeasure(x2.item.measure)" ng-options="m.name for m in measures track by m.id" ng-required="true" required>
-              </select>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group pull-right">
-                  <button type="reset" class="btn" ng-click="x2.doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="x2.doDelete()" ng-show="x2.canUpdate()" ng-disabled="!form.$valid"><strong>Delete</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x2.doUpdate()" ng-show="x2.canUpdate()" ng-disabled="!form.$valid"><strong>Update</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x2.doCreate()" ng-show="x2.canCreate()" ng-disabled="!form.$valid"><strong>Create</strong></button>
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </form>
+      <div class="col-md-6 col-md-offset-3">
         <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
           <button type="button" class="close" aria-label="close" ng-click="doClose()"><span aria-hidden="true">&times;</span></button>
           <p>{{message.content}}</p>
