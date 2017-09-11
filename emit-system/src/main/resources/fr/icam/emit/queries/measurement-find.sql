@@ -17,6 +17,5 @@ INNER JOIN `features` f ON f.`id` = mm.`feature`
 INNER JOIN `instruments` i ON i.`id` = f.`instrument`
 INNER JOIN `measures` m ON m.`id` = f.`measure`
 WHERE f.`id` = ?
-AND mm.`started` >= ?
-AND mm.`stopped` <= now()
+AND (mm.`stopped` >= ? OR mm.`stopped` IS NULL)
 AND mm.`deleted` IS NULL;

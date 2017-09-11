@@ -14,11 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import com.github.jeromerocheteau.JdbcQueryServlet;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 
 import fr.icam.emit.entities.Access;
 import fr.icam.emit.entities.Feature;
@@ -40,9 +42,10 @@ public class MeasurementFind extends JdbcQueryServlet<List<Measurement>> {
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		Access access = (Access) request.getAttribute("access");
 		List<Measurement> measurements = this.doProcess(request);
 		for (Measurement measurement : measurements) {
-			this.getData(measurement);
+			this.getData(measurement, access.getIssued());
 		}
 		this.doWrite(measurements, response.getWriter());
 	}
@@ -84,10 +87,11 @@ public class MeasurementFind extends JdbcQueryServlet<List<Measurement>> {
 		return measurements;
 	}
 	
-	private void getData(Measurement measurement) {
+	private void getData(Measurement measurement, Long issued) {
+		Bson filter = Filters.gt("time", issued);
 		Map<Long, Double> data = new TreeMap<Long, Double>();
 		MongoCollection<Document> collection = database.getCollection(measurement.getUuid());
-		MongoCursor<Document> cursor = collection.find().iterator();
+		MongoCursor<Document> cursor = collection.find(filter).iterator();
 		while (cursor.hasNext()) {
 			Document object = cursor.next();
 			Long time = object.getLong("time");
