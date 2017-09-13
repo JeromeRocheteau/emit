@@ -333,7 +333,6 @@
 				max = object.value;
 			}
 		});
-		$scope.x4.options.scales.yAxes.ticks.max = max + Math.ceil(0.1 * max);
 	};
 
     
@@ -448,6 +447,8 @@
           <div class="list-group">
             <li class="list-group-item" ng-repeat="item in x3.items">
               <h5 class="list-group-item-heading">{{item.uuid}}</h5>
+              <p class="list-group-item-text">started at: {{item.started | date:'yyyy-MM-dd HH:mm:ss sss'}}</p>
+              <p class="list-group-item-text" ng-show="item.stopped">stopped at: {{item.stopped | date:'yyyy-MM-dd HH:mm:ss sss'}}</p>
               <p class="list-group-item-text text-right"><button class="btn btn-default btn-md" ng-click="x3.doSelect(item)">View</button></p>
             </li>
           </div>

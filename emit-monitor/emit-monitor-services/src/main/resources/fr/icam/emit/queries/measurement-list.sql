@@ -7,4 +7,5 @@ FROM `measurements` m
 WHERE m.`feature` = ? 
 AND m.`started` IS NOT NULL
 AND m.`stopped` IS NOT NULL
-AND m.`deleted` IS NULL;
+AND m.`deleted` IS NULL
+ORDER BY m.`stopped` DESC, m.`started` ASC;

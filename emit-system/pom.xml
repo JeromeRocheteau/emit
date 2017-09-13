@@ -19,8 +19,8 @@
         <version>2.1</version>
         <configuration>
           <username>manager</username>
-          <!-- url>http://172.21.50.3:8080/manager/text</url -->
-          <url>http://163.172.25.224:8080/manager/text</url>
+          <url>http://172.21.50.3:8080/manager/text</url>
+          <!-- url>http://163.172.25.224:8080/manager/text</url -->
           <password>script</password>
           <path>/${project.build.finalName}</path>
         </configuration>

@@ -568,6 +568,7 @@
       <url-pattern>/measures/create</url-pattern>
       <url-pattern>/measures/update</url-pattern>
       <url-pattern>/measures/delete</url-pattern>
+      <url-pattern>/measures/list</url-pattern>
       <url-pattern>/instruments/create</url-pattern>
       <url-pattern>/instruments/update</url-pattern>
       <url-pattern>/instruments/delete</url-pattern>
