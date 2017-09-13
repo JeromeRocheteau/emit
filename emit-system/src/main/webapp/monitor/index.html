@@ -327,8 +327,8 @@
           <div class="list-group" >
             <li class="list-group-item" ng-repeat="item in x2.items">
               <h4 class="list-group-item-heading">{{item.name}} <small>{{item.measure.name}} / 10<sup>{{item.factor}}</sup> {{item.measure.unit}}</small></h4>
-              <p class="list-group-item-text text-right" ng-show="!item.measurement"><button class="btn btn-success btn-md" ng-click="x2.doStart(item)">Start</button></p>
-              <p class="list-group-item-text text-right" ng-show="item.measurement.started && !item.measurement.stopped"><button class="btn btn-danger btn-md" ng-click="x2.doStop(item)">Stop</button></p>
+              <p class="list-group-item-text text-right" ng-show="!item.measurement"><button class="btn btn-default btn-md" ng-click="x2.doStart(item)">Start</button></p>
+              <p class="list-group-item-text text-right" ng-show="item.measurement.started && !item.measurement.stopped"><button class="btn btn-md" ng-click="x2.doStop(item)">Stop</button></p>
             </li>
           </div>
         </div>

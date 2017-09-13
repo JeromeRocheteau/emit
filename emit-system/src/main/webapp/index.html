@@ -295,7 +295,7 @@
 	
 	$scope.x4.options = {
 		scales:{
-			xAxes: [{type:'time',time:{displayFormats: {'millisecond': 'X'}}}],
+			xAxes: [{type:'time',time:{displayFormats: {'millisecond': 'HH:mm:ss SSS','second': 'HH:mm:ss SSS','minute': 'HH:mm:ss SSS','hour': 'HH:mm:ss SSS','day': 'HH:mm:ss SSS'}}}],
 			yAxes:[{type:'linear',display:true,position:'left',ticks:{min:0}}]
 		}
 	};
@@ -392,7 +392,7 @@
               <ul class="pager">
                 <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
                 <li class="previous"><a class="btn btn-default" ng-click="x1.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
-                <li ng-show="size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
+                <li ng-show="x1.size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
                 <li class="next"><a class="btn btn-default" ng-click="x1.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
                 <li class="next"><a class="btn btn-default" ng-click="x1.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
               </ul>
@@ -446,7 +446,7 @@
           </div>
           <div class="list-group">
             <li class="list-group-item" ng-repeat="item in x3.items">
-              <h5 class="list-group-item-heading">{{item.uuid}}</h5>
+              <!-- h5 class="list-group-item-heading">{{item.uuid}}</h5 -->
               <p class="list-group-item-text">started at: {{item.started | date:'yyyy-MM-dd HH:mm:ss sss'}}</p>
               <p class="list-group-item-text" ng-show="item.stopped">stopped at: {{item.stopped | date:'yyyy-MM-dd HH:mm:ss sss'}}</p>
               <p class="list-group-item-text text-right"><button class="btn btn-default btn-md" ng-click="x3.doSelect(item)">View</button></p>

@@ -347,8 +347,8 @@
             <li class="list-group-item" ng-repeat="item in x2.items">
               <h4 class="list-group-item-heading">{{item.name}} <small>{{item.measure.name}} / 10<sup>{{item.factor}}</sup> {{item.measure.unit}}</small></h4>
               <p class="list-group-item-text"><span ng-show="item.token">{{item.token.uuid}}</span></p>
-              <p class="list-group-item-text text-right" ng-hide="item.token"><button class="btn btn-success btn-md" ng-click="x2.doEnable(item)">Enable</button></p>
-              <p class="list-group-item-text text-right" ng-show="item.token"><button class="btn btn-warning btn-md" ng-click="x2.doDisable(item)">Disable</button></p>
+              <p class="list-group-item-text text-right" ng-hide="item.token"><button class="btn btn-default btn-md" ng-click="x2.doEnable(item)">Enable</button></p>
+              <p class="list-group-item-text text-right" ng-show="item.token"><button class="btn btn-md" ng-click="x2.doDisable(item)">Disable</button></p>
             </li>
           </div>
         </div>
