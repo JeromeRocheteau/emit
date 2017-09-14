@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Fake</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style type="text/css">
+      html {overflow-y:scroll;position:relative;height:100%;min-height:100%;}
+      footer {padding-top:2ex;padding-bottom:1ex;}
+    </style>
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
+  <script type="text/javascript">
+  var app = angular.module('app',[]);
+
+  app.filter('ceil', function() {
+	return function(input) {
+	  return Math.ceil(input);
+	};
+  });
+  
+  app.controller('controller', function ($scope, $http) {
+
+	$scope.username = null;
+	  
+  	var check = function() {
+  		$http({method:'GET',url:'./user/check'})
+  		.then(function onSuccess(response) {
+  			$scope.username = response.data;
+  		}, function onError(response) {
+  			$scope.username = null;
+  		});
+  	}
+
+  	$scope.doClear = function() {
+  		$http({method:'GET',url:'./user/clear'})
+  		.then(function onSuccess(response) {
+  		}, function onError(response) {
+  		});
+  	}
+
+  	check();
+  	
+  	$scope.message = {};
+    
+    var display = function(type, content) {
+        $scope.message.type = type;
+        $scope.message.content = content;
+        $("#alert").show();
+    }
+    
+    $scope.doClose = function() {
+        $("#alert").hide();
+        $scope.alert = {};
+    }
+  	
+    $scope.x1 = {};
+    $scope.x1.item = {};
+    $scope.x1.length = 5;
+    $scope.x1.offset = 0;
+    $scope.x1.size = 0;
+    $scope.x1.items = [];
+    
+    $scope.x1.doPrev = function() {
+      if ($scope.x1.length <= $scope.x1.offset) {
+        $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+        $scope.x1.doPage();
+      }
+    }
+    
+    $scope.x1.doNext = function() {
+      if ($scope.x1.offset + $scope.x1.length < $scope.x1.size) {
+        $scope.x1.offset = $scope.x1.offset + $scope.x1.length;
+        $scope.x1.doPage();
+      }
+    }
+    
+    $scope.x1.doFirst = function() {
+      $scope.x1.offset = 0;
+      $scope.x1.doPage();
+    }
+
+    $scope.x1.doLast = function() {
+      $scope.x1.offset = Math.floor(($scope.x1.size - 1) / $scope.x1.length) * $scope.x1.length;
+      $scope.x1.doPage();
+    }
+        
+    $scope.x1.doSelect = function(item) {
+      $scope.x1.item = angular.copy(item);
+    }
+    
+    $scope.x1.doClean = function() {
+      $scope.x1.item = angular.copy({});
+    }
+    
+    $scope.x1.doReset = function() {
+      $scope.x1.doClean();
+      $scope.x1.doSize();
+      $scope.x1.doPage();
+    }
+
+    $scope.x1.doSize = function() { // FIXME
+      $http({method:'GET',url:'./size'})
+      .then(function onSuccess(response) {
+         $scope.x1.size = response.data;
+      },function onError(response) {
+        $scope.x1.size = 0;
+      });
+    }
+    
+    $scope.x1.doPage = function() { // FIXME
+      var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
+      $http({method:'GET',url:'./page?' + content})
+      .then(function onSuccess(response) {
+        $scope.x1.items = response.data;
+      },function onError(response) {
+        $scope.x1.items = [];
+      });
+    }
+
+    $scope.x1.doCreate = function() {
+      var content = "broker=" + $scope.x1.item.broker 
+      + "&instrument=" + $scope.x1.item.instrument 
+      + "&feature=" + $scope.x1.item.feature 
+      + "&floor=" + $scope.x1.item.floor 
+      + "&ceil=" + $scope.x1.item.ceil 
+      + "&delay=" + $scope.x1.item.delay;
+      $http({method:'POST',url:'./create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+      	display("success", "The new MQTT publisher has been sucessfully created.");
+      	$scope.x1.doClean();
+      	$scope.x1.doSize();
+      	$scope.x1.doPage();
+      },function onError(response) {
+        display("danger", "Something wrong happened while creating the new MQTT publisher.");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.doDelete = function() {
+      var content = "uuid=" + $scope.x1.item.uuid;
+      $http({method:'POST',url:'./delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+      	display("success", "The MQTT publisher " + $scope.x1.item.uuid + " has been sucessfully deleted.");
+      	$scope.x1.doClean();
+      	if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
+      		$scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+      	}
+      	$scope.x1.doSize();
+      	$scope.x1.doPage();
+      },function onError(response) {
+        display("danger", "Something wrong happened while deleting the MQTT publisher #" + $scope.x1.item.uuid +".");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.doStart = function(item) {
+      var content = "uuid=" + item.uuid;
+      $http({method:'POST',url:'./start',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+      	display("success", "The MQTT publisher " + item.uuid + " has been sucessfully started.");
+      	$scope.x1.doClean();
+      	$scope.x1.doPage();
+      },function onError(response) {
+        display("danger", "Something wrong happened while starting the MQTT publisher #" + item.uuid +".");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.doStop = function(item) {
+      var content = "uuid=" + item.uuid;
+      $http({method:'POST',url:'./stop',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+      	display("success", "The MQTT publisher " + item.uuid + " has been sucessfully stopped.");
+      	$scope.x1.doClean();
+      	$scope.x1.doPage();
+      },function onError(response) {
+        display("danger", "Something wrong happened while stopping the MQTT publisher #" + item.uuid +".");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.doSize();
+    $scope.x1.doPage();
+    
+  });
+  </script>
+  <body ng-app="app" ng-controller="controller">
+    <header class="ng-cloak">
+      <div class="navbar navbar-default navbar-custom navbar-static-top">
+        <div class="container">
+          <button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="./index.html"><strong>Fake</strong></a>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-left">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+               <li><a href="./index.html" ng-click="doClear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Exit</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+    <section id="content" class="container ng-cloak">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
+            <h3>Publishers <small>({{x1.size}} items)</small></h3>
+            <nav aria-label="...">
+              <ul class="pager">
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li ng-show="x1.size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="x1.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="x1.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="list-group" >
+            <li class="list-group-item" ng-repeat="item in x1.items">
+              <h4 class="list-group-item-heading">{{item.topic}} <small>{{item.broker}}</small></h4>
+              <p class="list-group-item-text">uuid: {{item.uuid}}</p>
+              <p class="list-group-item-text">floor: {{item.floor}}</p>
+              <p class="list-group-item-text">ceil: {{item.ceil}}</p>
+              <p class="list-group-item-text">delay: {{item.delay}}</p>
+              <p class="list-group-item-text text-right">
+                <button class="btn btn-primary btn-md" ng-hide="item.status" ng-click="x1.doStart(item)">Start</button>
+                <button class="btn btn-md" ng-show="item.status" ng-click="x1.doStop(item)">Stop</button>
+                <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Edit</button>
+              </p>
+            </li>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <form name="form" class="form list-group-item" id="form">
+          <fieldset>
+            <legend ng-hide="x1.item.uuid">Create a MQTT publisher</legend>
+            <legend ng-show="x1.item.uuid">Edit the MQTT publisher #{{item.uuid}}</legend>
+            <div class="form-group">
+              <input type="text" class="form-control" id="publisher.broker" ng-model="x1.item.broker" placeholder="URI of the MQTT Broker" ng-required="true" required>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="publisher.instrument" ng-model="x1.item.instrument" placeholder="Name of the instrument" ng-required="true" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="publisher.feature" ng-model="x1.item.feature" placeholder="Name of the feature" ng-required="true" required>
+                </div>
+              </div>
+            </div>            
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <input type="number" step="1" class="form-control" id="publisher.floor" ng-model="x1.item.floor" placeholder="Floor" ng-required="true" required>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <input type="number" step="1" class="form-control" id="publisher.ceil" ng-model="x1.item.ceil" placeholder="Ceil" ng-required="true" required>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <input type="number" min="0" step="10" class="form-control" id="publisher.delay" ng-model="x1.item.delay" placeholder="Delay" ng-required="true" required>
+                </div>
+              </div>
+            </div>            
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group pull-right">
+                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.doCreate()" ng-hide="x1.item.uuid" ng-disabled="!form.$valid"><strong>Create</strong></button>
+                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.item.uuid && !x1.item.status" ng-disabled="!form.$valid"><strong>Delete</strong></button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
+          <button type="button" class="close" aria-label="close" ng-click="doClose()"><span aria-hidden="true">&times;</span></button>
+          <p>{{message.content}}</p>
+        </div>
+      </div>
+    </section>
+    <br/><br/><br/><br/>
+    <footer class="footer navbar-default navbar-fixed-bottom">
+      <div class="container">
+        <p class="text-center">Copyright © 2015-2017. ICAM. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>

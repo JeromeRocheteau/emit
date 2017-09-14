@@ -1,0 +1,39 @@
+<Context reloadable="true">
+
+  <Resource name="jdbc/database"
+    auth="Container"
+    type="javax.sql.DataSource"
+    initialSize="10"
+    maxActive="100"
+    maxIdle="50"
+    minIdle="10"
+    maxWaitMillis="10000"
+    validationQuery="select 1"
+    validationInterval="30000"
+    removeAbandoned="true"
+    removeAbandonedTimeout="60" 
+    username="emit"
+    password="emit"
+    driverClassName="com.mysql.jdbc.Driver"
+    factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+    url="jdbc:mysql://localhost:3306/emit"
+  />
+
+  <Realm className="org.apache.catalina.realm.DataSourceRealm"
+    dataSourceName="jdbc/database"
+    localDataSource="true"
+    userTable="accounts"
+    userRoleTable="accounts"
+    userNameCol="username"
+    userCredCol="password"
+    roleNameCol="rolename"
+    digest="MD5"
+  />
+
+  <Valve className="org.apache.catalina.authenticator.FormAuthenticator" 
+    characterEncoding="UTF-8" 
+    changeSessionIdOnAuthentication="true" 
+    landingPage="/index.html" 
+  />
+ 
+</Context>
