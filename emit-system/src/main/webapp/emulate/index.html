@@ -72,7 +72,9 @@
     }
   	
     $scope.x1 = {};
-    $scope.x1.item = {};
+    $scope.x1.creating = false;
+    $scope.x1.updating = false;
+    $scope.x1.item = null;
     $scope.x1.length = 5;
     $scope.x1.offset = 0;
     $scope.x1.size = 0;
@@ -103,11 +105,21 @@
     }
         
     $scope.x1.doSelect = function(item) {
-      $scope.x1.item = angular.copy(item);
+    	if (item) {
+   	      $scope.x1.creating = false;
+   	      $scope.x1.updating = true;
+   	      $scope.x1.item = angular.copy(item);    		
+    	} else {
+   	      $scope.x1.creating = true;
+   	      $scope.x1.updating = false;
+   	      $scope.x1.item = angular.copy({});
+    	}
     }
     
     $scope.x1.doClean = function() {
-      $scope.x1.item = angular.copy({});
+   	  $scope.x1.creating = false;
+   	  $scope.x1.updating = false;
+      $scope.x1.item = null;
     }
     
     $scope.x1.doReset = function() {
@@ -263,27 +275,32 @@
               </ul>
             </nav>
           </div>
-          <div class="list-group" >
+          <ul class="list-group" >
             <li class="list-group-item" ng-repeat="item in x1.items">
+              <p class="list-group-item-text text-right">
+                <button class="btn btn-success btn-md" ng-hide="item.status" ng-click="x1.doStart(item)">Start</button>
+                <button class="btn btn-warning btn-md" ng-show="item.status" ng-click="x1.doStop(item)">Stop</button>
+              </p>
               <h4 class="list-group-item-heading">{{item.topic}} <small>{{item.broker}}</small></h4>
               <p class="list-group-item-text">uuid: {{item.uuid}}</p>
               <p class="list-group-item-text">floor: {{item.floor}}</p>
               <p class="list-group-item-text">ceil: {{item.ceil}}</p>
               <p class="list-group-item-text">delay: {{item.delay}}</p>
               <p class="list-group-item-text text-right">
-                <button class="btn btn-primary btn-md" ng-hide="item.status" ng-click="x1.doStart(item)">Start</button>
-                <button class="btn btn-md" ng-show="item.status" ng-click="x1.doStop(item)">Stop</button>
                 <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Edit</button>
               </p>
             </li>
-          </div>
+          </ul>
+        </div>
+        <div>
+          <p class="text-right"><button class="btn btn-primary" ng-click="x1.doSelect()">Create</button></p>
         </div>
       </div>
       <div class="col-md-6">
         <form name="form" class="form list-group-item" id="form">
-          <fieldset>
-            <legend ng-hide="x1.item.uuid">Create a publisher</legend>
-            <legend ng-show="x1.item.uuid">Edit the publisher #{{item.uuid}}</legend>
+          <fieldset ng-disabled="!(x1.creating || x1.creating)">
+            <legend ng-hide="x1.updating">Create a publisher</legend>
+            <legend ng-show="x1.updating">Delete the publisher #{{item.uuid}}</legend>
             <div class="form-group">
               <input type="text" class="form-control" id="publisher.broker" ng-model="x1.item.broker" placeholder="URI of the Broker" ng-required="true" required>
             </div>
@@ -320,8 +337,8 @@
               <div class="col-md-12">
                 <div class="form-group pull-right">
                   <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.doCreate()" ng-hide="x1.item.uuid" ng-disabled="!form.$valid"><strong>Create</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.item.uuid && !x1.item.status" ng-disabled="!form.$valid"><strong>Delete</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.doCreate()" ng-show="x1.creating" ng-disabled="!form.$valid"><strong>Create</strong></button>
+                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating && !x1.item.status" ng-disabled="!form.$valid"><strong>Delete</strong></button>
                 </div>
               </div>
             </div>

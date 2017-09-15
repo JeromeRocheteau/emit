@@ -66,130 +66,132 @@
         $("#alert").show();
     }
     
-    $scope.doClose = function() {
+    $scope.doDismiss = function() {
         $("#alert").hide();
         $scope.alert = {};
     }
     
-  	var empty = {};
-  	var selected = false;
+  	$scope.x1 = {};
   	
-  	$scope.item = {};
+  	$scope.x1.creating = false;
+	$scope.x1.updating = false;
   	
-    $scope.length = 5;
-    $scope.offset = 0;
-    $scope.size = 0;
-    $scope.items = [];
+  	$scope.x1.item = null;
+  	
+    $scope.x1.length = 5;
+    $scope.x1.offset = 0;
+    $scope.x1.size = 0;
+    $scope.x1.items = [];
     
-    $scope.doPrev = function() {
-      if ($scope.length <= $scope.offset) {
-        $scope.offset = $scope.offset - $scope.length;
-        page();
+    $scope.x1.doPrev = function() {
+      if ($scope.x1.length <= $scope.x1.offset) {
+        $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+        $scope.x1.doPage();
       }
     }
     
-    $scope.doNext = function() {
-      if ($scope.offset + $scope.length < $scope.size) {
-        $scope.offset = $scope.offset + $scope.length;
-        page();                     
+    $scope.x1.doNext = function() {
+      if ($scope.x1.offset + $scope.x1.length < $scope.x1.size) {
+        $scope.x1.offset = $scope.x1.offset + $scope.x1.length;
+        $scope.x1.doPage();                     
       }
     }
     
-    $scope.doFirst = function() {
-      $scope.offset = 0;
-      page();
+    $scope.x1.doFirst = function() {
+      $scope.x1.offset = 0;
+      $scope.x1.doPage();
     }
 
-    $scope.doLast = function() {
-      $scope.offset = Math.floor(($scope.size - 1) / $scope.length) * $scope.length;
-      page();
+    $scope.x1.doLast = function() {
+      $scope.x1.offset = Math.floor(($scope.x1.size - 1) / $scope.x1.length) * $scope.x1.length;
+      $scope.x1.doPage();
     }
 
-    var size = function() {
+    $scope.x1.doSize = function() {
       $http({method:'GET',url:'../measures/size'})
       .then(function onSuccess(response) {
-        $scope.size = response.data;
+        $scope.x1.size = response.data;
       },function onError(response) {
-        $scope.size = 0;
+        $scope.x1.size = 0;
       });
     }
 
-    var page = function() {
-      var content = "length=" + $scope.length + "&offset=" + $scope.offset; 
+    $scope.x1.doPage = function() {
+      var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
       $http({method:'GET',url:'../measures/page?' + content})
       .then(function onSuccess(response) {
-        $scope.items = response.data;
+        $scope.x1.items = response.data;
       },function onError(response) {
-        $scope.items = [];
+        $scope.x1.items = [];
       });
     }
 
-    $scope.doCreate = function() {
-      var content = "name=" + encodeURIComponent($scope.item.name) + "&unit=" + encodeURIComponent($scope.item.unit);
+    $scope.x1.doCreate = function() {
+      var content = "name=" + encodeURIComponent($scope.x1.item.name) + "&unit=" + encodeURIComponent($scope.x1.item.unit);
       $http({method:'POST',url:'../measures/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
        	display("success", "The measure has been sucessfully created.");
-       	$scope.doClean();
-    	size();
-    	page();
+       	$scope.x1.doClean();
+    	$scope.x1.doSize();
+    	$scope.x1.doPage();
       },function onError(response) {
           display("danger", "Something wrong happened while creating the measure.");
-          $scope.doClean();
+          $scope.x1.doClean();
       });
     }
 
-    $scope.doUpdate = function() {
-      var content = "id=" + $scope.item.id + "&name=" + encodeURIComponent($scope.item.name) + "&unit=" + encodeURIComponent($scope.item.unit);
+    $scope.x1.doUpdate = function() {
+      var content = "id=" + $scope.x1.item.id + "&name=" + encodeURIComponent($scope.x1.item.name) + "&unit=" + encodeURIComponent($scope.x1.item.unit);
       $http({method:'POST',url:'../measures/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
-       	display("success", "The measure " + $scope.item.id + " has been sucessfully updated.");
-    	$scope.doClean();
-    	size();
-    	page();
+       	display("success", "The measure " + $scope.x1.item.id + " has been sucessfully updated.");
+    	$scope.x1.doClean();
+    	$scope.x1.doSize();
+    	$scope.x1.doPage();
       },function onError(response) {
-          display("danger", "Something wrong happened while updating the measure #" + $scope.item.id + ".");
-          $scope.doClean();
+          display("danger", "Something wrong happened while updating the measure #" + $scope.x1.item.id + ".");
+          $scope.x1.doClean();
       });
     }
 
-    $scope.doDelete = function() {
-      var content = "id=" + $scope.item.id;
+    $scope.x1.doDelete = function() {
+      var content = "id=" + $scope.x1.item.id;
       $http({method:'POST',url:'../measures/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
-      	display("success", "The measure " + $scope.item.id + " has been sucessfully deleted.");
-      	$scope.doClean();
-    	if (Math.ceil($scope.size / $scope.length) < $scope.offset) {
-    		$scope.offset = $scope.offset - $scope.length;
+      	display("success", "The measure " + $scope.x1.item.id + " has been sucessfully deleted.");
+      	$scope.x1.doClean();
+    	if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
+    		$scope.x1.offset = $scope.x1.offset - $scope.x1.length;
     	}
-    	size();
-    	page();
+    	$scope.x1.doSize();
+    	$scope.x1.doPage();
       },function onError(response) {
-        display("danger", "Something wrong happened while deleting the measure #" + $scope.item.id +".");
-        $scope.doClean();
+        display("danger", "Something wrong happened while deleting the measure #" + $scope.x1.item.id +".");
+        $scope.x1.doClean();
       });
     }
     
-    $scope.doSelect = function(item) {
-    	selected = true;
-        $scope.item = angular.copy(item);
+    $scope.x1.doSelect = function(item) {
+    	if (item) {
+        	$scope.x1.creating = false;
+        	$scope.x1.updating = true;
+            $scope.x1.item = angular.copy(item);    		
+    	} else {
+        	$scope.x1.creating = true;
+        	$scope.x1.updating = false;
+            $scope.x1.item = angular.copy({});
+    	}
 	}
     
-    $scope.doClean = function() {
-    	selected = false;
-        $scope.item = angular.copy(empty);
-        $scope.alert = angular.copy(empty);
+    $scope.x1.doClean = function() {
+    	$scope.x1.creating = false;
+    	$scope.x1.updating = false;
+        $scope.x1.item = null;
+        $scope.x1.alert = angular.copy({});
 	}
     
-    $scope.canCreate = function() {
-      return selected === false;
-	}
-    
-	$scope.canUpdate = function() {
-		return selected === true;
-	}
-    
-  	size();
-  	page();
+  	$scope.x1.doSize();
+  	$scope.x1.doPage();
 
   });
   </script>
@@ -230,7 +232,7 @@
                   <li class="dropdown-header">{{username}}</li>
                   <li><a href="../tokens.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Tokens</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="../index.html" ng-click="doClear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
+                  <li><a href="../index.html" ng-click="x1.doClear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
                 </ul>
               </li>
             </ul>
@@ -242,54 +244,58 @@
       <div class="col-md-6">
         <div class="panel panel-default">
           <div class="panel-body">
-            <h3>Measures <small>({{size}} items)</small></h3>
+            <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
+            <h3>Measures <small>({{x1.size}} items)</small></h3>
             <nav aria-label="...">
               <ul class="pager">
-                <li class="previous"><a class="btn btn-default" ng-click="doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
-                <li class="previous"><a class="btn btn-default" ng-click="doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
-                <li ng-show="size > 0">{{(offset + 1) / length | ceil}} / {{size / length | ceil}}</li>
-                <li class="next"><a class="btn btn-default" ng-click="doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
-                <li class="next"><a class="btn btn-default" ng-click="doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span> </a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li ng-show="x1.size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="x1.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="x1.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
               </ul>
             </nav>
           </div>
-          <div class="list-group" ng-repeat="item in items">
-            <li class="list-group-item">
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="item in x1.items">
               <h4 class="list-group-item-heading">{{item.name}}</h4>
               <p class="list-group-item-text" ng-show="item.unit"><em>unit:</em> {{item.unit}}</p>
               <p class="list-group-item-text"><em>id:</em> #{{item.id}}</p>
-              <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="doSelect(item)">Edit</button></p>
+              <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="x1.doSelect(item)">Edit</button></p>
             </li>
-          </div>
+          </ul>
+        </div>
+        <div>
+          <p class="text-right"><button class="btn btn-primary" ng-click="x1.doSelect()">Create</button></p>
         </div>
       </div>
       <div class="col-md-6">
         <form name="form" class="form list-group-item" id="form">
-          <fieldset>
-            <legend ng-show="canCreate()">Edit a measure</legend>
-            <legend ng-show="canUpdate()">Edit the measure #{{item.id}}</legend>
+          <fieldset ng-disabled="!(x1.creating || x1.updating)">
+            <legend ng-hide="x1.updating">Create a measure</legend>
+            <legend ng-show="x1.updating">Update the measure #{{x1.item.id}}</legend>
             <div class="form-group">
               <label for="measure.name">Name</label>
-              <input type="text" class="form-control" id="measure.name" ng-model="item.name" placeholder="Name of the measure" ng-required="true" required>
+              <input type="text" class="form-control" id="measure.name" ng-model="x1.item.name" placeholder="Name of the measure" ng-required="true" required>
             </div>
             <div class="form-group">
               <label for="measure.unit">Unit</label>
-              <input type="text" class="form-control" id="measure.unit" ng-model="item.unit" placeholder="Unit of the measure" ng-required="true" required>
+              <input type="text" class="form-control" id="measure.unit" ng-model="x1.item.unit" placeholder="Unit of the measure" ng-required="true" required>
             </div>
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group pull-right">
-                  <button type="reset" class="btn" ng-click="doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="doDelete()" ng-show="canUpdate()" ng-disabled="!form.$valid"><strong>Delete</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="doUpdate()" ng-show="canUpdate()" ng-disabled="!form.$valid"><strong>Update</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="doCreate()" ng-show="canCreate()" ng-disabled="!form.$valid"><strong>Create</strong></button>
+                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
+                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!form.$valid"><strong>Delete</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.doUpdate()" ng-show="x1.updating" ng-disabled="!form.$valid"><strong>Update</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.doCreate()" ng-show="x1.creating" ng-disabled="!form.$valid"><strong>Create</strong></button>
                 </div>
               </div>
             </div>
           </fieldset>
         </form>
         <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
-          <button type="button" class="close" aria-label="close" ng-click="doClose()"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" aria-label="close" ng-click="doDismiss()"><span aria-hidden="true">&times;</span></button>
           <p>{{message.content}}</p>
         </div>
       </div>

@@ -158,11 +158,12 @@
     $scope.x1.doPage();
 
     $scope.x2 = {};
-    $scope.x2.selected = false;
+    $scope.x2.creating = false;
+    $scope.x2.updating = false;
     $scope.x2.length = 5;
     $scope.x2.offset = 0;
     $scope.x2.size = 0;
-    $scope.x2.item = {};
+    $scope.x2.item = null;
     $scope.x2.items = [];
     
     $scope.x2.doPrev = function() {
@@ -263,22 +264,22 @@
     }
     
     $scope.x2.doSelect = function(item) {
-    	$scope.x2.selected = true;
-        $scope.x2.item = angular.copy(item);
+    	if (item) {
+        	$scope.x2.creating = false;
+        	$scope.x2.updating = true;
+            $scope.x2.item = angular.copy(item);
+    	} else {
+        	$scope.x2.creating = true;
+        	$scope.x2.updating = false;
+            $scope.x2.item = angular.copy({});
+    	}
 	}
     
     $scope.x2.doClean = function() {
-    	$scope.x2.selected = false;
-        $scope.x2.item = angular.copy({});
+    	$scope.x2.creating = false;
+    	$scope.x2.updating = false;
+        $scope.x2.item = null;
         $scope.alert = angular.copy({});
-	}
-    
-    $scope.x2.canCreate = function() {
-      return $scope.x2.selected === false;
-	}
-    
-	$scope.x2.canUpdate = function() {
-		return $scope.x2.selected === true;
 	}
     
     $scope.setMeasure = function(measure) {
@@ -333,7 +334,7 @@
       </div>
     </header>
     <section id="content" class="container ng-cloak">
-      <div class="col-md-4">
+      <div class="col-md-6" ng-hide="x2.item">
         <div class="panel panel-default">
           <div class="panel-body">
             <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
@@ -348,18 +349,18 @@
               </ul>
             </nav>
           </div>
-          <div class="list-group" ng-repeat="item in x1.items">
-            <li class="list-group-item">
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="item in x1.items">
               <h4 class="list-group-item-heading">{{item.name}}</h4>
               <p class="list-group-item-text"><em>uri:</em> #{{item.uri}}</p>
               <p class="list-group-item-text"><em>id:</em> #{{item.id}}</p>
               <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="x1.doSelect(item)">View</button></p>
             </li>
-          </div>
+          </ul>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="panel panel-default" ng-show="x2.items.length > 0">
+      <div class="col-md-6" ng-show="x2.items.length > 0">
+        <div class="panel panel-default">
           <div class="panel-body">
             <a class="pull-right btn btn-default" ng-click="x2.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
             <h3>Features <small>({{x2.size}} items)</small></h3>
@@ -373,8 +374,8 @@
               </ul>
             </nav>
           </div>
-          <div class="list-group" ng-repeat="item in x2.items">
-            <li class="list-group-item">
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="item in x2.items">
               <h4 class="list-group-item-heading">{{item.name}}</h4>
               <p class="list-group-item-text"><em>measure:</em> {{item.measure.name}}</p>
               <p class="list-group-item-text"><em>unit:</em> {{item.measure.unit}}</p>
@@ -382,14 +383,17 @@
               <p class="list-group-item-text"><em>id:</em> #{{item.id}}</p>
               <p class="list-group-item-text text-right"><button class="btn btn-default" ng-click="x2.doSelect(item)">Edit</button></p>
             </li>
-          </div>
+          </ul>
+        </div>
+        <div>
+          <p class="text-right"><button class="btn btn-primary" ng-click="x2.doSelect()">Create</button></p>
         </div>
       </div>
-      <div class="col-md-4">
-        <form name="form" class="form list-group-item" id="form" ng-show="x1.item">
+      <div class="col-md-6" ng-show="x2.item">
+        <form name="form" class="form list-group-item" id="form">
           <fieldset>
-            <legend ng-show="x2.canCreate()">Edit a feature</legend>
-            <legend ng-show="x2.canUpdate()">Edit the feature #{{item.id}}</legend>
+            <legend ng-hide="x2.updating">Create a feature</legend>
+            <legend ng-show="x2.updating">Update the feature #{{x2.item.id}}</legend>
             <div class="form-group">
               <label for="feature.name">Name</label>
               <input type="text" class="form-control" id="feature.name" ng-model="x2.item.name" placeholder="Name of the feature" ng-required="true" required>
@@ -407,9 +411,9 @@
               <div class="col-md-12">
                 <div class="form-group pull-right">
                   <button type="reset" class="btn" ng-click="x2.doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="x2.doDelete()" ng-show="x2.canUpdate()" ng-disabled="!form.$valid"><strong>Delete</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x2.doUpdate()" ng-show="x2.canUpdate()" ng-disabled="!form.$valid"><strong>Update</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x2.doCreate()" ng-show="x2.canCreate()" ng-disabled="!form.$valid"><strong>Create</strong></button>
+                  <button type="submit" class="btn btn-danger" ng-click="x2.doDelete()" ng-show="x2.updating" ng-disabled="!form.$valid"><strong>Delete</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x2.doUpdate()" ng-show="x2.updating" ng-disabled="!form.$valid"><strong>Update</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x2.doCreate()" ng-show="x2.creating" ng-disabled="!form.$valid"><strong>Create</strong></button>
                 </div>
               </div>
             </div>

@@ -13,6 +13,7 @@
   <modules>
     <module>emit-commons</module>
     <module>emit-monitor</module>
+    <module>emit-network</module>
     <module>emit-process</module>
   </modules>
 </project>
