@@ -28,7 +28,8 @@
   app.controller('controller', function ($scope, $http) {
 
 	$scope.username = null;
-	  
+	$scope.admin = false;
+		  
   	var check = function() {
   		$http({method:'GET',url:'../user/check'})
   		.then(function onSuccess(response) {
@@ -38,6 +39,15 @@
   		});
   	}
 
+  	var role = function() {
+  		$http({method:'GET',url:'../user/role'})
+  		.then(function onSuccess(response) {
+  			$scope.admin = response.data;
+  		}, function onError(response) {
+  			$scope.admin = false;
+  		});
+  	}
+	  	
   	$scope.doClear = function() {
   		$http({method:'GET',url:'../user/clear'})
   		.then(function onSuccess(response) {
@@ -46,7 +56,8 @@
   	}
 
   	check();
-  	
+  	role();
+
   	$scope.message = {};
     
     var display = function(type, content) {
@@ -133,12 +144,12 @@
       + "&delay=" + $scope.x1.item.delay;
       $http({method:'POST',url:'../publishers/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
-      	display("success", "The new MQTT publisher has been sucessfully created.");
+      	display("success", "The new publisher has been sucessfully created.");
       	$scope.x1.doClean();
       	$scope.x1.doSize();
       	$scope.x1.doPage();
       },function onError(response) {
-        display("danger", "Something wrong happened while creating the new MQTT publisher.");
+        display("danger", "Something wrong happened while creating the new publisher.");
         $scope.x1.doClean();
       });
     }
@@ -147,7 +158,7 @@
       var content = "uuid=" + $scope.x1.item.uuid;
       $http({method:'POST',url:'../publishers/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
-      	display("success", "The MQTT publisher " + $scope.x1.item.uuid + " has been sucessfully deleted.");
+      	display("success", "The publisher " + $scope.x1.item.uuid + " has been sucessfully deleted.");
       	$scope.x1.doClean();
       	if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
       		$scope.x1.offset = $scope.x1.offset - $scope.x1.length;
@@ -155,7 +166,7 @@
       	$scope.x1.doSize();
       	$scope.x1.doPage();
       },function onError(response) {
-        display("danger", "Something wrong happened while deleting the MQTT publisher #" + $scope.x1.item.uuid +".");
+        display("danger", "Something wrong happened while deleting the publisher #" + $scope.x1.item.uuid +".");
         $scope.x1.doClean();
       });
     }
@@ -164,11 +175,11 @@
       var content = "uuid=" + item.uuid;
       $http({method:'POST',url:'../publishers/start',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
-      	display("success", "The MQTT publisher " + item.uuid + " has been sucessfully started.");
+      	display("success", "The publisher " + item.uuid + " has been sucessfully started.");
       	$scope.x1.doClean();
       	$scope.x1.doPage();
       },function onError(response) {
-        display("danger", "Something wrong happened while starting the MQTT publisher #" + item.uuid +".");
+        display("danger", "Something wrong happened while starting the publisher #" + item.uuid +".");
         $scope.x1.doClean();
       });
     }
@@ -177,11 +188,11 @@
       var content = "uuid=" + item.uuid;
       $http({method:'POST',url:'../publishers/stop',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
-      	display("success", "The MQTT publisher " + item.uuid + " has been sucessfully stopped.");
+      	display("success", "The publisher " + item.uuid + " has been sucessfully stopped.");
       	$scope.x1.doClean();
       	$scope.x1.doPage();
       },function onError(response) {
-        display("danger", "Something wrong happened while stopping the MQTT publisher #" + item.uuid +".");
+        display("danger", "Something wrong happened while stopping the publisher #" + item.uuid +".");
         $scope.x1.doClean();
       });
     }
@@ -216,7 +227,7 @@
                   <li><a href="../monitor/features.html"><span class="glyphicon glyphicon-tag" aria-hidden="true">&nbsp;</span>Features</a></li>
                 </ul>
               </li>
-              <li><a href="../emulate/index.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Emulating</a></li>
+              <li><a href="../emulate/index.html" ng-show="admin">Emulating</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li class="dropdown">
@@ -271,10 +282,10 @@
       <div class="col-md-6">
         <form name="form" class="form list-group-item" id="form">
           <fieldset>
-            <legend ng-hide="x1.item.uuid">Create a MQTT publisher</legend>
-            <legend ng-show="x1.item.uuid">Edit the MQTT publisher #{{item.uuid}}</legend>
+            <legend ng-hide="x1.item.uuid">Create a publisher</legend>
+            <legend ng-show="x1.item.uuid">Edit the publisher #{{item.uuid}}</legend>
             <div class="form-group">
-              <input type="text" class="form-control" id="publisher.broker" ng-model="x1.item.broker" placeholder="URI of the MQTT Broker" ng-required="true" required>
+              <input type="text" class="form-control" id="publisher.broker" ng-model="x1.item.broker" placeholder="URI of the Broker" ng-required="true" required>
             </div>
             <div class="row">
               <div class="col-md-6">
