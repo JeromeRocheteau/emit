@@ -40,6 +40,10 @@
     <listener-class>fr.icam.emit.listeners.MongoListener</listener-class>
   </listener>
 
+  <listener>
+    <listener-class>fr.icam.emit.listeners.MqttPublisherListener</listener-class>
+  </listener>
+
   <filter>
     <filter-name>jdbc-filter</filter-name>
     <filter-class>com.github.jeromerocheteau.JdbcFilter</filter-class>
@@ -518,6 +522,71 @@
     <url-pattern>/monitor/stop</url-pattern>
   </servlet-mapping>
 
+  <!-- mqtt -->
+
+  <servlet>
+    <servlet-name>mqtt-publisher-create</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MqttPublisherCreate</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mqtt-publisher-create</servlet-name>
+    <url-pattern>/publishers/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>mqtt-publisher-delete</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MqttPublisherDelete</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mqtt-publisher-delete</servlet-name>
+    <url-pattern>/publishers/delete</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>mqtt-publisher-start</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MqttPublisherStart</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mqtt-publisher-start</servlet-name>
+    <url-pattern>/publishers/start</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>mqtt-publisher-stop</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MqttPublisherStop</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mqtt-publisher-stop</servlet-name>
+    <url-pattern>/publishers/stop</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>mqtt-publisher-status</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MqttPublisherStatus</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mqtt-publisher-status</servlet-name>
+    <url-pattern>/publishers/status</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>mqtt-publisher-page</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MqttPublisherPage</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mqtt-publisher-page</servlet-name>
+    <url-pattern>/publishers/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>mqtt-publisher-size</servlet-name>
+    <servlet-class>fr.icam.emit.servlets.MqttPublisherSize</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mqtt-publisher-size</servlet-name>
+    <url-pattern>/publishers/size</url-pattern>
+  </servlet-mapping>
+
   <!-- security -->
 
  <security-constraint>
@@ -576,6 +645,14 @@
       <url-pattern>/features/update</url-pattern>
       <url-pattern>/features/delete</url-pattern>
       <url-pattern>/measurements/item</url-pattern>
+      <url-pattern>/emulate/index.html</url-pattern>
+      <url-pattern>/publishers/start</url-pattern>
+      <url-pattern>/publishers/stop</url-pattern>
+      <url-pattern>/publishers/create</url-pattern>
+      <url-pattern>/publishers/delete</url-pattern>
+      <url-pattern>/publishers/size</url-pattern>
+      <url-pattern>/publishers/page</url-pattern>
+      <url-pattern>/publishers/status</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
     </web-resource-collection>

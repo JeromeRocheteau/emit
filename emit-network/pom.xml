@@ -11,6 +11,6 @@
     <maven.compiler.target>1.7</maven.compiler.target>
   </properties>
   <modules>
-    <module>emit-network-fake</module>
+    <module>emit-network-services</module>
   </modules>
 </project>

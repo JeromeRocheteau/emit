@@ -58,7 +58,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>mqtt-publisher-create</servlet-name>
-    <url-pattern>/create</url-pattern>
+    <url-pattern>/publishers/create</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -67,7 +67,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>mqtt-publisher-delete</servlet-name>
-    <url-pattern>/delete</url-pattern>
+    <url-pattern>/publishers/delete</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -76,7 +76,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>mqtt-publisher-start</servlet-name>
-    <url-pattern>/start</url-pattern>
+    <url-pattern>/publishers/start</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -85,7 +85,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>mqtt-publisher-stop</servlet-name>
-    <url-pattern>/stop</url-pattern>
+    <url-pattern>/publishers/stop</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -94,7 +94,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>mqtt-publisher-status</servlet-name>
-    <url-pattern>/status</url-pattern>
+    <url-pattern>/publishers/status</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -103,7 +103,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>mqtt-publisher-page</servlet-name>
-    <url-pattern>/page</url-pattern>
+    <url-pattern>/publishers/page</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -112,7 +112,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>mqtt-publisher-size</servlet-name>
-    <url-pattern>/size</url-pattern>
+    <url-pattern>/publishers/size</url-pattern>
   </servlet-mapping>
 
   <!-- security -->

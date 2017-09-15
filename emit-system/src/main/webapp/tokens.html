@@ -17,10 +17,8 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-chart.js/1.1.1/angular-chart.min.js"></script>
   <script type="text/javascript">
-  var app = angular.module('app',['chart.js']);
+  var app = angular.module('app',[]);
 
   app.filter('ceil', function() {
 	return function(input) {
@@ -286,6 +284,7 @@
                   <li><a href="./monitor/features.html"><span class="glyphicon glyphicon-tag" aria-hidden="true">&nbsp;</span>Features</a></li>
                 </ul>
               </li>
+              <li><a href="./emulate/index.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Emulating</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li class="dropdown">

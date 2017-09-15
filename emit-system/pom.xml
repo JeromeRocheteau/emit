@@ -90,5 +90,10 @@
       <artifactId>emit-monitor-services</artifactId>
       <version>1.2</version>
     </dependency>
+    <dependency>
+      <groupId>fr.icam.emit</groupId>
+      <artifactId>emit-network-services</artifactId>
+      <version>1.2</version>
+    </dependency>
   </dependencies>
 </project>
