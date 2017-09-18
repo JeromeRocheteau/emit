@@ -47,13 +47,6 @@
 	  			$scope.admin = false;
 	  		});
 	  	}
-	  	
-	  	$scope.doClear = function() {
-	  		$http({method:'GET',url:'../user/clear'})
-	  		.then(function onSuccess(response) {
-	  		}, function onError(response) {
-	  		});
-	  	}
 
 	  	check();
 	  	role();
@@ -232,7 +225,7 @@
                   <li class="dropdown-header">{{username}}</li>
                   <li><a href="../tokens.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Tokens</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="../index.html" ng-click="x1.doClear()"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
+                  <li><a href="../user/clear"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
                 </ul>
               </li>
             </ul>
