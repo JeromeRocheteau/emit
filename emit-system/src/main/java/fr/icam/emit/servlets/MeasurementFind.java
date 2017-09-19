@@ -83,7 +83,7 @@ public class MeasurementFind extends JdbcQueryServlet<List<Measurement>> {
 			Instrument instrument = new Instrument(instrumentId, null, instrumentUri, instrumentName); 
 			Measure measure = new Measure(measureId, null, measureName, measureUnit);
 			Feature feature = new Feature(featureId, null, featureName, featureFactor, measure, instrument);
-			Measurement measurement = new Measurement(id, null, started.getTime(), stopped.getTime(), uuid, feature);
+			Measurement measurement = new Measurement(id, null, started.getTime(), stopped == null ? null : stopped.getTime(), uuid, feature);
 			measurements.add(measurement);
 		}
 		return measurements;
