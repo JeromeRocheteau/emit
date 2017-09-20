@@ -291,7 +291,7 @@
       </div>
       <div class="col-md-6">
         <form name="form" class="form list-group-item" id="form">
-          <fieldset ng-disabled="!(x1.creating || x1.creating)">
+          <fieldset ng-disabled="!(x1.creating || x1.updating)">
             <legend ng-hide="x1.updating">Create a publisher</legend>
             <legend ng-show="x1.updating">Delete the publisher #{{item.uuid}}</legend>
             <div class="form-group">
