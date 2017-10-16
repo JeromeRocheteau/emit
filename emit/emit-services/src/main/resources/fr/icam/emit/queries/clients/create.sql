@@ -1,0 +1,1 @@
+INSERT INTO `clients` (`uuid`,`broker`) VALUES (?,?);

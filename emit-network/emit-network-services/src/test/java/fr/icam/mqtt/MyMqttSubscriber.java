@@ -53,7 +53,7 @@ public class MyMqttSubscriber implements MqttCallback {
 	public static void main(String[] arguments) throws Exception {
 		MyMqttSubscriber client = new MyMqttSubscriber();
 		client.doConnect();
-		client.doSubsribe("+/+");
+		client.doSubsribe("#");
 		Thread.sleep(15000);
 		client.doDisconnect();
 	}
