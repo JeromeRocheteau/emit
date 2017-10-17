@@ -26,6 +26,15 @@ public class MqttClientListener implements ServletContextListener {
 		clients.remove(uuid);
 	}
 	
+	public boolean isConnected(String uuid) throws Exception {
+		MqttClient client = clients.get(uuid);
+		if (client == null) {
+			throw new NullPointerException(uuid);
+		} else {
+			return client.isConnected(); 			
+		}		
+	}
+	
 	public void doConnect(String uuid) throws Exception {
 		MqttClient client = clients.get(uuid);
 		if (client == null) {

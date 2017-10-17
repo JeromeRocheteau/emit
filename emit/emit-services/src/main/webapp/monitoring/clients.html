@@ -87,6 +87,21 @@
       </div>
 
       <div class="col-md-6">
+        <div class="panel panel-default" ng-show="x1.item">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{x1.item.uuid}}</h3>
+          </div>
+          <div class="panel-body">
+            <p>{{x1.item.broker}}</p>
+            <p>{{x1.item.user}}</p>
+            <p ng-show="x1.item.connected">{{x1.item.connected}}</p>
+            <p class="text-right">
+              <button class="btn btn-default btn-md" ng-hide="x1.item.connected" ng-click="x1.doConnect()">Connect</button>
+              <button class="btn btn-default btn-md" ng-show="x1.item.connected" ng-click="x1.doDisconnect()">Disconnect</button>
+            </p>
+          </div>
+        </div>
+      
         <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
           <button type="button" class="close" aria-label="close" ng-click="doDismiss()"><span aria-hidden="true">&times;</span></button>
           <p>{{message.content}}</p>
@@ -146,8 +161,7 @@
     }
   	
     $scope.x1 = {};
-    $scope.x1.creating = false;
-    $scope.x1.updating = false;
+    $scope.x1.monitoring = false;
     $scope.x1.item = null;
     $scope.x1.length = 5;
     $scope.x1.offset = 0;
@@ -180,19 +194,14 @@
         
     $scope.x1.doSelect = function(item) {
       if (item) {
-        $scope.x1.creating = false;
-        $scope.x1.updating = true;
-        $scope.x1.item = angular.copy(item);              
-      } else {
-        $scope.x1.creating = true;
-        $scope.x1.updating = false;
-        $scope.x1.item = angular.copy({});
+        $scope.x1.monitoring = true;
+        $scope.x1.item = angular.copy(item);
+        connected($scope.x1.item);
       }
     }
     
     $scope.x1.doClean = function() {
-      $scope.x1.creating = false;
-      $scope.x1.updating = false;
+      $scope.x1.monitoring = false;
       $scope.x1.item = null;
     }
 
@@ -212,6 +221,40 @@
         $scope.x1.items = response.data;
       },function onError(response) {
         $scope.x1.items = [];
+      });
+    }
+
+    var connected = function(item) {
+      var content = "client=" + item.uuid;
+      $http({method:'GET',url:'../clients/connected?' + content})
+      .then(function onSuccess(response) {
+        item.connected = response.data;
+      },function onError(response) {
+  	    item.connected = null;
+      });
+    }
+
+    $scope.x1.doConnect = function() {
+      var content = "client=" + $scope.x1.item.uuid;
+      $http({method:'POST',url:'../clients/connect',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully connected.");
+        connected($scope.x1.item);
+      },function onError(response) {
+        display("danger", "Something wrong happened while connecting the client #" + $scope.x1.item.uuid +".");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.doDisonnect = function() {
+      var content = "client=" + $scope.x1.item.uuid;
+      $http({method:'POST',url:'../clients/disconnect',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully disconnected.");
+        connected($scope.x1.item);
+      },function onError(response) {
+        display("danger", "Something wrong happened while disconnecting the client #" + $scope.x1.item.uuid +".");
+        $scope.x1.doClean();
       });
     }
 	

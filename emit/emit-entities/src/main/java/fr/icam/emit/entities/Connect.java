@@ -9,6 +9,8 @@ public class Connect {
 	private Long stopped;
 	
 	private Client client;
+	
+	private String user;
 
 	public Long getId() {
 		return id;
@@ -26,11 +28,16 @@ public class Connect {
 		return client;
 	}
 
-	public Connect(Long id, Long started, Long stopped, Client client) {
+	public String getUser() {
+		return user;
+	}
+
+	public Connect(Long id, Long started, Long stopped, String user, Client client) {
 		super();
 		this.id = id;
 		this.started = started;
 		this.stopped = stopped;
+		this.user = user;
 		this.client = client;
 	}
 	

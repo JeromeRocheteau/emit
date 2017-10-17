@@ -162,6 +162,34 @@
     <url-pattern>/tokens/delete</url-pattern>
   </servlet-mapping>
 
+  <!-- shares -->
+
+  <servlet>
+    <servlet-name>share-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.shares.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/shares/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>share-create</servlet-name>
+    <url-pattern>/shares/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>share-delete</servlet-name>
+    <servlet-class>fr.icam.emit.services.shares.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/shares/delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>share-delete</servlet-name>
+    <url-pattern>/shares/delete</url-pattern>
+  </servlet-mapping>
+
   <!-- clients -->
 
   <servlet>
@@ -229,6 +257,45 @@
     <url-pattern>/clients/delete</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>client-connected</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Connected</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/connects/list-started.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-connected</servlet-name>
+    <url-pattern>/clients/connected</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-connect</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Connect</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/connects/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-connect</servlet-name>
+    <url-pattern>/clients/connect</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-disconnect</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Disconnect</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/connects/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-disconnect</servlet-name>
+    <url-pattern>/clients/disconnect</url-pattern>
+  </servlet-mapping>
+
   <!-- security -->
 
  <security-constraint>
@@ -243,6 +310,7 @@
       <web-resource-name>user-area</web-resource-name>
       <url-pattern>/index.html</url-pattern>
       <url-pattern>/settings.html</url-pattern>
+      <url-pattern>/configuring/clients.html</url-pattern>
       <url-pattern>/monitoring/clients.html</url-pattern>
       <url-pattern>/user/clear</url-pattern>
       <url-pattern>/user/name</url-pattern>
@@ -251,6 +319,14 @@
       <url-pattern>/tokens/item</url-pattern>
       <url-pattern>/tokens/create</url-pattern>
       <url-pattern>/tokens/delete</url-pattern>
+      <url-pattern>/clients/size</url-pattern>
+      <url-pattern>/clients/page</url-pattern>
+      <url-pattern>/clients/create</url-pattern>
+      <url-pattern>/clients/update</url-pattern>
+      <url-pattern>/clients/delete</url-pattern>
+      <url-pattern>/clients/connected</url-pattern>
+      <url-pattern>/clients/connect</url-pattern>
+      <url-pattern>/clients/disconnect</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
     </web-resource-collection>
@@ -260,22 +336,16 @@
     </auth-constraint>
   </security-constraint>
 
-  <security-constraint>
+  <!-- security-constraint>
     <web-resource-collection>
       <web-resource-name>admin-area</web-resource-name>
-      <url-pattern>/configuring/clients.html</url-pattern>
-      <url-pattern>/clients/size</url-pattern>
-      <url-pattern>/clients/page</url-pattern>
-      <url-pattern>/clients/create</url-pattern>
-      <url-pattern>/clients/update</url-pattern>
-      <url-pattern>/clients/delete</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>
     </auth-constraint>
-  </security-constraint>
+  </security-constraint -->
 
   <security-constraint>
     <web-resource-collection>
