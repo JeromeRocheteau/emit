@@ -24,10 +24,12 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 	
 	@Override
 	public void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
+		String user = request.getUserPrincipal().getName();
 		UUID uuid = UUID.randomUUID();
 		URI broker = URI.create(request.getParameter("broker"));
 		statement.setString(1, uuid.toString());
 		statement.setString(2, broker.toString());
+		statement.setString(3, user);
 	}
 	
 	@Override

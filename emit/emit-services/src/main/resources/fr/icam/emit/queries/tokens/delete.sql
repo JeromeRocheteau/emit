@@ -1,2 +1,2 @@
 DELETE FROM `tokens`
-WHERE `id` = ?;
+WHERE `uuid` = ?;

@@ -1,1 +1,1 @@
-INSERT INTO `tokens` (`uuid`,`username`) VALUES (?,?);
+INSERT INTO `tokens` (`uuid`,`user`) VALUES (?,?);

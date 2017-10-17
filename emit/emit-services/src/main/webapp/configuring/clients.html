@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Emit | Configuring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style type="text/css">
+      html {overflow-y:scroll;position:relative;height:100%;min-height:100%;}
+      footer {padding-top:2ex;padding-bottom:1ex;color:white;}
+    </style>
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
+  <body ng-app="app" ng-controller="controller">
+    <header class="ng-cloak">
+      <div class="navbar navbar-inverse navbar-custom navbar-static-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html"><strong>Emit</strong></a>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-left">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Monitoring&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../monitoring/clients.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                </ul>
+              </li>
+              <li class="dropdown" ng-show="user.role">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Configuring&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../configuring/clients.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                </ul>
+              </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">{{user.name}}</li>
+                  <li><a href="../settings.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Settings</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="../user/clear"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+    <section id="content" class="container ng-cloak">
+
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
+            <h3>Clients <small>({{x1.size}} items)</small></h3>
+            <nav aria-label="...">
+              <ul class="pager">
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li ng-show="x1.size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="x1.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="x1.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+          <ul class="list-group" >
+            <li class="list-group-item" ng-repeat="item in x1.items">
+              <p class="list-group-item-text text-right">
+              </p>
+              <h4 class="list-group-item-heading">{{item.uuid}}</h4>
+              <p class="list-group-item-text">{{item.broker}}</p>
+              <p class="list-group-item-text">{{item.user}}</p>
+              <p class="list-group-item-text text-right">
+                <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Edit</button>
+              </p>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-right"><button class="btn btn-primary" ng-click="x1.doSelect()">Create</button></p>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <form name="form" class="form list-group-item" id="form">
+          <fieldset ng-disabled="!(x1.creating || x1.updating)">
+            <legend ng-hide="x1.updating">Create a client</legend>
+            <legend ng-show="x1.updating">Update a client</legend>
+            <div class="row" ng-show="x1.updating">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="client.uuid" ng-model="x1.item.uuid" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row" ng-show="x1.updating">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="client.user" ng-model="x1.item.user" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="client.broker" ng-model="x1.item.broker" placeholder="Broker URI" ng-required="true" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group pull-right">
+                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.doCreate()" ng-show="x1.creating" ng-disabled="!form.$valid"><strong>Create</strong></button>
+                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!form.$valid"><strong>Delete</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.doUpdate()" ng-show="x1.updating" ng-disabled="!form.$valid"><strong>Update</strong></button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
+          <button type="button" class="close" aria-label="close" ng-click="doDismiss()"><span aria-hidden="true">&times;</span></button>
+          <p>{{message.content}}</p>
+        </div>
+      </div>
+    
+    </section>
+    <footer class="footer navbar-inverse navbar-fixed-bottom">
+      <div class="container">
+        <p class="text-center">Copyright © 2015-2017. ICAM. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+  <script type="text/javascript">
+  var app = angular.module('app',[]);
+
+  app.filter('ceil', function() {
+	return function(input) {
+	  return Math.ceil(input);
+	};
+  });
+  
+  app.controller('controller', function ($scope, $http) {
+
+	$scope.user = {};
+	$scope.user.name = null;
+	$scope.user.role = false;
+	  
+  	var user = function() {
+  		$http({method:'GET',url:'../user/name'})
+  		.then(function onSuccess(response) {
+  			$scope.user.name = response.data;
+  		}, function onError(response) {
+  			$scope.user.name = null;
+  		});
+  		$http({method:'GET',url:'../user/role'})
+  		.then(function onSuccess(response) {
+  			$scope.user.role = response.data;
+  		}, function onError(response) {
+  			$scope.user.role = false;
+  		});
+  	}
+  	
+  	user();
+  	
+  	$scope.message = {};
+    
+    var display = function(type, content) {
+        $scope.message.type = type;
+        $scope.message.content = content;
+        $("#alert").show();
+    }
+    
+    $scope.doDismiss = function() {
+        $("#alert").hide();
+        $scope.alert = {};
+    }
+  	
+    $scope.x1 = {};
+    $scope.x1.creating = false;
+    $scope.x1.updating = false;
+    $scope.x1.item = null;
+    $scope.x1.length = 5;
+    $scope.x1.offset = 0;
+    $scope.x1.size = 0;
+    $scope.x1.items = [];
+    
+    $scope.x1.doPrev = function() {
+      if ($scope.x1.length <= $scope.x1.offset) {
+        $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+        $scope.x1.doPage();
+      }
+    }
+    
+    $scope.x1.doNext = function() {
+      if ($scope.x1.offset + $scope.x1.length < $scope.x1.size) {
+        $scope.x1.offset = $scope.x1.offset + $scope.x1.length;
+        $scope.x1.doPage();
+      }
+    }
+    
+    $scope.x1.doFirst = function() {
+      $scope.x1.offset = 0;
+      $scope.x1.doPage();
+    }
+
+    $scope.x1.doLast = function() {
+      $scope.x1.offset = Math.floor(($scope.x1.size - 1) / $scope.x1.length) * $scope.x1.length;
+      $scope.x1.doPage();
+    }
+        
+    $scope.x1.doSelect = function(item) {
+      if (item) {
+        $scope.x1.creating = false;
+        $scope.x1.updating = true;
+        $scope.x1.item = angular.copy(item);              
+      } else {
+        $scope.x1.creating = true;
+        $scope.x1.updating = false;
+        $scope.x1.item = angular.copy({});
+      }
+    }
+    
+    $scope.x1.doClean = function() {
+      $scope.x1.creating = false;
+      $scope.x1.updating = false;
+      $scope.x1.item = null;
+    }
+
+    $scope.x1.doSize = function() {
+      $http({method:'GET',url:'../clients/size'})
+      .then(function onSuccess(response) {
+         $scope.x1.size = response.data;
+      },function onError(response) {
+        $scope.x1.size = 0;
+      });
+    }
+      
+    $scope.x1.doPage = function() {
+      var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
+      $http({method:'GET',url:'../clients/page?' + content})
+      .then(function onSuccess(response) {
+        $scope.x1.items = response.data;
+      },function onError(response) {
+        $scope.x1.items = [];
+      });
+    }
+
+    $scope.x1.doCreate = function() {
+      var content = "broker=" + $scope.x1.item.broker;
+      $http({method:'POST',url:'../clients/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The new client has been sucessfully created.");
+        $scope.x1.doClean();
+        $scope.x1.doSize();
+        $scope.x1.doPage();
+      },function onError(response) {
+        display("danger", "Something wrong happened while creating the new client.");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.doUpdate = function() {
+      var content = "uuid=" + $scope.x1.item.uuid + "&broker=" + $scope.x1.item.broker;
+      $http({method:'POST',url:'../clients/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully updated.");
+        $scope.x1.doClean();
+        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
+          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+        }
+        $scope.x1.doSize();
+        $scope.x1.doPage();
+      },function onError(response) {
+        display("danger", "Something wrong happened while updating the client #" + $scope.x1.item.uuid +".");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.doDelete = function() {
+      var content = "uuid=" + $scope.x1.item.uuid;
+      $http({method:'POST',url:'../clients/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully deleted.");
+        $scope.x1.doClean();
+        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
+          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+        }
+        $scope.x1.doSize();
+        $scope.x1.doPage();
+      },function onError(response) {
+        display("danger", "Something wrong happened while deleting the client #" + $scope.x1.item.uuid +".");
+        $scope.x1.doClean();
+      });
+    }
+	
+    $scope.x1.doSize();
+    $scope.x1.doPage();
+    
+  });
+  </script>
+</html>

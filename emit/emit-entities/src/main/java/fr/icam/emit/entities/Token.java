@@ -4,19 +4,19 @@ public class Token {
 
 	private String uuid;
 	
-	private String username;
+	private String user;
 	
 	public String getUuid() {
 		return uuid;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getUser() {
+		return user;
 	}
 
-	public Token(String uuid, String username) {
+	public Token(String uuid, String user) {
 		this.uuid = uuid;
-		this.username = username;
+		this.user = user;
 	}
 	
 }

@@ -41,7 +41,7 @@
   </listener>
 
   <listener>
-    <listener-class>fr.icam.emit.listeners.MqttPublisherListener</listener-class>
+    <listener-class>fr.icam.emit.listeners.MqttClientListener</listener-class>
   </listener>
 
   <filter>
@@ -166,7 +166,7 @@
 
   <servlet>
     <servlet-name>client-size</servlet-name>
-    <servlet-class>fr.icam.emit.services.commons.Sizer</servlet-class>
+    <servlet-class>fr.icam.emit.services.commons.UserSizer</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
       <param-value>/fr/icam/emit/queries/clients/size.sql</param-value>
@@ -243,6 +243,7 @@
       <web-resource-name>user-area</web-resource-name>
       <url-pattern>/index.html</url-pattern>
       <url-pattern>/settings.html</url-pattern>
+      <url-pattern>/monitoring/clients.html</url-pattern>
       <url-pattern>/user/clear</url-pattern>
       <url-pattern>/user/name</url-pattern>
       <url-pattern>/user/role</url-pattern>
@@ -262,7 +263,7 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>admin-area</web-resource-name>
-      <url-pattern>/clients.html</url-pattern>
+      <url-pattern>/configuring/clients.html</url-pattern>
       <url-pattern>/clients/size</url-pattern>
       <url-pattern>/clients/page</url-pattern>
       <url-pattern>/clients/create</url-pattern>

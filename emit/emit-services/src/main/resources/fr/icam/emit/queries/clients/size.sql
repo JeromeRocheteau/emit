@@ -1,3 +1,4 @@
 SELECT 
   count(c.`uuid`) AS size
-FROM `clients` c;
+FROM `clients` c
+WHERE c.`user` = ?;

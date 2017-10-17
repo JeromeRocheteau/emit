@@ -28,8 +28,8 @@ public class AccessFilter extends JdbcFilter {
 			Long id = resultSet.getLong("id");
 			Timestamp issued = resultSet.getTimestamp("issued");
 			String uuid = resultSet.getString("uuid");
-			String username = resultSet.getString("username");
-			Token token = new Token(uuid, username);
+			String user = resultSet.getString("user");
+			Token token = new Token(uuid, user);
 			Access access = new Access(id, issued.getTime(), token);			
 			request.setAttribute("access", access);
 		} else {

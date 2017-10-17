@@ -1,5 +1,5 @@
 SELECT 
   t.`uuid` AS uuid,
-  t.`username` AS username  
+  t.`user` AS user  
 FROM `tokens` t 
-WHERE t.`username` = ?
+WHERE t.`user` = ?
