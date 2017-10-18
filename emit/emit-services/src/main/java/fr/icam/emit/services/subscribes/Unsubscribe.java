@@ -1,4 +1,4 @@
-package fr.icam.emit.services.clients;
+package fr.icam.emit.services.subscribes;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 
 import fr.icam.emit.listeners.MqttClientListener;
 
-public class Disconnect extends JdbcUpdateServlet<Boolean> {
+public class Unsubscribe extends JdbcUpdateServlet<Boolean> {
 
 	private static final long serialVersionUID = 201710161616012L;
 
@@ -28,14 +28,15 @@ public class Disconnect extends JdbcUpdateServlet<Boolean> {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
 			String uuid = request.getParameter("client");
-			this.doCall(request, response, "client-connected");
-			Boolean connected = (Boolean) request.getAttribute("connected");
-			if (connected) {
-				throw new IllegalStateException(uuid);
-			} else {
-				listener.doDisconnect(uuid);
+			String topic = request.getParameter("topic");
+			this.doCall(request, response, "client-subscribing");
+			Boolean subscribing = (Boolean) request.getAttribute("subscribing");
+			if (subscribing) {
+				listener.doUnsubscribe(uuid, topic);
 				Boolean done = this.doProcess(request);
 				this.doWrite(done, response.getWriter());
+			} else {
+				throw new IllegalStateException(uuid);
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
@@ -44,8 +45,8 @@ public class Disconnect extends JdbcUpdateServlet<Boolean> {
 	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		String client = request.getParameter("client");
-		statement.setString(1, client);
+		Long subscribe = Long.valueOf(request.getParameter("subscribe"));
+		statement.setLong(1, subscribe);
 	}
 
 	@Override

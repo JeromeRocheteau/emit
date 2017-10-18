@@ -8,6 +8,8 @@ public class Subscribe {
 	
 	private Long stopped;
 	
+	private String user;
+	
 	private String topic;
 	
 	private Client client;
@@ -24,6 +26,10 @@ public class Subscribe {
 		return stopped;
 	}
 
+	public String getUser() {
+		return user;
+	}
+
 	public String getTopic() {
 		return topic;
 	}
@@ -32,11 +38,12 @@ public class Subscribe {
 		return client;
 	}
 
-	public Subscribe(Long id, Long started, Long stopped, String topic, Client client) {
+	public Subscribe(Long id, Long started, Long stopped, String user, String topic, Client client) {
 		super();
 		this.id = id;
 		this.started = started;
 		this.stopped = stopped;
+		this.user = user;
 		this.topic = topic;
 		this.client = client;
 	}

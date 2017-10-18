@@ -7,18 +7,25 @@ import java.util.Map;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-public class MqttClientListener implements ServletContextListener {
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
+public class MqttClientListener implements ServletContextListener {
+	
+	private MongoCollection<Document> collection;
+	
 	private Map<String, MqttClient> clients;
 	
 	public void doCreate(String uuid, String broker) throws Exception {
 		MemoryPersistence persistence = new MemoryPersistence();
 		MqttClient client = new MqttClient(broker, uuid, persistence);
+		client.setCallback(new MqttClientCallback(collection));
 		clients.put(uuid, client);
 	}
 	
@@ -86,6 +93,9 @@ public class MqttClientListener implements ServletContextListener {
 	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
+		MongoDatabase db = (MongoDatabase) sce.getServletContext().getAttribute("mongodb-database");
+		String name = sce.getServletContext().getInitParameter("mongodb-collection");
+		collection = db.getCollection(name);
 		clients = new HashMap<String, MqttClient>(124);
 		sce.getServletContext().setAttribute("mqtt-client-listener", this);
 	}
@@ -96,15 +106,13 @@ public class MqttClientListener implements ServletContextListener {
 			MqttClient client = clients.get(uuid);
 			if (client.isConnected()) {
 				try {
-					// FIXME if connected then set connect row stopped attribute
-					// FIXME if subscribing then set subscribe row stopped attribute
-					// TODO
 					client.disconnect();
+					System.out.println("[EMIT] Disonnect Client " + client.getClientId());
 				} catch (MqttException e) {
 					e.printStackTrace();
 				}
 			}
 		}
 	}
-
+	
 }

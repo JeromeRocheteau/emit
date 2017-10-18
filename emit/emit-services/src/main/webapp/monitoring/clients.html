@@ -76,10 +76,10 @@
               <p class="list-group-item-text text-right">
               </p>
               <h4 class="list-group-item-heading">{{item.uuid}}</h4>
-              <p class="list-group-item-text">{{item.broker}}</p>
-              <p class="list-group-item-text">{{item.user}}</p>
+              <p class="list-group-item-text">broker: {{item.broker}}</p>
+              <p class="list-group-item-text">owner: {{item.user}}</p>
               <p class="list-group-item-text text-right">
-                <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Edit</button>
+                <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Select</button>
               </p>
             </li>
           </ul>
@@ -92,13 +92,54 @@
             <h3 class="panel-title">{{x1.item.uuid}}</h3>
           </div>
           <div class="panel-body">
-            <p>{{x1.item.broker}}</p>
-            <p>{{x1.item.user}}</p>
-            <p ng-show="x1.item.connected">{{x1.item.connected}}</p>
-            <p class="text-right">
-              <button class="btn btn-default btn-md" ng-hide="x1.item.connected" ng-click="x1.doConnect()">Connect</button>
-              <button class="btn btn-default btn-md" ng-show="x1.item.connected" ng-click="x1.doDisconnect()">Disconnect</button>
-            </p>
+            <h4>Connection</h4>
+            <div ng-hide="x1.item.connect">
+              <p>not connected to {{x1.item.broker}}</p>
+              <p class="text-right">
+                <button class="btn btn-default btn-md" ng-click="x1.doConnect()">Connect</button>
+              </p>
+            </div>
+            <div ng-show="x1.item.connect">
+              <p>connected to {{x1.item.broker}}</p>
+              <p>connected at {{x1.item.connect.started | date : "yyyy-MM-dd HH:mm:ss"}}</p>
+              <p>connected by {{x1.item.connect.user}}</p>
+              <p class="text-right">
+                <button class="btn btn-md" ng-disabled="x1.item.subscribe" ng-click="x1.doDisconnect()">Disconnect</button>
+              </p>
+              <h4>Subscription</h4>
+              <div ng-hide="x1.item.subscribe">
+                <form class="form" role="form" name="subscription" ng-hide="x1.item.subscribe">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="client.filter" ng-model="x1.item.filter" placeholder="topic" ng-required="true" required>
+                  </div>
+                  <p class="text-right">
+                    <button type="reset" class="btn btn-md">Reset</button>
+                    <button type="submit" class="btn btn-default btn-md" ng-click="x1.doSubscribe()" ng-disabled="!subscription.$valid">Subscribe</button>
+                  </p>
+                </form>
+              </div>
+              <div ng-show="x1.item.subscribe">
+                <p>subscribing to {{x1.item.subscribe.topic}}</p>
+                <p>subscribing from {{x1.item.subscribe.started | date : "yyyy-MM-dd HH:mm:ss"}}</p>
+                <p>subscribing by {{x1.item.subscribe.user}}</p>
+                <p class="text-right">
+                  <button class="btn btn-md" ng-show="x1.item.subscribe" ng-click="x1.doUnsubscribe()">Unsubscribe</button>
+                </p>
+              </div>
+              <h4>Publication</h4>
+              <form class="form" role="form" name="publication">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="client.topic" ng-model="x1.item.topic" placeholder="topic" ng-required="true" required>
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" id="client.payload" ng-model="x1.item.payload" placeholder="message" ng-required="true" required>
+                </div>
+                <p class="text-right">
+                  <button type="reset" class="btn btn-md">Reset</button>
+                  <button type="submit" class="btn btn-default btn-md" ng-click="x1.doPublish()" ng-disabled="!publication.$valid">Publish</button>
+                </p>
+              </form>
+            </div>
           </div>
         </div>
       
@@ -197,6 +238,7 @@
         $scope.x1.monitoring = true;
         $scope.x1.item = angular.copy(item);
         connected($scope.x1.item);
+        subscribing($scope.x1.item);
       }
     }
     
@@ -228,9 +270,9 @@
       var content = "client=" + item.uuid;
       $http({method:'GET',url:'../clients/connected?' + content})
       .then(function onSuccess(response) {
-        item.connected = response.data;
+        item.connect = response.data;
       },function onError(response) {
-  	    item.connected = null;
+  	    item.connect = null;
       });
     }
 
@@ -246,14 +288,48 @@
       });
     }
 
-    $scope.x1.doDisonnect = function() {
-      var content = "client=" + $scope.x1.item.uuid;
+    $scope.x1.doDisconnect = function() {
+      var content = "client=" + $scope.x1.item.uuid + "&connect=" + $scope.x1.item.connect.id;
       $http({method:'POST',url:'../clients/disconnect',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully disconnected.");
         connected($scope.x1.item);
       },function onError(response) {
         display("danger", "Something wrong happened while disconnecting the client #" + $scope.x1.item.uuid +".");
+        $scope.x1.doClean();
+      });
+    }
+
+    var subscribing = function(item) {
+      var content = "client=" + item.uuid;
+      $http({method:'GET',url:'../clients/subscribing?' + content})
+      .then(function onSuccess(response) {
+        item.subscribe = response.data;
+      },function onError(response) {
+  	    item.subscribe = null;
+      });
+    }
+
+    $scope.x1.doSubscribe = function() {
+      var content = "client=" + $scope.x1.item.uuid + "&topic=" + $scope.x1.item.filter;
+      $http({method:'POST',url:'../clients/subscribe',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The client " + $scope.x1.item.uuid + " has sucessfully subscribed to topic '" + $scope.x1.item.topic + "'.");
+        subscribing($scope.x1.item);
+      },function onError(response) {
+        display("danger", "Something wrong happened while subscribing the client #" + $scope.x1.item.uuid +".");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.doUnsubscribe = function() {
+      var content = "client=" + $scope.x1.item.uuid + "&topic=" + $scope.x1.item.filter + "&subscribe=" + $scope.x1.item.subscribe.id;
+      $http({method:'POST',url:'../clients/unsubscribe',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The client " + $scope.x1.item.uuid + " has sucessfully unsubscribed to topic '" + $scope.x1.item.subscribe.topic + "'.");
+        subscribing($scope.x1.item);
+      },function onError(response) {
+        display("danger", "Something wrong happened while unsubscribing the client #" + $scope.x1.item.uuid +".");
         $scope.x1.doClean();
       });
     }
