@@ -8,6 +8,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.bson.Document;
+import org.bson.types.Binary;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -87,7 +88,13 @@ public class MqttClientListener implements ServletContextListener {
 		if (client == null) {
 			throw new NullPointerException(uuid);
 		} else {
-			client.publish(topic, payload, qos, retained);
+			client.publish(topic, payload, qos, retained);Document document = new Document();
+	        document.append("type", "pub");
+	        document.append("topic", topic);
+	        document.append("qos", qos);
+	        document.append("retained", retained);
+	        document.append("payload", new Binary(payload));
+	        collection.insertOne(document);
 		}
 	}
 	

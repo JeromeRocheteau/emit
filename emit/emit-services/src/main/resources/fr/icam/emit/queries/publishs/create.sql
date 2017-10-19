@@ -1,0 +1,1 @@
+INSERT INTO `publishs` (`issued`,`client`,`user`,`topic`) VALUES (now(),?,?,?);

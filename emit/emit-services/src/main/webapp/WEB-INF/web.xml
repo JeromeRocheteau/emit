@@ -339,6 +339,70 @@
     <servlet-name>client-unsubscribe</servlet-name>
     <url-pattern>/clients/unsubscribe</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-publish</servlet-name>
+    <servlet-class>fr.icam.emit.services.publishs.Publish</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/publishs/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-publish</servlet-name>
+    <url-pattern>/clients/publish</url-pattern>
+  </servlet-mapping>
+  
+  <!-- actoins -->
+
+  <servlet>
+    <servlet-name>connect-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.actions.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/connects/size.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>subscribe-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.actions.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/subscribes/size.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>publish-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.actions.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/publishs/size.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>action-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.actions.Sumer</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>action-size</servlet-name>
+    <url-pattern>/clients/actions/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>action-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.actions.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/actions/page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>action-page</servlet-name>
+    <url-pattern>/clients/actions/page</url-pattern>
+  </servlet-mapping>
   
   <!-- initialization -->
 
@@ -388,6 +452,7 @@
       <url-pattern>/settings.html</url-pattern>
       <url-pattern>/configuring/clients.html</url-pattern>
       <url-pattern>/monitoring/clients.html</url-pattern>
+      <url-pattern>/reporting/clients.html</url-pattern>
       <url-pattern>/user/clear</url-pattern>
       <url-pattern>/user/name</url-pattern>
       <url-pattern>/user/role</url-pattern>
@@ -406,25 +471,24 @@
       <url-pattern>/clients/subscribing</url-pattern>
       <url-pattern>/clients/subscribe</url-pattern>
       <url-pattern>/clients/unsubscribe</url-pattern>
+      <url-pattern>/clients/publish</url-pattern>
+      <url-pattern>/clients/actions/size</url-pattern>
+      <url-pattern>/clients/actions/page</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
+      <http-method>HEAD</http-method>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+      <http-method>CONNECT</http-method>
+      <http-method>OPTIONS</http-method>
+      <http-method>TRACE</http-method>
+      <http-method>PATCH</http-method>
     </web-resource-collection>
     <auth-constraint>
       <role-name>user</role-name>
       <role-name>admin</role-name>
     </auth-constraint>
   </security-constraint>
-
-  <!-- security-constraint>
-    <web-resource-collection>
-      <web-resource-name>admin-area</web-resource-name>
-      <http-method>GET</http-method>
-      <http-method>POST</http-method>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>admin</role-name>
-    </auth-constraint>
-  </security-constraint -->
 
   <security-constraint>
     <web-resource-collection>

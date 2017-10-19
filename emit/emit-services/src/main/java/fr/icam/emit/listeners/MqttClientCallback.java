@@ -34,6 +34,7 @@ public class MqttClientCallback implements MqttCallback {
 		int qos = message.getQos();
 		byte[] payload = message.getPayload();
         Document document = new Document();
+        document.append("type", "sub");
         document.append("topic", topic);
         document.append("qos", qos);
         document.append("retained", retained);
