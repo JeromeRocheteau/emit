@@ -21,12 +21,16 @@ public class MqttClientListener implements ServletContextListener {
 	
 	private MongoCollection<Document> collection;
 	
+	public MongoCollection<Document> getCollection() {
+		return collection;
+	}
+	
 	private Map<String, MqttClient> clients;
 	
 	public void doCreate(String uuid, String broker) throws Exception {
 		MemoryPersistence persistence = new MemoryPersistence();
 		MqttClient client = new MqttClient(broker, uuid, persistence);
-		client.setCallback(new MqttClientCallback(collection));
+		client.setCallback(new MqttClientCallback(collection, uuid));
 		clients.put(uuid, client);
 	}
 	
@@ -88,11 +92,14 @@ public class MqttClientListener implements ServletContextListener {
 		if (client == null) {
 			throw new NullPointerException(uuid);
 		} else {
-			client.publish(topic, payload, qos, retained);Document document = new Document();
+			client.publish(topic, payload, qos, retained);
+			Document document = new Document();
 	        document.append("type", "pub");
-	        document.append("topic", topic);
+	        document.append("issued", System.currentTimeMillis());
+	        document.append("client", uuid);
 	        document.append("qos", qos);
 	        document.append("retained", retained);
+	        document.append("topic", topic);
 	        document.append("payload", new Binary(payload));
 	        collection.insertOne(document);
 		}

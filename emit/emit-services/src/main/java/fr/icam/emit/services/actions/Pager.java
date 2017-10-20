@@ -52,7 +52,8 @@ public class Pager extends fr.icam.emit.services.commons.Pager<Action> {
     		String user = resultSet.getString("user");
     		String client = resultSet.getString("client");
     		String type = resultSet.getString("type");
-    		Action item = new Action(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, client, type);
+    		String topic = resultSet.getString("topic");
+    		Action item = new Action(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, client, type, topic);
     		items.add(item);
     	}
     	return items;

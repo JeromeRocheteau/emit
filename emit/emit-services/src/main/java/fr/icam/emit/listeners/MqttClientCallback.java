@@ -10,10 +10,13 @@ import com.mongodb.client.MongoCollection;
 
 public class MqttClientCallback implements MqttCallback {
 
+	private String uuid;
+	
 	private MongoCollection<Document> collection;
 	
-	public MqttClientCallback(MongoCollection<Document> collection) {
+	public MqttClientCallback(MongoCollection<Document> collection, String uuid) {
 		this.collection = collection;
+		this.uuid = uuid;
 	}
 	
 	@Override
@@ -30,15 +33,16 @@ public class MqttClientCallback implements MqttCallback {
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		boolean retained = message.isRetained();
-		boolean duplicate = message.isDuplicate();
 		int qos = message.getQos();
 		byte[] payload = message.getPayload();
         Document document = new Document();
         document.append("type", "sub");
-        document.append("topic", topic);
+        document.append("issued", System.currentTimeMillis());
+        document.append("client", uuid);
         document.append("qos", qos);
         document.append("retained", retained);
-        document.append("duplicate", duplicate);
+        document.append("topic", topic);
+        // document.append("duplicate", duplicate);
         document.append("payload", new Binary(payload));
         collection.insertOne(document);
 	}

@@ -13,6 +13,8 @@ public class Action {
 	private String user;
 	
 	private String type;
+	
+	private String topic;
 
 	public Long getId() {
 		return id;
@@ -38,7 +40,11 @@ public class Action {
 		return type;
 	}
 
-	public Action(Long id, Long started, Long stopped, String user, String client, String type) {
+	public String getTopic() {
+		return topic;
+	}
+
+	public Action(Long id, Long started, Long stopped, String user, String client, String type, String topic) {
 		super();
 		this.id = id;
 		this.started = started;
@@ -46,6 +52,7 @@ public class Action {
 		this.user = user;
 		this.client = client;
 		this.type = type;
+		this.topic = topic;
 	}
 	
 }

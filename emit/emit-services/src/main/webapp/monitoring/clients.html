@@ -138,17 +138,23 @@
                 <div class="form-group">
                   <input type="text" class="form-control" id="client.topic" ng-model="x1.item.topic" placeholder="topic" ng-required="true" required>
                 </div>
-                <div class="form-group">
-                  <div class="col-md-6">
-                    <label class="radio-inline">QoS</label>
-                    <label class="radio-inline"><input type="radio" ng-model="x1.item.qos" id="qos-1" value="0" ng-required="true" required> 0</label>
-                    <label class="radio-inline"><input type="radio" ng-model="x1.item.qos" id="qos-2" value="1" ng-required="true" required checked> 1</label>
-                    <label class="radio-inline"><input type="radio" ng-model="x1.item.qos" id="qos-3" value="2" ng-required="true" required> 2</label>
-                  </div>
-                  <div class="col-md-6">
-                    <label class="radio-inline">retained</label>
-                    <label class="radio-inline"><input type="radio" ng-model="x1.item.retained" id="retained-1" value="true" ng-required="true" required> yes</label>
-                    <label class="radio-inline"><input type="radio" ng-model="x1.item.retained" id="retained-2" value="false" ng-required="false" required checked> no</label>
+                <div class="">
+                  <div class="row">
+                    <div class="col-md-6 form-group">
+                      <select class="form-control" ng-model="x1.item.qos" ng-required="true" required>
+                        <option value="0">0 - at most once</option>
+                        <option value="1" ng-selected="x1.item">1 - at least once</option>
+                        <option value="2">2 - exactly once</option>
+                      </select>
+                      <p class="help-block">QoS (quality of service level)</p>
+                    </div>
+                    <div class="col-md-6 form-group">
+                      <select class="form-control" ng-model="x1.item.retained" ng-required="true" required>
+                        <option value="false" ng-selected="x1.item">no</option>
+                        <option value="true">yes</option>
+                      </select>
+                      <p class="help-block">Do broker retain message?</p>
+                    </div>
                   </div>
                 </div>
                 <div class="form-group">
@@ -257,6 +263,8 @@
       if (item) {
         $scope.x1.monitoring = true;
         $scope.x1.item = angular.copy(item);
+        $scope.x1.item.qos = 1;
+        $scope.x1.item.retained = false;
         connected($scope.x1.item);
         subscribing($scope.x1.item);
       }

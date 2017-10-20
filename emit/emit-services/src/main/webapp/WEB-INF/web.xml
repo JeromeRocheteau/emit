@@ -403,6 +403,24 @@
     <servlet-name>action-page</servlet-name>
     <url-pattern>/clients/actions/page</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>message-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.messages.Sizer</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>message-size</servlet-name>
+    <url-pattern>/clients/messages/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>message-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.messages.Pager</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>message-page</servlet-name>
+    <url-pattern>/clients/messages/page</url-pattern>
+  </servlet-mapping>
   
   <!-- initialization -->
 
@@ -474,6 +492,8 @@
       <url-pattern>/clients/publish</url-pattern>
       <url-pattern>/clients/actions/size</url-pattern>
       <url-pattern>/clients/actions/page</url-pattern>
+      <url-pattern>/clients/messages/size</url-pattern>
+      <url-pattern>/clients/messages/page</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
       <http-method>HEAD</http-method>

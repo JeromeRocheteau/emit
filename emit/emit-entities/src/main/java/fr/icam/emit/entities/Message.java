@@ -2,26 +2,24 @@ package fr.icam.emit.entities;
 
 public class Message {
 	
-	private String id;
-	
-	private Long arrived;
+	private Long issued;
 
+	private String type;
+	
 	private String topic;
 	
 	private int qos;
 	
 	private boolean retained;
 	
-	private boolean duplicated;
-	
 	private byte[] payload;
 
-	public String getId() {
-		return id;
+	public Long getIssued() {
+		return issued;
 	}
 
-	public Long getArrived() {
-		return arrived;
+	public String getType() {
+		return type;
 	}
 
 	public String getTopic() {
@@ -36,22 +34,17 @@ public class Message {
 		return retained;
 	}
 
-	public boolean isDuplicated() {
-		return duplicated;
-	}
-
 	public byte[] getPayload() {
 		return payload;
 	}
 
-	public Message(String id, Long arrived, String topic, int qos, boolean retained, boolean duplicated, byte[] payload) {
+	public Message(Long issued, String type, String topic, int qos, boolean retained, byte[] payload) {
 		super();
-		this.id = id;
-		this.arrived = arrived;
+		this.issued = issued;
 		this.topic = topic;
+		this.type = type;
 		this.qos = qos;
 		this.retained = retained;
-		this.duplicated = duplicated;
 		this.payload = payload;
 	}
 	
