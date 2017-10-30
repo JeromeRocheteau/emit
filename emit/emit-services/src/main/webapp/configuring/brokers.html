@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Emit | Monitoring</title>
+    <title>Emit | Configuring</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -76,7 +76,7 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
-            <h3>Clients <small>({{x1.size}} items)</small></h3>
+            <h3>Brokers <small>({{x1.size}} items)</small></h3>
             <nav aria-label="...">
               <ul class="pager">
                 <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
@@ -91,93 +91,64 @@
             <li class="list-group-item" ng-repeat="item in x1.items">
               <p class="list-group-item-text text-right">
               </p>
-              <h4 class="list-group-item-heading">{{item.uuid}}</h4>
-              <p class="list-group-item-text">broker: {{item.broker}}</p>
-              <p class="list-group-item-text">owner: {{item.user}}</p>
+              <h4 class="list-group-item-heading">{{item.uri}}</h4>
+              <p class="list-group-item-text" ng-show="item.username">{{item.username}}</p>
               <p class="list-group-item-text text-right">
-                <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Select</button>
+                <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Edit</button>
               </p>
             </li>
           </ul>
         </div>
+        <div>
+          <p class="text-right"><button class="btn btn-primary" ng-click="x1.doSelect()">Create</button></p>
+        </div>
       </div>
 
       <div class="col-md-6">
-        <div class="panel panel-default" ng-show="x1.item">
-          <div class="panel-heading">
-            <h3 class="panel-title">{{x1.item.uuid}}</h3>
-          </div>
-          <div class="panel-body">
-            <h4>Connection</h4>
-            <div ng-hide="x1.item.connect">
-              <p>not connected to {{x1.item.broker}}</p>
-              <p class="text-right">
-                <button class="btn btn-default btn-md" ng-click="x1.doConnect()">Connect</button>
-              </p>
-            </div>
-            <div ng-show="x1.item.connect">
-              <p>connected to {{x1.item.broker}}</p>
-              <p>connected at {{x1.item.connect.started | date : "yyyy-MM-dd HH:mm:ss"}}</p>
-              <p>connected by {{x1.item.connect.user}}</p>
-              <p class="text-right">
-                <button class="btn btn-md" ng-disabled="x1.item.subscribe" ng-click="x1.doDisconnect()">Disconnect</button>
-              </p>
-              <h4>Subscription</h4>
-              <div ng-hide="x1.item.subscribe">
-                <form class="form" role="form" name="subscription" ng-hide="x1.item.subscribe">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="client.filter" ng-model="x1.item.filter" placeholder="topic" ng-required="true" required>
-                  </div>
-                  <p class="text-right">
-                    <button type="reset" class="btn btn-md">Reset</button>
-                    <button type="submit" class="btn btn-default btn-md" ng-click="x1.doSubscribe()" ng-disabled="!subscription.$valid">Subscribe</button>
-                  </p>
-                </form>
-              </div>
-              <div ng-show="x1.item.subscribe">
-                <p>subscribing to {{x1.item.subscribe.topic}}</p>
-                <p>subscribing from {{x1.item.subscribe.started | date : "yyyy-MM-dd HH:mm:ss"}}</p>
-                <p>subscribing by {{x1.item.subscribe.user}}</p>
-                <p class="text-right">
-                  <button class="btn btn-md" ng-show="x1.item.subscribe" ng-click="x1.doUnsubscribe()">Unsubscribe</button>
-                </p>
-              </div>
-              <h4>Publication</h4>
-              <form class="form" role="form" name="publication">
+        <form name="form" class="form list-group-item" id="form">
+          <fieldset ng-disabled="!(x1.creating || x1.updating)">
+            <legend ng-hide="x1.updating">Create a broker</legend>
+            <legend ng-show="x1.updating">Update a broker</legend>
+            <div class="row" ng-hide="x1.updating">
+              <div class="col-md-12">
                 <div class="form-group">
-                  <input type="text" class="form-control" id="client.topic" ng-model="x1.item.topic" placeholder="topic" ng-required="true" required>
+                  <input type="text" class="form-control" id="broker.uri" ng-model="x1.item.uri" placeholder="Unique Remote Identifier " ng-required="true" required>
                 </div>
-                <div class="">
-                  <div class="row">
-                    <div class="col-md-6 form-group">
-                      <select class="form-control" ng-model="x1.item.qos" ng-required="true" required>
-                        <option value="0">0 - at most once</option>
-                        <option value="1" ng-selected="x1.item">1 - at least once</option>
-                        <option value="2">2 - exactly once</option>
-                      </select>
-                      <p class="help-block">QoS (quality of service level)</p>
-                    </div>
-                    <div class="col-md-6 form-group">
-                      <select class="form-control" ng-model="x1.item.retained" ng-required="true" required>
-                        <option value="false" ng-selected="x1.item">no</option>
-                        <option value="true">yes</option>
-                      </select>
-                      <p class="help-block">Do broker retain message?</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <input type="text" class="form-control" id="client.payload" ng-model="x1.item.payload" placeholder="message" ng-required="true" required>
-                </div>
-                <p class="text-right">
-                  <button type="reset" class="btn btn-md">Reset</button>
-                  <button type="submit" class="btn btn-default btn-md" ng-click="x1.doPublish()" ng-disabled="!publication.$valid">Publish</button>
-                </p>
-              </form>
+              </div>
             </div>
-          </div>
-        </div>
-      
+            <div class="row" ng-show="x1.updating">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="broker.uri" ng-model="x1.item.uri" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="broker.username" ng-model="x1.item.username" placeholder="Username">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="password" class="form-control" id="broker.password" ng-model="x1.item.password" placeholder="Password">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group pull-right">
+                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.doCreate()" ng-show="x1.creating" ng-disabled="!form.$valid"><strong>Create</strong></button>
+                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!form.$valid"><strong>Delete</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.doUpdate()" ng-show="x1.updating" ng-disabled="!form.$valid"><strong>Update</strong></button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
         <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
           <button type="button" class="close" aria-label="close" ng-click="doDismiss()"><span aria-hidden="true">&times;</span></button>
           <p>{{message.content}}</p>
@@ -237,7 +208,8 @@
     }
   	
     $scope.x1 = {};
-    $scope.x1.monitoring = false;
+    $scope.x1.creating = false;
+    $scope.x1.updating = false;
     $scope.x1.item = null;
     $scope.x1.length = 5;
     $scope.x1.offset = 0;
@@ -259,37 +231,35 @@
     }
     
     $scope.x1.doFirst = function() {
-      if ($scope.x1.offset < 0) {
-        $scope.x1.offset = 0;
-        $scope.x1.doPage();
-      }
+      $scope.x1.offset = 0;
+      $scope.x1.doPage();
     }
 
     $scope.x1.doLast = function() {
-      if ($scope.x1.offset + $scope.x1.length < $scope.x1.size) {
-        $scope.x1.offset = Math.floor(($scope.x1.size - 1) / $scope.x1.length) * $scope.x1.length;
-        $scope.x1.doPage();
-      }
+      $scope.x1.offset = Math.floor(($scope.x1.size - 1) / $scope.x1.length) * $scope.x1.length;
+      $scope.x1.doPage();
     }
         
     $scope.x1.doSelect = function(item) {
       if (item) {
-        $scope.x1.monitoring = true;
-        $scope.x1.item = angular.copy(item);
-        $scope.x1.item.qos = 1;
-        $scope.x1.item.retained = false;
-        connected($scope.x1.item);
-        subscribing($scope.x1.item);
+        $scope.x1.creating = false;
+        $scope.x1.updating = true;
+        $scope.x1.item = angular.copy(item);              
+      } else {
+        $scope.x1.creating = true;
+        $scope.x1.updating = false;
+        $scope.x1.item = angular.copy({});
       }
     }
     
     $scope.x1.doClean = function() {
-      $scope.x1.monitoring = false;
+      $scope.x1.creating = false;
+      $scope.x1.updating = false;
       $scope.x1.item = null;
     }
 
     $scope.x1.doSize = function() {
-      $http({method:'GET',url:'../clients/monitoring/size'})
+      $http({method:'GET',url:'../brokers/size'})
       .then(function onSuccess(response) {
          $scope.x1.size = response.data;
       },function onError(response) {
@@ -299,7 +269,7 @@
       
     $scope.x1.doPage = function() {
       var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
-      $http({method:'GET',url:'../clients/monitoring/page?' + content})
+      $http({method:'GET',url:'../brokers/page?' + content})
       .then(function onSuccess(response) {
         $scope.x1.items = response.data;
       },function onError(response) {
@@ -307,81 +277,50 @@
       });
     }
 
-    var connected = function(item) {
-      var content = "client=" + item.uuid;
-      $http({method:'GET',url:'../clients/connected?' + content})
+    $scope.x1.doCreate = function() {
+      var content = "uri=" + $scope.x1.item.uri + ($scope.x1.item.username ? "&username=" + $scope.x1.item.username : "") + ($scope.x1.item.password ? "&password=" + $scope.x1.item.password : "");
+      $http({method:'POST',url:'../brokers/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
-        item.connect = response.data;
+        display("success", "The new broker has been sucessfully created.");
+        $scope.x1.doClean();
+        $scope.x1.doSize();
+        $scope.x1.doPage();
       },function onError(response) {
-  	    item.connect = null;
-      });
-    }
-
-    $scope.x1.doConnect = function() {
-      var content = "client=" + $scope.x1.item.uuid;
-      $http({method:'POST',url:'../clients/connect',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully connected.");
-        connected($scope.x1.item);
-      },function onError(response) {
-        display("danger", "Something wrong happened while connecting the client #" + $scope.x1.item.uuid +".");
+        display("danger", "Something wrong happened while creating the new broker.");
         $scope.x1.doClean();
       });
     }
 
-    $scope.x1.doDisconnect = function() {
-      var content = "client=" + $scope.x1.item.uuid + "&connect=" + $scope.x1.item.connect.id;
-      $http({method:'POST',url:'../clients/disconnect',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+    $scope.x1.doUpdate = function() {
+      var content = "uri=" + $scope.x1.item.uri + ($scope.x1.item.username ? "&username=" + $scope.x1.item.username : "") + ($scope.x1.item.password ? "&password=" + $scope.x1.item.password : "");
+      $http({method:'POST',url:'../brokers/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
-        display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully disconnected.");
-        connected($scope.x1.item);
+        display("success", "The broker " + $scope.x1.item.uri + " has been sucessfully updated.");
+        $scope.x1.doClean();
+        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
+          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+        }
+        $scope.x1.doSize();
+        $scope.x1.doPage();
       },function onError(response) {
-        display("danger", "Something wrong happened while disconnecting the client #" + $scope.x1.item.uuid +".");
+        display("danger", "Something wrong happened while updating the broker #" + $scope.x1.item.uri +".");
         $scope.x1.doClean();
       });
     }
 
-    var subscribing = function(item) {
-      var content = "client=" + item.uuid;
-      $http({method:'GET',url:'../clients/subscribing?' + content})
+    $scope.x1.doDelete = function() {
+      var content = "uri=" + $scope.x1.item.uri;
+      $http({method:'POST',url:'../brokers/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
-        item.subscribe = response.data;
-      },function onError(response) {
-  	    item.subscribe = null;
-      });
-    }
-
-    $scope.x1.doSubscribe = function() {
-      var content = "client=" + $scope.x1.item.uuid + "&topic=" + $scope.x1.item.filter;
-      $http({method:'POST',url:'../clients/subscribe',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The client " + $scope.x1.item.uuid + " has sucessfully subscribed to topic '" + $scope.x1.item.topic + "'.");
-        subscribing($scope.x1.item);
-      },function onError(response) {
-        display("danger", "Something wrong happened while subscribing the client #" + $scope.x1.item.uuid +".");
+        display("success", "The broker " + $scope.x1.item.uri + " has been sucessfully deleted.");
         $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.doUnsubscribe = function() {
-      var content = "client=" + $scope.x1.item.uuid + "&topic=" + $scope.x1.item.filter + "&subscribe=" + $scope.x1.item.subscribe.id;
-      $http({method:'POST',url:'../clients/unsubscribe',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The client " + $scope.x1.item.uuid + " has sucessfully unsubscribed to topic '" + $scope.x1.item.subscribe.topic + "'.");
-        subscribing($scope.x1.item);
+        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
+          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+        }
+        $scope.x1.doSize();
+        $scope.x1.doPage();
       },function onError(response) {
-        display("danger", "Something wrong happened while unsubscribing the client #" + $scope.x1.item.uuid +".");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.doPublish = function() {
-      var content = "client=" + $scope.x1.item.uuid + "&topic=" + $scope.x1.item.topic + "&qos=" + $scope.x1.item.qos + "&retained=" + $scope.x1.item.retained + "&payload=" + $scope.x1.item.payload;
-      $http({method:'POST',url:'../clients/publish',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The client " + $scope.x1.item.uuid + " has sucessfully published to topic '" + $scope.x1.item.topic + "'.");
-      },function onError(response) {
-        display("danger", "Something wrong happened while publishing with the client #" + $scope.x1.item.uuid +".");
+        display("danger", "Something wrong happened while deleting the broker #" + $scope.x1.item.uri +".");
         $scope.x1.doClean();
       });
     }

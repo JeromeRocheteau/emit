@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcUpdateServlet;
 
+import fr.icam.emit.entities.Broker;
 import fr.icam.emit.listeners.MqttClientListener;
 
 public class Connect extends JdbcUpdateServlet<Boolean> {
@@ -33,7 +34,9 @@ public class Connect extends JdbcUpdateServlet<Boolean> {
 			if (connected) {
 				throw new IllegalStateException(uuid);
 			} else {
-				listener.doConnect(uuid);
+				this.doCall(request, response, "broker-item");
+				Broker broker = (Broker) request.getAttribute("broker");
+				listener.doConnect(uuid, broker.getUsername() == null ? null : broker.getUsername(), broker.getPassword() == null ? null : broker.getPassword());
 				Boolean done = this.doProcess(request);
 				this.doWrite(done, response.getWriter());
 			}

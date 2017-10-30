@@ -36,27 +36,27 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 		Integer count = this.doProcess(request);
 		if (count > 0) {
 			this.doCall(request, response, "share-create");
+			this.doCall(request, response, "share-update");
 		}
 		this.doWrite(count, response.getWriter());
 	}
 
 	private void doCreate(HttpServletRequest request) throws Exception {
-		String uuid = UUID.randomUUID().toString();
+		String client = UUID.randomUUID().toString();
 		String broker = URI.create(request.getParameter("broker")).toString();
-		request.setAttribute("uuid", uuid);
+		request.setAttribute("client", client);
 		request.setAttribute("broker", broker);
-		listener.doCreate(uuid, broker);
+		listener.doCreate(client, broker);
 	}
 	
 	@Override
 	public void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		String user = request.getUserPrincipal().getName();
 		request.setAttribute("user", user);
-		String uuid = (String) request.getAttribute("uuid");
-		request.setAttribute("client", uuid);
+		String client = (String) request.getAttribute("client");
 		request.setAttribute("control", Boolean.TRUE);
 		String broker = (String) request.getAttribute("broker");
-		statement.setString(1, uuid);
+		statement.setString(1, client);
 		statement.setString(2, broker);
 		statement.setString(3, user);
 	}

@@ -38,6 +38,8 @@ public class Connected extends JdbcQueryServlet<List<fr.icam.emit.entities.Conne
 			} else if (connects.size() == 1) {
 				fr.icam.emit.entities.Connect connect = connects.get(0);
 				if (listener.isConnected(uuid)) {
+					connect.setUsername(null);
+					connect.setPassword(null);
 					this.doWrite(connect, response.getWriter());
 				} else {
 					throw new IllegalStateException(uuid);	
@@ -56,7 +58,7 @@ public class Connected extends JdbcQueryServlet<List<fr.icam.emit.entities.Conne
 			String uuid = request.getParameter("client");
 			List<fr.icam.emit.entities.Connect> connects = this.doProcess(request);
 			if (connects.size() == 0) {
-				request.setAttribute("connected", Boolean.FALSE);	
+				request.setAttribute("connected", Boolean.FALSE);
 			} else if (connects.size() == 1) {
 				fr.icam.emit.entities.Connect connect = connects.get(0);
 				if (listener.isConnected(uuid)) {
@@ -90,11 +92,19 @@ public class Connected extends JdbcQueryServlet<List<fr.icam.emit.entities.Conne
 				  stopped = null;
 			  }
 			  String user = resultSet.getString("user");
+			  String username = resultSet.getString("username");
+			  if (resultSet.wasNull()) {
+				  username = null;
+			  }
+			  String password = resultSet.getString("password");
+			  if (resultSet.wasNull()) {
+				  password = null;
+			  }
 			  String clientUuid = resultSet.getString("clientUuid");
 			  String clientBroker = resultSet.getString("clientBroker");
 			  String clientUser = resultSet.getString("clientUser");
 			  Client client = new Client(clientUuid, clientBroker, clientUser);
-			  fr.icam.emit.entities.Connect item = new fr.icam.emit.entities.Connect(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, client);
+			  fr.icam.emit.entities.Connect item = new fr.icam.emit.entities.Connect(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, username, password, client);
 			  items.add(item);
 		}
 		return items;

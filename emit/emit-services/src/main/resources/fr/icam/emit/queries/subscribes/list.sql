@@ -8,4 +8,5 @@ SELECT
   cc.`broker` AS clientBroker,
   cc.`user` AS clientUser
 FROM `subscribes` c
-INNER JOIN `clients` cc ON cc.`uuid` = c.`client`;
+INNER JOIN `clients` cc ON cc.`uuid` = c.`client`
+WHERE c.`stopped` IS NULL;

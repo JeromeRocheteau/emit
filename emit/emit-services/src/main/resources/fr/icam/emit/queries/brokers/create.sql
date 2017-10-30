@@ -1,0 +1,1 @@
+INSERT INTO `brokers` (`uri`,`user`,`username`,`password`) VALUES (?,?,?,?);

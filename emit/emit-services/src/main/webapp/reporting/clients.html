@@ -24,11 +24,20 @@
           <a class="navbar-brand" href="../index.html"><strong>Emit</strong></a>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
-              <li class="dropdown">
+              <li class="dropdown" ng-show="user.role">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Configuring&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../configuring/brokers.html"><span class="glyphicon glyphicon-transfer" aria-hidden="true">&nbsp;</span>Brokers</a></li>
                   <li><a href="../configuring/clients.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managing&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../managing/clients.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li ng-show="user.role"><a href="../managing/shares.html"><span class="glyphicon glyphicon-share-alt" aria-hidden="true">&nbsp;</span>Shares</a></li>
                 </ul>
               </li>
               <li class="dropdown">
@@ -295,7 +304,7 @@
     }
 
     $scope.x1.doSize = function() {
-      $http({method:'GET',url:'../clients/size'})
+      $http({method:'GET',url:'../clients/reporting/size'})
       .then(function onSuccess(response) {
          $scope.x1.size = response.data;
       },function onError(response) {
@@ -305,7 +314,7 @@
       
     $scope.x1.doPage = function() {
       var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
-      $http({method:'GET',url:'../clients/page?' + content})
+      $http({method:'GET',url:'../clients/reporting/page?' + content})
       .then(function onSuccess(response) {
         $scope.x1.items = response.data;
       },function onError(response) {

@@ -25,9 +25,11 @@ public class Initializer extends fr.icam.emit.services.commons.Lister<Connect> {
 		try {
 			List<Connect> connects = this.doProcess(null);
 			for (Connect connect : connects) {
+				System.out.println("[EMIT] Process Client " + connect.getClient().getUuid());
 				if (connect.getStopped() == null) {
-					listener.doConnect(connect.getClient().getUuid());
-					System.out.println("[EMIT] Connect Client " + connect.getClient().getUuid());
+					boolean auth = connect.getPassword() != null;
+					listener.doConnect(connect.getClient().getUuid(), auth ? connect.getUsername() : null, auth ? connect.getPassword() : null);
+					System.out.println("[EMIT] Connect Client " + connect.getClient().getUuid() + " " + (auth ? connect.getUsername() : "") + (auth ? connect.getPassword() : ""));	
 				}
 			}
 		} catch (Exception e) {
@@ -46,11 +48,19 @@ public class Initializer extends fr.icam.emit.services.commons.Lister<Connect> {
     			stopped = null;
     		}
     		String user = resultSet.getString("user");
+    		String username = resultSet.getString("username");
+    		if (resultSet.wasNull()) {
+    			username = null;
+    		}
+    		String password = resultSet.getString("password");
+    		if (resultSet.wasNull()) {
+    			password = null;
+    		}
     		String clientUuid = resultSet.getString("clientUuid");
     		String clientBroker = resultSet.getString("clientBroker");
     		String clientUser = resultSet.getString("clientUser");
     		Client client = new Client(clientUuid, clientBroker, clientUser);
-    		Connect item = new Connect(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, client);
+    		Connect item = new Connect(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, username, password, client);
     		items.add(item);
     	}
     	return items;

@@ -11,6 +11,10 @@ public class Connect {
 	private Client client;
 	
 	private String user;
+	
+	private String username;
+	
+	private String password;
 
 	public Long getId() {
 		return id;
@@ -32,12 +36,30 @@ public class Connect {
 		return user;
 	}
 
-	public Connect(Long id, Long started, Long stopped, String user, Client client) {
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Connect(Long id, Long started, Long stopped, String user, String username, String password, Client client) {
 		super();
 		this.id = id;
 		this.started = started;
 		this.stopped = stopped;
 		this.user = user;
+		this.username = username;
+		this.password = password;
 		this.client = client;
 	}
 	

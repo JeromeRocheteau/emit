@@ -1,1 +1,1 @@
-INSERT INTO `shares` (`client`,`user`,`control`) VALUES (?,?,?);
+INSERT INTO `shares` (`client`,`user`,`control`) VALUES (?,?,null);

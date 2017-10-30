@@ -47,7 +47,7 @@ public class MqttClientListener implements ServletContextListener {
 		}		
 	}
 	
-	public void doConnect(String uuid) throws Exception {
+	public void doConnect(String uuid, String username, String password) throws Exception {
 		MqttClient client = clients.get(uuid);
 		if (client == null) {
 			throw new NullPointerException(uuid);
@@ -55,8 +55,12 @@ public class MqttClientListener implements ServletContextListener {
 			throw new ConnectException(uuid);
 		} else {
 			MqttConnectOptions options = new MqttConnectOptions();
+			if (username != null && password != null) {
+				options.setUserName(username);
+				options.setPassword(password.toCharArray());
+			}
 			options.setCleanSession(true);
-			client.connect(options);			
+			client.connect(options);
 		}
 	}
 	
