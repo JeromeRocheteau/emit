@@ -1,1 +1,1 @@
-INSERT INTO `clients` (`uuid`,`broker`,`user`) VALUES (?,?,?);
+INSERT INTO `clients` (`uuid`,`broker`,`user`,`open`) VALUES (?,?,?,?);

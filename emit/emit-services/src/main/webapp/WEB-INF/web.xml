@@ -598,7 +598,7 @@
     <url-pattern>/clients/publish</url-pattern>
   </servlet-mapping>
   
-  <!-- actoins -->
+  <!-- actions -->
 
   <servlet>
     <servlet-name>connect-size</servlet-name>
@@ -666,6 +666,70 @@
     <servlet-name>message-page</servlet-name>
     <url-pattern>/clients/messages/page</url-pattern>
   </servlet-mapping>
+
+  <!-- topics -->
+  
+  <servlet>
+    <servlet-name>topic-list-root</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/topics/list-root.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-list-root</servlet-name>
+    <url-pattern>/topics/roots/list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>topic-list-leaf</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/topics/list-leaf.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-list-leaf</servlet-name>
+    <url-pattern>/topics/leafs/list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>topic-list-node</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.SubLister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/topics/list-node.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-list-node</servlet-name>
+    <url-pattern>/topics/nodes/list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>topic-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/topics/item.sql</param-value>
+    </init-param>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>topic-insert</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Inserter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/topics/create.sql</param-value>
+    </init-param>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>topic-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Creator</servlet-class>
+  </servlet>
   
   <!-- initialization -->
 
@@ -719,6 +783,7 @@
       <url-pattern>/managing/shares.html</url-pattern>
       <url-pattern>/monitoring/clients.html</url-pattern>
       <url-pattern>/reporting/clients.html</url-pattern>
+      <url-pattern>/reporting/topics.html</url-pattern>
       <url-pattern>/user/clear</url-pattern>
       <url-pattern>/user/name</url-pattern>
       <url-pattern>/user/role</url-pattern>
@@ -762,6 +827,9 @@
       <url-pattern>/clients/shares/update</url-pattern>
       <url-pattern>/clients/shares/delete</url-pattern>
       <url-pattern>/clients/shares/remove</url-pattern>
+      <url-pattern>/topics/roots/list</url-pattern>
+      <url-pattern>/topics/leafs/list</url-pattern>
+      <url-pattern>/topics/nodes/list</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
       <http-method>HEAD</http-method>

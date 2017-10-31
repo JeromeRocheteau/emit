@@ -36,6 +36,7 @@ public class Subscribe extends JdbcUpdateServlet<Boolean> {
 			} else {
 				listener.doSubscribe(uuid, topic);
 				Boolean done = this.doProcess(request);
+				this.doCall(request, response, "topic-create");
 				this.doWrite(done, response.getWriter());
 			}
 		} catch (Exception e) {

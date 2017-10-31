@@ -77,7 +77,8 @@ public class Subscribing extends JdbcQueryServlet<List<fr.icam.emit.entities.Sub
 			  String clientUuid = resultSet.getString("clientUuid");
 			  String clientBroker = resultSet.getString("clientBroker");
 			  String clientUser = resultSet.getString("clientUser");
-			  Client client = new Client(clientUuid, clientBroker, clientUser);
+			  Boolean clientOpen = resultSet.getBoolean("clientOpen");
+			  Client client = new Client(clientUuid, clientBroker, clientUser, clientOpen);
 			  fr.icam.emit.entities.Subscribe item = new fr.icam.emit.entities.Subscribe(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, topic, client);
 			  items.add(item);
 		}

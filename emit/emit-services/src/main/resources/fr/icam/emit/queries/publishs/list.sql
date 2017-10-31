@@ -5,6 +5,7 @@ SELECT
   p.`topic` AS topic,
   c.`uuid` AS clientUuid,
   c.`broker` AS clientBroker,
-  c.`user` AS clientUser
+  c.`user` AS clientUser,
+  cc.`open` AS clientOpen
 FROM `publishs` p
 INNER JOIN `clients` c ON c.`uuid` = p.`client`;

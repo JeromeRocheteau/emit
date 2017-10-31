@@ -1,0 +1,1 @@
+INSERT INTO `topics` (`name`,`prefix`,`suffix`,`leaf`) VALUES (?,?,?,?);

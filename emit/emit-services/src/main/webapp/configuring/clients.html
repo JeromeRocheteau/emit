@@ -29,14 +29,14 @@
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">Logical Layer</li>
                   <li><a href="../configuring/brokers.html"><span class="glyphicon glyphicon-transfer" aria-hidden="true">&nbsp;</span>Brokers</a></li>
-                  <li><a href="../configuring/clients.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li><a href="../configuring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
                 </ul>
               </li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managing&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../managing/clients.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li><a href="../managing/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
                   <li ng-show="user.role"><a href="../managing/shares.html"><span class="glyphicon glyphicon-share-alt" aria-hidden="true">&nbsp;</span>Shares</a></li>
                 </ul>
               </li>
@@ -44,14 +44,16 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Monitoring&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../monitoring/clients.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li><a href="../monitoring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
                 </ul>
               </li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reporting&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../reporting/clients.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li><a href="../reporting/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li class="dropdown-header">Conceptual Layer</li>
+                  <li><a href="../reporting/topics.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Topics</a></li>
                 </ul>
               </li>
             </ul>
@@ -131,6 +133,15 @@
                   <datalist id="brokers">
                     <option data-ng-repeat="item in x0.items" value="{{item}}">
                   </datalist>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <select class="form-control" id="client.open" ng-model="x1.item.open" ng-options="option.value as option.label for option in options" ng-required="true" required>
+                    <option value="" disabled selected>Visibility</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -289,7 +300,7 @@
     }
 
     $scope.x1.doCreate = function() {
-      var content = "broker=" + $scope.x1.item.broker;
+      var content = "broker=" + $scope.x1.item.broker + "&open=" + $scope.x1.item.open;
       $http({method:'POST',url:'../clients/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The new client has been sucessfully created.");
@@ -303,7 +314,7 @@
     }
 
     $scope.x1.doUpdate = function() {
-      var content = "uuid=" + $scope.x1.item.uuid + "&broker=" + $scope.x1.item.broker;
+      var content = "uuid=" + $scope.x1.item.uuid + "&broker=" + $scope.x1.item.broker + "&open=" + $scope.x1.item.open;
       $http({method:'POST',url:'../clients/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully updated.");
@@ -338,6 +349,11 @@
 	
     $scope.x1.doSize();
     $scope.x1.doPage();
+    
+    $scope.options = [
+        {value: false, label: 'private'},
+        {value: true, label: 'public'},
+    ];
     
   });
   </script>

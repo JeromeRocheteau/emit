@@ -50,7 +50,8 @@ public class Initializer extends fr.icam.emit.services.commons.Lister<Subscribe>
     		String clientUuid = resultSet.getString("clientUuid");
     		String clientBroker = resultSet.getString("clientBroker");
     		String clientUser = resultSet.getString("clientUser");
-    		Client client = new Client(clientUuid, clientBroker, clientUser);
+			  Boolean clientOpen = resultSet.getBoolean("clientOpen");
+    		Client client = new Client(clientUuid, clientBroker, clientUser, clientOpen);
     		Subscribe item = new Subscribe(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, topic, client);
     		items.add(item);
     	}

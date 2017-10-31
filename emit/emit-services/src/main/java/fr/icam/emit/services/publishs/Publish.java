@@ -39,6 +39,7 @@ public class Publish extends JdbcUpdateServlet<Boolean> {
 			byte[] payload = request.getParameter("payload").getBytes();
 			listener.doPublish(uuid, topic, qos.intValue(), retained.booleanValue(), payload);
 			Boolean done = this.doProcess(request);
+			this.doCall(request, response, "topic-create");
 			this.doWrite(done, response.getWriter());
 		} catch (Exception e) {
 			throw new ServletException(e);

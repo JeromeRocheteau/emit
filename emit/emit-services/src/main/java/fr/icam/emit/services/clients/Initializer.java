@@ -39,7 +39,8 @@ public class Initializer extends fr.icam.emit.services.commons.Lister<Client> {
     		String uuid = resultSet.getString("uuid");
     		String broker = resultSet.getString("broker");
     		String user = resultSet.getString("user");
-    		Client item = new Client(uuid, broker, user);
+    		Boolean open = resultSet.getBoolean("open");
+    		Client item = new Client(uuid, broker, user, open);
     		items.add(item);
     	}
     	return items;

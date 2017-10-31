@@ -7,7 +7,8 @@ SELECT
   b.`password` AS password,
   cc.`uuid` AS clientUuid,
   cc.`broker` AS clientBroker,
-  cc.`user` AS clientUser
+  cc.`user` AS clientUser,
+  cc.`open` AS clientOpen
 FROM `connects` c
 INNER JOIN `clients` cc ON cc.`uuid` = c.`client`
 INNER JOIN `shares` s ON s.`client` = cc.`uuid`

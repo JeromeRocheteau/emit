@@ -103,7 +103,8 @@ public class Connected extends JdbcQueryServlet<List<fr.icam.emit.entities.Conne
 			  String clientUuid = resultSet.getString("clientUuid");
 			  String clientBroker = resultSet.getString("clientBroker");
 			  String clientUser = resultSet.getString("clientUser");
-			  Client client = new Client(clientUuid, clientBroker, clientUser);
+			  Boolean clientOpen = resultSet.getBoolean("clientOpen");
+			  Client client = new Client(clientUuid, clientBroker, clientUser, clientOpen);
 			  fr.icam.emit.entities.Connect item = new fr.icam.emit.entities.Connect(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, username, password, client);
 			  items.add(item);
 		}

@@ -8,6 +8,8 @@ public class Client {
 
 	private String user;
 	
+	private Boolean open;
+	
 	public String getUuid() {
 		return uuid;
 	}
@@ -20,11 +22,16 @@ public class Client {
 		return user;
 	}
 
-	public Client(String uuid, String broker, String user) {
+	public Boolean getOpen() {
+		return open;
+	}
+
+	public Client(String uuid, String broker, String user, Boolean open) {
 		super();
 		this.uuid = uuid;
 		this.broker = broker;
 		this.user = user;
+		this.open = open;
 	}
 	
 }
