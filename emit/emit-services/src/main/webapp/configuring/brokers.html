@@ -7,10 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style type="text/css">
-      html {overflow-y:scroll;position:relative;height:100%;min-height:100%;}
-      footer {padding-top:2ex;padding-bottom:1ex;color:white;}
-    </style>
+    <link rel="stylesheet" href="/emit/emit.css"></link>
   </head>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
@@ -19,8 +16,8 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
   <body ng-app="app" ng-controller="controller">
     <header class="ng-cloak">
-      <div class="navbar navbar-inverse navbar-custom navbar-static-top">
-        <div class="container">
+      <div class="navbar navbar-inverse navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
           <a class="navbar-brand" href="../index.html"><strong>Emit</strong></a>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
@@ -72,6 +69,11 @@
         </div>
       </div>
     </header>
+    <section id="title" class="ng-cloak">
+      <div class="container-fluid well">
+        <h2>EMIT <small>a supervisory & control system for MQTT clients</small></h2>
+      </div>
+    </section>
     <section id="content" class="container ng-cloak">
 
       <div class="col-md-6">
@@ -102,7 +104,7 @@
           </ul>
         </div>
         <div>
-          <p class="text-right"><button class="btn btn-primary" ng-click="x1.doSelect()">Create</button></p>
+          <p class="text-right"><button class="btn btn-primary" ng-click="x1.doSelect()" ng-disabled="x1.item">Create</button></p>
         </div>
       </div>
 
@@ -158,9 +160,11 @@
       </div>
     
     </section>
-    <footer class="footer navbar-inverse navbar-fixed-bottom">
-      <div class="container">
-        <p class="text-center">Copyright © 2015-2017. ICAM. All rights reserved.</p>
+    <footer class="footer navbar navbar-inverse navbar-custom navbar-fixed-bottom">
+      <div class="container-fluid">
+        <div class="nav navbar-nav navbar-left">
+          <p class="text-muted">Copyright © 2015-2017. ICAM. All rights reserved.</p>
+        </div>
       </div>
     </footer>
   </body>

@@ -768,6 +768,7 @@
  <security-constraint>
    <web-resource-collection>
      <web-resource-name>public-area</web-resource-name>
+      <url-pattern>/emit.css</url-pattern>
       <url-pattern>/retrieve</url-pattern>
    </web-resource-collection>
  </security-constraint>
