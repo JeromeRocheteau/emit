@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Emit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/emit/emit.css"></link>
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
+  <body ng-app="app" ng-controller="controller">
+    <header>
+      <div class="navbar navbar-inverse navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="./index.html"><strong>Emit</strong></a>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-left">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+    <section id="title" class="jumbotron">
+      <div class="container">
+        <h1>EMIT <small>a supervisory & control system for MQTT clients</small></h1>
+      </div>
+    </section>
+    <section id="content" class="container">
+      <form class="form col-md-6 col-md-offset-3">
+        <fieldset>
+          <legend>Registration</legend>
+          <div class="form-group">
+            <div class="">
+              <input ng-model="user.username" type="text" placeholder="Enter a username" class="form-control" ng-required="true" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="">
+              <select class="form-control" ng-model="user.rolename" ng-options="option.value as option.label for option in options" ng-required="true" required>
+                <option value="" disabled selected>Select your role</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="">
+              <input ng-model="user.password.orig" type="password" placeholder="Enter your password" class="form-control" ng-required="true" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="">
+              <input ng-model="user.password.confirm" type="password" placeholder="Confirm your password" class="form-control" ng-required="true" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <a class="btn btn-default pull-left" href="/emit/index.html">Sign In</a>
+            <div class="pull-right">
+              <button type="submit" class="btn btn-primary" ng-click="doRegister()">Submit</button>
+              <button type="reset" class="btn btn-default" ng-click="doClean()">Reset</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+    <section id="content" class="container">
+      <div class="form col-md-6 col-md-offset-3">
+        <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
+          <button type="button" class="close" aria-label="close" ng-click="doDismiss()"><span aria-hidden="true">&times;</span></button>
+          <p>{{message.content}}</p>
+        </div>
+      </div>
+    </section>
+    <footer class="footer navbar-fixed-bottom" style="padding-bottom: 10ex;">
+      <div class="container-fluid">
+        <a class="pull-right" href="http://mqtt.org">
+          <img style="height: 5ex;" src="http://www.automation-sense.com/medias/images/mqtt-protocole.png" alt="mqtt logo">
+        </a>
+      </div>
+    </footer>
+    <footer class="footer navbar navbar-inverse navbar-custom navbar-fixed-bottom">
+      <div class="container-fluid">
+        <div class="nav navbar-nav navbar-left">
+          <p class="text-muted">Copyright © 2015-2017. ICAM. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+  <script type="text/javascript">
+  var app = angular.module('app',[]);
+  
+  app.controller('controller', function ($scope, $http) {
+  	
+  	$scope.message = {};
+    
+    var display = function(type, content) {
+        $scope.message.type = type;
+        $scope.message.content = content;
+        $("#alert").show();
+    }
+    
+    $scope.doDismiss = function() {
+        $("#alert").hide();
+        $scope.alert = {};
+    }
+  	
+    $scope.user = {};
+    $scope.user.password = {};
+
+    $scope.doRegister = function() {
+      if (angular.equals($scope.user.password.orig, $scope.user.password.confirm)) {
+        register();
+      } else {
+    	display("warning", "Passwords don't match.");
+      }
+    }
+
+    var register = function() {
+      var content = "username=" + encodeURIComponent($scope.user.username) + "&rolename=" + encodeURIComponent($scope.user.rolename) + "&password=" + encodeURIComponent($scope.user.password.orig) + "&confirmPassword=" + encodeURIComponent($scope.user.password.confirm);
+      $http({method:'POST',url:'../user/register',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "Your request has been sucessfully registered.");
+        $scope.doClean();
+      },function onError(response) {
+          display("danger", "Something wrong happened while processing your request.");
+          $scope.doClean();
+      });
+    }
+    
+    $scope.doClean = function() {
+	  $scope.user = angular.copy({});
+      $scope.user.password = angular.copy({});
+    }
+    
+    $scope.options = [
+        {value: 'user', label: 'User'},
+        {value: 'admin', label: 'Administrator'},
+    ];
+    
+  });
+  </script>
+</html>

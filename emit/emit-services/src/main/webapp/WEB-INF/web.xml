@@ -105,6 +105,19 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>user-register</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Register</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/users/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-register</servlet-name>
+    <url-pattern>/user/register</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>user-update</servlet-name>
     <servlet-class>fr.icam.emit.services.users.Update</servlet-class>
     <init-param>
@@ -115,6 +128,58 @@
   <servlet-mapping>
     <servlet-name>user-update</servlet-name>
     <url-pattern>/user/update</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/prospects/size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-size</servlet-name>
+    <url-pattern>/users/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/prospects/page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-page</servlet-name>
+    <url-pattern>/users/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/users/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-create</servlet-name>
+    <url-pattern>/users/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-delete</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/users/delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-delete</servlet-name>
+    <url-pattern>/users/delete</url-pattern>
   </servlet-mapping>
 
   <!-- tokens -->
@@ -768,7 +833,9 @@
  <security-constraint>
    <web-resource-collection>
      <web-resource-name>public-area</web-resource-name>
+      <url-pattern>/security/register.html</url-pattern>
       <url-pattern>/emit.css</url-pattern>
+      <url-pattern>/user/register</url-pattern>
       <url-pattern>/retrieve</url-pattern>
    </web-resource-collection>
  </security-constraint>
@@ -778,8 +845,6 @@
       <web-resource-name>user-area</web-resource-name>
       <url-pattern>/index.html</url-pattern>
       <url-pattern>/settings.html</url-pattern>
-      <url-pattern>/configuring/brokers.html</url-pattern>
-      <url-pattern>/configuring/clients.html</url-pattern>
       <url-pattern>/managing/clients.html</url-pattern>
       <url-pattern>/managing/shares.html</url-pattern>
       <url-pattern>/monitoring/clients.html</url-pattern>
@@ -792,14 +857,6 @@
       <url-pattern>/tokens/item</url-pattern>
       <url-pattern>/tokens/create</url-pattern>
       <url-pattern>/tokens/delete</url-pattern>
-      <url-pattern>/brokers/size</url-pattern>
-      <url-pattern>/brokers/page</url-pattern>
-      <url-pattern>/brokers/list</url-pattern>
-      <url-pattern>/brokers/create</url-pattern>
-      <url-pattern>/brokers/update</url-pattern>
-      <url-pattern>/brokers/delete</url-pattern>
-      <url-pattern>/clients/size</url-pattern>
-      <url-pattern>/clients/page</url-pattern>
       <url-pattern>/clients/monitoring/size</url-pattern>
       <url-pattern>/clients/monitoring/page</url-pattern>
       <url-pattern>/clients/reporting/size</url-pattern>
@@ -810,9 +867,6 @@
       <url-pattern>/clients/managing/page</url-pattern>
       <url-pattern>/clients/handling/size</url-pattern>
       <url-pattern>/clients/handling/page</url-pattern>
-      <url-pattern>/clients/create</url-pattern>
-      <url-pattern>/clients/update</url-pattern>
-      <url-pattern>/clients/delete</url-pattern>
       <url-pattern>/clients/connected</url-pattern>
       <url-pattern>/clients/connect</url-pattern>
       <url-pattern>/clients/disconnect</url-pattern>
@@ -844,6 +898,61 @@
     <auth-constraint>
       <role-name>user</role-name>
       <role-name>admin</role-name>
+      <role-name>root</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>user-area</web-resource-name>
+      <url-pattern>/configuring/brokers.html</url-pattern>
+      <url-pattern>/configuring/clients.html</url-pattern>
+      <url-pattern>/brokers/size</url-pattern>
+      <url-pattern>/brokers/page</url-pattern>
+      <url-pattern>/brokers/list</url-pattern>
+      <url-pattern>/brokers/create</url-pattern>
+      <url-pattern>/brokers/update</url-pattern>
+      <url-pattern>/brokers/delete</url-pattern>
+      <url-pattern>/clients/size</url-pattern>
+      <url-pattern>/clients/page</url-pattern>
+      <url-pattern>/clients/create</url-pattern>
+      <url-pattern>/clients/update</url-pattern>
+      <url-pattern>/clients/delete</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+      <http-method>HEAD</http-method>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+      <http-method>CONNECT</http-method>
+      <http-method>OPTIONS</http-method>
+      <http-method>TRACE</http-method>
+      <http-method>PATCH</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+      <role-name>root</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>user-area</web-resource-name>
+      <url-pattern>/users/size</url-pattern>
+      <url-pattern>/users/page</url-pattern>
+      <url-pattern>/users/create</url-pattern>
+      <url-pattern>/users/delete</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+      <http-method>HEAD</http-method>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+      <http-method>CONNECT</http-method>
+      <http-method>OPTIONS</http-method>
+      <http-method>TRACE</http-method>
+      <http-method>PATCH</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>root</role-name>
     </auth-constraint>
   </security-constraint>
 
@@ -854,6 +963,10 @@
     </web-resource-collection>
     <auth-constraint/>
   </security-constraint>
+
+  <security-role>
+    <role-name>root</role-name>
+  </security-role>
 
   <security-role>
     <role-name>admin</role-name>

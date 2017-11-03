@@ -1,0 +1,1 @@
+INSERT INTO `prospects` (`username`,`rolename`,`password`) VALUES (?,?,md5(?));

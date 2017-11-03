@@ -1,0 +1,1 @@
+INSERT INTO `users` (`username`,`rolename`,`password`) VALUES (?,?,?);
