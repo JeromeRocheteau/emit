@@ -1,4 +1,4 @@
-package fr.icam.emit.listeners;
+package fr.icam.emit.callbacks;
 
 import org.bson.Document;
 import org.bson.types.Binary;

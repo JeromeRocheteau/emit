@@ -17,6 +17,8 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import fr.icam.emit.callbacks.MqttClientCallback;
+
 public class MqttClientListener implements ServletContextListener {
 	
 	private MongoCollection<Document> collection;
