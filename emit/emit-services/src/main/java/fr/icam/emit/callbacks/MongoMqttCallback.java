@@ -11,24 +11,11 @@ public class MongoMqttCallback extends EmitMqttCallback {
 
 	private String clientId;
 	
-	private MongoCollection<Document> messages;
+	private MongoCollection<Document> collection;
 	
-	private MongoCollection<Document> failures;
-	
-	public MongoMqttCallback(MongoDatabase db, String id) throws Exception {
+	public MongoMqttCallback(MongoDatabase db, String name, String id) throws Exception {
 		this.clientId = id;
-		messages = db.getCollection("messages");
-		failures = db.getCollection("failures");
-	}
-	
-	@Override
-	public void connectionLost(Throwable throwable) {
-		String message = throwable.getMessage();
-		Document document = new Document();
-        document.append("issued", System.currentTimeMillis());
-        document.append("client", clientId);
-		document.append("message", message);
-		failures.insertOne(document);
+		collection = db.getCollection(name);
 	}
 
 	@Override
@@ -39,7 +26,7 @@ public class MongoMqttCallback extends EmitMqttCallback {
 		byte[] payload = message.getPayload();
         Document document = new Document();
         document.append("id", message.getId());
-        document.append("mode", "sub");
+        document.append("mode", "subscribe");
         document.append("issued", System.currentTimeMillis());
         document.append("client", clientId);
         document.append("qos", qos);
@@ -48,9 +35,13 @@ public class MongoMqttCallback extends EmitMqttCallback {
         document.append("duplicate", duplicate);
         document.append("payload", new Binary(payload));
         for (String key : parameters.keySet()) {
-        	document.append(key, parameters.get(key));
+        	if (key.startsWith("_")) {
+        		continue;
+        	} else {
+        		document.append(key, parameters.get(key));
+        	}
         }
-        messages.insertOne(document);
+        collection.insertOne(document);
 	}
 
 }

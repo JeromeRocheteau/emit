@@ -24,7 +24,7 @@ public class Initializer extends fr.icam.emit.services.commons.Lister<Client> {
 		try {
 			List<Client> clients = this.doProcess(null);
 			for (Client client : clients) {
-				listener.doCreate(client.getUuid(), client.getBroker());
+				listener.doCreate(client.getBroker(), client.getUuid());
 				System.out.println("[EMIT] Create Client " + client.getUuid() + " on " +  client.getBroker());
 			}
 		} catch (Exception e) {

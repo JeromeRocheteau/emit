@@ -46,7 +46,7 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 		String broker = URI.create(request.getParameter("broker")).toString();
 		request.setAttribute("client", client);
 		request.setAttribute("broker", broker);
-		listener.doCreate(client, broker);
+		listener.doCreate(broker, client);
 	}
 	
 	@Override
