@@ -1,4 +1,4 @@
-package fr.icam.emit.services.callbacks;
+package fr.icam.emit.services.callbacks.topics;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcUpdateServlet;
 
-public class Creator extends JdbcUpdateServlet<Integer> {
+public class Updater extends JdbcUpdateServlet<Integer> {
 
-	private static final long serialVersionUID = 201711101212003L;
+	private static final long serialVersionUID = 201711131345004L;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -22,20 +22,14 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 
 	@Override
 	public void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		String user = request.getUserPrincipal().getName();
-		Boolean atomic = Boolean.valueOf(request.getParameter("atomic"));
-		String category = request.getParameter("category");
-		statement.setBoolean(1, atomic);
-		statement.setString(2, category);
-		statement.setString(3, user);
+		Long id = Long.valueOf(request.getParameter("id"));
+		String topic = request.getParameter("topic");
+		statement.setString(1, topic);
+		statement.setLong(2, id);
 	}
 	
 	@Override
 	protected Integer doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
-		if (resultSet.next()) {
-			Long id = resultSet.getLong(1);
-			request.setAttribute("id", id);
-		}
 		return count;
 	}
 

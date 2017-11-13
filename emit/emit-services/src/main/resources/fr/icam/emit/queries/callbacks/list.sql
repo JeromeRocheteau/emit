@@ -5,5 +5,4 @@ SELECT
   c.`issued` AS issued,
   c.`user` AS user
 FROM `callbacks` c
-WHERE c.`user` = ?
-LIMIT ?,?;
+WHERE c.`user` = ?;

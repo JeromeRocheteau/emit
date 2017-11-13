@@ -24,7 +24,7 @@ import fr.icam.emit.callbacks.MqttCallbackWrapper;
 public class MqttClientListener implements ServletContextListener {
 	
 	private Map<String, MqttClient> clients;
-
+	
 	private MongoCollection<Document> collection;
 	
 	public MongoCollection<Document> getCollection() {

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import fr.icam.emit.entities.Type;
 
-public class Lister extends fr.icam.emit.services.commons.UserLister<Type> {
+public class Lister extends fr.icam.emit.services.commons.Lister<Type> {
 
 	private static final long serialVersionUID = 201711101221001L;
 

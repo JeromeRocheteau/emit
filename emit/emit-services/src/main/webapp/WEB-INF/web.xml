@@ -781,10 +781,6 @@
       <param-value>/fr/icam/emit/queries/callbacks/create.sql</param-value>
     </init-param>
   </servlet>
-  <servlet-mapping>
-    <servlet-name>callback-create</servlet-name>
-    <url-pattern>/callbacks/create</url-pattern>
-  </servlet-mapping>
 
   <servlet>
     <servlet-name>callback-delete</servlet-name>
@@ -797,6 +793,88 @@
   <servlet-mapping>
     <servlet-name>callback-delete</servlet-name>
     <url-pattern>/callbacks/delete</url-pattern>
+  </servlet-mapping>
+
+<!-- type callbacks -->
+
+  <servlet>
+    <servlet-name>type-callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.types.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/types/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>type-callback-create</servlet-name>
+    <url-pattern>/callbacks/create/type</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>type-callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.types.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/types/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>type-callback-update</servlet-name>
+    <url-pattern>/callbacks/update/type</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>type-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.types.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/types/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>type-callback-item</servlet-name>
+    <url-pattern>/callbacks/find/type</url-pattern>
+  </servlet-mapping>
+
+<!-- topic callbacks -->
+
+  <servlet>
+    <servlet-name>topic-callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.topics.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/topics/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-callback-create</servlet-name>
+    <url-pattern>/callbacks/create/topic</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>topic-callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.topics.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/topics/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-callback-update</servlet-name>
+    <url-pattern>/callbacks/update/topic</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>topic-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.topics.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/topics/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-callback-item</servlet-name>
+    <url-pattern>/callbacks/find/topic</url-pattern>
   </servlet-mapping>
 
   <!-- types -->
@@ -989,6 +1067,7 @@
       <web-resource-name>user-area</web-resource-name>
       <url-pattern>/configuring/brokers.html</url-pattern>
       <url-pattern>/configuring/clients.html</url-pattern>
+      <url-pattern>/configuring/callbacks.html</url-pattern>
       <url-pattern>/brokers/size</url-pattern>
       <url-pattern>/brokers/page</url-pattern>
       <url-pattern>/brokers/list</url-pattern>
@@ -1000,6 +1079,17 @@
       <url-pattern>/clients/create</url-pattern>
       <url-pattern>/clients/update</url-pattern>
       <url-pattern>/clients/delete</url-pattern>
+      <url-pattern>/types/list</url-pattern>
+      <url-pattern>/callbacks/list</url-pattern>
+      <url-pattern>/callbacks/size</url-pattern>
+      <url-pattern>/callbacks/page</url-pattern>
+      <url-pattern>/callbacks/create/type</url-pattern>
+      <url-pattern>/callbacks/update/type</url-pattern>
+      <url-pattern>/callbacks/find/type</url-pattern>
+      <url-pattern>/callbacks/create/topic</url-pattern>
+      <url-pattern>/callbacks/update/topic</url-pattern>
+      <url-pattern>/callbacks/find/topic</url-pattern>
+      <url-pattern>/callbacks/delete</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
       <http-method>HEAD</http-method>
