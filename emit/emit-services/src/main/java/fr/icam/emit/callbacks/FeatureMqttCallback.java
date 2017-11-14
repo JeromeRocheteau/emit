@@ -22,13 +22,12 @@ public class FeatureMqttCallback<T extends Comparable<T>> extends EmitMqttCallba
 			@SuppressWarnings("unchecked")
 			Value<T> value = (Value<T>) parameters.get("_value");
 			if (this.symbol.compare(this.value.getValue(), value.getValue())) {
-				parameters.put("type", value.getType().getName());
-				parameters.put("value", value.getValue());				
+				parameters.put("_value", true);	
 			} else {
-				parameters.put("_value", null);	
+				parameters.put("_value", false);	
 			}
 		} catch (Exception e) {
-			parameters.put("_value", null);
+			parameters.put("_value", false);
 		}
 	}
 

@@ -113,6 +113,21 @@
             <h3 class="panel-title">{{x1.item.uuid}}</h3>
           </div>
           <div class="panel-body">
+            <h4>Callback</h4>
+            <div>
+              <form class="form" role="form" name="attachement">
+                <div class="form-group">
+                  <select class="form-control" id="client.callback" ng-model="x1.item.callback" ng-options="option as option.name for option in x0.callbacks track by option.id" ng-required="true" required>
+                    <option value="" disabled selected>Callback</option>
+                  </select>
+                </div>
+                <p class="text-right">
+                  <button type="reset" class="btn btn-md" ng-click="x1.doReset()" ng-hide="x1.item.callback.attached">Reset</button>
+                  <button type="submit" class="btn btn-default btn-md" ng-click="x1.doAttach()" ng-hide="x1.item.callback.attached" ng-disabled="!attachement.$valid">Attach</button>
+                  <button type="submit" class="btn btn-danger btn-md" ng-click="x1.doDetach()" ng-show="x1.item.callback.attached" ng-disabled="!attachement.$valid">Detach</button>
+                </p>
+              </form>
+            </div>
             <h4>Connection</h4>
             <div ng-hide="x1.item.connect">
               <p>not connected to {{x1.item.broker}}</p>
@@ -242,7 +257,21 @@
         $("#alert").hide();
         $scope.alert = {};
     }
-  	
+
+    $scope.x0 = {};
+    $scope.x0.callbacks = [];
+    
+    var list = function() {
+      $http({method:'GET',url:'../clients/callbacks/list'})
+      .then(function onSuccess(response) {
+        $scope.x0.callbacks = response.data;
+      },function onError(response) {
+        $scope.x0.callbacks = [];
+      });
+    }
+    
+    list();
+    
     $scope.x1 = {};
     $scope.x1.monitoring = false;
     $scope.x1.item = null;
@@ -287,6 +316,7 @@
         $scope.x1.item.retained = false;
         connected($scope.x1.item);
         subscribing($scope.x1.item);
+        callback($scope.x1.item);
       }
     }
     
@@ -309,6 +339,7 @@
       $http({method:'GET',url:'../clients/monitoring/page?' + content})
       .then(function onSuccess(response) {
         $scope.x1.items = response.data;
+        angular.forEach($scope.x1.items, function(item, key) { callback(item); });
       },function onError(response) {
         $scope.x1.items = [];
       });
@@ -390,6 +421,48 @@
       },function onError(response) {
         display("danger", "Something wrong happened while publishing with the client #" + $scope.x1.item.uuid +".");
         $scope.x1.doClean();
+      });
+    }
+    
+    $scope.x1.doAttach = function() {
+      var content = "uuid=" + $scope.x1.item.uuid + "&id=" + $scope.x1.item.callback.id + "&category=" + $scope.x1.item.callback.category;
+      $http({method:'POST',url:'../clients/callbacks/attach',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The callback '" + $scope.x1.item.callback.name + "' has been successfully attached to the client " + $scope.x1.item.uuid + ".");
+        callback($scope.x1.item);
+      },function onError(response) {
+        display("danger", "Something wrong happened while attaching callback '" + $scope.x1.item.callback.name + "' to the client " + $scope.x1.item.uuid + ".");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.doDetach = function() {
+      var content = "uuid=" + $scope.x1.item.uuid;
+      $http({method:'POST',url:'../clients/callbacks/detach',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The callback '" + $scope.x1.item.callback.name + "' has been successfully detached to the client " + $scope.x1.item.uuid + ".");
+        callback($scope.x1.item);
+      },function onError(response) {
+        display("danger", "Something wrong happened while detaching callback '" + $scope.x1.item.callback.name + "' to the client " + $scope.x1.item.uuid + ".");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.doReset = function() {
+      $scope.x1.item.callback = null;
+    }
+    
+    var callback = function(item) {
+      var content = "uuid=" + item.uuid;
+      $http({method:'GET',url:'../clients/callbacks/item?' + content})
+      .then(function onSuccess(response) {
+        item.callback = response.data;
+        if (item.callback) {
+            item.callback.attached = true;
+        }
+        console.log(item);
+      },function onError(response) {
+    	$scope.x1.doClean();
       });
     }
 	

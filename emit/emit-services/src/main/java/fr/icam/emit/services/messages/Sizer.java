@@ -19,13 +19,13 @@ public class Sizer extends JdbcServlet {
 
 	private static final long serialVersionUID = 201710201430001L;
 
-	private MongoCollection<Document> collection;
+	private MongoCollection<Document> messages;
 	
 	@Override
 	public void init() throws ServletException {
 		super.init();
 		MqttClientListener listener = (MqttClientListener) this.getServletContext().getAttribute("mqtt-client-listener");
-		collection = listener.getCollection();
+		messages = listener.getMessages();
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class Sizer extends JdbcServlet {
 		try {
 			String client = request.getParameter("client");
 			Bson filter = Filters.eq("client", client);
-			long count = collection.count(filter);
+			long count = messages.count(filter);
 			this.doWrite(count, response.getWriter());
 		} catch (Exception e) {
 			throw new ServletException(e);

@@ -3,7 +3,6 @@ package fr.icam.emit.callbacks;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import fr.icam.emit.types.Type;
-import fr.icam.emit.types.Value;
 
 public class TypeMqttCallback<T extends Comparable<T>> extends EmitMqttCallback {
 
@@ -18,7 +17,8 @@ public class TypeMqttCallback<T extends Comparable<T>> extends EmitMqttCallback 
 		String string = new String(message.getPayload());
 		try {
 			T value = type.valueOf(string);
-			parameters.put("_value", new Value<T>(type, value));
+			parameters.put("type", type.getName());
+			parameters.put("value", value);
 		} catch (Exception e) {
 			parameters.put("_value", null);
 		}

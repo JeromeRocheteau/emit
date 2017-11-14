@@ -1,47 +1,18 @@
 package fr.icam.emit.callbacks;
 
 import org.bson.Document;
-import org.bson.types.Binary;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 
-public class MongoMqttCallback extends EmitMqttCallback {
+public abstract class MongoMqttCallback extends EmitMqttCallback {
 
-	private String clientId;
+	protected String clientId;
 	
-	private MongoCollection<Document> collection;
+	protected MongoCollection<Document> collection;
 	
-	public MongoMqttCallback(MongoDatabase db, String name, String id) throws Exception {
+	public MongoMqttCallback(MongoCollection<Document> collection, String id) throws Exception {
 		this.clientId = id;
-		collection = db.getCollection(name);
-	}
-
-	@Override
-	public void messageArrived(String topic, MqttMessage message) {
-		boolean retained = message.isRetained();
-		int qos = message.getQos();
-		boolean duplicate = message.isDuplicate();
-		byte[] payload = message.getPayload();
-        Document document = new Document();
-        document.append("id", message.getId());
-        document.append("mode", "subscribe");
-        document.append("issued", System.currentTimeMillis());
-        document.append("client", clientId);
-        document.append("qos", qos);
-        document.append("retained", retained);
-        document.append("topic", topic);
-        document.append("duplicate", duplicate);
-        document.append("payload", new Binary(payload));
-        for (String key : parameters.keySet()) {
-        	if (key.startsWith("_")) {
-        		continue;
-        	} else {
-        		document.append(key, parameters.get(key));
-        	}
-        }
-        collection.insertOne(document);
+		this.collection = collection;
 	}
 
 }

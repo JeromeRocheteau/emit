@@ -25,17 +25,17 @@ public class MqttClientListener implements ServletContextListener {
 	
 	private Map<String, MqttClient> clients;
 	
-	private MongoCollection<Document> collection;
+	private MongoCollection<Document> messages;
 	
-	public MongoCollection<Document> getCollection() {
-		return collection;
+	public MongoCollection<Document> getMessages() {
+		return messages;
 	}
 	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		MongoDatabase db = (MongoDatabase) sce.getServletContext().getAttribute("mongodb-database");
-		String name = sce.getServletContext().getInitParameter("mongodb-collection");
-		collection = db.getCollection(name);
+		String name = sce.getServletContext().getInitParameter("mongodb-message-collection");
+		messages = db.getCollection(name);
 		clients = new HashMap<String, MqttClient>(124);
 		sce.getServletContext().setAttribute("mqtt-client-listener", this);
 	}
@@ -61,8 +61,8 @@ public class MqttClientListener implements ServletContextListener {
 		clients.put(id, client);
 	}
 	
-	public void doDelete(String uuid) {
-		clients.remove(uuid);
+	public void doDelete(String id) {
+		clients.remove(id);
 	}
 	
 	public boolean isConnected(String id) throws Exception {
@@ -132,7 +132,7 @@ public class MqttClientListener implements ServletContextListener {
 	        document.append("retained", retained);
 	        document.append("topic", topic);
 	        document.append("payload", new Binary(payload));
-	        collection.insertOne(document);
+	        messages.insertOne(document);
 		}
 	}
 	

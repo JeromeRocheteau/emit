@@ -4,6 +4,8 @@ public class Callback {
 
 	private Long id;
 	
+	private String name;
+	
 	private Long issued;
 	
 	private String user;
@@ -14,6 +16,10 @@ public class Callback {
 
 	public Long getId() {
 		return id;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public Long getIssued() {
@@ -39,6 +45,7 @@ public class Callback {
 		this.user = user;
 		this.atomic = atomic;
 		this.category = category;
+		this.name = "#" + id + " " + category + " callback";
 	}
 	
 }

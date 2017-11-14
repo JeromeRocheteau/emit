@@ -37,7 +37,7 @@
   </context-param>
 
   <context-param>
-    <param-name>mongodb-collection</param-name>
+    <param-name>mongodb-message-collection</param-name>
     <param-value>messages</param-value>
   </context-param>
   
@@ -774,6 +774,19 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>client-callback-list</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/list-share.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-callback-list</servlet-name>
+    <url-pattern>/clients/callbacks/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>callback-create</servlet-name>
     <servlet-class>fr.icam.emit.services.callbacks.Creator</servlet-class>
     <init-param>
@@ -781,6 +794,10 @@
       <param-value>/fr/icam/emit/queries/callbacks/create.sql</param-value>
     </init-param>
   </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-create</servlet-name>
+    <url-pattern>/callbacks/create/message</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>callback-delete</servlet-name>
@@ -875,6 +892,69 @@
   <servlet-mapping>
     <servlet-name>topic-callback-item</servlet-name>
     <url-pattern>/callbacks/find/topic</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Itemizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-item</servlet-name>
+    <url-pattern>/callbacks/find/message</url-pattern>
+  </servlet-mapping>
+  
+  <!-- client & callbacks -->
+
+  <servlet>
+    <servlet-name>callback-attach</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Attach</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/attach.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-attach</servlet-name>
+    <url-pattern>/clients/callbacks/attach</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>callback-detach</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Detach</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/detach.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-detach</servlet-name>
+    <url-pattern>/clients/callbacks/detach</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>callback-build</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Builder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/build.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>client-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/find.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-callback-item</servlet-name>
+    <url-pattern>/clients/callbacks/item</url-pattern>
   </servlet-mapping>
 
   <!-- types -->
@@ -1034,6 +1114,7 @@
       <url-pattern>/clients/subscribe</url-pattern>
       <url-pattern>/clients/unsubscribe</url-pattern>
       <url-pattern>/clients/publish</url-pattern>
+      <url-pattern>/clients/callback</url-pattern>
       <url-pattern>/clients/actions/size</url-pattern>
       <url-pattern>/clients/actions/page</url-pattern>
       <url-pattern>/clients/messages/size</url-pattern>
@@ -1045,6 +1126,10 @@
       <url-pattern>/topics/roots/list</url-pattern>
       <url-pattern>/topics/leafs/list</url-pattern>
       <url-pattern>/topics/nodes/list</url-pattern>
+      <url-pattern>/clients/callbacks/list</url-pattern>
+      <url-pattern>/clients/callbacks/item</url-pattern>
+      <url-pattern>/clients/callbacks/attach</url-pattern>
+      <url-pattern>/clients/callbacks/detach</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
       <http-method>HEAD</http-method>
@@ -1089,6 +1174,8 @@
       <url-pattern>/callbacks/create/topic</url-pattern>
       <url-pattern>/callbacks/update/topic</url-pattern>
       <url-pattern>/callbacks/find/topic</url-pattern>
+      <url-pattern>/callbacks/create/message</url-pattern>
+      <url-pattern>/callbacks/find/message</url-pattern>
       <url-pattern>/callbacks/delete</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>

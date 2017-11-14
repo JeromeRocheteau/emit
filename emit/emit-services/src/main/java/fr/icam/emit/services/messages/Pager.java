@@ -26,13 +26,13 @@ public class Pager extends JdbcServlet {
 
 	private static final long serialVersionUID = 201710201430002L;
 
-	private MongoCollection<Document> collection;
+	private MongoCollection<Document> messages;
 	
 	@Override
 	public void init() throws ServletException {
 		super.init();
 		MqttClientListener listener = (MqttClientListener) this.getServletContext().getAttribute("mqtt-client-listener");
-		collection = listener.getCollection();
+		messages = listener.getMessages();
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class Pager extends JdbcServlet {
 			Integer offset = Integer.valueOf(request.getParameter("offset"));
 			Integer length = Integer.valueOf(request.getParameter("length"));
 			Bson filter = Filters.eq("client", client);
-			FindIterable<Document> find = collection.find(filter);
+			FindIterable<Document> find = messages.find(filter);
 			find.skip(offset);
 			find.limit(length);
 			find.sort(Sorts.descending("_id"));
