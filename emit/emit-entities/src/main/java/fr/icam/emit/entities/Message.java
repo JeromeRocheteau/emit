@@ -4,7 +4,7 @@ public class Message {
 	
 	private Long issued;
 
-	private String type;
+	private String mode;
 	
 	private String topic;
 	
@@ -18,8 +18,8 @@ public class Message {
 		return issued;
 	}
 
-	public String getType() {
-		return type;
+	public String getMode() {
+		return mode;
 	}
 
 	public String getTopic() {
@@ -38,11 +38,11 @@ public class Message {
 		return payload;
 	}
 
-	public Message(Long issued, String type, String topic, int qos, boolean retained, byte[] payload) {
+	public Message(Long issued, String mode, String topic, int qos, boolean retained, byte[] payload) {
 		super();
 		this.issued = issued;
 		this.topic = topic;
-		this.type = type;
+		this.mode = mode;
 		this.qos = qos;
 		this.retained = retained;
 		this.payload = payload;

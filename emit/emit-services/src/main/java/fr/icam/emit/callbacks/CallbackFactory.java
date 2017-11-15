@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.servlet.ServletException;
+
 import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 
@@ -12,11 +14,25 @@ import com.mongodb.client.MongoCollection;
 import fr.icam.emit.entities.Callback;
 import fr.icam.emit.entities.callbacks.TopicCallback;
 import fr.icam.emit.entities.callbacks.TypeCallback;
+import fr.icam.emit.listeners.MqttClientListener;
 import fr.icam.emit.types.Type;
 
 public class CallbackFactory {
 
-	public static MessageMqttCallback from(MongoCollection<Document> collection, Callback callback, String id) throws Exception {
+	public static MqttCallback from(MqttClientListener listener, String id, Callback callback) throws Exception {
+		String category = callback.getCategory();
+		if (category.equals("type")) {
+			return CallbackFactory.from((TypeCallback) callback);
+		} else if (category.equals("topic")) {
+			return CallbackFactory.from((TopicCallback) callback);
+		} else if (category.equals("message")) {
+			return CallbackFactory.from(listener.getMessages(), callback, id);
+		} else {
+			throw new ServletException("undefined callback category '" + category + "'");
+		}
+	}
+	
+	private static MessageMqttCallback from(MongoCollection<Document> collection, Callback callback, String id) throws Exception {
 		String category = callback.getCategory();
 		if (category.equals("message")) {
 			return new MessageMqttCallback(collection, id);
@@ -25,7 +41,7 @@ public class CallbackFactory {
 		}
 	}
 
-	public static TopicMqttCallback from(TopicCallback callback) throws Exception {
+	private static TopicMqttCallback from(TopicCallback callback) throws Exception {
 		String category = callback.getCategory();
 		if (category.equals("topic")) {
 			return new TopicMqttCallback(callback.getTopic());			
@@ -34,7 +50,7 @@ public class CallbackFactory {
 		}
 	}
 
-	public static MqttCallback from(TypeCallback callback) throws Exception {
+	private static MqttCallback from(TypeCallback callback) throws Exception {
 		String callbackCategory = callback.getCategory();
 		if (callbackCategory.equals("type")) {
 			String category = callback.getType().getCategory();

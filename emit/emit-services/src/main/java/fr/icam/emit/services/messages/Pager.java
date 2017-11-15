@@ -51,13 +51,13 @@ public class Pager extends JdbcServlet {
 			while (cursor.hasNext()) {
 				Document document = cursor.next();
 				Long issued = document.getLong("issued");
-				String type = document.getString("type");
+				String mode = document.getString("mode");
 				String topic = document.getString("topic");
 				Integer qos  = document.getInteger("qos");
 				Boolean retained = document.getBoolean("retained");
 				// Boolean duplicate = document.getBoolean("duplicate");
 				byte[] payload = ((Binary) document.get("payload")).getData();
-				Message item = new Message(issued, type, topic, qos, retained, payload);
+				Message item = new Message(issued, mode, topic, qos, retained, payload);
 				items.add(item);
 			}
 			this.doWrite(items, response.getWriter());

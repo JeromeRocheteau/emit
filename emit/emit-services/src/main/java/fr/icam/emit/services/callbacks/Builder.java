@@ -12,8 +12,6 @@ import com.github.jeromerocheteau.JdbcServlet;
 
 import fr.icam.emit.callbacks.CallbackFactory;
 import fr.icam.emit.entities.Callback;
-import fr.icam.emit.entities.callbacks.TopicCallback;
-import fr.icam.emit.entities.callbacks.TypeCallback;
 import fr.icam.emit.listeners.MqttClientListener;
 
 public class Builder extends JdbcServlet {
@@ -30,6 +28,7 @@ public class Builder extends JdbcServlet {
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		String id = request.getParameter("uuid");
 		String category = request.getParameter("category");
 		if (category.equals("type")) {
 			this.doCall(request, response, "type-callback-item");
@@ -42,23 +41,10 @@ public class Builder extends JdbcServlet {
 		}
 		try {
 			Callback cb = (Callback) request.getAttribute("callback");
-			MqttCallback callback = this.doCallback(request, cb, category);
+			MqttCallback callback = CallbackFactory.from(listener, id, cb);
 			request.setAttribute("mqtt-callback", callback);
 		} catch (Exception e) {
 			throw new ServletException(e);
-		}
-	}
-
-	private MqttCallback doCallback(HttpServletRequest request, Callback callback, String category) throws Exception {
-		String id = request.getParameter("uuid");
-		if (category.equals("type")) {
-			return CallbackFactory.from((TypeCallback) callback);
-		} else if (category.equals("topic")) {
-			return CallbackFactory.from((TopicCallback) callback);
-		} else if (category.equals("message")) {
-			return CallbackFactory.from(listener.getMessages(), callback, id);
-		} else {
-			throw new ServletException("undefined callback category '" + category + "'");
 		}
 	}
 

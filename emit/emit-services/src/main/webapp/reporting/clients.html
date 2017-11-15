@@ -172,7 +172,7 @@
           <table class="table">
             <thead>
               <tr>
-                <th>type</th>
+                <th>mode</th>
                 <th>issued</th>
                 <th>qos</th>
                 <th>retained</th>
@@ -182,7 +182,7 @@
             </thead>
             <tbody>
               <tr ng-repeat="item in x3.items" ng-class="{warning: isPub(item)}">
-                <td><span>{{item.type}}</span></td>
+                <td><span>{{item.mode}}</span></td>
                 <td><span>{{item.issued | date : "yyyy-MM-dd HH:mm:ss"}}</span></td>
                 <td><span>{{item.qos}}</span></td>
                 <td><span>{{item.retained}}</span></td>
@@ -350,11 +350,11 @@
     }
     
     $scope.isSub = function(item) {
-    	return item.type === 'sub';
+    	return item.type === 'subscribe';
     }
 
     $scope.isPub = function(item) {
-    	return item.type === 'pub';
+    	return item.mode === 'publish';
     }
     
     $scope.x2 = {};

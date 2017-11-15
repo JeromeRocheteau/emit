@@ -1049,13 +1049,23 @@
   </servlet>
 
   <servlet>
+    <servlet-name>callback-initialize</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Initializer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/init.sql</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+
+  <servlet>
     <servlet-name>connect-initialize</servlet-name>
     <servlet-class>fr.icam.emit.services.connects.Initializer</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
       <param-value>/fr/icam/emit/queries/connects/list.sql</param-value>
     </init-param>
-    <load-on-startup>2</load-on-startup>
+    <load-on-startup>3</load-on-startup>
   </servlet>
 
   <servlet>
@@ -1065,7 +1075,7 @@
       <param-name>sql-query</param-name>
       <param-value>/fr/icam/emit/queries/subscribes/list.sql</param-value>
     </init-param>
-    <load-on-startup>3</load-on-startup>
+    <load-on-startup>4</load-on-startup>
   </servlet>
 
   <!-- security -->
