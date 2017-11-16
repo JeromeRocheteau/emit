@@ -978,6 +978,47 @@
     <url-pattern>/callbacks/find/feature</url-pattern>
   </servlet-mapping>
   
+  <!-- guard callbacks -->
+
+  <servlet>
+    <servlet-name>guard-callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.guards.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/guards/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>guard-callback-create</servlet-name>
+    <url-pattern>/callbacks/create/guard</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>guard-callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.guards.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/guards/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>guard-callback-update</servlet-name>
+    <url-pattern>/callbacks/update/guard</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>guard-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.guards.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/guards/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>guard-callback-item</servlet-name>
+    <url-pattern>/callbacks/find/guard</url-pattern>
+  </servlet-mapping>
+  
   <!-- client & callbacks -->
 
   <servlet>
@@ -1246,6 +1287,9 @@
       <url-pattern>/callbacks/find/feature</url-pattern>
       <url-pattern>/callbacks/create/message</url-pattern>
       <url-pattern>/callbacks/find/message</url-pattern>
+      <url-pattern>/callbacks/create/guard</url-pattern>
+      <url-pattern>/callbacks/update/guard</url-pattern>
+      <url-pattern>/callbacks/find/guard</url-pattern>
       <url-pattern>/callbacks/delete</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
