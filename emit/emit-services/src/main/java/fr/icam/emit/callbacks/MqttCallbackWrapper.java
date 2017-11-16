@@ -15,8 +15,9 @@ public class MqttCallbackWrapper extends EmitMqttCallback {
 	public void messageArrived(String topic, MqttMessage message) {
 		try {
 			this.callback.messageArrived(topic, message);
+			this.status(true);
 		} catch (Exception e) {
-			this.callback.connectionLost(e);
+			this.status(false);
 		}
 	}
 

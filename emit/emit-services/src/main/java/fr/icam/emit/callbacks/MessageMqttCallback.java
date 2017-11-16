@@ -29,11 +29,7 @@ public class MessageMqttCallback extends MongoMqttCallback {
         document.append("duplicate", duplicate);
         document.append("payload", new Binary(payload));
         for (String key : parameters.keySet()) {
-        	if (key.startsWith("_")) {
-        		continue;
-        	} else {
-        		document.append(key, parameters.get(key));
-        	}
+       		document.append(key, parameters.get(key));
         }
         collection.insertOne(document);
 	}

@@ -27,34 +27,26 @@ public class GuardMqttCallback extends EmitMqttCallback implements MqttCallback 
 	}
 	
 	@Override
-	public void doEmbedd(Map<String, Object> parameters, boolean root) {
-		super.doEmbedd(parameters, root);
-		callback.doEmbedd(parameters, false);
-		successCallback.doEmbedd(parameters, false);
+	public void embedd(Map<String, Object> parameters, boolean root) {
+		super.embedd(parameters, root);
+		callback.embedd(parameters, false);
+		successCallback.embedd(parameters, false);
 		if (failureCallback != null) {
-			failureCallback.doEmbedd(parameters, false);
+			failureCallback.embedd(parameters, false);
 		}
 	}
 	
 	@Override
 	public final void messageArrived(String topic, MqttMessage message) {
 		callback.messageArrived(topic, message);
-		Object value = parameters.get("_value");
-		if (value == null) {
-			if (failureCallback != null) failureCallback.messageArrived(topic, message);
-		} else {
-			if (value instanceof Boolean) {
-				Boolean bool = (Boolean) value;
-				if (bool) {
-					successCallback.messageArrived(topic, message);
-				} else {
-					if (failureCallback != null) failureCallback.messageArrived(topic, message);
-				}
-			} else {
-				successCallback.messageArrived(topic, message);
-			}
+		if (callback.status()) {
+			successCallback.messageArrived(topic, message);
+			this.status(successCallback.status());
+		} else if (failureCallback != null) {
+			failureCallback.messageArrived(topic, message);
+			this.status(failureCallback.status());
 		}
-		if (root) {
+		if (this.root()) {
 			parameters.clear();
 		}
 	}

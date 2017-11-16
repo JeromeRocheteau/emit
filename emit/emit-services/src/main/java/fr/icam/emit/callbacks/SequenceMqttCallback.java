@@ -24,10 +24,10 @@ public class SequenceMqttCallback extends EmitMqttCallback implements MqttCallba
 	}
 
 	@Override
-	public void doEmbedd(Map<String, Object> parameters, boolean root) {
-		super.doEmbedd(parameters, root);
+	public void embedd(Map<String, Object> parameters, boolean root) {
+		super.embedd(parameters, root);
 		for (EmitMqttCallback callback : callbacks) {
-			callback.doEmbedd(parameters, false);
+			callback.embedd(parameters, false);
 		}
 	}	
 	
@@ -47,10 +47,17 @@ public class SequenceMqttCallback extends EmitMqttCallback implements MqttCallba
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) {
+		this.status(true);
 		for (EmitMqttCallback callback : callbacks) {
 			callback.messageArrived(topic, message);
+			if (callback.status()) {
+				continue;
+			} else {
+				this.status(false);
+				break;
+			}
 		}
-		if (root) {
+		if (this.root()) {
 			parameters.clear();
 		}
 	}

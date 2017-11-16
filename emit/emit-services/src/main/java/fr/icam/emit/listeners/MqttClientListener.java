@@ -143,11 +143,11 @@ public class MqttClientListener implements ServletContextListener {
 		} else if (callback instanceof EmitMqttCallback) {
 			EmitMqttCallback cb = (EmitMqttCallback) callback;
 			client.setCallback(cb);
-			cb.doEmbedd(new HashMap<String, Object>(), true);
+			cb.embedd(new HashMap<String, Object>(), true);
 		} else {
 			MqttCallbackWrapper cb = new MqttCallbackWrapper(callback);
 			client.setCallback(cb);
-			cb.doEmbedd(new HashMap<String, Object>(), true);
+			cb.embedd(new HashMap<String, Object>(), true);
 		}
 	}
 	

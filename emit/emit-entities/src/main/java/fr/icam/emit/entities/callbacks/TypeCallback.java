@@ -12,7 +12,7 @@ public class TypeCallback extends Callback {
 	}
 
 	public TypeCallback(Long id, Long issued, String user, Boolean atomic, String category, Type type) {
-		super(id, issued, user, atomic, category);
+		super("#" + id + " " + category + " callback: " + type.getName(), id, issued, user, atomic, category);
 		this.type = type;
 	}
 

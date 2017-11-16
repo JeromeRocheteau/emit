@@ -99,6 +99,8 @@
               <h4 class="list-group-item-heading">#{{item.id}} {{item.category}} callback</h4>
               <p class="list-group-item-text" ng-show="item.type">type: {{item.type.name}}</p>
               <p class="list-group-item-text" ng-show="item.topic">topic: {{item.topic}}</p>
+              <p class="list-group-item-text" ng-show="item.symbol">type: {{item.symbol.name}}</p>
+              <p class="list-group-item-text" ng-show="item.value">type: {{item.value}}</p>
               <p class="list-group-item-text text-right">
                 <button class="btn btn-default btn-md" ng-click="x1.doSelect(item)">Edit</button>
               </p>
@@ -111,6 +113,7 @@
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="actions">
               <li><a ng-click="x1.doType()">Type Callback</a></li>
               <li><a ng-click="x1.doTopic()">Topic Callback</a></li>
+              <li><a ng-click="x1.doFeature()">Feature Callback</a></li>
               <li><a ng-click="x1.doMessage()">Message Callback</a></li>
             </ul>
           </div>
@@ -187,6 +190,56 @@
                   <button type="submit" class="btn btn-default" ng-click="x1.f2.doCreate()" ng-show="x1.creating" ng-disabled="!f2.$valid"><strong>Create</strong></button>
                   <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!f2.$valid"><strong>Delete</strong></button>
                   <button type="submit" class="btn btn-default" ng-click="x1.f2.doUpdate()" ng-show="x1.updating" ng-disabled="!f2.$valid"><strong>Update</strong></button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        
+        <form name="f4" class="form list-group-item" id="f4" ng-show="x1.f4.active">
+          <fieldset ng-disabled="!(x1.creating || x1.updating)">
+            <legend ng-hide="x1.updating">Create a feature callback</legend>
+            <legend ng-show="x1.updating">Update a feature callback</legend>
+            <div class="row" ng-show="x1.updating">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="callback.uuid" ng-model="x1.item.id" readonly>
+                </div>
+              </div>
+              <div class="col-md-9">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="callback.user" ng-model="x1.item.user" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <select class="form-control" id="callback.type" ng-model="x1.item.type" ng-options="option as option.name for option in x0.types track by option.name" ng-required="true" required>
+                    <option value="" disabled selected>Type</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <select class="form-control" id="callback.symbol" ng-model="x1.item.symbol" ng-options="option as option.name for option in x0.symbols track by option.name" ng-required="true" required>
+                    <option value="" disabled selected>Symbol</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="callback.value" ng-model="x1.item.value" placeholder="Value" ng-required="true" required>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group pull-right">
+                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.f4.doCreate()" ng-show="x1.creating" ng-disabled="!f4.$valid"><strong>Create</strong></button>
+                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!f4.$valid"><strong>Delete</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.f4.doUpdate()" ng-show="x1.updating" ng-disabled="!f4.$valid"><strong>Update</strong></button>
                 </div>
               </div>
             </div>
@@ -283,6 +336,7 @@
     $scope.x0 = {};
     $scope.x0.callbacks = [];
     $scope.x0.types = [];
+    $scope.x0.symbols = [];
       
     var list = function() {
       $http({method:'GET',url:'../callbacks/list'})
@@ -297,6 +351,12 @@
       },function onError(response) {
         $scope.x0.types = [];
       });
+      $http({method:'GET',url:'../symbols/list'})
+      .then(function onSuccess(response) {
+        $scope.x0.symbols = response.data;
+      },function onError(response) {
+        $scope.x0.symbols = [];
+      });
     }
     
     list();
@@ -305,6 +365,7 @@
     $scope.x1.f1 = {};
     $scope.x1.f2 = {};
     $scope.x1.f3 = {};
+    $scope.x1.f4 = {};
     $scope.x1.callback = null;
     $scope.x1.creating = false;
     $scope.x1.updating = false;
@@ -348,14 +409,22 @@
             $scope.x1.f1.active = true;
             $scope.x1.f2.active = false;
             $scope.x1.f3.active = false;
+            $scope.x1.f4.active = false;
         } else if ($scope.x1.item.category == 'topic') {
             $scope.x1.f1.active = false;
             $scope.x1.f2.active = true;
             $scope.x1.f3.active = false;
+            $scope.x1.f4.active = false;
         } else if ($scope.x1.item.category == 'message') {
             $scope.x1.f1.active = false;
             $scope.x1.f2.active = false;
             $scope.x1.f3.active = true;
+            $scope.x1.f4.active = false;
+        } else if ($scope.x1.item.category == 'feature') {
+            $scope.x1.f1.active = false;
+            $scope.x1.f2.active = false;
+            $scope.x1.f3.active = false;
+            $scope.x1.f4.active = true;
         }
       } else {
         $scope.x1.creating = true;
@@ -369,6 +438,7 @@
       $scope.x1.f1.active = true;
       $scope.x1.f2.active = false;
       $scope.x1.f3.active = false;
+      $scope.x1.f4.active = false;
     }
         
     $scope.x1.doTopic = function() {
@@ -376,6 +446,7 @@
       $scope.x1.f1.active = false;
       $scope.x1.f2.active = true;
       $scope.x1.f3.active = false;
+      $scope.x1.f4.active = false;
     }
         
     $scope.x1.doMessage = function() {
@@ -383,6 +454,7 @@
       $scope.x1.f1.active = false;
       $scope.x1.f2.active = false;
       $scope.x1.f3.active = true;
+      $scope.x1.f4.active = false;
       var content = "atomic=true&category=message";
       $http({method:'POST',url:'../callbacks/create/message',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
@@ -395,6 +467,14 @@
         $scope.x1.doClean();
       });
     }
+        
+    $scope.x1.doFeature = function() {
+      $scope.x1.doSelect();
+      $scope.x1.f1.active = false;
+      $scope.x1.f2.active = false;
+      $scope.x1.f3.active = false;
+      $scope.x1.f4.active = true;
+    }
     
     $scope.x1.doClean = function() {
       $scope.x1.creating = false;
@@ -403,6 +483,7 @@
       $scope.x1.f1.active = false;
       $scope.x1.f2.active = false;
       $scope.x1.f3.active = false;
+      $scope.x1.f4.active = false;
     }
 
     $scope.x1.doSize = function() {
@@ -502,6 +583,37 @@
     $scope.x1.f2.doUpdate = function() {
       var content = "id=" + $scope.x1.item.id + "&topic=" + $scope.x1.item.topic;
       $http({method:'POST',url:'../callbacks/update/topic',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The callback " + $scope.x1.item.id + " has been sucessfully updated.");
+        $scope.x1.doClean();
+        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
+          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+        }
+        $scope.x1.doSize();
+        $scope.x1.doPage();
+      },function onError(response) {
+        display("danger", "Something wrong happened while updating the callback #" + $scope.x1.item.id +".");
+        $scope.x1.doClean();
+      });
+    }
+    
+    $scope.x1.f4.doCreate = function() {
+      var content = "type=" + $scope.x1.item.type.name + "&symbol=" + $scope.x1.item.symbol.name + "&value=" + encodeURIComponent($scope.x1.item.value) + "&atomic=true&category=feature";
+      $http({method:'POST',url:'../callbacks/create/feature',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The new callback has been sucessfully created.");
+        $scope.x1.doClean();
+        $scope.x1.doSize();
+        $scope.x1.doPage();
+      },function onError(response) {
+        display("danger", "Something wrong happened while creating the new callback.");
+        $scope.x1.doClean();
+      });
+    }
+
+    $scope.x1.f4.doUpdate = function() {
+      var content = "id=" + $scope.x1.item.id + "&type=" + $scope.x1.item.type.name + "&symbol=" + $scope.x1.item.symbol.name + "&value=" + encodeURIComponent($scope.x1.item.value);
+      $http({method:'POST',url:'../callbacks/update/feature',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The callback " + $scope.x1.item.id + " has been sucessfully updated.");
         $scope.x1.doClean();

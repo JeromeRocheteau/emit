@@ -15,9 +15,9 @@ public class TopicMqttCallback extends EmitMqttCallback {
 	public void messageArrived(String topic, MqttMessage message) {
 		try {
 			boolean matched = MqttTopic.isMatched(filter, topic);
-			parameters.put("_value", matched);
+			this.status(matched);
 		} catch (Exception e) {
-			parameters.put("_value", null);
+			this.status(false);
 		}
 	}
 

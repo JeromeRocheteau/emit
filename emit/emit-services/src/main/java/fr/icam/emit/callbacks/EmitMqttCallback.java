@@ -8,11 +8,25 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public abstract class EmitMqttCallback implements MqttCallback {
 
-	protected boolean root;
+	private boolean status;
+	
+	private boolean root;
 	
 	protected Map<String, Object> parameters;
 	
-	public void doEmbedd(Map<String, Object> parameters, boolean root) {
+	public void status(boolean status) {
+		this.status = status;
+	}
+	
+	public boolean status() {
+		return status;
+	}
+
+	protected boolean root() {
+		return root;
+	}
+	
+	public void embedd(Map<String, Object> parameters, boolean root) {
 		this.parameters = parameters;
 		this.root = root;
 	}

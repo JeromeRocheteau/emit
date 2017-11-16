@@ -19,8 +19,9 @@ public class TypeMqttCallback<T extends Comparable<T>> extends EmitMqttCallback 
 			T value = type.valueOf(string);
 			parameters.put("type", type.getName());
 			parameters.put("value", value);
+			this.status(true);
 		} catch (Exception e) {
-			parameters.put("_value", null);
+			this.status(false);
 		}
 	}
 

@@ -1,0 +1,1 @@
+INSERT INTO `feature_callbacks` (`id`,`symbol`,`type`,`value`) VALUES (?,?,?,?);

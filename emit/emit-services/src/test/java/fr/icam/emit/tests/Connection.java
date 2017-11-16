@@ -56,7 +56,7 @@ public class Connection {
 	public void doAttach(EmitMqttCallback callback) {
 		this.callback = callback;
 		this.client.setCallback(this.callback);
-		this.callback.doEmbedd(new HashMap<String, Object>(), true);
+		this.callback.embedd(new HashMap<String, Object>(), true);
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -67,7 +67,7 @@ public class Connection {
 		snd.doConnect("tcp://localhost:1883", "jerome", "louR8jay");
 
 		EmitMqttCallback testCallback = new TestMqttCallback();
-		EmitMqttCallback featureCallback = new FeatureMqttCallback<Float>(Symbol.EQ, new Value<Float>(Type.FLOAT, 4.0f));
+		EmitMqttCallback featureCallback = new FeatureMqttCallback<Float>(Symbol.EQ, Type.FLOAT, 4.0f);
 		EmitMqttCallback typeCallback = new TypeMqttCallback<Float>(Type.FLOAT);
 		EmitMqttCallback topicCallback = new TopicMqttCallback("test");
 		

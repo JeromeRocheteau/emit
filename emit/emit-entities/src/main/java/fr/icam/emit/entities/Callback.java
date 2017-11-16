@@ -38,13 +38,18 @@ public class Callback {
 		return category;
 	}
 
-	public Callback(Long id, Long issued, String user, Boolean atomic, String category) {
+	protected Callback(String name, Long id, Long issued, String user, Boolean atomic, String category) {
 		super();
 		this.id = id;
 		this.issued = issued;
 		this.user = user;
 		this.atomic = atomic;
 		this.category = category;
+		this.name = name;
+	}
+
+	public Callback(Long id, Long issued, String user, Boolean atomic, String category) {
+		this(category, id, issued, user, atomic, category);
 		this.name = "#" + id + " " + category + " callback";
 	}
 	
