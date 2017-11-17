@@ -96,11 +96,13 @@
             <li class="list-group-item" ng-repeat="item in x1.items">
               <p class="list-group-item-text text-right">
               </p>
-              <h4 class="list-group-item-heading">#{{item.id}} {{item.category}} callback</h4>
-              <p class="list-group-item-text" ng-show="item.type">type: {{item.type.name}}</p>
-              <p class="list-group-item-text" ng-show="item.topic">topic: {{item.topic}}</p>
-              <p class="list-group-item-text" ng-show="item.symbol">type: {{item.symbol.name}}</p>
-              <p class="list-group-item-text" ng-show="item.value">type: {{item.value}}</p>
+              <h4 class="list-group-item-heading">
+                #{{item.id}} {{item.category}} callback
+                <span ng-show="item.type">: {{item.type.name}}</span>
+                <span ng-show="item.symbol"> {{item.symbol.name}}</span>
+                <span ng-show="item.value"> {{item.value}}</span>
+                <span ng-show="item.topic">: {{item.topic}}</span>
+              </h4>
               <p class="list-group-item-text text-right">
                 <button class="btn btn-default btn-md" ng-click="x1.doSelect(item)">Edit</button>
               </p>
@@ -115,7 +117,7 @@
               <li><a ng-click="x1.doType()">Type Callback</a></li>
               <li><a ng-click="x1.doTopic()">Topic Callback</a></li>
               <li><a ng-click="x1.doFeature()">Feature Callback</a></li>
-              <li><a ng-click="x1.doMessage()">Message Callback</a></li>
+              <li><a ng-click="x1.doPersist()">Persistence Callback</a></li>
               <li role="separator" class="divider"></li>
               <li class="dropdown-header">Composite Callbacks</li>
               <li><a ng-click="x1.doGuard()">Guard Callback</a></li>
@@ -130,18 +132,6 @@
           <fieldset ng-disabled="!(x1.creating || x1.updating)">
             <legend ng-hide="x1.updating">Create a type callback</legend>
             <legend ng-show="x1.updating">Update a type callback</legend>
-            <div class="row" ng-show="x1.updating">
-              <div class="col-md-3">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.uuid" ng-model="x1.item.id" readonly>
-                </div>
-              </div>
-              <div class="col-md-9">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.user" ng-model="x1.item.user" readonly>
-                </div>
-              </div>
-            </div>
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
@@ -168,18 +158,6 @@
           <fieldset ng-disabled="!(x1.creating || x1.updating)">
             <legend ng-hide="x1.updating">Create a topic callback</legend>
             <legend ng-show="x1.updating">Update a topic callback</legend>
-            <div class="row" ng-show="x1.updating">
-              <div class="col-md-3">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.uuid" ng-model="x1.item.id" readonly>
-                </div>
-              </div>
-              <div class="col-md-9">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.user" ng-model="x1.item.user" readonly>
-                </div>
-              </div>
-            </div>
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
@@ -202,17 +180,16 @@
         
         <form name="f3" class="form list-group-item" id="f3" ng-show="x1.f3.active">
           <fieldset ng-disabled="!(x1.creating || x1.updating)">
-            <legend ng-hide="x1.updating">Create a message callback</legend>
-            <legend ng-show="x1.updating">Update a message callback</legend>
-            <div class="row" ng-show="x1.updating">
-              <div class="col-md-3">
+            <legend ng-hide="x1.updating">Create a persistence callback</legend>
+            <legend ng-show="x1.updating">Update a persistence callback</legend>
+            <div class="row">
+              <div class="col-md-12">
                 <div class="form-group">
-                  <input type="text" class="form-control" id="callback.uuid" ng-model="x1.item.id" readonly>
-                </div>
-              </div>
-              <div class="col-md-9">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.user" ng-model="x1.item.user" readonly>
+                  <select class="form-control" id="callback.category" ng-model="x1.item.category" ng-required="true" required>
+                    <option value="" disabled selected>Category</option>
+                    <option value="message" selected>messages</option>
+                    <option value="failure">failures</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -220,6 +197,7 @@
               <div class="col-md-12">
                 <div class="form-group pull-right">
                   <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
+                  <button type="submit" class="btn btn-default" ng-click="x1.f3.doCreate()" ng-show="x1.creating" ng-disabled="!f3.$valid"><strong>Create</strong></button>
                   <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!f3.$valid"><strong>Delete</strong></button>
                 </div>
               </div>
@@ -231,18 +209,6 @@
           <fieldset ng-disabled="!(x1.creating || x1.updating)">
             <legend ng-hide="x1.updating">Create a feature callback</legend>
             <legend ng-show="x1.updating">Update a feature callback</legend>
-            <div class="row" ng-show="x1.updating">
-              <div class="col-md-3">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.uuid" ng-model="x1.item.id" readonly>
-                </div>
-              </div>
-              <div class="col-md-9">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.user" ng-model="x1.item.user" readonly>
-                </div>
-              </div>
-            </div>
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
@@ -281,18 +247,6 @@
           <fieldset ng-disabled="!(x1.creating || x1.updating)">
             <legend ng-hide="x1.updating">Create a guard callback</legend>
             <legend ng-show="x1.updating">Update a guard callback</legend>
-            <div class="row" ng-show="x1.updating">
-              <div class="col-md-3">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.uuid" ng-model="x1.item.id" readonly>
-                </div>
-              </div>
-              <div class="col-md-9">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.user" ng-model="x1.item.user" readonly>
-                </div>
-              </div>
-            </div>
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
@@ -340,6 +294,7 @@
       </div>
     
     </section>
+    
     <footer class="footer navbar navbar-inverse navbar-custom navbar-fixed-bottom">
       <div class="container-fluid">
         <div class="nav navbar-nav navbar-left">
@@ -465,7 +420,6 @@
         $scope.x1.creating = false;
         $scope.x1.updating = true;
         $scope.x1.item = angular.copy(item);
-        console.log(item);
         if ($scope.x1.item.category == 'type') {
             $scope.x1.f1.active = true;
             $scope.x1.f2.active = false;
@@ -479,6 +433,12 @@
             $scope.x1.f4.active = false;
             $scope.x1.f5.active = false;
         } else if ($scope.x1.item.category == 'message') {
+            $scope.x1.f1.active = false;
+            $scope.x1.f2.active = false;
+            $scope.x1.f3.active = true;
+            $scope.x1.f4.active = false;
+            $scope.x1.f5.active = false;
+        } else if ($scope.x1.item.category == 'failure') {
             $scope.x1.f1.active = false;
             $scope.x1.f2.active = false;
             $scope.x1.f3.active = true;
@@ -522,24 +482,13 @@
       $scope.x1.f5.active = false;
     }
         
-    $scope.x1.doMessage = function() {
+    $scope.x1.doPersist = function() {
       $scope.x1.doSelect();
       $scope.x1.f1.active = false;
       $scope.x1.f2.active = false;
       $scope.x1.f3.active = true;
       $scope.x1.f4.active = false;
       $scope.x1.f5.active = false;
-      var content = "atomic=true&category=message";
-      $http({method:'POST',url:'../callbacks/create/message',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The new callback has been sucessfully created.");
-        $scope.x1.doClean();
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while creating the new callback.");
-        $scope.x1.doClean();
-      });
     }
         
     $scope.x1.doFeature = function() {
@@ -681,6 +630,21 @@
         $scope.x1.doClean();
       });
     }
+
+    $scope.x1.f3.doCreate = function() {
+      var category = $scope.x1.item.category;
+      var content = "atomic=true&category=" + category;
+      $http({method:'POST',url:'../callbacks/create/' + category,data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        display("success", "The new callback has been sucessfully created.");
+        $scope.x1.doClean();
+        $scope.x1.doSize();
+        $scope.x1.doPage();
+      },function onError(response) {
+        display("danger", "Something wrong happened while creating the new callback.");
+        $scope.x1.doClean();
+      });
+    }
     
     $scope.x1.f4.doCreate = function() {
       var content = "type=" + $scope.x1.item.type.name + "&symbol=" + $scope.x1.item.symbol.name + "&value=" + encodeURIComponent($scope.x1.item.value) + "&atomic=true&category=feature";
@@ -714,7 +678,7 @@
     }
     
     $scope.x1.f5.doCreate = function() {
-    	var content = "test=" + $scope.x1.item.test.id + "&success=" + $scope.x1.item.success.id + ($scope.x1.item.failure ? "" : "&failure=" + $scope.x1.item.failure.id);
+    	var content = "test=" + $scope.x1.item.test.id + "&success=" + $scope.x1.item.success.id + ($scope.x1.item.failure ? "&failure=" + $scope.x1.item.failure.id : "") + "&atomic=true&category=guard";
       $http({method:'POST',url:'../callbacks/create/guard',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The new callback has been sucessfully created.");
@@ -728,7 +692,7 @@
     }
 
     $scope.x1.f5.doUpdate = function() {
-      var content = "id=" + $scope.x1.item.id + "&test=" + $scope.x1.item.test.id + "&success=" + $scope.x1.item.success.id + ($scope.x1.item.failure ? "" : "&failure=" + $scope.x1.item.failure.id);
+      var content = "id=" + $scope.x1.item.id + "&test=" + $scope.x1.item.test.id + "&success=" + $scope.x1.item.success.id + ($scope.x1.item.failure ? "&failure=" + $scope.x1.item.failure.id : "");
       $http({method:'POST',url:'../callbacks/update/guard',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The callback " + $scope.x1.item.id + " has been sucessfully updated.");
@@ -743,7 +707,7 @@
         $scope.x1.doClean();
       });
     }
-    
+
     $scope.x1.doSize();
     $scope.x1.doPage();
     

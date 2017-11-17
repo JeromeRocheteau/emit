@@ -29,6 +29,8 @@ public class CallbackFactory {
 			return CallbackFactory.from((TopicCallback) callback);
 		} else if (category.equals("message")) {
 			return CallbackFactory.from(listener.getMessages(), callback, id);
+		} else if (category.equals("failure")) {
+			return CallbackFactory.from(listener.getFailures(), callback, id);
 		} else if (category.equals("feature")) {
 			return CallbackFactory.from((FeatureCallback) callback);
 		} else if (category.equals("guard")) {

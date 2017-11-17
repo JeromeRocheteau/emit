@@ -40,6 +40,11 @@
     <param-name>mongodb-message-collection</param-name>
     <param-value>messages</param-value>
   </context-param>
+
+  <context-param>
+    <param-name>mongodb-failure-collection</param-name>
+    <param-value>failures</param-value>
+  </context-param>
   
   <listener>
     <listener-class>fr.icam.emit.listeners.MongoListener</listener-class>
@@ -828,6 +833,10 @@
     <servlet-name>callback-create</servlet-name>
     <url-pattern>/callbacks/create/message</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>callback-create</servlet-name>
+    <url-pattern>/callbacks/create/failure</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>callback-delete</servlet-name>
@@ -935,6 +944,10 @@
   <servlet-mapping>
     <servlet-name>callback-item</servlet-name>
     <url-pattern>/callbacks/find/message</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>callback-item</servlet-name>
+    <url-pattern>/callbacks/find/failure</url-pattern>
   </servlet-mapping>
 
 <!-- feature callbacks -->
@@ -1286,7 +1299,9 @@
       <url-pattern>/callbacks/update/feature</url-pattern>
       <url-pattern>/callbacks/find/feature</url-pattern>
       <url-pattern>/callbacks/create/message</url-pattern>
+      <url-pattern>/callbacks/create/failure</url-pattern>
       <url-pattern>/callbacks/find/message</url-pattern>
+      <url-pattern>/callbacks/find/failure</url-pattern>
       <url-pattern>/callbacks/create/guard</url-pattern>
       <url-pattern>/callbacks/update/guard</url-pattern>
       <url-pattern>/callbacks/find/guard</url-pattern>

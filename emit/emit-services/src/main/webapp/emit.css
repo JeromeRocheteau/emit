@@ -6,14 +6,18 @@ html {
 }
 
 body {
-	padding-top:5ex;
-	padding-bottom:5ex;
+	padding-top: 5ex;
+	padding-bottom: 5ex;
 }
 
 footer {
-	padding-top:2ex;
-	padding-bottom:1ex;
-	color:white;
+	padding-top: 2ex;
+	padding-bottom: 1ex;
+	color: white;
+}
+
+.footer {
+	z-index: 2;
 }
 
 .btn {

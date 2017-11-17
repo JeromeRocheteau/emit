@@ -27,15 +27,22 @@ public class MqttClientListener implements ServletContextListener {
 	
 	private MongoCollection<Document> messages;
 	
+	private MongoCollection<Document> failures;
+	
 	public MongoCollection<Document> getMessages() {
 		return messages;
+	}
+	public MongoCollection<Document> getFailures() {
+		return failures;
 	}
 	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		MongoDatabase db = (MongoDatabase) sce.getServletContext().getAttribute("mongodb-database");
-		String name = sce.getServletContext().getInitParameter("mongodb-message-collection");
-		messages = db.getCollection(name);
+		String messageCollectionName = sce.getServletContext().getInitParameter("mongodb-message-collection");
+		String failureCollectionName = sce.getServletContext().getInitParameter("mongodb-failure-collection");
+		messages = db.getCollection(messageCollectionName);
+		failures = db.getCollection(failureCollectionName);
 		clients = new HashMap<String, MqttClient>(124);
 		sce.getServletContext().setAttribute("mqtt-client-listener", this);
 	}
