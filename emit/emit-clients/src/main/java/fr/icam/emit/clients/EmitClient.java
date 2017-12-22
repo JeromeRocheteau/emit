@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 
 import fr.icam.emit.entities.Action;
 import fr.icam.emit.entities.Client;
+import fr.icam.emit.entities.Connect;
 import fr.icam.emit.entities.Message;
 
 public class EmitClient {
@@ -130,10 +131,30 @@ public class EmitClient {
         return this.getList(Message[].class, request);
 	}
 	
+	public Connect getConnect(Client client) throws Exception {
+		String parameters = "?client=" + client.getUuid();
+        HttpGet request = new HttpGet("/emit/clients/connected" + parameters);
+        return this.getObject(Connect.class, request);
+	}
+	
+	public Boolean doConnect(Client client) throws Exception {
+		 HttpPost request = new HttpPost("/emit/clients/connect");
+         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+         parameters.add(new BasicNameValuePair("client", client.getUuid()));
+         request.setEntity(new UrlEncodedFormEntity(parameters));
+         return this.getBoolean(request);
+	}
+	
+	public Boolean doDisconnect(Client client, Connect connect) throws Exception {
+		 HttpPost request = new HttpPost("/emit/clients/disconnect");
+         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+         parameters.add(new BasicNameValuePair("client", client.getUuid()));
+         parameters.add(new BasicNameValuePair("connect", connect.getId().toString()));
+         request.setEntity(new UrlEncodedFormEntity(parameters));
+         return this.getBoolean(request);
+	}
+	
 	/*
-      <url-pattern>/clients/connected</url-pattern>
-      <url-pattern>/clients/connect</url-pattern>
-      <url-pattern>/clients/disconnect</url-pattern>
       <url-pattern>/clients/subscribing</url-pattern>
       <url-pattern>/clients/subscribe</url-pattern>
       <url-pattern>/clients/unsubscribe</url-pattern>

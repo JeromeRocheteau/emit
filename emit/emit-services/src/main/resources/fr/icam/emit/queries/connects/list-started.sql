@@ -12,8 +12,9 @@ SELECT
 FROM `connects` c
 INNER JOIN `clients` cc ON cc.`uuid` = c.`client`
 INNER JOIN `shares` s ON s.`client` = cc.`uuid`
-LEFT JOIN `brokers` b ON b.`uri` = cc.`broker`
+INNER JOIN `brokers` b ON b.`uri` = cc.`broker`
 WHERE cc.`uuid` = ? 
-AND s.`control` = 1 
-AND b.`user` = c.`user`
+AND s.`control` = 1
+AND s.`user` = c.`user`
+AND c.`started` IS NOT NULL
 AND c.`stopped` IS NULL;
