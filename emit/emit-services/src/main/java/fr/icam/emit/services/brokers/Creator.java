@@ -25,17 +25,19 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 	@Override
 	public void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		String user = request.getUserPrincipal().getName();
+		String name = request.getParameter("name");
 		String uri = URI.create(request.getParameter("uri")).toString();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		statement.setString(1, uri);
-		statement.setString(2, user);
+		statement.setString(2, name);
+		statement.setString(3, user);
 		if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
-			statement.setNull(3, Types.VARCHAR);
 			statement.setNull(4, Types.VARCHAR);
+			statement.setNull(5, Types.VARCHAR);
 		} else {
-			statement.setString(3, username);
-			statement.setString(4, password);
+			statement.setString(4, username);
+			statement.setString(5, password);
 		}
 	}
 	

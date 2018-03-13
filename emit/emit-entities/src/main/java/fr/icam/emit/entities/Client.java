@@ -4,6 +4,8 @@ public class Client {
 
 	private String uuid;
 
+	private String name;
+	
 	private String broker;
 
 	private String user;
@@ -12,6 +14,10 @@ public class Client {
 	
 	public String getUuid() {
 		return uuid;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	public String getBroker() {
@@ -26,9 +32,10 @@ public class Client {
 		return open;
 	}
 
-	public Client(String uuid, String broker, String user, Boolean open) {
+	public Client(String uuid, String name, String broker, String user, Boolean open) {
 		super();
 		this.uuid = uuid;
+		this.name = name;
 		this.broker = broker;
 		this.user = user;
 		this.open = open;

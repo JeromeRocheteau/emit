@@ -4,6 +4,8 @@ public class Broker {
 
 	private String uri;
 	
+	private String name;
+	
 	private String user;
 	
 	private String username;
@@ -12,6 +14,10 @@ public class Broker {
 
 	public String getUri() {
 		return uri;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public String getUser() {
@@ -26,9 +32,10 @@ public class Broker {
 		return password;
 	}
 
-	public Broker(String uri, String user, String username, String password) {
+	public Broker(String uri, String name, String user, String username, String password) {
 		super();
 		this.uri = uri;
+		this.name = name;
 		this.user = user;
 		this.username = username;
 		this.password = password;

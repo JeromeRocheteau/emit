@@ -1,3 +1,3 @@
 UPDATE `brokers`
-SET `username` = ?, `password` = ? 
+SET `name`= ?, `username` = ?, `password` = ? 
 WHERE `uri` = ? AND `user` = ?;

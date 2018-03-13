@@ -17,6 +17,7 @@ public class Pager extends fr.icam.emit.services.commons.UserPager<Share> {
     	List<Share> items = new LinkedList<Share>();
     	while (resultSet.next()) {
     		String uuid = resultSet.getString("uuid");
+    		String name = resultSet.getString("name");
     		String broker = resultSet.getString("broker");
     		String user = resultSet.getString("user");
     		Boolean open = resultSet.getBoolean("open");
@@ -24,7 +25,7 @@ public class Pager extends fr.icam.emit.services.commons.UserPager<Share> {
     		if (resultSet.wasNull()) {
     			control = null;
     		}
-    		Share item = new Share(uuid, broker, user, open, control);
+    		Share item = new Share(uuid, name, broker, user, open, control);
     		items.add(item);
     	}
     	return items;

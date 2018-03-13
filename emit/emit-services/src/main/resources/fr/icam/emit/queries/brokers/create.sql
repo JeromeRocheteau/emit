@@ -1,1 +1,1 @@
-INSERT INTO `brokers` (`uri`,`user`,`username`,`password`) VALUES (?,?,?,?);
+INSERT INTO `brokers` (`uri`,`name`,`user`,`username`,`password`) VALUES (?,?,?,?,?);

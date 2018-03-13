@@ -1,3 +1,3 @@
 UPDATE `clients`
-SET `broker` = ?, `open` = ?
+SET `name`= ?, `broker` = ?, `open` = ?
 WHERE `uuid` = ?;

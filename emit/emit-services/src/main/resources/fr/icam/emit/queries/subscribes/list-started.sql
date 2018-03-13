@@ -5,6 +5,7 @@ SELECT
   c.`user` AS user,
   c.`topic` AS topic,
   cc.`uuid` AS clientUuid,
+  c.`name` AS clientName,
   cc.`broker` AS clientBroker,
   cc.`user` AS clientUser,
   cc.`open` AS clientOpen

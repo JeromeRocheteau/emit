@@ -24,11 +24,13 @@ public class Updater extends JdbcUpdateServlet<Integer> {
 	@Override
 	public void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		String uuid = request.getParameter("uuid");
-		URI broker = URI.create(request.getParameter("broker"));
+		String name = request.getParameter("name");
+		String broker = URI.create(request.getParameter("broker")).toString();
 		Boolean open = Boolean.valueOf(request.getParameter("open"));
-		statement.setString(1, broker.toString());
-		statement.setBoolean(2, open);
-		statement.setString(3, uuid);
+		statement.setString(1, name);
+		statement.setString(2, broker);
+		statement.setBoolean(3, open);
+		statement.setString(4, uuid);
 	}
 	
 	@Override

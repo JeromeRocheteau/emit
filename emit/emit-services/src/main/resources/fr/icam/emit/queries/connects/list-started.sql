@@ -6,6 +6,7 @@ SELECT
   b.`username` AS username,
   b.`password` AS password,
   cc.`uuid` AS clientUuid,
+  cc.`name` AS clientName,
   cc.`broker` AS clientBroker,
   cc.`user` AS clientUser,
   cc.`open` AS clientOpen

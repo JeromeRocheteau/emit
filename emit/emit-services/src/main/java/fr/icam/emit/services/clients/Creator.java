@@ -55,12 +55,14 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 		request.setAttribute("user", user);
 		String client = (String) request.getAttribute("client");
 		request.setAttribute("control", Boolean.TRUE);
+		String name = request.getParameter("name");
 		String broker = (String) request.getAttribute("broker");
 		Boolean open = Boolean.valueOf(request.getParameter("open"));
 		statement.setString(1, client);
-		statement.setString(2, broker);
-		statement.setString(3, user);
-		statement.setBoolean(4, open);
+		statement.setString(2, name);
+		statement.setString(3, broker);
+		statement.setString(4, user);
+		statement.setBoolean(5, open);
 	}
 	
 	@Override

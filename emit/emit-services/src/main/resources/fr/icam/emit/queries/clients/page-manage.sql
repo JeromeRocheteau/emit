@@ -1,5 +1,6 @@
 SELECT 
   c.`uuid` AS uuid,
+  c.`name` AS name,
   c.`broker` AS broker,
   s.`user` AS user,
   c.`open` AS open,

@@ -17,10 +17,11 @@ public class Pager extends fr.icam.emit.services.commons.UserPager<Broker> {
     	List<Broker> items = new LinkedList<Broker>();
     	while (resultSet.next()) {
     		String uri = resultSet.getString("uri");
+    		String name = resultSet.getString("name");
     		String user = resultSet.getString("user");
     		String username = resultSet.getString("username");
     		String password = resultSet.getString("password");
-    		Broker item = new Broker(uri, user, username, password);
+    		Broker item = new Broker(uri, name, user, username, password);
     		items.add(item);
     	}
     	return items;

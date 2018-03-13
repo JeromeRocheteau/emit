@@ -1,6 +1,7 @@
 package fr.icam.emit.clients;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -23,6 +25,7 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 
 import fr.icam.emit.entities.Action;
+import fr.icam.emit.entities.Broker;
 import fr.icam.emit.entities.Client;
 import fr.icam.emit.entities.Connect;
 import fr.icam.emit.entities.Message;
@@ -65,7 +68,7 @@ public class EmitClient {
 	
 	private int doUserAuth() throws Exception {
 		 HttpPost request = new HttpPost("/emit/j_security_check");
-         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+         List<NameValuePair> parameters = new ArrayList<NameValuePair>(2);
          parameters.add(new BasicNameValuePair("j_username", credentials.getUserName()));
          parameters.add(new BasicNameValuePair("j_password", credentials.getPassword()));
          request.setEntity(new UrlEncodedFormEntity(parameters));
@@ -89,12 +92,84 @@ public class EmitClient {
 
 	public Boolean doUserUpdate(String password) throws Exception {
 		 HttpPost request = new HttpPost("/emit/user/update");
-         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+         List<NameValuePair> parameters = new ArrayList<NameValuePair>(2);
          parameters.add(new BasicNameValuePair("password", password));
          parameters.add(new BasicNameValuePair("confirmPassword", password));
          request.setEntity(new UrlEncodedFormEntity(parameters));
          return this.getBoolean(request);
 	}
+	
+	/* brokers */
+	
+	public Integer getBrokerSize() throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/brokers/size");
+        HttpGet request = new HttpGet(builder.build());
+        return this.getSize(request);
+	}
+	
+	public List<Broker> getBrokerPage(Integer offset, Integer length) throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/brokers/page");
+		builder.addParameter("offset", offset.toString());
+		builder.addParameter("length", length.toString());
+        HttpGet request = new HttpGet(builder.build());
+        return this.getList(Broker[].class, request);
+	}
+	
+	public List<Broker> getBrokerList() throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/brokers/list");
+        HttpGet request = new HttpGet(builder.build());
+        return this.getList(Broker[].class, request);
+	}
+	
+	public Integer doBrokerCreate(String name, URI uri) throws Exception {
+        HttpPost request = new HttpPost("/emit/brokers/create");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(2);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("uri", uri.toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doBrokerCreate(String name, URI uri, String username, String password) throws Exception {
+        HttpPost request = new HttpPost("/emit/brokers/create");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("uri", uri.toString()));
+        parameters.add(new BasicNameValuePair("username", username));
+        parameters.add(new BasicNameValuePair("password", password));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doBrokerUpdate(String name, URI uri) throws Exception {
+        HttpPost request = new HttpPost("/emit/brokers/update");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(2);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("uri", uri.toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doBrokerUpdate(String name, URI uri, String username, String password) throws Exception {
+        HttpPost request = new HttpPost("/emit/brokers/update");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("uri", uri.toString()));
+        parameters.add(new BasicNameValuePair("username", username));
+        parameters.add(new BasicNameValuePair("password", password));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doBrokerDelete(URI uri) throws Exception {
+        HttpPost request = new HttpPost("/emit/brokers/delete");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
+        parameters.add(new BasicNameValuePair("uri", uri.toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	/* end of brokers */
 	
 	public Integer getClientSize(Mode mode) throws Exception {
         HttpGet request = new HttpGet("/emit/clients/" + mode.toString().toLowerCase() + "/size");
@@ -223,6 +298,19 @@ public class EmitClient {
 		EntityUtils.consume(entity);
 		if (status == 200) {
 			return Boolean.valueOf(message);
+		} else {
+			throw new EmitClientException(status, message);
+		}
+	}
+	
+	private Integer getInteger(HttpRequestBase request) throws IOException, ClientProtocolException, EmitClientException {
+		HttpResponse response = client.execute(host, request);
+		HttpEntity entity = response.getEntity();
+		String message = EntityUtils.toString(entity);
+		int status = response.getStatusLine().getStatusCode();
+		EntityUtils.consume(entity);
+		if (status == 200) {
+			return Integer.valueOf(message);
 		} else {
 			throw new EmitClientException(status, message);
 		}

@@ -1,21 +1,56 @@
 package fr.icam.emit.tests;
 
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import fr.icam.emit.clients.EmitClient;
-import fr.icam.emit.clients.EmitClient.Mode;
-import fr.icam.emit.clients.EmitClientException;
-import fr.icam.emit.entities.Action;
-import fr.icam.emit.entities.Client;
-import fr.icam.emit.entities.Connect;
-import fr.icam.emit.entities.Message;
 
 public abstract class UserEmitClient {
 
     protected EmitClient api;
+    
+	private Properties properties;
+	
+	protected String getProperty(String name) {
+		return properties.getProperty(name);
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		properties = new Properties();
+		InputStream stream = this.getPropertyStream();
+		properties.load(stream);
+		String protocol = properties.getProperty("protocol");
+		String hostname = properties.getProperty("hostname");
+		int port = Integer.valueOf(properties.getProperty("port")).intValue();
+		String username = properties.getProperty("username");
+		String password = properties.getProperty("password");
+        api = new EmitClient(protocol, hostname, port, username, password);
+        api.setUp();
+	}
+
+	protected abstract InputStream getPropertyStream() throws IOException;
+
+	@After
+	public void tearDown() throws Exception {
+		api.tearDown();
+	}
+
+	@Test
+	public void username() throws Exception {
+		String expected = properties.getProperty("username");
+		String username = api.getUserName();
+		Assert.assertEquals(expected, username);
+		System.out.println("user name: " + username);
+	}
+    
+    /*
     
     @Test
 	public void doMonitoringClients() throws Exception {
@@ -137,5 +172,6 @@ public abstract class UserEmitClient {
 		return api.getConnect(client);
 	}
 
+	*/
 	
 }

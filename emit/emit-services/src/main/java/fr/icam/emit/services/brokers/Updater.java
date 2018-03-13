@@ -1,6 +1,7 @@
 package fr.icam.emit.services.brokers;
 
 import java.io.IOException;
+import java.net.URI;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
@@ -24,18 +25,20 @@ public class Updater extends JdbcUpdateServlet<Integer> {
 	@Override
 	public void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		String user = request.getUserPrincipal().getName();
-		String uri = request.getParameter("uri");
+		String name = request.getParameter("name");
+		String uri = URI.create(request.getParameter("uri")).toString();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		statement.setString(1, name);
 		if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
-			statement.setNull(1, Types.VARCHAR);
 			statement.setNull(2, Types.VARCHAR);
+			statement.setNull(3, Types.VARCHAR);
 		} else {
-			statement.setString(1, username);
-			statement.setString(2, password);
+			statement.setString(2, username);
+			statement.setString(3, password);
 		}
-		statement.setString(3, uri);
-		statement.setString(4, user);		
+		statement.setString(4, uri);
+		statement.setString(5, user);		
 	}
 	
 	@Override

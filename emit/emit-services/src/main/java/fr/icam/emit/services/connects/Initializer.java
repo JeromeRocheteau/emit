@@ -57,10 +57,11 @@ public class Initializer extends fr.icam.emit.services.commons.Lister<Connect> {
     			password = null;
     		}
     		String clientUuid = resultSet.getString("clientUuid");
+    		String clientName = resultSet.getString("clientName");
     		String clientBroker = resultSet.getString("clientBroker");
     		String clientUser = resultSet.getString("clientUser");
 			  Boolean clientOpen = resultSet.getBoolean("clientOpen");
-    		Client client = new Client(clientUuid, clientBroker, clientUser, clientOpen);
+    		Client client = new Client(clientUuid, clientName, clientBroker, clientUser, clientOpen);
     		Connect item = new Connect(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, username, password, client);
     		items.add(item);
     	}

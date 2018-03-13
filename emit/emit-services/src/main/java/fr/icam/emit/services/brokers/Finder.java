@@ -35,10 +35,11 @@ public class Finder extends JdbcQueryServlet<Broker> {
     	Broker item = null;
     	if (resultSet.next()) {
     		String uri = resultSet.getString("uri");
+    		String name = resultSet.getString("name");
     		String user = resultSet.getString("user");
     		String username = resultSet.getString("username");
     		String password = resultSet.getString("password");
-    		item = new Broker(uri, user, username, password);
+    		item = new Broker(uri, name, user, username, password);
     	}
     	return item;
     }
