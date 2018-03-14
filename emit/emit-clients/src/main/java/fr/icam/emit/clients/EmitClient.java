@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -171,6 +172,53 @@ public class EmitClient {
 	
 	/* end of brokers */
 	
+	/* clients */
+	
+	public Integer getClientSize() throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/clients/size");
+        HttpGet request = new HttpGet(builder.build());
+        return this.getSize(request);
+	}
+	
+	public List<Client> getClientPage(Integer offset, Integer length) throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/clients/page");
+		builder.addParameter("offset", offset.toString());
+		builder.addParameter("length", length.toString());
+        HttpGet request = new HttpGet(builder.build());
+        return this.getList(Client[].class, request);
+	}
+	
+	public UUID doClientCreate(String name, Broker broker, Boolean visibility) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/create");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(3);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("broker", broker.getUri()));
+        parameters.add(new BasicNameValuePair("open", visibility.toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getUUID(request);
+	}
+	
+	public Integer doClientUpdate(UUID uuid, String name, Broker broker, Boolean visibility) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/update");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
+        parameters.add(new BasicNameValuePair("uuid", uuid.toString()));
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("broker", broker.getUri()));
+        parameters.add(new BasicNameValuePair("open", visibility.toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doClientDelete(UUID uuid) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/delete");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
+        parameters.add(new BasicNameValuePair("uuid", uuid.toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	/* end of clients */
+	
 	public Integer getClientSize(Mode mode) throws Exception {
         HttpGet request = new HttpGet("/emit/clients/" + mode.toString().toLowerCase() + "/size");
         return this.getSize(request);
@@ -314,6 +362,10 @@ public class EmitClient {
 		} else {
 			throw new EmitClientException(status, message);
 		}
+	}
+
+	private UUID getUUID(HttpRequestBase request) throws IOException, ClientProtocolException, EmitClientException {
+		return UUID.fromString(this.getString(request));
 	}
 
 	private String getString(HttpRequestBase request) throws IOException, ClientProtocolException, EmitClientException {

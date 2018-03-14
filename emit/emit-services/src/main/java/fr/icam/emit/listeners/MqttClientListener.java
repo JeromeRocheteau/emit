@@ -20,6 +20,7 @@ import com.mongodb.client.MongoDatabase;
 
 import fr.icam.emit.callbacks.EmitMqttCallback;
 import fr.icam.emit.callbacks.MqttCallbackWrapper;
+import fr.icam.emit.entities.Broker;
 
 public class MqttClientListener implements ServletContextListener {
 	

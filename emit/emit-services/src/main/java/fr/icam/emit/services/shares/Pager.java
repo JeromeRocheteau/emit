@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.icam.emit.entities.Broker;
 import fr.icam.emit.entities.Share;
 
 public class Pager extends fr.icam.emit.services.commons.UserPager<Share> {
@@ -18,10 +19,13 @@ public class Pager extends fr.icam.emit.services.commons.UserPager<Share> {
     	while (resultSet.next()) {
     		String uuid = resultSet.getString("uuid");
     		String name = resultSet.getString("name");
-    		String broker = resultSet.getString("broker");
     		String user = resultSet.getString("user");
     		Boolean open = resultSet.getBoolean("open");
     		Boolean control = resultSet.getBoolean("control");
+    		String brokerUri = resultSet.getString("brokerUri");
+    		String brokerName = resultSet.getString("brokername");
+    		String brokerUser = resultSet.getString("brokerUser");
+    		Broker broker = new Broker(brokerUri, brokerName, brokerUser, null, null);
     		if (resultSet.wasNull()) {
     			control = null;
     		}

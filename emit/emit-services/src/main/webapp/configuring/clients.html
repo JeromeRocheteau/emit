@@ -96,8 +96,8 @@
             <li class="list-group-item" ng-repeat="item in x1.items">
               <p class="list-group-item-text text-right">
               </p>
-              <h4 class="list-group-item-heading">{{item.uuid}}</h4>
-              <p class="list-group-item-text">{{item.broker}}</p>
+              <h4 class="list-group-item-heading">{{item.name}}</h4>
+              <p class="list-group-item-text">{{item.broker.name}} <small>{{item.broker.uri}}</small></p>
               <p class="list-group-item-text">{{item.user}}</p>
               <p class="list-group-item-text text-right">
                 <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Edit</button>
@@ -132,10 +132,22 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
+                  <input type="text" class="form-control" id="client.name" ng-model="x1.item.name" placeholder="Name">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <select class="form-control" id="client.broker" ng-model="x1.item.broker" ng-options="option as option.name for option in x0.items" ng-required="true" required>
+                    <option value="" disabled selected>Broker</option>
+                  </select>
+                  <!-- 
                   <input list="brokers" type="text" class="form-control" id="client.broker" ng-model="x1.item.broker" placeholder="Broker" ng-required="true" required>
                   <datalist id="brokers">
                     <option data-ng-repeat="item in x0.items" value="{{item}}">
                   </datalist>
+                   -->
                 </div>
               </div>
             </div>
@@ -305,7 +317,7 @@
     }
 
     $scope.x1.doCreate = function() {
-      var content = "broker=" + $scope.x1.item.broker + "&open=" + $scope.x1.item.open;
+      var content = "name=" + $scope.x1.item.name + "&broker=" + $scope.x1.item.broker.uri + "&open=" + $scope.x1.item.open;
       $http({method:'POST',url:'../clients/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The new client has been sucessfully created.");
@@ -319,7 +331,7 @@
     }
 
     $scope.x1.doUpdate = function() {
-      var content = "uuid=" + $scope.x1.item.uuid + "&broker=" + $scope.x1.item.broker + "&open=" + $scope.x1.item.open;
+      var content = "uuid=" + $scope.x1.item.uuid + "&name=" + $scope.x1.item.name + "&broker=" + $scope.x1.item.broker.uri + "&open=" + $scope.x1.item.open;
       $http({method:'POST',url:'../clients/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully updated.");

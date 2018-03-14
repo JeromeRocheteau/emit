@@ -1,7 +1,10 @@
 SELECT 
   c.`uuid` AS uuid,
   c.`name` AS name,
-  c.`broker` AS broker,
   c.`user` AS user,
-  c.`open` AS open 
-FROM `clients` c;
+  c.`open` AS open,
+  b.`uri` AS brokerUri,
+  b.`name` AS brokerName,
+  b.`user` AS brokerUser
+FROM `clients` c
+INNER JOIN `brokers`b ON b.`uri` = c.`broker`;

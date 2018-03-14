@@ -16,8 +16,8 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		Integer count = this.doProcess(request);
-		this.doWrite(count, response.getWriter());
+		/* Integer count = */ this.doProcess(request);
+		// this.doWrite(count, response.getWriter());
 	}
 	
 	@Override

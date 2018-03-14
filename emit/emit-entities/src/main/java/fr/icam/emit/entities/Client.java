@@ -6,7 +6,7 @@ public class Client {
 
 	private String name;
 	
-	private String broker;
+	private Broker broker;
 
 	private String user;
 	
@@ -20,7 +20,7 @@ public class Client {
 		return name;
 	}
 
-	public String getBroker() {
+	public Broker getBroker() {
 		return broker;
 	}
 
@@ -32,7 +32,7 @@ public class Client {
 		return open;
 	}
 
-	public Client(String uuid, String name, String broker, String user, Boolean open) {
+	public Client(String uuid, String name, Broker broker, String user, Boolean open) {
 		super();
 		this.uuid = uuid;
 		this.name = name;

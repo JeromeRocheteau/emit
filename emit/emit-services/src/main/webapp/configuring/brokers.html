@@ -96,7 +96,8 @@
             <li class="list-group-item" ng-repeat="item in x1.items">
               <p class="list-group-item-text text-right">
               </p>
-              <h4 class="list-group-item-heading">{{item.uri}}</h4>
+              <h4 class="list-group-item-heading">{{item.name}}</h4>
+              <p class="list-group-item-text">{{item.uri}}</p>
               <p class="list-group-item-text" ng-show="item.username">{{item.username}}</p>
               <p class="list-group-item-text text-right">
                 <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Edit</button>
@@ -117,7 +118,7 @@
             <div class="row" ng-hide="x1.updating">
               <div class="col-md-12">
                 <div class="form-group">
-                  <input type="text" class="form-control" id="broker.uri" ng-model="x1.item.uri" placeholder="Unique Remote Identifier " ng-required="true" required>
+                  <input type="text" class="form-control" id="broker.uri" ng-model="x1.item.uri" placeholder="Hostname" ng-required="true" required>
                 </div>
               </div>
             </div>
@@ -125,6 +126,13 @@
               <div class="col-md-12">
                 <div class="form-group">
                   <input type="text" class="form-control" id="broker.uri" ng-model="x1.item.uri" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="broker.name" ng-model="x1.item.name" placeholder="Name">
                 </div>
               </div>
             </div>
@@ -285,7 +293,7 @@
     }
 
     $scope.x1.doCreate = function() {
-      var content = "uri=" + $scope.x1.item.uri + ($scope.x1.item.username ? "&username=" + $scope.x1.item.username : "") + ($scope.x1.item.password ? "&password=" + $scope.x1.item.password : "");
+      var content = "uri=" + $scope.x1.item.uri + "&name=" + $scope.x1.item.name + ($scope.x1.item.username ? "&username=" + $scope.x1.item.username : "") + ($scope.x1.item.password ? "&password=" + $scope.x1.item.password : "");
       $http({method:'POST',url:'../brokers/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The new broker has been sucessfully created.");
@@ -299,7 +307,7 @@
     }
 
     $scope.x1.doUpdate = function() {
-      var content = "uri=" + $scope.x1.item.uri + ($scope.x1.item.username ? "&username=" + $scope.x1.item.username : "") + ($scope.x1.item.password ? "&password=" + $scope.x1.item.password : "");
+      var content = "uri=" + $scope.x1.item.uri + "&name=" + $scope.x1.item.name + ($scope.x1.item.username ? "&username=" + $scope.x1.item.username : "") + ($scope.x1.item.password ? "&password=" + $scope.x1.item.password : "");
       $http({method:'POST',url:'../brokers/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The broker " + $scope.x1.item.uri + " has been sucessfully updated.");

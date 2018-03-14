@@ -1,9 +1,12 @@
 SELECT 
   c.`uuid` AS uuid,
   c.`name` AS name,
-  c.`broker` AS broker,
   c.`user` AS user,
-  c.`open` AS open
+  c.`open` AS open,
+  b.`uri` AS brokerUri,
+  b.`name` AS brokerName,
+  b.`user` AS brokerUser
 FROM `clients` c
-WHERE c.`user` = ?
+INNER JOIN `brokers`b ON b.`uri` = c.`broker`
+WHERE c.`user` = ? AND b.`user`= c.`user`
 LIMIT ?,?;

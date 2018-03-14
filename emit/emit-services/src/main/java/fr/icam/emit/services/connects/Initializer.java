@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import fr.icam.emit.entities.Broker;
 import fr.icam.emit.entities.Client;
 import fr.icam.emit.entities.Connect;
 import fr.icam.emit.listeners.MqttClientListener;
@@ -58,10 +59,13 @@ public class Initializer extends fr.icam.emit.services.commons.Lister<Connect> {
     		}
     		String clientUuid = resultSet.getString("clientUuid");
     		String clientName = resultSet.getString("clientName");
-    		String clientBroker = resultSet.getString("clientBroker");
     		String clientUser = resultSet.getString("clientUser");
 			  Boolean clientOpen = resultSet.getBoolean("clientOpen");
-    		Client client = new Client(clientUuid, clientName, clientBroker, clientUser, clientOpen);
+			  String brokerUri = resultSet.getString("brokerUri");
+			  String brokerName = resultSet.getString("brokername");
+			  String brokerUser = resultSet.getString("brokerUser");
+			  Broker broker = new Broker(brokerUri, brokerName, brokerUser, null, null);
+    		Client client = new Client(clientUuid, clientName, broker, clientUser, clientOpen);
     		Connect item = new Connect(id, started.getTime(), stopped == null ? null : stopped.getTime(), user, username, password, client);
     		items.add(item);
     	}

@@ -8,7 +8,7 @@ public class Share extends Client {
 		return control;
 	}
 	
-	public Share(String uuid, String name, String broker, String user, Boolean open, Boolean control) {
+	public Share(String uuid, String name, Broker broker, String user, Boolean open, Boolean control) {
 		super(uuid, name, broker, user, open);
 		this.control = control;
 	}

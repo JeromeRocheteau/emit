@@ -38,7 +38,8 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 			this.doCall(request, response, "share-create");
 			this.doCall(request, response, "share-update");
 		}
-		this.doWrite(count, response.getWriter());
+		String uuid = (String) request.getAttribute("client");
+		this.doWrite(uuid, response.getWriter());
 	}
 
 	private void doCreate(HttpServletRequest request) throws Exception {
