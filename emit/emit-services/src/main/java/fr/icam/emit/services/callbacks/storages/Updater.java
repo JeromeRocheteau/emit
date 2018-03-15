@@ -1,4 +1,4 @@
-package fr.icam.emit.services.callbacks.features;
+package fr.icam.emit.services.callbacks.storages;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 
 public class Updater extends JdbcUpdateServlet<Integer> {
 
-	private static final long serialVersionUID = 201711160900004L;
+	private static final long serialVersionUID = 201803151145004L;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -24,13 +24,9 @@ public class Updater extends JdbcUpdateServlet<Integer> {
 	@Override
 	public void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		Long id = Long.valueOf(request.getParameter("id"));
-		String symbol = request.getParameter("symbol");
-		String type = request.getParameter("type");
-		String value = request.getParameter("value");
-		statement.setString(1, symbol);
-		statement.setString(2, type);
-		statement.setString(3, value);
-		statement.setLong(4, id);
+		String collection = request.getParameter("collection");
+		statement.setString(1, collection);
+		statement.setLong(2, id);
 	}
 	
 	@Override

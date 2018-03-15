@@ -43,10 +43,10 @@ public class Connected extends JdbcQueryServlet<List<fr.icam.emit.entities.Conne
 					connect.setPassword(null);
 					this.doWrite(connect, response.getWriter());
 				} else {
-					throw new IllegalStateException(uuid);	
+					throw new IllegalStateException("state conflict for '" + uuid +"' MQTT client");	
 				}
 			} else {
-				throw new IllegalStateException(uuid + ": " + connects.size());
+				throw new IllegalStateException("too many connections for '" + uuid + "' MQTT client: " + connects.size());
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
@@ -65,10 +65,10 @@ public class Connected extends JdbcQueryServlet<List<fr.icam.emit.entities.Conne
 				if (listener.isConnected(uuid)) {
 					request.setAttribute("connected", connect.getStopped() == null);
 				} else {
-					throw new IllegalStateException(uuid);
+					throw new IllegalStateException("state conflict for '" + uuid +"' MQTT client");
 				}
 			} else {
-				throw new IllegalStateException(uuid + ": " + connects.size());
+				throw new IllegalStateException("too many connections for '" + uuid + "' MQTT client: " + connects.size());
 			}
 			
 		} catch (Exception e) {

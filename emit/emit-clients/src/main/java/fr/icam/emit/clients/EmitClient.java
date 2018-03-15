@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,15 +26,23 @@ import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
 
-import fr.icam.emit.entities.Action;
 import fr.icam.emit.entities.Broker;
+import fr.icam.emit.entities.Callback;
 import fr.icam.emit.entities.Client;
 import fr.icam.emit.entities.Connect;
-import fr.icam.emit.entities.Message;
+import fr.icam.emit.entities.Subscribe;
 
 public class EmitClient {
 
 	public enum Mode {MONITORING, REPORTING, FOLLOWING, MANAGING, HANDLING};
+	
+	public enum Type {STRING, BOOLEAN, INTEGER, LONG, FLOAT, DOUBLE, DATE, UUID, URI};
+	
+	public enum Symbol {EQ, NEQ, LT, LEQ, GT, GEQ};
+	
+	private enum Category {TYPE, TOPIC, STORAGE, FEATURE, GUARD};
+	
+	public enum Collection {MESSAGES, FAILURES};
 	
 	private Gson mapper;
 	
@@ -42,6 +51,30 @@ public class EmitClient {
     private CloseableHttpClient client;
 	
     private UsernamePasswordCredentials credentials;
+    
+    private Type getType(Class<?> clazz) throws Exception {
+    	if (URI.class.isAssignableFrom(clazz)) {
+    		return Type.URI;
+    	} else if (UUID.class.isAssignableFrom(clazz)) {
+    		return Type.UUID;
+    	} else if (Date.class.isAssignableFrom(clazz)) {
+    		return Type.DATE;
+    	} else if (String.class.isAssignableFrom(clazz)) {
+    		return Type.STRING;
+    	} else if (Boolean.class.isAssignableFrom(clazz)) {
+    		return Type.BOOLEAN;
+    	} else if (Integer.class.isAssignableFrom(clazz)) {
+    		return Type.INTEGER;
+    	} else if (Long.class.isAssignableFrom(clazz)) {
+    		return Type.LONG;
+    	} else if (Float.class.isAssignableFrom(clazz)) {
+    		return Type.FLOAT;
+    	} else if (Double.class.isAssignableFrom(clazz)) {
+    		return Type.DOUBLE;
+    	} else {
+    		throw new Exception("unknown type from class '" + clazz.getCanonicalName() + "'");
+    	}
+    }
     
 	public EmitClient(String protocol, String hostname, int port, String username, String password) {
 		mapper = new Gson();
@@ -188,6 +221,13 @@ public class EmitClient {
         return this.getList(Client[].class, request);
 	}
 	
+	public Client getClient(UUID uuid) throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/clients/find");
+		builder.addParameter("offset", uuid.toString());
+        HttpGet request = new HttpGet(builder.build());
+        return this.getObject(Client.class, request);
+	}
+	
 	public UUID doClientCreate(String name, Broker broker, Boolean visibility) throws Exception {
         HttpPost request = new HttpPost("/emit/clients/create");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(3);
@@ -219,6 +259,291 @@ public class EmitClient {
 	
 	/* end of clients */
 	
+	/* callbacks */
+
+	public Integer getCallbackSize() throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/callbacks/size");
+        HttpGet request = new HttpGet(builder.build());
+        return this.getSize(request);
+	}
+	
+	public List<Callback> getCallbackList() throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/callbacks/list");
+        HttpGet request = new HttpGet(builder.build());
+        return this.getList(Callback[].class, request);
+	}
+	
+	public List<Callback> getCallbackPage(Integer offset, Integer length) throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/callbacks/page");
+		builder.addParameter("offset", offset.toString());
+		builder.addParameter("length", length.toString());
+        HttpGet request = new HttpGet(builder.build());
+        return this.getList(Callback[].class, request);
+	}
+	
+	public Integer doTypeCallbackCreate(String name, Type type) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/create/type");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.TYPE.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("type", type.toString().toLowerCase()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doTypeCallbackUpdate(Long id, String name, Type type) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/update/type");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(5);
+        parameters.add(new BasicNameValuePair("id", id.toString()));
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.TYPE.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("type", type.toString().toLowerCase()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doTopicCallbackCreate(String name, String topic) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/create/topic");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.TOPIC.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("topic", topic));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doTopicCallbackUpdate(Long id, String name, String topic) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/update/topic");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(5);
+        parameters.add(new BasicNameValuePair("id", id.toString()));
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.TOPIC.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("topic", topic));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doStorageCallbackCreate(String name, Collection collection) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/create/storage");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.STORAGE.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("collection", collection.toString().toLowerCase()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doStorageCallbackUpdate(Long id, String name, Collection collection) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/update/storage");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(5);
+        parameters.add(new BasicNameValuePair("id", id.toString()));
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.STORAGE.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("collection", collection.toString().toLowerCase()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public <T> Integer doFeatureCallbackCreate(String name, Symbol symbol, Class<T> type, T value) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/create/feature");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(6);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.FEATURE.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("symbol", symbol.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("type", this.getType(type).toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("value", value.toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public <T> Integer doFeatureCallbackUpdate(Long id, String name, Symbol symbol, Class<T> type, T value) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/update/feature");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(7);
+        parameters.add(new BasicNameValuePair("id", id.toString()));
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.FEATURE.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("symbol", symbol.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("type", this.getType(type).toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("value", value.toString()));        
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public <T> Integer doGuardCallbackCreate(String name, Callback testCallback, Callback successCallback) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/create/guard");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(5);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.GUARD.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("test", testCallback.getId().toString()));
+        parameters.add(new BasicNameValuePair("success", successCallback.getId().toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public <T> Integer doGuardCallbackCreate(String name, Callback testCallback, Callback successCallback, Callback failureCallback) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/create/guard");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(6);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.GUARD.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("test", testCallback.getId().toString()));
+        parameters.add(new BasicNameValuePair("success", successCallback.getId().toString()));
+        parameters.add(new BasicNameValuePair("failure", failureCallback.getId().toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public <T> Integer doGuardCallbackUpdate(Long id, String name, Callback testCallback, Callback successCallback) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/update/guard");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(6);
+        parameters.add(new BasicNameValuePair("id", id.toString()));
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.GUARD.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("test", testCallback.getId().toString()));
+        parameters.add(new BasicNameValuePair("success", successCallback.getId().toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public <T> Integer doGuardCallbackUpdate(Long id, String name, Callback testCallback, Callback successCallback, Callback failureCallback) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/update/guard");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(7);
+        parameters.add(new BasicNameValuePair("id", id.toString()));
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.GUARD.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("test", testCallback.getId().toString()));
+        parameters.add(new BasicNameValuePair("success", successCallback.getId().toString()));
+        parameters.add(new BasicNameValuePair("failure", failureCallback.getId().toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Boolean doCallbackDelete(Long id) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/delete");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
+        parameters.add(new BasicNameValuePair("id", id.toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getBoolean(request);
+	}
+	
+	/* end of callbacks */
+	
+	/* clients & callbacks */
+	
+	public Integer doAttach(Client client, Callback callback) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/callbacks/attach");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(3);
+        parameters.add(new BasicNameValuePair("uuid", client.getUuid()));
+        parameters.add(new BasicNameValuePair("id", callback.getId().toString()));
+        parameters.add(new BasicNameValuePair("category", callback.getCategory()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doDetach(Client client) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/callbacks/detach");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
+        parameters.add(new BasicNameValuePair("uuid", client.getUuid()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Callback isAttached(Client client) throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/clients/callbacks/attached");
+		builder.addParameter("uuid", client.getUuid());
+        HttpGet request = new HttpGet(builder.build());
+        return this.getObject(Callback.class, request);
+	}
+	
+	/* end of clients & callbacks */
+	
+	/* client connections */
+	
+	public Integer doConnect(Client client) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/connect");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
+        parameters.add(new BasicNameValuePair("client", client.getUuid()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doDisconnect(Client client) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/disconnect");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
+        parameters.add(new BasicNameValuePair("client", client.getUuid()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Connect isConnected(Client client) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/connected");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
+        parameters.add(new BasicNameValuePair("client", client.getUuid()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getObject(Connect.class, request);
+	}
+	
+	/* end of client connections */
+	
+	/* client subscriptions */
+	
+	public Integer doSubscribe(Client client, String topic) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/subscribe");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(2);
+        parameters.add(new BasicNameValuePair("client", client.getUuid()));
+        parameters.add(new BasicNameValuePair("topic", topic));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Integer doUnsubscribe(Client client, String topic) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/unsubscribe");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(2);
+        parameters.add(new BasicNameValuePair("client", client.getUuid()));
+        parameters.add(new BasicNameValuePair("topic", topic));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Subscribe isSubscribing(Client client) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/subscribing");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
+        parameters.add(new BasicNameValuePair("client", client.getUuid()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getObject(Subscribe.class, request);
+	}
+	
+	/* end of client subscriptions */
+	
+	/* client publications */
+	
+	public Integer doPublish(Client client, String topic, int qos, boolean retained, boolean persisted, byte[] payload) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/publish");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(6);
+        parameters.add(new BasicNameValuePair("client", client.getUuid()));
+        parameters.add(new BasicNameValuePair("topic", topic));
+        parameters.add(new BasicNameValuePair("qos", Integer.valueOf(qos).toString()));
+        parameters.add(new BasicNameValuePair("retained", Boolean.valueOf(retained).toString()));
+        parameters.add(new BasicNameValuePair("persisted", Boolean.valueOf(persisted).toString()));
+        parameters.add(new BasicNameValuePair("payload", new String(payload)));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	/* end of client publications */
+	
+	/*
 	public Integer getClientSize(Mode mode) throws Exception {
         HttpGet request = new HttpGet("/emit/clients/" + mode.toString().toLowerCase() + "/size");
         return this.getSize(request);
@@ -276,6 +601,7 @@ public class EmitClient {
          request.setEntity(new UrlEncodedFormEntity(parameters));
          return this.getBoolean(request);
 	}
+	*/
 	
 	/*
       <url-pattern>/clients/subscribing</url-pattern>
@@ -287,19 +613,13 @@ public class EmitClient {
       <url-pattern>/clients/shares/update</url-pattern>
       <url-pattern>/clients/shares/delete</url-pattern>
       <url-pattern>/clients/shares/remove</url-pattern>
-      <url-pattern>/topics/roots/list</url-pattern>
-      <url-pattern>/topics/leafs/list</url-pattern>
-      <url-pattern>/topics/nodes/list</url-pattern>
       <url-pattern>/clients/callbacks/list</url-pattern>
       <url-pattern>/clients/callbacks/item</url-pattern>
       <url-pattern>/clients/callbacks/attach</url-pattern>
       <url-pattern>/clients/callbacks/detach</url-pattern>
-      <url-pattern>/tokens/item</url-pattern>
-      <url-pattern>/tokens/create</url-pattern>
-      <url-pattern>/tokens/delete</url-pattern>
 	 * */
 
-	private Integer getSize(HttpGet request) throws IOException, ClientProtocolException, EmitClientException {
+	private Integer getSize(HttpRequestBase request) throws IOException, ClientProtocolException, EmitClientException {
 		HttpResponse response = client.execute(host, request);
         HttpEntity entity = response.getEntity();
         String message = EntityUtils.toString(entity);
@@ -312,7 +632,7 @@ public class EmitClient {
         }
 	}
 
-	private <T> T getObject(Class<T> type, HttpGet request) throws IOException, ClientProtocolException, EmitClientException {
+	private <T> T getObject(Class<T> type, HttpRequestBase request) throws IOException, ClientProtocolException, EmitClientException {
 		HttpResponse response = client.execute(host, request);
         HttpEntity entity = response.getEntity();
         String message = EntityUtils.toString(entity);
@@ -325,7 +645,7 @@ public class EmitClient {
         }
 	}
 	
-	private <T> List<T> getList(Class<T[]> type, HttpGet request) throws IOException, ClientProtocolException, EmitClientException {
+	private <T> List<T> getList(Class<T[]> type, HttpRequestBase request) throws IOException, ClientProtocolException, EmitClientException {
 		HttpResponse response = client.execute(host, request);
         HttpEntity entity = response.getEntity();
         String message = EntityUtils.toString(entity);

@@ -41,6 +41,7 @@ public class Finder extends JdbcQueryServlet<TypeCallback> {
     	TypeCallback item = null;
     	if (resultSet.next()) {
     		Long id = resultSet.getLong("id");
+    		String name = resultSet.getString("name");
     		Boolean atomic = resultSet.getBoolean("atomic");
     		String category = resultSet.getString("category");
     		Timestamp issued = resultSet.getTimestamp("issued");
@@ -48,7 +49,7 @@ public class Finder extends JdbcQueryServlet<TypeCallback> {
     		String typeName = resultSet.getString("typeName");
     		String typeCategory = resultSet.getString("typeCategory");
     		Type type = new Type(typeName, typeCategory);
-    		item = new TypeCallback(id, issued.getTime(), user, atomic, category, type);
+    		item = new TypeCallback(id, name, issued.getTime(), user, atomic, category, type);
     	}
     	return item;
     }

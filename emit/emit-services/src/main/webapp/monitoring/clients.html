@@ -96,8 +96,8 @@
             <li class="list-group-item" ng-repeat="item in x1.items">
               <p class="list-group-item-text text-right">
               </p>
-              <h4 class="list-group-item-heading">{{item.uuid}}</h4>
-              <p class="list-group-item-text">broker: {{item.broker}}</p>
+              <h4 class="list-group-item-heading">{{item.name}}</h4>
+              <p class="list-group-item-text">broker: {{item.broker.name}}</p>
               <p class="list-group-item-text">owner: {{item.user}}</p>
               <p class="list-group-item-text text-right">
                 <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Select</button>
@@ -110,7 +110,7 @@
       <div class="col-md-6">
         <div class="panel panel-default" ng-show="x1.item">
           <div class="panel-heading">
-            <h3 class="panel-title">{{x1.item.uuid}}</h3>
+            <h3 class="panel-title">{{x1.item.name}}</h3>
           </div>
           <div class="panel-body">
             <h4>Callback</h4>
@@ -130,13 +130,13 @@
             </div>
             <h4>Connection</h4>
             <div ng-hide="x1.item.connect">
-              <p>not connected to {{x1.item.broker}}</p>
+              <p>not connected to {{x1.item.broker.name}}</p>
               <p class="text-right">
                 <button class="btn btn-default btn-md" ng-click="x1.doConnect()">Connect</button>
               </p>
             </div>
             <div ng-show="x1.item.connect">
-              <p>connected to {{x1.item.broker}}</p>
+              <p>connected to {{x1.item.broker.name}}</p>
               <p>connected at {{x1.item.connect.started | date : "yyyy-MM-dd HH:mm:ss"}}</p>
               <p>connected by {{x1.item.connect.user}}</p>
               <p class="text-right">
@@ -164,35 +164,46 @@
               </div>
               <h4>Publication</h4>
               <form class="form" role="form" name="publication">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="client.topic" ng-model="x1.item.topic" placeholder="topic" ng-required="true" required>
-                </div>
                 <div class="">
-                  <div class="row">
-                    <div class="col-md-6 form-group">
-                      <select class="form-control" ng-model="x1.item.qos" ng-required="true" required>
-                        <option value="0">0 - at most once</option>
-                        <option value="1" ng-selected="x1.item">1 - at least once</option>
-                        <option value="2">2 - exactly once</option>
-                      </select>
-                      <p class="help-block">QoS (quality of service level)</p>
-                    </div>
-                    <div class="col-md-6 form-group">
-                      <select class="form-control" ng-model="x1.item.retained" ng-required="true" required>
-                        <option value="false" ng-selected="x1.item">no</option>
-                        <option value="true">yes</option>
-                      </select>
-                      <p class="help-block">Do broker retain message?</p>
-                    </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="client.topic" ng-model="x1.item.topic" placeholder="topic" ng-required="true" required>
                   </div>
                 </div>
-                <div class="form-group">
-                  <input type="text" class="form-control" id="client.payload" ng-model="x1.item.payload" placeholder="message" ng-required="true" required>
+                <div class="row">
+                  <div class="col-md-4 form-group">
+                    <select class="form-control" ng-model="x1.item.qos" ng-required="true" required>
+                      <option value="0">0 - at most once</option>
+                      <option value="1" ng-selected="x1.item">1 - at least once</option>
+                      <option value="2">2 - exactly once</option>
+                    </select>
+                    <p class="help-block">QoS (quality of service level)</p>
+                  </div>
+                  <div class="col-md-4 form-group">
+                    <select class="form-control" ng-model="x1.item.retained" ng-required="true" required>
+                      <option value="false" ng-selected="x1.item">no</option>
+                      <option value="true">yes</option>
+                    </select>
+                    <p class="help-block">Do broker retain message?</p>
+                  </div>
+                  <div class="col-md-4 form-group">
+                    <select class="form-control" ng-model="x1.item.persisted" ng-required="true" required>
+                      <option value="false" ng-selected="x1.item">no</option>
+                      <option value="true">yes</option>
+                    </select>
+                    <p class="help-block">Do database persist message?</p>
+                  </div>
                 </div>
-                <p class="text-right">
-                  <button type="reset" class="btn btn-md">Reset</button>
-                  <button type="submit" class="btn btn-default btn-md" ng-click="x1.doPublish()" ng-disabled="!publication.$valid">Publish</button>
-                </p>
+                <div class="">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="client.payload" ng-model="x1.item.payload" placeholder="message" ng-required="true" required>
+                  </div>
+                </div>
+                <div class="">
+                  <p class="text-right">
+                    <button type="reset" class="btn btn-md">Reset</button>
+                    <button type="submit" class="btn btn-default btn-md" ng-click="x1.doPublish()" ng-disabled="!publication.$valid">Publish</button>
+                  </p>
+                </div>
               </form>
             </div>
           </div>
@@ -316,7 +327,7 @@
         $scope.x1.item.retained = false;
         connected($scope.x1.item);
         subscribing($scope.x1.item);
-        callback($scope.x1.item);
+        // callback($scope.x1.item);
       }
     }
     
@@ -414,7 +425,12 @@
     }
 
     $scope.x1.doPublish = function() {
-      var content = "client=" + $scope.x1.item.uuid + "&topic=" + $scope.x1.item.topic + "&qos=" + $scope.x1.item.qos + "&retained=" + $scope.x1.item.retained + "&payload=" + $scope.x1.item.payload;
+      var content = "client=" + $scope.x1.item.uuid 
+      + "&topic=" + $scope.x1.item.topic 
+      + "&qos=" + $scope.x1.item.qos 
+      + "&retained=" + $scope.x1.item.retained 
+      + "&persisted=" + $scope.x1.item.persisted 
+      + "&payload=" + $scope.x1.item.payload;
       $http({method:'POST',url:'../clients/publish',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
       .then(function onSuccess(response) {
         display("success", "The client " + $scope.x1.item.uuid + " has sucessfully published to topic '" + $scope.x1.item.topic + "'.");
@@ -454,7 +470,7 @@
     
     var callback = function(item) {
       var content = "uuid=" + item.uuid;
-      $http({method:'GET',url:'../clients/callbacks/item?' + content})
+      $http({method:'GET',url:'../clients/callbacks/attached?' + content})
       .then(function onSuccess(response) {
         item.callback = response.data;
         if (item.callback) {

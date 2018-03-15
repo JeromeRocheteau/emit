@@ -16,18 +16,20 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		Integer count = this.doProcess(request);
-		this.doWrite(count, response.getWriter());
+		/* Integer count = */ this.doProcess(request);
+		// this.doWrite(count, response.getWriter());
 	}
 
 	@Override
 	public void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		String user = request.getUserPrincipal().getName();
+		String name = request.getParameter("name");
 		Boolean atomic = Boolean.valueOf(request.getParameter("atomic"));
 		String category = request.getParameter("category");
-		statement.setBoolean(1, atomic);
-		statement.setString(2, category);
-		statement.setString(3, user);
+		statement.setString(1, name);
+		statement.setBoolean(2, atomic);
+		statement.setString(3, category);
+		statement.setString(4, user);
 	}
 	
 	@Override

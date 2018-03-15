@@ -6,9 +6,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import com.mongodb.client.MongoCollection;
 
-public class MessageMqttCallback extends MongoMqttCallback {
+public class StorageMqttCallback extends MongoMqttCallback {
 
-	public MessageMqttCallback(MongoCollection<Document> collection, String id) throws Exception {
+	public StorageMqttCallback(MongoCollection<Document> collection, String id) throws Exception {
 		super(collection, id);
 	}
 

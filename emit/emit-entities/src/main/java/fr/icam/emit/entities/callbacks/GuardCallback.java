@@ -22,8 +22,8 @@ public class GuardCallback extends Callback {
 		return failure;
 	}
 
-	public GuardCallback(Long id, Long issued, String user, Boolean atomic, String category, Callback test, Callback success, Callback failure) {
-		super("#" + id + " " + category + " callback: #" + test.getId() + " ? #" + success.getId() + " : " + (failure == null ? "∅" : " #" + failure.getId()), id, issued, user, atomic, category);
+	public GuardCallback(Long id, String name, Long issued, String user, Boolean atomic, String category, Callback test, Callback success, Callback failure) {
+		super(id, name, issued, user, atomic, category);
 		this.test = test;
 		this.success = success;
 		this.failure = failure;

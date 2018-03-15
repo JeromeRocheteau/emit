@@ -36,8 +36,8 @@ public class Builder extends JdbcServlet {
 			this.doCall(request, response, "topic-callback-item");
 		} else if (category.equals("feature")) {
 			this.doCall(request, response, "feature-callback-item");
-		} else if (category.equals("message")) {
-			this.doCall(request, response, "callback-item");
+		} else if (category.equals("storage")) {
+			this.doCall(request, response, "storage-callback-item");
 		} else {
 			throw new ServletException("undefined callback category '" + category + "'");
 		}

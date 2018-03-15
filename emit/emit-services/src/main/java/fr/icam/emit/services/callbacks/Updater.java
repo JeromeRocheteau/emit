@@ -1,4 +1,4 @@
-package fr.icam.emit.services.callbacks.features;
+package fr.icam.emit.services.callbacks;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -12,25 +12,26 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 
 public class Updater extends JdbcUpdateServlet<Integer> {
 
-	private static final long serialVersionUID = 201711160900004L;
+	private static final long serialVersionUID = 201711101212004L;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		this.doCall(request, response, "callback-update");
-		Integer count = this.doProcess(request);
-		this.doWrite(count, response.getWriter());
+		/* Integer count = */ this.doProcess(request);
+		// this.doWrite(count, response.getWriter());
 	}
 
 	@Override
 	public void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
+		String user = request.getUserPrincipal().getName();
 		Long id = Long.valueOf(request.getParameter("id"));
-		String symbol = request.getParameter("symbol");
-		String type = request.getParameter("type");
-		String value = request.getParameter("value");
-		statement.setString(1, symbol);
-		statement.setString(2, type);
-		statement.setString(3, value);
+		String name = request.getParameter("name");
+		Boolean atomic = Boolean.valueOf(request.getParameter("atomic"));
+		String category = request.getParameter("category");
+		statement.setString(1, name);
+		statement.setBoolean(2, atomic);
+		statement.setString(3, category);
 		statement.setLong(4, id);
+		statement.setString(5, user);
 	}
 	
 	@Override

@@ -10,8 +10,8 @@ public class TopicCallback extends Callback {
 		return topic;
 	}
 
-	public TopicCallback(Long id, Long issued, String user, Boolean atomic, String category, String topic) {
-		super("#" + id + " " + category + " callback: " + topic, id, issued, user, atomic, category);
+	public TopicCallback(Long id, String name, Long issued, String user, Boolean atomic, String category, String topic) {
+		super(id, name, issued, user, atomic, category);
 		this.topic = topic;
 	}
 

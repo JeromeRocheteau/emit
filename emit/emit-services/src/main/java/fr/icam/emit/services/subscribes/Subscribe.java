@@ -12,7 +12,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 
 import fr.icam.emit.listeners.MqttClientListener;
 
-public class Subscribe extends JdbcUpdateServlet<Boolean> {
+public class Subscribe extends JdbcUpdateServlet<Integer> {
 
 	private static final long serialVersionUID = 201710161616011L;
 
@@ -35,9 +35,9 @@ public class Subscribe extends JdbcUpdateServlet<Boolean> {
 				throw new IllegalStateException(uuid);
 			} else {
 				listener.doSubscribe(uuid, topic);
-				Boolean done = this.doProcess(request);
+				Integer count = this.doProcess(request);
 				this.doCall(request, response, "topic-create");
-				this.doWrite(done, response.getWriter());
+				this.doWrite(count, response.getWriter());
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
@@ -55,8 +55,8 @@ public class Subscribe extends JdbcUpdateServlet<Boolean> {
 	}
 
 	@Override
-	protected Boolean doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
-		return count > 0;
+	protected Integer doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
+		return count;
 	}
 
 }

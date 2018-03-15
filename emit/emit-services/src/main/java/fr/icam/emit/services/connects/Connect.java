@@ -13,7 +13,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 import fr.icam.emit.entities.Broker;
 import fr.icam.emit.listeners.MqttClientListener;
 
-public class Connect extends JdbcUpdateServlet<Boolean> {
+public class Connect extends JdbcUpdateServlet<Integer> {
 
 	private static final long serialVersionUID = 201710161616011L;
 
@@ -37,8 +37,8 @@ public class Connect extends JdbcUpdateServlet<Boolean> {
 				this.doCall(request, response, "broker-item");
 				Broker broker = (Broker) request.getAttribute("broker");
 				listener.doConnect(uuid, broker.getUsername() == null ? null : broker.getUsername(), broker.getPassword() == null ? null : broker.getPassword());
-				Boolean done = this.doProcess(request);
-				this.doWrite(done, response.getWriter());
+				Integer count = this.doProcess(request);
+				this.doWrite(count, response.getWriter());
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
@@ -54,8 +54,8 @@ public class Connect extends JdbcUpdateServlet<Boolean> {
 	}
 
 	@Override
-	protected Boolean doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
-		return count > 0;
+	protected Integer doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
+		return count;
 	}
 
 }

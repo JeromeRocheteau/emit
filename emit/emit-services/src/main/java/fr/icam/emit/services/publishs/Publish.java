@@ -12,7 +12,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 
 import fr.icam.emit.listeners.MqttClientListener;
 
-public class Publish extends JdbcUpdateServlet<Boolean> {
+public class Publish extends JdbcUpdateServlet<Integer> {
 
 	private static final long serialVersionUID = 201710161616011L;
 
@@ -36,11 +36,12 @@ public class Publish extends JdbcUpdateServlet<Boolean> {
 				throw new IllegalArgumentException(uuid + " qos: " + qos);
 			}
 			Boolean retained = Boolean.valueOf(request.getParameter("retained"));
+			Boolean persisted = Boolean.valueOf(request.getParameter("persisted"));
 			byte[] payload = request.getParameter("payload").getBytes();
-			listener.doPublish(uuid, topic, qos.intValue(), retained.booleanValue(), payload);
-			Boolean done = this.doProcess(request);
+			listener.doPublish(uuid, topic, qos.intValue(), retained.booleanValue(), persisted.booleanValue(), payload);
+			Integer count = this.doProcess(request);
 			this.doCall(request, response, "topic-create");
-			this.doWrite(done, response.getWriter());
+			this.doWrite(count, response.getWriter());
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}			
@@ -57,8 +58,8 @@ public class Publish extends JdbcUpdateServlet<Boolean> {
 	}
 
 	@Override
-	protected Boolean doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
-		return count > 0;
+	protected Integer doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
+		return count;
 	}
 
 }

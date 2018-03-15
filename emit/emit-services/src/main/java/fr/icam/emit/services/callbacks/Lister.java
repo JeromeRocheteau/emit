@@ -18,11 +18,12 @@ public class Lister extends fr.icam.emit.services.commons.UserLister<Callback> {
     	List<Callback> items = new LinkedList<Callback>();
     	while (resultSet.next()) {
     		Long id = resultSet.getLong("id");
+    		String name = resultSet.getString("name");
     		Boolean atomic = resultSet.getBoolean("atomic");
     		String category = resultSet.getString("category");
     		Timestamp issued = resultSet.getTimestamp("issued");
     		String user = resultSet.getString("user");
-    		Callback item = new Callback(id, issued.getTime(), user, atomic, category);
+    		Callback item = new Callback(id, name, issued.getTime(), user, atomic, category);
     		items.add(item);
     	}
     	return items;

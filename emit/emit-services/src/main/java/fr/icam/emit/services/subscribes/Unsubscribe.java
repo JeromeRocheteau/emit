@@ -12,7 +12,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 
 import fr.icam.emit.listeners.MqttClientListener;
 
-public class Unsubscribe extends JdbcUpdateServlet<Boolean> {
+public class Unsubscribe extends JdbcUpdateServlet<Integer> {
 
 	private static final long serialVersionUID = 201710161616012L;
 
@@ -33,7 +33,7 @@ public class Unsubscribe extends JdbcUpdateServlet<Boolean> {
 			Boolean subscribing = (Boolean) request.getAttribute("subscribing");
 			if (subscribing) {
 				listener.doUnsubscribe(uuid, topic);
-				Boolean done = this.doProcess(request);
+				Integer done = this.doProcess(request);
 				this.doWrite(done, response.getWriter());
 			} else {
 				throw new IllegalStateException(uuid);
@@ -50,8 +50,8 @@ public class Unsubscribe extends JdbcUpdateServlet<Boolean> {
 	}
 
 	@Override
-	protected Boolean doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
-		return count > 0;
+	protected Integer doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
+		return count;
 	}
 
 }

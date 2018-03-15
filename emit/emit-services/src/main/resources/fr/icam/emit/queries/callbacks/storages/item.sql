@@ -5,7 +5,7 @@ SELECT
   c.`category` AS category, 
   c.`issued` AS issued, 
   c.`user` AS user, 
-  tc.`topic` AS topic
-FROM `topic_callbacks` tc
-INNER JOIN `callbacks` c ON c.`id` = tc.`id`
-WHERE tc.`id` = ?;
+  sc.`collection` AS collection
+FROM `storage_callbacks` sc
+INNER JOIN `callbacks` c ON c.`id` = sc.`id`
+WHERE sc.`id` = ?;

@@ -20,7 +20,6 @@ import com.mongodb.client.MongoDatabase;
 
 import fr.icam.emit.callbacks.EmitMqttCallback;
 import fr.icam.emit.callbacks.MqttCallbackWrapper;
-import fr.icam.emit.entities.Broker;
 
 public class MqttClientListener implements ServletContextListener {
 	
@@ -126,21 +125,23 @@ public class MqttClientListener implements ServletContextListener {
 		}
 	}
 	
-	public void doPublish(String id, String topic, int qos, boolean retained, byte[] payload) throws Exception {
+	public void doPublish(String id, String topic, int qos, boolean retained, boolean persisted, byte[] payload) throws Exception {
 		MqttClient client = clients.get(id);
 		if (client == null) {
 			throw new NullPointerException(id);
 		} else {
 			client.publish(topic, payload, qos, retained);
-			Document document = new Document();
-	        document.append("mode", "publish");
-	        document.append("issued", System.currentTimeMillis());
-	        document.append("client", id);
-	        document.append("qos", qos);
-	        document.append("retained", retained);
-	        document.append("topic", topic);
-	        document.append("payload", new Binary(payload));
-	        messages.insertOne(document);
+			if (persisted) {
+				Document document = new Document();
+				document.append("mode", "publish");
+				document.append("issued", System.currentTimeMillis());
+				document.append("client", id);
+				document.append("qos", qos);
+				document.append("retained", retained);
+				document.append("topic", topic);
+				document.append("payload", new Binary(payload));
+				messages.insertOne(document);
+			}
 		}
 	}
 	

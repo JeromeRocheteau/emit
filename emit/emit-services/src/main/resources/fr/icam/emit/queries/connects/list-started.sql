@@ -19,5 +19,6 @@ INNER JOIN `brokers` b ON b.`uri` = cc.`broker`
 WHERE cc.`uuid` = ? 
 AND s.`control` = 1
 AND s.`user` = c.`user`
+AND b.`user` = c.`user`
 AND c.`started` IS NOT NULL
 AND c.`stopped` IS NULL;

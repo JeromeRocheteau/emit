@@ -38,7 +38,7 @@ public class Callback {
 		return category;
 	}
 
-	protected Callback(String name, Long id, Long issued, String user, Boolean atomic, String category) {
+	public Callback(Long id, String name, Long issued, String user, Boolean atomic, String category) {
 		super();
 		this.id = id;
 		this.issued = issued;
@@ -46,11 +46,6 @@ public class Callback {
 		this.atomic = atomic;
 		this.category = category;
 		this.name = name;
-	}
-
-	public Callback(Long id, Long issued, String user, Boolean atomic, String category) {
-		this(category, id, issued, user, atomic, category);
-		this.name = "#" + id + " " + category + " callback";
 	}
 	
 }

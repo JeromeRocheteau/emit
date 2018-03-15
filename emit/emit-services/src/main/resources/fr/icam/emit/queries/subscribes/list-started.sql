@@ -5,7 +5,7 @@ SELECT
   c.`user` AS user,
   c.`topic` AS topic,
   cc.`uuid` AS clientUuid,
-  c.`name` AS clientName,
+  cc.`name` AS clientName,
   cc.`broker` AS clientBroker,
   cc.`user` AS clientUser,
   cc.`open` AS clientOpen,
@@ -16,5 +16,7 @@ FROM `subscribes` c
 INNER JOIN `clients` cc ON cc.`uuid` = c.`client`
 INNER JOIN `shares` s ON s.`client` = cc.`uuid`
 INNER JOIN `brokers` b ON b.`uri` = cc.`broker`
-WHERE cc.`uuid` = ? AND s.`control` = 1
+WHERE cc.`uuid` = ? 
+AND b.`user` = cc.`user`
+AND s.`control` = 1
 AND c.`stopped` IS NULL;

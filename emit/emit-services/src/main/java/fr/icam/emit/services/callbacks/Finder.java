@@ -33,11 +33,12 @@ public class Finder extends JdbcQueryServlet<Callback> {
     	Callback item = null;
     	if (resultSet.next()) {
     		Long id = resultSet.getLong("id");
+    		String name = resultSet.getString("name");
     		Boolean atomic = resultSet.getBoolean("atomic");
     		String category = resultSet.getString("category");
     		Timestamp issued = resultSet.getTimestamp("issued");
     		String user = resultSet.getString("user");
-    		item = new Callback(id, issued.getTime(), user, atomic, category);
+    		item = new Callback(id, name, issued.getTime(), user, atomic, category);
     	}
     	return item;
     }

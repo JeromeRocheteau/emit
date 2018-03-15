@@ -2,17 +2,7 @@ package fr.icam.emit.types;
 
 public enum Symbol {
 	
-	EQ("eq"), NEQ("neq"), LT("eq"), LEQ("eq"), GT("eq"), GEQ("eq");
-	
-	private String name;
-	
-	public String getName() {
-		return name;
-	}
-	
-	private Symbol(String name) {
-		this.name = name;
-	}
+	EQ, NEQ, LT, LEQ, GT, GEQ;
 	
 	public <T extends Comparable<T>> boolean compare(T fst, T snd) throws Exception {
 		int cmp = fst.compareTo(snd);
@@ -27,9 +17,8 @@ public enum Symbol {
 		}					
 	}
 	
-	@Override
-	public String toString() {
-		return name;
+	public String getName() {
+		return this.toString().toLowerCase();
 	}
 	
 }

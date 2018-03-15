@@ -41,29 +41,33 @@ public class Finder extends JdbcQueryServlet<GuardCallback> {
     	GuardCallback item = null;
     	if (resultSet.next()) {
     		Long id = resultSet.getLong("id");
+    		String name = resultSet.getString("name");
     		Boolean atomic = resultSet.getBoolean("atomic");
     		String category = resultSet.getString("category");
     		Timestamp issued = resultSet.getTimestamp("issued");
     		String user = resultSet.getString("user");
     		Long testId = resultSet.getLong("testId");
+    		String testName = resultSet.getString("testName");
     		Boolean testAtomic = resultSet.getBoolean("testAtomic");
     		String testCategory = resultSet.getString("testCategory");
     		Timestamp testIssued = resultSet.getTimestamp("testIssued");
     		String testUser = resultSet.getString("testUser");
     		Long successId = resultSet.getLong("successId");
+    		String successName = resultSet.getString("successName");
     		Boolean successAtomic = resultSet.getBoolean("successAtomic");
     		String successCategory = resultSet.getString("successCategory");
     		Timestamp successIssued = resultSet.getTimestamp("successIssued");
     		String successUser = resultSet.getString("successUser");
     		Long failureId = resultSet.getLong("failureId");                   if (resultSet.wasNull()) { failureId = null; }
+    		String failureName = resultSet.getString("failureName");   if (resultSet.wasNull()) { failureName = null; }
     		Boolean failureAtomic = resultSet.getBoolean("failureAtomic");     if (resultSet.wasNull()) { failureAtomic = null; }
     		String failureCategory = resultSet.getString("failureCategory");   if (resultSet.wasNull()) { failureCategory = null; }
     		Timestamp failureIssued = resultSet.getTimestamp("failureIssued"); if (resultSet.wasNull()) { failureIssued = null; }
     		String failureUser = resultSet.getString("failureUser");           if (resultSet.wasNull()) { failureUser = null; }
-    		Callback test = new Callback(testId, testIssued.getTime(), testUser, testAtomic, testCategory);
-    		Callback success = new Callback(successId, successIssued.getTime(), successUser, successAtomic, successCategory);
-    		Callback failure = failureId == null ? null : new Callback(failureId, failureIssued.getTime(), failureUser, failureAtomic, failureCategory);
-    		item = new GuardCallback(id, issued.getTime(), user, atomic, category, test, success, failure);
+    		Callback test = new Callback(testId, testName, testIssued.getTime(), testUser, testAtomic, testCategory);
+    		Callback success = new Callback(successId, successName, successIssued.getTime(), successUser, successAtomic, successCategory);
+    		Callback failure = failureId == null ? null : new Callback(failureId, failureName, failureIssued.getTime(), failureUser, failureAtomic, failureCategory);
+    		item = new GuardCallback(id, name, issued.getTime(), user, atomic, category, test, success, failure);
     	}
     	return item;
     }

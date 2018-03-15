@@ -6,13 +6,10 @@ import java.util.UUID;
 
 import javax.servlet.ServletException;
 
-import org.bson.Document;
-
-import com.mongodb.client.MongoCollection;
-
 import fr.icam.emit.entities.Callback;
 import fr.icam.emit.entities.callbacks.FeatureCallback;
 import fr.icam.emit.entities.callbacks.GuardCallback;
+import fr.icam.emit.entities.callbacks.StorageCallback;
 import fr.icam.emit.entities.callbacks.TopicCallback;
 import fr.icam.emit.entities.callbacks.TypeCallback;
 import fr.icam.emit.listeners.MqttClientListener;
@@ -27,10 +24,8 @@ public class CallbackFactory {
 			return CallbackFactory.from((TypeCallback) callback);
 		} else if (category.equals("topic")) {
 			return CallbackFactory.from((TopicCallback) callback);
-		} else if (category.equals("message")) {
-			return CallbackFactory.from(listener.getMessages(), callback, id);
-		} else if (category.equals("failure")) {
-			return CallbackFactory.from(listener.getFailures(), callback, id);
+		} else if (category.equals("storage")) {
+			return CallbackFactory.from(listener, (StorageCallback) callback, id);
 		} else if (category.equals("feature")) {
 			return CallbackFactory.from((FeatureCallback) callback);
 		} else if (category.equals("guard")) {
@@ -102,21 +97,23 @@ public class CallbackFactory {
 		}
 	}
 
-	private static MessageMqttCallback from(MongoCollection<Document> collection, Callback callback, String id) throws Exception {
-		String category = callback.getCategory();
-		if (category.equals("message")) {
-			return new MessageMqttCallback(collection, id);
+	private static StorageMqttCallback from(MqttClientListener listener, StorageCallback callback, String id) throws Exception {
+		String name = callback.getCollection();
+		if (name.equals("messages")) {
+			return new StorageMqttCallback(listener.getMessages(), id);			
+		} else if (name.equals("failures")) {
+			return new StorageMqttCallback(listener.getFailures(), id);
 		} else {
-			throw new Exception("wrong callback category '" + category + "' <> 'message'");
+			throw new Exception("undefined collection name '" + name + "' (it should be either 'messages' or 'failures')");
 		}
 	}
 
 	private static TopicMqttCallback from(TopicCallback callback) throws Exception {
-		String category = callback.getCategory();
-		if (category.equals("topic")) {
-			return new TopicMqttCallback(callback.getTopic());			
+		String topic = callback.getTopic();
+		if (topic == null || topic.isEmpty()) {
+			throw new Exception("wrong callback topic '" + topic + "'");
 		} else {
-			throw new Exception("wrong callback category '" + category + "' <> 'topic'");
+			return new TopicMqttCallback(callback.getTopic());			
 		}
 	}
 

@@ -35,7 +35,7 @@
     <param-name>mongodb-database</param-name>
     <param-value>emit</param-value>
   </context-param>
-
+  
   <context-param>
     <param-name>mongodb-message-collection</param-name>
     <param-value>messages</param-value>
@@ -53,6 +53,15 @@
   <listener>
     <listener-class>fr.icam.emit.listeners.MqttClientListener</listener-class>
   </listener>
+
+  <filter>
+    <filter-name>no-cache-filter</filter-name>
+    <filter-class>fr.icam.emit.filters.NoCacheFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>no-cache-filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <filter>
     <filter-name>jdbc-filter</filter-name>
@@ -409,6 +418,19 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>client-find</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-find</servlet-name>
+    <url-pattern>/clients/find</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>client-create</servlet-name>
     <servlet-class>fr.icam.emit.services.clients.Creator</servlet-class>
     <init-param>
@@ -577,6 +599,8 @@
     <url-pattern>/clients/following/page</url-pattern>
   </servlet-mapping>
 
+  <!-- connections -->
+
   <servlet>
     <servlet-name>client-connected</servlet-name>
     <servlet-class>fr.icam.emit.services.connects.Connected</servlet-class>
@@ -616,6 +640,8 @@
     <url-pattern>/clients/disconnect</url-pattern>
   </servlet-mapping>
 
+  <!-- subscriptions -->
+
   <servlet>
     <servlet-name>client-subscribing</servlet-name>
     <servlet-class>fr.icam.emit.services.subscribes.Subscribing</servlet-class>
@@ -654,6 +680,8 @@
     <servlet-name>client-unsubscribe</servlet-name>
     <url-pattern>/clients/unsubscribe</url-pattern>
   </servlet-mapping>
+
+  <!-- publications -->
 
   <servlet>
     <servlet-name>client-publish</servlet-name>
@@ -829,14 +857,15 @@
       <param-value>/fr/icam/emit/queries/callbacks/create.sql</param-value>
     </init-param>
   </servlet>
-  <servlet-mapping>
-    <servlet-name>callback-create</servlet-name>
-    <url-pattern>/callbacks/create/message</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>callback-create</servlet-name>
-    <url-pattern>/callbacks/create/failure</url-pattern>
-  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/update.sql</param-value>
+    </init-param>
+  </servlet>
 
   <servlet>
     <servlet-name>callback-delete</servlet-name>
@@ -933,21 +962,45 @@
     <url-pattern>/callbacks/find/topic</url-pattern>
   </servlet-mapping>
 
+<!-- storage callbacks -->
+
   <servlet>
-    <servlet-name>callback-item</servlet-name>
-    <servlet-class>fr.icam.emit.services.callbacks.Itemizer</servlet-class>
+    <servlet-name>storage-callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.storages.Creator</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
-      <param-value>/fr/icam/emit/queries/callbacks/item.sql</param-value>
+      <param-value>/fr/icam/emit/queries/callbacks/storages/create.sql</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
-    <servlet-name>callback-item</servlet-name>
-    <url-pattern>/callbacks/find/message</url-pattern>
+    <servlet-name>storage-callback-create</servlet-name>
+    <url-pattern>/callbacks/create/storage</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>storage-callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.storages.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/storages/update.sql</param-value>
+    </init-param>
+  </servlet>
   <servlet-mapping>
-    <servlet-name>callback-item</servlet-name>
-    <url-pattern>/callbacks/find/failure</url-pattern>
+    <servlet-name>storage-callback-update</servlet-name>
+    <url-pattern>/callbacks/update/storage</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>storage-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.storages.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/storages/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>storage-callback-item</servlet-name>
+    <url-pattern>/callbacks/find/storage</url-pattern>
   </servlet-mapping>
 
 <!-- feature callbacks -->
@@ -1079,7 +1132,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>client-callback-item</servlet-name>
-    <url-pattern>/clients/callbacks/item</url-pattern>
+    <url-pattern>/clients/callbacks/attached</url-pattern>
   </servlet-mapping>
   
   <!-- topics -->
@@ -1247,7 +1300,7 @@
       <url-pattern>/topics/leafs/list</url-pattern>
       <url-pattern>/topics/nodes/list</url-pattern>
       <url-pattern>/clients/callbacks/list</url-pattern>
-      <url-pattern>/clients/callbacks/item</url-pattern>
+      <url-pattern>/clients/callbacks/attached</url-pattern>
       <url-pattern>/clients/callbacks/attach</url-pattern>
       <url-pattern>/clients/callbacks/detach</url-pattern>
       <http-method>GET</http-method>
@@ -1295,13 +1348,12 @@
       <url-pattern>/callbacks/create/topic</url-pattern>
       <url-pattern>/callbacks/update/topic</url-pattern>
       <url-pattern>/callbacks/find/topic</url-pattern>
+      <url-pattern>/callbacks/create/storage</url-pattern>
+      <url-pattern>/callbacks/update/storage</url-pattern>
+      <url-pattern>/callbacks/find/storage</url-pattern>
       <url-pattern>/callbacks/create/feature</url-pattern>
       <url-pattern>/callbacks/update/feature</url-pattern>
       <url-pattern>/callbacks/find/feature</url-pattern>
-      <url-pattern>/callbacks/create/message</url-pattern>
-      <url-pattern>/callbacks/create/failure</url-pattern>
-      <url-pattern>/callbacks/find/message</url-pattern>
-      <url-pattern>/callbacks/find/failure</url-pattern>
       <url-pattern>/callbacks/create/guard</url-pattern>
       <url-pattern>/callbacks/update/guard</url-pattern>
       <url-pattern>/callbacks/find/guard</url-pattern>

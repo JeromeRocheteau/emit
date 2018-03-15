@@ -1,2 +1,2 @@
-INSERT INTO `callbacks` (`atomic`,`category`,`issued`,`user`)
-VALUES (?,?,now(),?);
+INSERT INTO `callbacks` (`name`, `atomic`,`category`,`issued`,`user`)
+VALUES (?,?,?,now(),?);

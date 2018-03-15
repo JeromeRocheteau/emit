@@ -40,12 +40,13 @@ public class Finder extends JdbcQueryServlet<TopicCallback> {
     	TopicCallback item = null;
     	if (resultSet.next()) {
     		Long id = resultSet.getLong("id");
+    		String name = resultSet.getString("name");
     		Boolean atomic = resultSet.getBoolean("atomic");
     		String category = resultSet.getString("category");
     		Timestamp issued = resultSet.getTimestamp("issued");
     		String user = resultSet.getString("user");
     		String topic = resultSet.getString("topic");
-    		item = new TopicCallback(id, issued.getTime(), user, atomic, category, topic);
+    		item = new TopicCallback(id, name, issued.getTime(), user, atomic, category, topic);
     	}
     	return item;
     }

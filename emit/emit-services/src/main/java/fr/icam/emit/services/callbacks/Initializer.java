@@ -49,11 +49,12 @@ public class Initializer extends JdbcQueryServlet<Map<String, Callback>> {
     	while (resultSet.next()) {
     		String uuid = resultSet.getString("uuid");
     		Long id = resultSet.getLong("id");
+    		String name = resultSet.getString("name");
     		Boolean atomic = resultSet.getBoolean("atomic");
     		String category = resultSet.getString("category");
     		Timestamp issued = resultSet.getTimestamp("issued");
     		String user = resultSet.getString("user");
-    		Callback item = new Callback(id, issued.getTime(), user, atomic, category);
+    		Callback item = new Callback(id, name, issued.getTime(), user, atomic, category);
     		items.put(uuid, item);
     	}
     	return items;

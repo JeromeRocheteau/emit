@@ -16,6 +16,7 @@ public class Updater extends JdbcUpdateServlet<Integer> {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		this.doCall(request, response, "callback-update");
 		Integer count = this.doProcess(request);
 		this.doWrite(count, response.getWriter());
 	}

@@ -30,7 +30,7 @@ public class Initializer extends fr.icam.emit.services.commons.Lister<Connect> {
 				if (connect.getStopped() == null) {
 					boolean auth = connect.getPassword() != null;
 					listener.doConnect(connect.getClient().getUuid(), auth ? connect.getUsername() : null, auth ? connect.getPassword() : null);
-					System.out.println("[EMIT] Connect Client " + connect.getClient().getUuid() + " " + (auth ? connect.getUsername() : "") + (auth ? connect.getPassword() : ""));	
+					System.out.println("[EMIT] Connect Client " + connect.getClient().getUuid() + " " + (auth ? connect.getUsername() : "") + (auth ? "/" : "") + (auth ? connect.getPassword() : ""));	
 				}
 			}
 		} catch (Exception e) {

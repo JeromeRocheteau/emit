@@ -24,8 +24,8 @@ public class FeatureCallback extends Callback {
 		return value;
 	}
 
-	public FeatureCallback(Long id, Long issued, String user, Boolean atomic, String category, Symbol symbol, Type type, String value) {
-		super("#" + id + " " + category + " callback: " + symbol.getName() + " " + value + " : " + type.getName(), id, issued, user, atomic, category);
+	public FeatureCallback(Long id, String name, Long issued, String user, Boolean atomic, String category, Symbol symbol, Type type, String value) {
+		super(id, name, issued, user, atomic, category);
 		this.symbol = symbol;
 		this.type = type;
 		this.value = value;

@@ -1,4 +1,4 @@
-package fr.icam.emit.services.callbacks.features;
+package fr.icam.emit.services.callbacks.storages;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -11,23 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcQueryServlet;
 
-import fr.icam.emit.entities.Symbol;
-import fr.icam.emit.entities.Type;
-import fr.icam.emit.entities.callbacks.FeatureCallback;
+import fr.icam.emit.entities.callbacks.StorageCallback;
 
-public class Finder extends JdbcQueryServlet<FeatureCallback> {
+public class Finder extends JdbcQueryServlet<StorageCallback> {
 
-	private static final long serialVersionUID = 201711160900001L;
+	private static final long serialVersionUID = 201803151145001L;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		FeatureCallback callback = this.doProcess(request);
+		StorageCallback callback = this.doProcess(request);
 		this.doWrite(callback, response.getWriter());
 	}
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		FeatureCallback callback = this.doProcess(request);
+		StorageCallback callback = this.doProcess(request);
 		request.setAttribute("callback", callback);
 	}
 
@@ -38,8 +36,8 @@ public class Finder extends JdbcQueryServlet<FeatureCallback> {
 	}
 
     @Override
-    protected FeatureCallback doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
-    	FeatureCallback item = null;
+    protected StorageCallback doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
+    	StorageCallback item = null;
     	if (resultSet.next()) {
     		Long id = resultSet.getLong("id");
     		String name = resultSet.getString("name");
@@ -47,13 +45,8 @@ public class Finder extends JdbcQueryServlet<FeatureCallback> {
     		String category = resultSet.getString("category");
     		Timestamp issued = resultSet.getTimestamp("issued");
     		String user = resultSet.getString("user");
-    		String symbolName = resultSet.getString("symbolName");
-    		String typeName = resultSet.getString("typeName");
-    		String typeCategory = resultSet.getString("typeCategory");
-    		String value = resultSet.getString("value");
-    		Symbol symbol = new Symbol(symbolName);
-    		Type type = new Type(typeName, typeCategory);
-    		item = new FeatureCallback(id, name, issued.getTime(), user, atomic, category, symbol, type, value);
+    		String collection = resultSet.getString("collection");
+    		item = new StorageCallback(id, name, issued.getTime(), user, atomic, category, collection);
     	}
     	return item;
     }

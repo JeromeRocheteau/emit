@@ -6,5 +6,6 @@ SELECT
   b.`password` AS password 
 FROM `brokers` b
 INNER JOIN `clients` c ON c.`broker` = b.`uri`
-WHERE b.`user` = ? AND c.`uuid` = ?
+WHERE b.`user` = ? 
+AND c.`uuid` = ?
 LIMIT 0,1;

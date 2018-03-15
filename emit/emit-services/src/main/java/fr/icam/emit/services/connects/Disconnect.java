@@ -12,7 +12,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 
 import fr.icam.emit.listeners.MqttClientListener;
 
-public class Disconnect extends JdbcUpdateServlet<Boolean> {
+public class Disconnect extends JdbcUpdateServlet<Integer> {
 
 	private static final long serialVersionUID = 201710161616012L;
 
@@ -32,10 +32,10 @@ public class Disconnect extends JdbcUpdateServlet<Boolean> {
 			Boolean connected = (Boolean) request.getAttribute("connected");
 			if (connected) {
 				listener.doDisconnect(uuid);
-				Boolean done = this.doProcess(request);
-				this.doWrite(done, response.getWriter());
+				Integer count = this.doProcess(request);
+				this.doWrite(count, response.getWriter());
 			} else {
-				throw new IllegalStateException(uuid);
+				throw new IllegalStateException("state conflict for '" + uuid +"' MQTT client");
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
@@ -49,8 +49,8 @@ public class Disconnect extends JdbcUpdateServlet<Boolean> {
 	}
 
 	@Override
-	protected Boolean doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
-		return count > 0;
+	protected Integer doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
+		return count;
 	}
 
 }

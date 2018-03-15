@@ -11,8 +11,8 @@ public class TypeCallback extends Callback {
 		return type;
 	}
 
-	public TypeCallback(Long id, Long issued, String user, Boolean atomic, String category, Type type) {
-		super("#" + id + " " + category + " callback: " + type.getName(), id, issued, user, atomic, category);
+	public TypeCallback(Long id, String name, Long issued, String user, Boolean atomic, String category, Type type) {
+		super(id, name, issued, user, atomic, category);
 		this.type = type;
 	}
 
