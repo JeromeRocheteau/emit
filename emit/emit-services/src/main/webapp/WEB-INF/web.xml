@@ -53,6 +53,33 @@
   <listener>
     <listener-class>fr.icam.emit.listeners.MqttClientListener</listener-class>
   </listener>
+  
+  <!-- FIXME: TO REMOVE -->
+  
+  <context-param>
+    <param-name>mqtt-broker</param-name>
+    <param-value>tcp://172.21.50.3:1883</param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>peaktech-topic</param-name>
+    <param-value>peaktech/power</param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>ardgetti-topic</param-name>
+    <param-value>ardgetti/1/power</param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>fr.icam.emit.listeners.PeaktechListener</listener-class>
+  </listener>
+
+  <listener>
+    <listener-class>fr.icam.emit.listeners.ArdgettiListener</listener-class>
+  </listener>
+  
+  <!-- FIXME: END TO REMOVE -->
 
   <filter>
     <filter-name>no-cache-filter</filter-name>
@@ -72,18 +99,16 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <filter>
-    <filter-name>access-filter</filter-name>
-    <filter-class>fr.icam.emit.filters.AccessFilter</filter-class>
-    <init-param>
-      <param-name>sql-query</param-name>
-      <param-value>/fr/icam/emit/queries/access/filter.sql</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>access-filter</filter-name>
-    <url-pattern>/retrieve</url-pattern>
-  </filter-mapping>
+  <!-- timestamp -->
+
+  <servlet>
+    <servlet-name>timestamp</servlet-name>
+    <servlet-class>fr.icam.emit.services.messages.Time</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>timestamp</servlet-name>
+    <url-pattern>/timestamp</url-pattern>
+  </servlet-mapping>
 
   <!-- users -->
 
@@ -765,6 +790,17 @@
     <url-pattern>/clients/messages/page</url-pattern>
   </servlet-mapping>
 
+  <!-- messages -->
+  
+  <servlet>
+    <servlet-name>message-search</servlet-name>
+    <servlet-class>fr.icam.emit.services.messages.Search</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>message-search</servlet-name>
+    <url-pattern>/messages/search</url-pattern>
+  </servlet-mapping>
+
   <!-- types -->
   
   <servlet>
@@ -1249,7 +1285,7 @@
       <url-pattern>/security/register.html</url-pattern>
       <url-pattern>/emit.css</url-pattern>
       <url-pattern>/user/register</url-pattern>
-      <url-pattern>/retrieve</url-pattern>
+      <url-pattern>/timestamp</url-pattern>
    </web-resource-collection>
  </security-constraint>
 
@@ -1303,15 +1339,7 @@
       <url-pattern>/clients/callbacks/attached</url-pattern>
       <url-pattern>/clients/callbacks/attach</url-pattern>
       <url-pattern>/clients/callbacks/detach</url-pattern>
-      <http-method>GET</http-method>
-      <http-method>POST</http-method>
-      <http-method>HEAD</http-method>
-      <http-method>PUT</http-method>
-      <http-method>DELETE</http-method>
-      <http-method>CONNECT</http-method>
-      <http-method>OPTIONS</http-method>
-      <http-method>TRACE</http-method>
-      <http-method>PATCH</http-method>
+      <url-pattern>/messages/search</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>user</role-name>
@@ -1358,15 +1386,6 @@
       <url-pattern>/callbacks/update/guard</url-pattern>
       <url-pattern>/callbacks/find/guard</url-pattern>
       <url-pattern>/callbacks/delete</url-pattern>
-      <http-method>GET</http-method>
-      <http-method>POST</http-method>
-      <http-method>HEAD</http-method>
-      <http-method>PUT</http-method>
-      <http-method>DELETE</http-method>
-      <http-method>CONNECT</http-method>
-      <http-method>OPTIONS</http-method>
-      <http-method>TRACE</http-method>
-      <http-method>PATCH</http-method>
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>
@@ -1381,15 +1400,6 @@
       <url-pattern>/users/page</url-pattern>
       <url-pattern>/users/create</url-pattern>
       <url-pattern>/users/delete</url-pattern>
-      <http-method>GET</http-method>
-      <http-method>POST</http-method>
-      <http-method>HEAD</http-method>
-      <http-method>PUT</http-method>
-      <http-method>DELETE</http-method>
-      <http-method>CONNECT</http-method>
-      <http-method>OPTIONS</http-method>
-      <http-method>TRACE</http-method>
-      <http-method>PATCH</http-method>
     </web-resource-collection>
     <auth-constraint>
       <role-name>root</role-name>

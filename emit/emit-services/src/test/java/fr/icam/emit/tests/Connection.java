@@ -18,8 +18,8 @@ import fr.icam.emit.types.Symbol;
 import fr.icam.emit.types.Type;
 import fr.icam.emit.types.Value;
 
-public class Connection {
-
+public class Connection {	
+	
 	private MqttClient client;
 	
 	private EmitMqttCallback callback;

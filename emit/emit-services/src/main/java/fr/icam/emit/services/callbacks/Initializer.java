@@ -30,7 +30,7 @@ public class Initializer extends JdbcQueryServlet<Map<String, Callback>> {
 		try {
 			Map<String, Callback> callbacks = this.doProcess(null);
 			for (String id : callbacks.keySet()) {
-				Callback cb = callbacks.get(id);
+				Callback cb = callbacks.get(id); // FIXME create specific callbacks
 				MqttCallback callback = CallbackFactory.from(listener, id, cb);
 				listener.doAttach(id, callback);
 				System.out.println("[EMIT] Attach Callback " + cb.getId() + " to Client " + id);
@@ -39,7 +39,7 @@ public class Initializer extends JdbcQueryServlet<Map<String, Callback>> {
 			throw new ServletException(e);
 		}
 	}
-
+	
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception { }
 	
