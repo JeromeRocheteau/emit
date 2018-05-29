@@ -148,7 +148,7 @@
     <servlet-class>fr.icam.emit.services.users.Register</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
-      <param-value>/fr/icam/emit/queries/users/create.sql</param-value>
+      <param-value>/fr/icam/emit/queries/prospects/create.sql</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
@@ -1284,6 +1284,7 @@
      <web-resource-name>public-area</web-resource-name>
       <url-pattern>/security/register.html</url-pattern>
       <url-pattern>/emit.css</url-pattern>
+      <url-pattern>/emit.js</url-pattern>
       <url-pattern>/user/register</url-pattern>
       <url-pattern>/timestamp</url-pattern>
    </web-resource-collection>

@@ -3,113 +3,260 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Emit | Configuring</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/emit/emit.css"></link>
+    <title>Emit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="/emit/emit.css">
   </head>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
-  <body ng-app="app" ng-controller="controller">
-    <header class="ng-cloak">
-      <div class="navbar navbar-inverse navbar-custom navbar-fixed-top">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script type="text/javascript" src="/emit/emit.js"></script>
+  <body id="content">
+    <section id="menu">
+      <div class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="../index.html"><strong>Emit</strong></a>
-          <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-left">
-              <li class="dropdown" ng-show="user.role">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Configuring&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../configuring/brokers.html"><span class="glyphicon glyphicon-transfer" aria-hidden="true">&nbsp;</span>Brokers</a></li>
-                  <li><a href="../configuring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                  <li><a href="../configuring/callbacks.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Callbacks</a></li>
-                </ul>
+          <a class="navbar-brand" href="/emit/index.html">Home</a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active dropdown" rv-show="user.role">
+                <a class="nav-link active dropdown-toggle" href="#" id="configuringDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Configuring
+                </a>
+                <div class="dropdown-menu" aria-labelledby="configuringDropdown">
+                  <a class="dropdown-item" href="/emit/configuring/brokers.html">Brokers</a>
+                  <a class="dropdown-item" href="/emit/configuring/clients.html">Clients</a>
+                  <a class="dropdown-item" href="/emit/configuring/callbacks.html">Callbacks</a>
+                </div>
               </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managing&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../managing/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                  <li ng-show="user.role"><a href="../managing/shares.html"><span class="glyphicon glyphicon-share-alt" aria-hidden="true">&nbsp;</span>Shares</a></li>
-                </ul>
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="monitoringDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Monitoring
+                </a>
+                <div class="dropdown-menu" aria-labelledby="monitoringDropdown">
+                  <a class="dropdown-item" href="/emit/monitoring/clients.html">Clients</a>
+                </div>
               </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Monitoring&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../monitoring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reporting&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../reporting/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                  <li class="dropdown-header">Conceptual Layer</li>
-                  <li><a href="../reporting/topics.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Topics</a></li>
-                </ul>
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="reportingDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Reporting
+                </a>
+                <div class="dropdown-menu" aria-labelledby="reportingDropdown">
+                  <a class="dropdown-item" href="/emit/reporting/clients.html">Clients</a>
+                </div>
               </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">{{user.name}}</li>
-                  <li><a href="../settings.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Settings</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="../user/clear"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
-                </ul>
+            <ul class="navbar-nav">
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Account
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
+                  <div class="dropdown-header" rv-text="user.name"></div>
+                  <a class="dropdown-item" href="/emit/settings.html">Settings</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/emit/user/clear">Disconnect</a>
+                </div>
               </li>
             </ul>
           </div>
         </div>
-      </div>
-    </header>
-    <section id="title" class="ng-cloak">
-      <div class="container-fluid well">
-        <h2>EMIT <small>a supervisory & control system for MQTT clients</small></h2>
       </div>
     </section>
-    <section id="content" class="container ng-cloak">
-
-      <div class="col-md-6">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
-            <h3>Brokers <small>({{x1.size}} items)</small></h3>
-            <nav aria-label="...">
-              <ul class="pager">
-                <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
-                <li class="previous"><a class="btn btn-default" ng-click="x1.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
-                <li ng-show="x1.size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
-                <li class="next"><a class="btn btn-default" ng-click="x1.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
-                <li class="next"><a class="btn btn-default" ng-click="x1.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
-              </ul>
+    <section id="title" class="jumbotron jumbotron-fluid">
+      <div class="container-fluid">
+        <h1 class="display-4">EMIT <small class="lead">a supervisory &amp; control system for networks of MQTT clients</small></h1>
+      </div>
+    </section>
+    <section class="container-fluid row">
+    
+      <div class="col-6">
+          <div class="container" style="padding-top:1ex;">
+            <button class="float-right btn btn-outline-secondary" rv-on-click="brokers.clean">
+             <i class="fas fa-sync"></i>
+            </button>
+            <h4>Brokers <small>(<span rv-text="brokers.size"></span> items)</small></h4>
+          </div>
+          <div class="container" style="padding-top:1ex;">
+            <nav class="btn-toolbar justify-content-between" role="toolbar" aria-label="...">
+              <div class="btn-group" role="group">
+                <button class="btn btn-outline-secondary" rv-on-click="brokers.first">
+                  <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="btn btn-outline-secondary" rv-on-click="brokers.prev">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+              </div>
+              <div class="btn-group" role="group">
+                <span rv-text="brokers.index"></span>/<span rv-text="brokers.limit"></span>
+              </div>
+              <div class="btn-group" role="group">
+                <button class="btn btn-outline-secondary" rv-on-click="brokers.next">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="btn btn-outline-secondary" rv-on-click="brokers.last">
+                  <i class="fas fa-step-forward"></i>
+                </button>
+              </div>
             </nav>
           </div>
-          <ul class="list-group" >
-            <li class="list-group-item" ng-repeat="item in x1.items">
-              <p class="list-group-item-text text-right">
-              </p>
-              <h4 class="list-group-item-heading">{{item.name}}</h4>
-              <p class="list-group-item-text">{{item.uri}}</p>
-              <p class="list-group-item-text" ng-show="item.username">{{item.username}}</p>
-              <p class="list-group-item-text text-right">
-                <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Edit</button>
-              </p>
+          <ul class="container list-group" style="padding-top:1ex;">
+            <li class="list-group-item" rv-each-item="brokers.items">
+              <h5 class="list-group-item-heading">{item.name}</h5>
+              <p class="list-group-item-text">{item.uri}</p>
+              <p class="list-group-item-text" rv-show="item.username">{item.username}</p>
+              <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="brokers.item">Edit</button>
             </li>
           </ul>
-        </div>
-        <div>
-          <p class="text-right"><button class="btn btn-primary" ng-click="x1.doSelect()" ng-disabled="x1.item">Create</button></p>
-        </div>
+          <div class="container" style="padding-top:1ex;">
+            <p class="text-right"><button class="btn btn-primary" rv-on-click="brokers.select" rv-disabled="brokers.item">Create</button></p>
+          </div>
       </div>
+      
+      <div class="col-6">
+      
+        <form name="form container" class="form" id="form" rv-show="brokers.item">
+          <fieldset>
+            <legend rv-show="brokers.creating">Create a broker</legend>
+            <legend rv-show="brokers.updating">Update a broker</legend>
+            <div class="form-group">
+              <input type="text" class="form-control" id="broker.uri" rv-value="brokers.item.uri" placeholder="Hostname" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" id="broker.name" rv-value="brokers.item.name" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" id="broker.username" rv-value="brokers.item.username" placeholder="Username">
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" id="broker.password" rv-value="brokers.item.password" placeholder="Password">
+            </div>
+            <div class="form-group pull-right">
+              <button type="reset" class="btn btn-outline-secondary" rv-on-click="brokers.clean"><strong>Cancel</strong></button>
+              <button type="button" class="btn btn-outline-primary" rv-on-click="brokers.create" rv-show="brokers.creating"><strong>Create</strong></button>
+              <button type="button" class="btn btn-outline-danger" rv-on-click="brokers.delete" rv-show="brokers.updating"><strong>Delete</strong></button>
+              <button type="button" class="btn btn-outline-primary" rv-on-click="brokers.update" rv-show="brokers.updating"><strong>Update</strong></button>
+            </div>
+          </fieldset>
+        </form>
+      
+      </div>
+    
+    </section>
+    <footer class="footer fixed-bottom bg-light text-dark">
+      <p class="text-center">Copyright © 2015-2018. ICAM. All rights reserved.</p>
+    </footer>
+  </body>
+  <script type="text/javascript">
+  var content = {};
+  rivets.bind($('#content'), content);
+  
+  content.user = {};
+  
+  emit.user.name(function onSuccess(response) {
+	content.user.name = response;
+	emit.user.role(function onSuccess(response) {
+	  content.user.role = response;
+	},function onError(response) {
+	  content.user.role = false;
+	});
+  }, function onError(response){
+	content.user.name = null;
+  });
+  
+  content.brokers = {};
+  content.brokers.creating = false;
+  content.brokers.updating = false;
+  content.brokers.item = null;
+  content.brokers.length = 5;
+  content.brokers.offset = 0;
+  content.brokers.limit = 1;
+  content.brokers.index = 1;
+  content.brokers.size = 0;
+  content.brokers.items = [];
+  
+  var sync = function() {
+	content.brokers.index = Math.ceil((content.brokers.offset + 1) / content.brokers.length);
+	content.brokers.limit = Math.ceil(content.brokers.size / content.brokers.length);
+  }
+  
+  content.brokers.prev = function() {
+    if (content.brokers.length <= content.brokers.offset) {
+      content.brokers.offset = content.brokers.offset - content.brokers.length;
+      sync();
+      page();
+    }
+  }
+  
+  content.brokers.next = function() {
+    if (content.brokers.offset + content.brokers.length < content.brokers.size) {
+      content.brokers.offset = content.brokers.offset + content.brokers.length;
+      sync();
+      page();
+    }
+  }
+  
+  content.brokers.first = function() {
+    content.brokers.offset = 0;
+    sync();
+    page();
+  }
 
+  content.brokers.last = function() {
+    content.brokers.offset = Math.floor((content.brokers.size - 1) / content.brokers.length) * content.brokers.length;
+    sync();
+    page();
+  }
+      
+  content.brokers.select = function() {
+    content.brokers.creating = true;
+    content.brokers.updating = false;
+    content.brokers.item = {};
+  }
+      
+  var select = function(item) {
+    content.brokers.creating = false;
+    content.brokers.updating = true;
+    content.brokers.item = Object.assign({}, item);
+  }
+  
+  content.brokers.clean = function() {
+    content.brokers.creating = false;
+    content.brokers.updating = false;
+    content.brokers.item = null;
+  }
+
+  var size = function() {
+    emit.broker.size(function onSuccess(response) {
+      content.brokers.size = response;
+      sync();
+      page();
+    },function onError(response) {
+      content.brokers.size = 0;
+    });
+  }
+    
+  var page = function() {
+    emit.broker.page(content.brokers, function onSuccess(response) {
+      content.brokers.items = response;
+      content.brokers.items.forEach(function (item) {
+    	item.select = function() { select(item); };
+      });
+    },function onError(response) {
+      content.brokers.items = [];
+    });
+  }
+  
+  size();
+  
+  </script>
+</html>
+
+<!-- 
       <div class="col-md-6">
         <form name="form" class="form list-group-item" id="form">
           <fieldset ng-disabled="!(x1.creating || x1.updating)">
@@ -169,15 +316,10 @@
       </div>
     
     </section>
-    <footer class="footer navbar navbar-inverse navbar-custom navbar-fixed-bottom">
-      <div class="container-fluid">
-        <div class="nav navbar-nav navbar-left">
-          <p class="text-muted">Copyright © 2015-2017. ICAM. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-  </body>
-  <script type="text/javascript">
+
+ -->
+
+  <!-- script type="text/javascript">
   var app = angular.module('app',[]);
 
   app.filter('ceil', function() {
@@ -186,7 +328,7 @@
 	};
   });
   
-  app.controller('controller', function ($scope, $http) {
+  app.controller('controller', function (content, $http) {
 
 	$scope.user = {};
 	$scope.user.name = null;
@@ -344,5 +486,4 @@
     $scope.x1.doPage();
     
   });
-  </script>
-</html>
+  </script -->

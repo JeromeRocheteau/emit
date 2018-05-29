@@ -4,38 +4,33 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Emit</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/emit/emit.css"></link>
+    <link rel="stylesheet" href="/emit/emit.css">
   </head>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
-  <body>
-    <header>
-      <div class="navbar navbar-inverse navbar-custom navbar-fixed-top">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <body id="content">
+    <section id="menu">
+      <div class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="./index.html"><!-- span class="glyphicon glyphicon-home" aria-hidden="true">&nbsp;Emit</span --><strong>Emit</strong></a>
-          <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-left">
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-            </ul>
-          </div>
+          <a class="navbar-brand" href="/emit/index.html">Home</a>
         </div>
       </div>
-    </header>
-    <section id="title" class="jumbotron">
-      <div class="container">
-        <h1>EMIT <small>a supervisory & control system for MQTT clients</small></h1>
+    </section>
+    <section id="title" class="jumbotron jumbotron-fluid">
+      <div class="container-fluid">
+        <h1 class="display-4">EMIT <small class="lead">a supervisory &amp; control system for networks of MQTT clients</small></h1>
       </div>
     </section>
-    <section id="content" class="container">
-      <form class="form col-md-6 col-md-offset-3" method="post" action="/emit/j_security_check">
+    <section class="container">
+      <div class="row justify-content-center">
+      <form class="form col-6" method="post" action="/emit/j_security_check">
         <fieldset>
-          <legend>Authentication</legend>
+          <legend>Connection</legend>
           <div class="form-group">
             <label class="control-label" for="username">Username</label>
             <div class="">
@@ -49,7 +44,7 @@
             </div>
           </div>
           <div class="form-group">
-            <a class="btn btn-default pull-left" href="/emit/security/register.html">Sign Up</a>
+            <a class="btn btn-outline-primary pull-left" href="/emit/security/register.html">Sign Up</a>
             <div class="pull-right">
               <button type="reset" class="btn btn-default">Reset</button>
               <button type="submit" class="btn btn-primary">Submit</button>
@@ -57,20 +52,10 @@
           </div>
         </fieldset>
       </form>
+      </div>
     </section>
-    <footer class="footer navbar-fixed-bottom" style="padding-bottom: 10ex;">
-      <div class="container-fluid">
-        <a class="pull-right" href="http://mqtt.org">
-          <img style="height: 5ex;" src="http://www.automation-sense.com/medias/images/mqtt-protocole.png" alt="mqtt logo">
-        </a>
-      </div>
-    </footer>
-    <footer class="footer navbar navbar-inverse navbar-custom navbar-fixed-bottom">
-      <div class="container-fluid">
-        <div class="nav navbar-nav navbar-left">
-          <p class="text-muted">Copyright © 2015-2017. ICAM. All rights reserved.</p>
-        </div>
-      </div>
+    <footer class="footer fixed-bottom bg-light text-dark">
+      <p class="text-center">Copyright © 2015-2018. ICAM. All rights reserved.</p>
     </footer>
   </body>
 </html>

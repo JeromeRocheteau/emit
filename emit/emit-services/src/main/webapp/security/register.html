@@ -4,20 +4,23 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Emit</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/emit/emit.css"></link>
+    <link rel="stylesheet" href="/emit/emit.css">
   </head>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
-  <body ng-app="app" ng-controller="controller">
-    <header>
-      <div class="navbar navbar-inverse navbar-custom navbar-fixed-top">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script type="text/javascript" src="/emit/emit.js"></script>
+  <body id="content">
+    <section id="menu">
+      <div class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="./index.html"><strong>Emit</strong></a>
+          <a class="navbar-brand" href="/emit/index.html">Home</a>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
             </ul>
@@ -26,122 +29,105 @@
           </div>
         </div>
       </div>
-    </header>
-    <section id="title" class="jumbotron">
-      <div class="container">
-        <h1>EMIT <small>a supervisory & control system for MQTT clients</small></h1>
+    </section>
+    <section id="title" class="jumbotron jumbotron-fluid">
+      <div class="container-fluid">
+        <h1 class="display-4">EMIT <small class="lead">a supervisory &amp; control system for networks of MQTT clients</small></h1>
       </div>
     </section>
-    <section id="content" class="container">
-      <form class="form col-md-6 col-md-offset-3">
-        <fieldset>
-          <legend>Registration</legend>
-          <div class="form-group">
-            <div class="">
-              <input ng-model="user.username" type="text" placeholder="Enter a username" class="form-control" ng-required="true" required>
+    <section class="container">
+      <div class="row justify-content-center">
+        <form class="form col-6">
+          <fieldset>
+            <legend>Registration</legend>
+            <div class="form-group">
+              <input rv-value="user.username" type="text" placeholder="Enter a username" class="form-control" required>
             </div>
-          </div>
-          <div class="form-group">
-            <div class="">
-              <select class="form-control" ng-model="user.rolename" ng-options="option.value as option.label for option in options" ng-required="true" required>
+            <div class="form-group">
+              <select class="form-control" rv-value="user.rolename" required>
                 <option value="" disabled selected>Select your role</option>
+                <option rv-each-option="options" rv-value="option.value" rv-text="option.label"></option>
               </select>
             </div>
-          </div>
-          <div class="form-group">
-            <div class="">
-              <input ng-model="user.password.orig" type="password" placeholder="Enter your password" class="form-control" ng-required="true" required>
+            <div class="form-group">
+              <input rv-value="user.password" type="password" placeholder="Enter your password" class="form-control" required>
             </div>
-          </div>
-          <div class="form-group">
-            <div class="">
-              <input ng-model="user.password.confirm" type="password" placeholder="Confirm your password" class="form-control" ng-required="true" required>
+            <div class="form-group">
+              <input rv-value="user.confirmPassword" type="password" placeholder="Confirm your password" class="form-control" required>
             </div>
-          </div>
-          <div class="form-group">
-            <a class="btn btn-default pull-left" href="/emit/index.html">Sign In</a>
-            <div class="pull-right">
-              <button type="submit" class="btn btn-primary" ng-click="doRegister()">Submit</button>
-              <button type="reset" class="btn btn-default" ng-click="doClean()">Reset</button>
+            <div class="form-group">
+              <a class="btn btn-outline-primary pull-left" href="/emit/index.html">Sign In</a>
+              <div class="pull-right">
+                <button type="reset" class="btn btn-default" rv-on-click="reset">Reset</button>
+                <button type="button" class="btn btn-primary" rv-on-click="register">Submit</button>
+              </div>
             </div>
-          </div>
-        </fieldset>
-      </form>
+          </fieldset>
+        </form>
+      </div>
     </section>
-    <section id="content" class="container">
-      <div class="form col-md-6 col-md-offset-3">
-        <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
-          <button type="button" class="close" aria-label="close" ng-click="doDismiss()"><span aria-hidden="true">&times;</span></button>
-          <p>{{message.content}}</p>
+    <section class="container">
+      <div class="row justify-content-center">
+        <div class="col-6 alert alert-dismissible" rv-class-alert-danger="message.danger" rv-class-alert-warning="message.warning" rv-class-alert-success="message.success" id="alert" role="alert" style="margin-top:20px;">
+          <button type="button" class="close" rv-on-click="dismiss" aria-label="close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="alert-heading" rv-text="message.head"></h4>
+          <p rv-text="message.text"></p>
         </div>
       </div>
     </section>
-    <footer class="footer navbar-fixed-bottom" style="padding-bottom: 10ex;">
-      <div class="container-fluid">
-        <a class="pull-right" href="http://mqtt.org">
-          <img style="height: 5ex;" src="http://www.automation-sense.com/medias/images/mqtt-protocole.png" alt="mqtt logo">
-        </a>
-      </div>
-    </footer>
-    <footer class="footer navbar navbar-inverse navbar-custom navbar-fixed-bottom">
-      <div class="container-fluid">
-        <div class="nav navbar-nav navbar-left">
-          <p class="text-muted">Copyright © 2015-2017. ICAM. All rights reserved.</p>
-        </div>
-      </div>
+    <footer class="footer fixed-bottom navbar navbar-light bg-light">
+      <p>Copyright © 2015-2018. ICAM. All rights reserved.</p>
     </footer>
   </body>
   <script type="text/javascript">
-  var app = angular.module('app',[]);
+  var content = {};
+  rivets.bind($('#content'), content);
   
-  app.controller('controller', function ($scope, $http) {
-  	
-  	$scope.message = {};
+  content.user = {};
+  content.message = {};
+   
+  content.options = [
+    {value: 'user', label: 'User'},
+    {value: 'admin', label: 'Administrator'},
+  ];
     
-    var display = function(type, content) {
-        $scope.message.type = type;
-        $scope.message.content = content;
-        $("#alert").show();
-    }
+  var display = function(type, head, text) {
+    content.message.danger = (type === "danger" ? true : false);
+    content.message.warning = (type === "warning" ? true : false);
+    content.message.success = (type === "success" ? true : false);
+    content.message.head = head;
+    content.message.text = text;
+    $("#alert").show();
+  }
     
-    $scope.doDismiss = function() {
-        $("#alert").hide();
-        $scope.alert = {};
-    }
-  	
-    $scope.user = {};
-    $scope.user.password = {};
-
-    $scope.doRegister = function() {
-      if (angular.equals($scope.user.password.orig, $scope.user.password.confirm)) {
-        register();
-      } else {
-    	display("warning", "Passwords don't match.");
-      }
-    }
-
-    var register = function() {
-      var content = "username=" + encodeURIComponent($scope.user.username) + "&rolename=" + encodeURIComponent($scope.user.rolename) + "&password=" + encodeURIComponent($scope.user.password.orig) + "&confirmPassword=" + encodeURIComponent($scope.user.password.confirm);
-      $http({method:'POST',url:'../user/register',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "Your request has been sucessfully registered.");
-        $scope.doClean();
+  content.dismiss = function() {
+    $("#alert").hide();
+    content.message = {};
+  }
+  
+  content.dismiss();
+  
+  var clean = function() {
+    content.user = {};
+  }
+  
+  content.reset = function() {
+	clean();
+	content.dismiss();
+  }
+  
+  content.register = function() {
+    if (content.user.password === content.user.confirmPassword) {
+      emit.user.register(content.user, function onSuccess(response) {
+        display("success", "Success", "Your request has been sucessfully registered.");
+    	clean();
       },function onError(response) {
-          display("danger", "Something wrong happened while processing your request.");
-          $scope.doClean();
+        display("danger", "Failure", "Something wrong happened while processing your request.");
+    	clean();
       });
+    } else {
+      display("danger", "Failure", "The passwords don't match.");
     }
-    
-    $scope.doClean = function() {
-	  $scope.user = angular.copy({});
-      $scope.user.password = angular.copy({});
-    }
-    
-    $scope.options = [
-        {value: 'user', label: 'User'},
-        {value: 'admin', label: 'Administrator'},
-    ];
-    
-  });
+  }
   </script>
 </html>
