@@ -4,6 +4,460 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Emit | Monitoring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="/emit/emit.css">
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script type="text/javascript" src="/emit/emit.js"></script>
+  <body id="content" style="display:none;">
+    <section id="menu">
+      <div class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/emit/index.html">Home</a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active dropdown" rv-show="user.role">
+                <a class="nav-link active dropdown-toggle" href="#" id="configuringDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Configuring
+                </a>
+                <div class="dropdown-menu" aria-labelledby="configuringDropdown">
+                  <a class="dropdown-item" href="/emit/configuring/brokers.html">Brokers</a>
+                  <a class="dropdown-item" href="/emit/configuring/clients.html">Clients</a>
+                  <a class="dropdown-item" href="/emit/configuring/callbacks.html">Callbacks</a>
+                </div>
+              </li>
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="monitoringDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Monitoring
+                </a>
+                <div class="dropdown-menu" aria-labelledby="monitoringDropdown">
+                  <a class="dropdown-item" href="/emit/monitoring/clients.html">Clients</a>
+                </div>
+              </li>
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="reportingDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Reporting
+                </a>
+                <div class="dropdown-menu" aria-labelledby="reportingDropdown">
+                  <a class="dropdown-item" href="/emit/reporting/clients.html">Clients</a>
+                </div>
+              </li>
+            </ul>
+            <ul class="navbar-nav">
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Account
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
+                  <div class="dropdown-header" rv-text="user.name"></div>
+                  <a class="dropdown-item" href="/emit/settings.html">Settings</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/emit/user/clear">Disconnect</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="title" class="jumbotron jumbotron-fluid">
+      <div class="container-fluid">
+        <h1 class="display-4">EMIT <small class="lead">a supervisory &amp; control system for networks of MQTT clients</small></h1>
+      </div>
+    </section>
+    <section class="container-fluid row">
+      <div class="col-6">
+          <div class="container" style="padding-top:1ex;">
+            <h4>Clients <small>(<span rv-text="clients.size"></span> items)</small></h4>
+          </div>
+          <div class="container" style="padding-top:1ex;">
+            <nav class="btn-toolbar justify-content-between" role="toolbar" aria-label="...">
+              <div class="btn-group" role="group">
+                <button class="btn btn-outline-secondary" rv-on-click="clients.first">
+                  <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="btn btn-outline-secondary" rv-on-click="clients.prev">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+              </div>
+              <div class="btn-group" role="group">
+                <span rv-text="clients.index"></span>/<span rv-text="clients.limit"></span>
+              </div>
+              <div class="btn-group" role="group">
+                <button class="btn btn-outline-secondary" rv-on-click="clients.next">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="btn btn-outline-secondary" rv-on-click="clients.last">
+                  <i class="fas fa-step-forward"></i>
+                </button>
+              </div>
+            </nav>
+          </div>
+          <div class="container">
+          <ul class="list-group" style="padding-top:1ex;">
+              <li class="list-group-item" rv-each-item="clients.items">
+                <h5 class="list-group-item-heading">
+                  <span rv-text="item.name"></span>
+                  <span class="float-right">
+                    <i class="fas fa-lock-open" rv-show="item.open"></i>
+                    <i class="fas fa-lock" rv-hide="item.open"></i>
+                  </span>
+                </h5>
+                <p class="list-group-item-text"><span rv-text="item.broker.name"></span> (<small rv-text="item.broker.uri"></small>)</p>
+                <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="clients.item">Select</button>
+              </li>
+            </ul>
+          </div>
+      </div>
+      <div class="col-6">
+
+        <div class="container" rv-show="clients.item">
+          <h4>Connection</h4>
+          <div rv-hide="clients.item.connected">
+            <p>
+              connect to <span rv-text="clients.item.broker.name"></span>
+              <button class="btn btn-outline-primary float-right" rv-on-click="clients.item.connect">Connect</button>
+            </p>
+          </div>
+          <div rv-show="clients.item.connected">
+            <p>
+              connected to <span rv-text="clients.item.broker.name"></span>
+              <button class="btn btn-outline-danger float-right" rv-disabled="clients.item.subscribed" rv-on-click="clients.item.disconnect">Disconnect</button>
+            </p>
+          </div>
+        </div>
+
+        <div class="container" rv-show="clients.item.connected">
+          <h4>Subscription</h4>
+          <form class="form" rv-hide="clients.item.subscribed">
+            <div class="form-group input-group">
+              <input type="text" class="form-control" id="client.filter" rv-value="clients.item.filter" placeholder="Topic">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" rv-on-click="clients.item.subscribe">Subscribe</button>
+              </div>
+            </div>
+          </form>
+          <div rv-show="clients.item.subscribed">
+            <p>
+              subscribed to <span rv-text="clients.item.subscribed.topic"></span>
+              <button class="btn btn-outline-danger float-right" rv-on-click="clients.item.unsubscribe">Unsubscribe</button>
+            </p>
+          </div>
+        </div>
+
+        <div class="container" rv-show="clients.item.connected">
+          <h4>Publication</h4>
+          <form class="form">
+            <div class="form-group">
+              <input type="text" class="form-control" id="client.topic" rv-value="clients.item.topic" placeholder="Topic">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" id="client.payload" rv-value="clients.item.payload" placeholder="Payload">
+            </div>
+            
+            <div class="row form-group justify-content-between">
+              <div class="col">
+                <select class="form-control" id="client.item.qos" rv-value="clients.item.qos" required>
+                  <option value="" selected disabled>QoS</option>
+                  <option value="0">0 - at most once</option>
+                  <option value="1">1 - at least once</option>
+                  <option value="2">2 - exactly once</option>
+                </select>
+              </div>
+              <div class="col">
+                <select class="form-control" id="client.item.retained" rv-value="clients.item.retained" required>
+                  <option value="" selected disabled>Retained</option>
+                  <option value="true">yes</option>
+                  <option value="false">no</option>
+                </select>
+              </div>
+              <div class="col form-check">
+                <select class="form-control" id="client.item.persisted" rv-value="clients.item.persisted" required>
+                  <option value="" selected disabled>Persisted</option>
+                  <option value="true">yes</option>
+                  <option value="false">no</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <button type="button" class="btn btn-outline-primary float-right" rv-on-click="clients.item.publish">Publish</button>
+            </div>
+          </form>
+        </div>
+        
+        <div class="container" rv-show="clients.item">
+          <button class="btn btn-outline-secondary" rv-on-click="clients.reset">Clear</button>
+        </div>
+              
+        <div class="container">
+          <div class="alert alert-dismissible" rv-class-alert-danger="alert.danger" rv-class-alert-warning="alert.warning" rv-class-alert-success="alert.success" id="alert" role="alert" style="margin-top:20px;">
+            <button type="button" class="close" rv-on-click="alert.dismiss" aria-label="close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="alert-heading" rv-text="alert.head"></h4>
+            <p rv-text="alert.text"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="footer fixed-bottom bg-light text-dark">
+      <p class="text-center">Copyright © 2015-2018. ICAM. All rights reserved.</p>
+    </footer>
+  </body>
+  <script type="text/javascript">
+  var content = {};
+  rivets.bind($('#content'), content);
+  
+  /* user */
+  
+  content.user = {};
+  
+  emit.user.name(function onSuccess(response) {
+	content.user.name = response;
+	emit.user.role(function onSuccess(response) {
+	  content.user.role = response;
+	},function onError(response) {
+	  content.user.role = false;
+	});
+  }, function onError(response){
+	content.user.name = null;
+  });
+  
+  /* alert */
+  
+  content.alert = {}; 
+  
+  var display = function(type, head, text) {
+	content.alert.danger = (type === "danger" ? true : false);
+	content.alert.warning = (type === "warning" ? true : false);
+	content.alert.success = (type === "success" ? true : false);
+	content.alert.head = head;
+	content.alert.text = text;
+    $("#alert").show();
+  };
+  
+  content.alert.dismiss = function() {
+    $("#alert").hide();
+    content.alert.danger = false;
+    content.alert.warning = false;
+    content.alert.success = false;
+    content.alert.head = null;
+    content.alert.text = null;
+  };
+
+  content.alert.dismiss();
+  
+
+  /* clients */ 
+  
+  content.clients = {};
+  content.clients.creating = false;
+  content.clients.updating = false;
+  content.clients.item = null;
+  content.clients.length = 5;
+  content.clients.offset = 0;
+  content.clients.limit = 1;
+  content.clients.index = 1;
+  content.clients.size = 0;
+  content.clients.items = [];
+  
+  var sync = function() {
+	content.clients.index = Math.ceil((content.clients.offset + 1) / content.clients.length);
+	content.clients.limit = Math.ceil(content.clients.size / content.clients.length);
+  };
+  
+  content.clients.prev = function() {
+    if (content.clients.length <= content.clients.offset) {
+      content.clients.offset = content.clients.offset - content.clients.length;
+      sync();
+      page();
+    }
+  };
+  
+  content.clients.next = function() {
+    if (content.clients.offset + content.clients.length < content.clients.size) {
+      content.clients.offset = content.clients.offset + content.clients.length;
+      sync();
+      page();
+    }
+  };
+  
+  content.clients.first = function() {
+    content.clients.offset = 0;
+    sync();
+    page();
+  };
+
+  content.clients.last = function() {
+    content.clients.offset = Math.floor((content.clients.size - 1) / content.clients.length) * content.clients.length;
+    sync();
+    page();
+  };
+      
+  var select = function(item) {
+    content.clients.creating = false;
+    content.clients.updating = true;
+    content.clients.item = item;
+  };
+  
+  content.clients.clean = function() {
+    content.clients.creating = false;
+    content.clients.updating = false;
+    content.clients.item = null;
+    content.clients.items.forEach(function (item) {
+      item.filter = null;
+      item.topic = null;
+      item.payload = null;
+      item.qos = null;
+      item.retained = null;
+      item.persisted = null;
+    });
+  };
+  
+  content.clients.reset = function() {
+    content.clients.clean();
+    content.alert.dismiss();
+  };
+
+  var size = function() {
+    emit.clients.size(function onSuccess(response) {
+      content.clients.size = response;
+      sync();
+      page();
+      $("#content").show();
+    },function onError(response) {
+      content.clients.size = 0;
+    });
+  };
+    
+  var page = function() {
+    emit.clients.page(content.clients, function onSuccess(response) {
+      content.clients.items = response;
+      content.clients.items.forEach(function (item) {
+    	item.select = function() { select(item); };
+        item.connect = function() { connect(item); };
+        item.disconnect = function() { disconnect(item); };
+        item.subscribe = function() { subscribe(item); };
+        item.unsubscribe = function() { unsubscribe(item); };
+        item.publish = function() { publish(item); };
+    	connected(item);
+      });
+    },function onError(response) {
+      content.clients.items = [];
+    });
+  };
+
+  var connected = function(item) {
+    emit.clients.connected(item, function onSuccess(response) {
+      item.connected = response;
+      if (item.connected) {
+        subscribed(item);
+      }
+    },function onError(response) {
+	  item.connected = null;
+	  display("warning","Failure","Something wrong happened while querying.");
+    });
+  };
+
+  var connect = function(item) {
+    emit.clients.connect(item, function onSuccess(response) {
+      connected(item);
+    },function onError(response) {
+	  display("warning","Failure","Something wrong happened while connecting.");
+	  connected(item);
+    });
+  };
+
+  var disconnect = function(item) {
+    emit.clients.disconnect(item, function onSuccess(response) {
+      connected(item);
+    },function onError(response) {
+	  display("warning","Failure","Something wrong happened while disconnecting.");
+	  connected(item);
+    });
+  };
+
+  var subscribed = function(item) {
+    emit.clients.subscribing(item, function onSuccess(response) {
+      item.subscribed = response;
+      if (item.subscribed) {
+    	item.filter = item.subscribed.topic;  
+      }
+    },function onError(response) {
+	  item.subscribed = null;
+      item.topic = null;
+	  display("warning","Failure","Something wrong happened while querying the client.");
+    });
+  };
+
+  var subscribe = function(item) {
+    emit.clients.subscribe(item, function onSuccess(response) {
+      subscribed(item);
+    },function onError(response) {
+	  display("warning","Failure","Something wrong happened while subscribing.");
+	  subscribed(item);
+    });
+  };
+
+  var unsubscribe = function(item) {
+    emit.clients.unsubscribe(item, function onSuccess(response) {
+      item.filter = null;
+      subscribed(item);
+    },function onError(response) {
+	  display("warning","Failure","Something wrong happened while unsubscribing.");
+	  item.filter = null;
+	  subscribed(item);
+    });
+  };
+
+  var publish = function(item) {
+    emit.clients.publish(item, function onSuccess(response) {
+      display("success","Published","The message have been successfully published.");
+      item.topic = null;
+      item.payload = null;
+      item.qos = null;
+      item.retained = null;
+      item.persisted = null;
+    },function onError(response) {
+      display("warning","Failure","Something wrong happened while publishing.");
+      item.topic = null;
+      item.payload = null;
+      item.qos = null;
+      item.retained = null;
+      item.persisted = null;
+    });
+  };
+    
+  /* brokers */
+  
+  content.brokers = {};
+  
+  var brokers = function() {
+    emit.brokers.list(function onSuccess(response) {
+      content.brokers.items = response;
+      size();
+    },function onError(response) {
+      content.brokers.items = [];
+    });
+  }
+  
+  brokers();
+  
+  </script>
+</html>
+
+<!-- 
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Emit | Monitoring</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -364,7 +818,7 @@
       },function onError(response) {
   	    item.connect = null;
       });
-    }
+    };
 
     $scope.x1.doConnect = function() {
       var content = "client=" + $scope.x1.item.uuid;
@@ -488,3 +942,4 @@
   });
   </script>
 </html>
+ -->

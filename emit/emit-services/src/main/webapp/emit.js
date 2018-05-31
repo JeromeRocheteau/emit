@@ -201,7 +201,8 @@ emit.clients.size = function(onSuccess, onError) {
 };
 
 emit.clients.page = function(data, onSuccess, onError) {
-  var parameters = "?offset=" + data.offset + "&length=" + data.length;
+  var parameters = "?offset=" + data.offset 
+  + "&length=" + data.length;
   const req = new XMLHttpRequest();
   req.onload = function(event) {
     if (this.status === 200) {
@@ -270,6 +271,134 @@ emit.clients.delete = function(data, onSuccess, onError) {
     onError(this.responseText);
   }
   req.open('POST','/emit/clients/delete' + parameters, true);
+  req.send(null);    
+};
+
+emit.clients.connected = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/clients/connected' + parameters, true);
+  req.send(null);    
+};
+	    
+emit.clients.connect = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/clients/connect' + parameters, true);
+  req.send(null);    
+};
+	    
+emit.clients.disconnect = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid 
+  + "&connect=" + data.connected.id;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/clients/disconnect' + parameters, true);
+  req.send(null);    
+};
+
+emit.clients.subscribing = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/clients/subscribing' + parameters, true);
+  req.send(null);    
+};
+	    
+emit.clients.subscribe = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid 
+  + "&topic=" + encodeURIComponent(data.filter);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/clients/subscribe' + parameters, true);
+  req.send(null);    
+};
+	    
+emit.clients.unsubscribe = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid 
+  + "&topic=" + encodeURIComponent(data.subscribed.topic) 
+  + "&subscribe=" + data.subscribed.id;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/clients/unsubscribe' + parameters, true);
+  req.send(null);    
+};
+	    
+emit.clients.publish = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid 
+  + "&topic=" + encodeURIComponent(data.topic) 
+  + "&qos=" + data.qos 
+  + "&retained=" + data.retained 
+  + "&persisted=" + data.persisted 
+  + "&payload=" + encodeURIComponent(data.payload);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/clients/publish' + parameters, true);
   req.send(null);    
 };
 
