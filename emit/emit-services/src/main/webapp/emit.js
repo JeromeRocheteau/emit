@@ -74,9 +74,9 @@ emit.user.update = function(data, onSuccess, onError) {
   req.send(null);    
 };
 
-emit.broker= {};
+emit.brokers= {};
 
-emit.broker.size = function(onSuccess, onError) {
+emit.brokers.size = function(onSuccess, onError) {
   const req = new XMLHttpRequest();
   req.onload = function(event) {
     if (this.status === 200) {
@@ -92,7 +92,7 @@ emit.broker.size = function(onSuccess, onError) {
   req.send(null);    
 };
 
-emit.broker.page = function(data, onSuccess, onError) {
+emit.brokers.page = function(data, onSuccess, onError) {
   var parameters = "?offset=" + data.offset + "&length=" + data.length;
   const req = new XMLHttpRequest();
   req.onload = function(event) {
@@ -109,7 +109,7 @@ emit.broker.page = function(data, onSuccess, onError) {
   req.send(null);    
 };
 
-emit.broker.list = function(onSuccess, onError) {
+emit.brokers.list = function(onSuccess, onError) {
   const req = new XMLHttpRequest();
   req.onload = function(event) {
     if (this.status === 200) {
@@ -125,7 +125,7 @@ emit.broker.list = function(onSuccess, onError) {
   req.send(null);    
 };
 	    
-emit.broker.create = function(data, onSuccess, onError) {
+emit.brokers.create = function(data, onSuccess, onError) {
   var parameters = "?name=" + encodeURIComponent(data.name) 
   + "&uri=" + encodeURIComponent(data.uri) 
   + (data.username == null ? "" : "&username=" + encodeURIComponent(data.username)) 
@@ -145,7 +145,7 @@ emit.broker.create = function(data, onSuccess, onError) {
   req.send(null);    
 };
 	    
-emit.broker.update = function(data, onSuccess, onError) {
+emit.brokers.update = function(data, onSuccess, onError) {
   var parameters = "?name=" + encodeURIComponent(data.name) 
   + "&uri=" + encodeURIComponent(data.uri) 
   + (data.username == null ? "" : "&username=" + encodeURIComponent(data.username)) 
@@ -165,7 +165,7 @@ emit.broker.update = function(data, onSuccess, onError) {
   req.send(null);    
 };
 	    
-emit.broker.delete = function(data, onSuccess, onError) {
+emit.brokers.delete = function(data, onSuccess, onError) {
   var parameters = "?uri=" + encodeURIComponent(data.uri);
   const req = new XMLHttpRequest();
   req.onload = function(event) {

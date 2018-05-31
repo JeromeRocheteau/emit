@@ -76,9 +76,6 @@
     
       <div class="col-6">
           <div class="container" style="padding-top:1ex;">
-            <button class="float-right btn btn-outline-secondary" rv-on-click="brokers.clean">
-             <i class="fas fa-sync"></i>
-            </button>
             <h4>Brokers <small>(<span rv-text="brokers.size"></span> items)</small></h4>
           </div>
           <div class="container" style="padding-top:1ex;">
@@ -107,8 +104,9 @@
           <ul class="container list-group" style="padding-top:1ex;">
             <li class="list-group-item" rv-each-item="brokers.items">
               <h5 class="list-group-item-heading">{item.name}</h5>
-              <p class="list-group-item-text">{item.uri}</p>
-              <p class="list-group-item-text" rv-show="item.username">{item.username}</p>
+              <p class="list-group-item-text">uri: {item.uri}</p>
+              <p class="list-group-item-text" rv-show="item.username">access: {item.username}</p>
+              <p class="list-group-item-text" rv-hide="item.username">access: anonymous</p>
               <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="brokers.item">Edit</button>
             </li>
           </ul>
@@ -136,7 +134,7 @@
               <input type="password" class="form-control" id="broker.password" rv-value="brokers.item.password" placeholder="Password">
             </div>
             <div class="form-group pull-right">
-              <button type="reset" class="btn btn-outline-secondary" rv-on-click="brokers.clean"><strong>Cancel</strong></button>
+              <button type="reset" class="btn btn-outline-secondary" rv-on-click="brokers.reset"><strong>Cancel</strong></button>
               <button type="button" class="btn btn-outline-primary" rv-on-click="brokers.create" rv-show="brokers.creating"><strong>Create</strong></button>
               <button type="button" class="btn btn-outline-danger" rv-on-click="brokers.delete" rv-show="brokers.updating"><strong>Delete</strong></button>
               <button type="button" class="btn btn-outline-primary" rv-on-click="brokers.update" rv-show="brokers.updating"><strong>Update</strong></button>
@@ -144,6 +142,13 @@
           </fieldset>
         </form>
       
+        <div class="container">
+          <div class="alert alert-dismissible" rv-class-alert-danger="alert.danger" rv-class-alert-warning="alert.warning" rv-class-alert-success="alert.success" id="alert" role="alert" style="margin-top:20px;">
+            <button type="button" class="close" rv-on-click="alert.dismiss" aria-label="close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="alert-heading" rv-text="alert.head"></h4>
+            <p rv-text="alert.text"></p>
+          </div>
+        </div>
       </div>
     
     </section>
@@ -154,6 +159,8 @@
   <script type="text/javascript">
   var content = {};
   rivets.bind($('#content'), content);
+  
+  /* user */
   
   content.user = {};
   
@@ -167,6 +174,30 @@
   }, function onError(response){
 	content.user.name = null;
   });
+  
+  /* alert */
+  
+  content.alert = {}; 
+  
+  var display = function(type, head, text) {
+	content.alert.danger = (type === "danger" ? true : false);
+	content.alert.warning = (type === "warning" ? true : false);
+	content.alert.success = (type === "success" ? true : false);
+	content.alert.head = head;
+	content.alert.text = text;
+    $("#alert").show();
+  }
+  
+  content.alert.dismiss = function() {
+    $("#alert").hide();
+    content.alert.danger = false;
+    content.alert.warning = false;
+    content.alert.success = false;
+    content.alert.head = null;
+    content.alert.text = null;
+  }
+
+  content.alert.dismiss();
   
   content.brokers = {};
   content.brokers.creating = false;
@@ -229,9 +260,14 @@
     content.brokers.updating = false;
     content.brokers.item = null;
   }
+  
+  content.brokers.reset = function() {
+    content.brokers.clean();
+    content.alert.dismiss();
+  }
 
   var size = function() {
-    emit.broker.size(function onSuccess(response) {
+    emit.brokers.size(function onSuccess(response) {
       content.brokers.size = response;
       sync();
       page();
@@ -241,7 +277,7 @@
   }
     
   var page = function() {
-    emit.broker.page(content.brokers, function onSuccess(response) {
+    emit.brokers.page(content.brokers, function onSuccess(response) {
       content.brokers.items = response;
       content.brokers.items.forEach(function (item) {
     	item.select = function() { select(item); };
@@ -250,240 +286,38 @@
       content.brokers.items = [];
     });
   }
+    
+  content.brokers.create = function() {
+    emit.brokers.create(content.brokers.item, function onSuccess(response) {
+      display("success", "Success", "The broker has successfully been created.");
+      content.brokers.clean();
+      size();
+    },function onError(response) {
+    	display("danger", "Failure", "Something wrong happened while creating the broker.");
+    });
+  }
+    
+  content.brokers.update = function() {
+    emit.brokers.update(content.brokers.item, function onSuccess(response) {
+      display("success", "Success", "The broker has successfully been updated.");
+      content.brokers.clean();
+      page();
+    },function onError(response) {
+    	display("danger", "Failure", "Something wrong happened while updating the broker.");
+    });
+  }
+    
+  content.brokers.delete = function() {
+    emit.brokers.delete(content.brokers.item, function onSuccess(response) {
+      display("success", "Success", "The broker has successfully been deleted.");
+      content.brokers.clean();
+      size();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while deleting the broker.");
+    });
+  }
   
   size();
   
   </script>
 </html>
-
-<!-- 
-      <div class="col-md-6">
-        <form name="form" class="form list-group-item" id="form">
-          <fieldset ng-disabled="!(x1.creating || x1.updating)">
-            <legend ng-hide="x1.updating">Create a broker</legend>
-            <legend ng-show="x1.updating">Update a broker</legend>
-            <div class="row" ng-hide="x1.updating">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="broker.uri" ng-model="x1.item.uri" placeholder="Hostname" ng-required="true" required>
-                </div>
-              </div>
-            </div>
-            <div class="row" ng-show="x1.updating">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="broker.uri" ng-model="x1.item.uri" readonly>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="broker.name" ng-model="x1.item.name" placeholder="Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="broker.username" ng-model="x1.item.username" placeholder="Username">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="password" class="form-control" id="broker.password" ng-model="x1.item.password" placeholder="Password">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group pull-right">
-                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.doCreate()" ng-show="x1.creating" ng-disabled="!form.$valid"><strong>Create</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!form.$valid"><strong>Delete</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.doUpdate()" ng-show="x1.updating" ng-disabled="!form.$valid"><strong>Update</strong></button>
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-        <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
-          <button type="button" class="close" aria-label="close" ng-click="doDismiss()"><span aria-hidden="true">&times;</span></button>
-          <p>{{message.content}}</p>
-        </div>
-      </div>
-    
-    </section>
-
- -->
-
-  <!-- script type="text/javascript">
-  var app = angular.module('app',[]);
-
-  app.filter('ceil', function() {
-	return function(input) {
-	  return Math.ceil(input);
-	};
-  });
-  
-  app.controller('controller', function (content, $http) {
-
-	$scope.user = {};
-	$scope.user.name = null;
-	$scope.user.role = false;
-	  
-  	var user = function() {
-  		$http({method:'GET',url:'../user/name'})
-  		.then(function onSuccess(response) {
-  			$scope.user.name = response.data;
-  		}, function onError(response) {
-  			$scope.user.name = null;
-  		});
-  		$http({method:'GET',url:'../user/role'})
-  		.then(function onSuccess(response) {
-  			$scope.user.role = response.data;
-  		}, function onError(response) {
-  			$scope.user.role = false;
-  		});
-  	}
-  	
-  	user();
-  	
-  	$scope.message = {};
-    
-    var display = function(type, content) {
-        $scope.message.type = type;
-        $scope.message.content = content;
-        $("#alert").show();
-    }
-    
-    $scope.doDismiss = function() {
-        $("#alert").hide();
-        $scope.alert = {};
-    }
-  	
-    $scope.x1 = {};
-    $scope.x1.creating = false;
-    $scope.x1.updating = false;
-    $scope.x1.item = null;
-    $scope.x1.length = 5;
-    $scope.x1.offset = 0;
-    $scope.x1.size = 0;
-    $scope.x1.items = [];
-    
-    $scope.x1.doPrev = function() {
-      if ($scope.x1.length <= $scope.x1.offset) {
-        $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        $scope.x1.doPage();
-      }
-    }
-    
-    $scope.x1.doNext = function() {
-      if ($scope.x1.offset + $scope.x1.length < $scope.x1.size) {
-        $scope.x1.offset = $scope.x1.offset + $scope.x1.length;
-        $scope.x1.doPage();
-      }
-    }
-    
-    $scope.x1.doFirst = function() {
-      $scope.x1.offset = 0;
-      $scope.x1.doPage();
-    }
-
-    $scope.x1.doLast = function() {
-      $scope.x1.offset = Math.floor(($scope.x1.size - 1) / $scope.x1.length) * $scope.x1.length;
-      $scope.x1.doPage();
-    }
-        
-    $scope.x1.doSelect = function(item) {
-      if (item) {
-        $scope.x1.creating = false;
-        $scope.x1.updating = true;
-        $scope.x1.item = angular.copy(item);              
-      } else {
-        $scope.x1.creating = true;
-        $scope.x1.updating = false;
-        $scope.x1.item = angular.copy({});
-      }
-    }
-    
-    $scope.x1.doClean = function() {
-      $scope.x1.creating = false;
-      $scope.x1.updating = false;
-      $scope.x1.item = null;
-    }
-
-    $scope.x1.doSize = function() {
-      $http({method:'GET',url:'../brokers/size'})
-      .then(function onSuccess(response) {
-         $scope.x1.size = response.data;
-      },function onError(response) {
-        $scope.x1.size = 0;
-      });
-    }
-      
-    $scope.x1.doPage = function() {
-      var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
-      $http({method:'GET',url:'../brokers/page?' + content})
-      .then(function onSuccess(response) {
-        $scope.x1.items = response.data;
-      },function onError(response) {
-        $scope.x1.items = [];
-      });
-    }
-
-    $scope.x1.doCreate = function() {
-      var content = "uri=" + $scope.x1.item.uri + "&name=" + $scope.x1.item.name + ($scope.x1.item.username ? "&username=" + $scope.x1.item.username : "") + ($scope.x1.item.password ? "&password=" + $scope.x1.item.password : "");
-      $http({method:'POST',url:'../brokers/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The new broker has been sucessfully created.");
-        $scope.x1.doClean();
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while creating the new broker.");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.doUpdate = function() {
-      var content = "uri=" + $scope.x1.item.uri + "&name=" + $scope.x1.item.name + ($scope.x1.item.username ? "&username=" + $scope.x1.item.username : "") + ($scope.x1.item.password ? "&password=" + $scope.x1.item.password : "");
-      $http({method:'POST',url:'../brokers/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The broker " + $scope.x1.item.uri + " has been sucessfully updated.");
-        $scope.x1.doClean();
-        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
-          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        }
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while updating the broker #" + $scope.x1.item.uri +".");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.doDelete = function() {
-      var content = "uri=" + $scope.x1.item.uri;
-      $http({method:'POST',url:'../brokers/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The broker " + $scope.x1.item.uri + " has been sucessfully deleted.");
-        $scope.x1.doClean();
-        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
-          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        }
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while deleting the broker #" + $scope.x1.item.uri +".");
-        $scope.x1.doClean();
-      });
-    }
-	
-    $scope.x1.doSize();
-    $scope.x1.doPage();
-    
-  });
-  </script -->
