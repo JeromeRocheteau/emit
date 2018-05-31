@@ -16,7 +16,7 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
   <script type="text/javascript" src="/emit/emit.js"></script>
-  <body id="content">
+  <body id="content" style="display:none;">
     <section id="menu">
       <div class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -73,7 +73,6 @@
       </div>
     </section>
     <section class="container-fluid row">
-    
       <div class="col-6">
           <div class="container" style="padding-top:1ex;">
             <h4>Brokers <small>(<span rv-text="brokers.size"></span> items)</small></h4>
@@ -101,22 +100,20 @@
               </div>
             </nav>
           </div>
-          <ul class="container list-group" style="padding-top:1ex;">
-            <li class="list-group-item" rv-each-item="brokers.items">
-              <h5 class="list-group-item-heading">{item.name}</h5>
-              <p class="list-group-item-text">uri: {item.uri}</p>
-              <p class="list-group-item-text" rv-show="item.username">access: {item.username}</p>
-              <p class="list-group-item-text" rv-hide="item.username">access: anonymous</p>
-              <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="brokers.item">Edit</button>
-            </li>
-          </ul>
+          <div class="container">
+          <ul class="list-group" style="padding-top:1ex;">
+              <li class="list-group-item" rv-each-item="brokers.items">
+                <h5 class="list-group-item-heading" rv-text="item.name"></h5>
+                <p class="list-group-item-text" rv-text="item.uri"></p>
+                <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="brokers.item">Edit</button>
+              </li>
+            </ul>
+          </div>
           <div class="container" style="padding-top:1ex;">
             <p class="text-right"><button class="btn btn-primary" rv-on-click="brokers.select" rv-disabled="brokers.item">Create</button></p>
           </div>
       </div>
-      
       <div class="col-6">
-      
         <form name="form container" class="form" id="form" rv-show="brokers.item">
           <fieldset>
             <legend rv-show="brokers.creating">Create a broker</legend>
@@ -133,15 +130,16 @@
             <div class="form-group">
               <input type="password" class="form-control" id="broker.password" rv-value="brokers.item.password" placeholder="Password">
             </div>
-            <div class="form-group pull-right">
+            <div class="form-group">
               <button type="reset" class="btn btn-outline-secondary" rv-on-click="brokers.reset"><strong>Cancel</strong></button>
-              <button type="button" class="btn btn-outline-primary" rv-on-click="brokers.create" rv-show="brokers.creating"><strong>Create</strong></button>
-              <button type="button" class="btn btn-outline-danger" rv-on-click="brokers.delete" rv-show="brokers.updating"><strong>Delete</strong></button>
-              <button type="button" class="btn btn-outline-primary" rv-on-click="brokers.update" rv-show="brokers.updating"><strong>Update</strong></button>
+              <div class="float-right">
+                <button type="button" class="btn btn-outline-primary" rv-on-click="brokers.create" rv-show="brokers.creating"><strong>Create</strong></button>
+                <button type="button" class="btn btn-outline-danger" rv-on-click="brokers.delete" rv-show="brokers.updating"><strong>Delete</strong></button>
+                <button type="button" class="btn btn-outline-primary" rv-on-click="brokers.update" rv-show="brokers.updating"><strong>Update</strong></button>
+              </div>
             </div>
           </fieldset>
         </form>
-      
         <div class="container">
           <div class="alert alert-dismissible" rv-class-alert-danger="alert.danger" rv-class-alert-warning="alert.warning" rv-class-alert-success="alert.success" id="alert" role="alert" style="margin-top:20px;">
             <button type="button" class="close" rv-on-click="alert.dismiss" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -150,7 +148,6 @@
           </div>
         </div>
       </div>
-    
     </section>
     <footer class="footer fixed-bottom bg-light text-dark">
       <p class="text-center">Copyright © 2015-2018. ICAM. All rights reserved.</p>
@@ -271,6 +268,7 @@
       content.brokers.size = response;
       sync();
       page();
+      $("#content").show();
     },function onError(response) {
       content.brokers.size = 0;
     });
