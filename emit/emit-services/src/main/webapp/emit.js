@@ -182,3 +182,94 @@ emit.brokers.delete = function(data, onSuccess, onError) {
   req.send(null);    
 };
 
+emit.clients = {};
+
+emit.clients.size = function(onSuccess, onError) {
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/clients/size', true);
+  req.send(null);    
+};
+
+emit.clients.page = function(data, onSuccess, onError) {
+  var parameters = "?offset=" + data.offset + "&length=" + data.length;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/clients/page' + parameters, true);
+  req.send(null);    
+};
+	    
+emit.clients.create = function(data, onSuccess, onError) {
+  var parameters = "?name=" + encodeURIComponent(data.name) 
+  + "&broker=" + encodeURIComponent(data.broker) 
+  + "&open=" + data.open;;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/clients/create' + parameters, true);
+  req.send(null);    
+};
+	    
+emit.clients.update = function(data, onSuccess, onError) {
+  var parameters = "?uuid=" + data.uuid 
+  + "&name=" + encodeURIComponent(data.name) 
+  + "&broker=" + encodeURIComponent(data.broker) 
+  + "&open=" + data.open;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/clients/update' + parameters, true);
+  req.send(null);    
+};
+	    
+emit.clients.delete = function(data, onSuccess, onError) {
+  var parameters = "?uuid=" + data.uuid;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/clients/delete' + parameters, true);
+  req.send(null);    
+};
+

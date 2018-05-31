@@ -3,375 +3,351 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Emit | Configuring</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/emit/emit.css"></link>
+    <title>Emit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="/emit/emit.css">
   </head>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
-  <body ng-app="app" ng-controller="controller">
-    <header class="ng-cloak">
-      <div class="navbar navbar-inverse navbar-custom navbar-fixed-top">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script type="text/javascript" src="/emit/emit.js"></script>
+  <body id="content" style="display:none;">
+    <section id="menu">
+      <div class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="../index.html"><strong>Emit</strong></a>
-          <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-left">
-              <li class="dropdown" ng-show="user.role">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Configuring&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../configuring/brokers.html"><span class="glyphicon glyphicon-transfer" aria-hidden="true">&nbsp;</span>Brokers</a></li>
-                  <li><a href="../configuring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                  <li><a href="../configuring/callbacks.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Callbacks</a></li>
-                </ul>
+          <a class="navbar-brand" href="/emit/index.html">Home</a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active dropdown" rv-show="user.role">
+                <a class="nav-link active dropdown-toggle" href="#" id="configuringDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Configuring
+                </a>
+                <div class="dropdown-menu" aria-labelledby="configuringDropdown">
+                  <a class="dropdown-item" href="/emit/configuring/brokers.html">Brokers</a>
+                  <a class="dropdown-item" href="/emit/configuring/clients.html">Clients</a>
+                  <a class="dropdown-item" href="/emit/configuring/callbacks.html">Callbacks</a>
+                </div>
               </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managing&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../managing/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                  <li ng-show="user.role"><a href="../managing/shares.html"><span class="glyphicon glyphicon-share-alt" aria-hidden="true">&nbsp;</span>Shares</a></li>
-                </ul>
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="monitoringDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Monitoring
+                </a>
+                <div class="dropdown-menu" aria-labelledby="monitoringDropdown">
+                  <a class="dropdown-item" href="/emit/monitoring/clients.html">Clients</a>
+                </div>
               </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Monitoring&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../monitoring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reporting&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../reporting/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                  <li class="dropdown-header">Conceptual Layer</li>
-                  <li><a href="../reporting/topics.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Topics</a></li>
-                </ul>
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="reportingDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Reporting
+                </a>
+                <div class="dropdown-menu" aria-labelledby="reportingDropdown">
+                  <a class="dropdown-item" href="/emit/reporting/clients.html">Clients</a>
+                </div>
               </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">{{user.name}}</li>
-                  <li><a href="../settings.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Settings</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="../user/clear"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
-                </ul>
+            <ul class="navbar-nav">
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Account
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
+                  <div class="dropdown-header" rv-text="user.name"></div>
+                  <a class="dropdown-item" href="/emit/settings.html">Settings</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/emit/user/clear">Disconnect</a>
+                </div>
               </li>
             </ul>
           </div>
         </div>
-      </div>
-    </header>
-    <section id="title" class="ng-cloak">
-      <div class="container-fluid well">
-        <h2>EMIT <small>a supervisory & control system for MQTT clients</small></h2>
       </div>
     </section>
-    <section id="content" class="container ng-cloak">
-
-      <div class="col-md-6">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
-            <h3>Clients <small>({{x1.size}} items)</small></h3>
-            <nav aria-label="...">
-              <ul class="pager">
-                <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
-                <li class="previous"><a class="btn btn-default" ng-click="x1.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
-                <li ng-show="x1.size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
-                <li class="next"><a class="btn btn-default" ng-click="x1.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
-                <li class="next"><a class="btn btn-default" ng-click="x1.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
-              </ul>
+    <section id="title" class="jumbotron jumbotron-fluid">
+      <div class="container-fluid">
+        <h1 class="display-4">EMIT <small class="lead">a supervisory &amp; control system for networks of MQTT clients</small></h1>
+      </div>
+    </section>
+    <section class="container-fluid row">
+      <div class="col-6">
+          <div class="container" style="padding-top:1ex;">
+            <h4>Clients <small>(<span rv-text="clients.size"></span> items)</small></h4>
+          </div>
+          <div class="container" style="padding-top:1ex;">
+            <nav class="btn-toolbar justify-content-between" role="toolbar" aria-label="...">
+              <div class="btn-group" role="group">
+                <button class="btn btn-outline-secondary" rv-on-click="clients.first">
+                  <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="btn btn-outline-secondary" rv-on-click="clients.prev">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+              </div>
+              <div class="btn-group" role="group">
+                <span rv-text="clients.index"></span>/<span rv-text="clients.limit"></span>
+              </div>
+              <div class="btn-group" role="group">
+                <button class="btn btn-outline-secondary" rv-on-click="clients.next">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="btn btn-outline-secondary" rv-on-click="clients.last">
+                  <i class="fas fa-step-forward"></i>
+                </button>
+              </div>
             </nav>
           </div>
-          <ul class="list-group" >
-            <li class="list-group-item" ng-repeat="item in x1.items">
-              <p class="list-group-item-text text-right">
-              </p>
-              <h4 class="list-group-item-heading">{{item.name}}</h4>
-              <p class="list-group-item-text">{{item.broker.name}} <small>{{item.broker.uri}}</small></p>
-              <p class="list-group-item-text">{{item.user}}</p>
-              <p class="list-group-item-text text-right">
-                <button class="btn btn-default btn-md" ng-hide="item.status" ng-click="x1.doSelect(item)">Edit</button>
-              </p>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p class="text-right"><button class="btn btn-primary" ng-click="x1.doSelect()" ng-disabled="x1.item">Create</button></p>
-        </div>
+          <div class="container">
+          <ul class="list-group" style="padding-top:1ex;">
+              <li class="list-group-item" rv-each-item="clients.items">
+                <h5 class="list-group-item-heading">
+                  <span rv-text="item.name"></span>
+                  <span class="float-right">
+                    <i class="fas fa-lock-open" rv-show="item.open"></i>
+                    <i class="fas fa-lock" rv-hide="item.open"></i>
+                  </span>
+                </h5>
+                <p class="list-group-item-text"><span rv-text="item._broker.name"></span> (<small rv-text="item._broker.uri"></small>)</p>
+                <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="clients.item">Edit</button>
+              </li>
+            </ul>
+          </div>
+          <div class="container" style="padding-top:1ex;">
+            <p class="text-right"><button class="btn btn-primary" rv-on-click="clients.select" rv-disabled="clients.item">Create</button></p>
+          </div>
       </div>
-
-      <div class="col-md-6">
-        <form name="form" class="form list-group-item" id="form">
-          <fieldset ng-disabled="!(x1.creating || x1.updating)">
-            <legend ng-hide="x1.updating">Create a client</legend>
-            <legend ng-show="x1.updating">Update a client</legend>
-            <div class="row" ng-show="x1.updating">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="client.uuid" ng-model="x1.item.uuid" readonly>
-                </div>
+      <div class="col-6">
+        <form name="form container" class="form" id="form" rv-show="clients.item">
+          <fieldset>
+            <legend rv-show="clients.creating">Create a client</legend>
+            <legend rv-show="clients.updating">Update a client</legend>
+            <div class="form-group" rv-show="clients.updating">
+              <input type="text" class="form-control" id="client.uuid" rv-value="clients.item.uuid" readonly>
+            </div>
+            <div class="form-group input-group">
+              <input type="text" class="form-control" id="client.name" rv-value="clients.item.name" placeholder="Name">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" rv-class-btn-outline-success="clients.item.open" rv-on-click="clients.item.toggle" >
+                  <span rv-show="clients.item.open">public</span>
+                  <span rv-hide="clients.item.open">private</span>
+                </button>
               </div>
             </div>
-            <div class="row" ng-show="x1.updating">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="client.user" ng-model="x1.item.user" readonly>
-                </div>
-              </div>
+            <div class="form-group">
+              <select id="client.item.broker" class="form-control" rv-value="clients.item.broker" placeholder="Broker" required>
+                <option rv-each-item="brokers.items" rv-value="item.uri" rv-text="item.name"></option>
+              </select>
             </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="client.name" ng-model="x1.item.name" placeholder="Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <select class="form-control" id="client.broker" ng-model="x1.item.broker" ng-options="option as option.name for option in x0.items" ng-required="true" required>
-                    <option value="" disabled selected>Broker</option>
-                  </select>
-                  <!-- 
-                  <input list="brokers" type="text" class="form-control" id="client.broker" ng-model="x1.item.broker" placeholder="Broker" ng-required="true" required>
-                  <datalist id="brokers">
-                    <option data-ng-repeat="item in x0.items" value="{{item}}">
-                  </datalist>
-                   -->
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <select class="form-control" id="client.open" ng-model="x1.item.open" ng-options="option.value as option.label for option in options" ng-required="true" required>
-                    <option value="" disabled selected>Visibility</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group pull-right">
-                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.doCreate()" ng-show="x1.creating" ng-disabled="!form.$valid"><strong>Create</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!form.$valid"><strong>Delete</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.doUpdate()" ng-show="x1.updating" ng-disabled="!form.$valid"><strong>Update</strong></button>
-                </div>
+            <div class="form-group">
+              <button type="reset" class="btn btn-outline-secondary" rv-on-click="clients.reset"><strong>Cancel</strong></button>
+              <div class="float-right">
+                <button type="button" class="btn btn-outline-primary" rv-on-click="clients.create" rv-show="clients.creating"><strong>Create</strong></button>
+                <button type="button" class="btn btn-outline-danger" rv-on-click="clients.delete" rv-show="clients.updating"><strong>Delete</strong></button>
+                <button type="button" class="btn btn-outline-primary" rv-on-click="clients.update" rv-show="clients.updating"><strong>Update</strong></button>
               </div>
             </div>
           </fieldset>
         </form>
-        <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
-          <button type="button" class="close" aria-label="close" ng-click="doDismiss()"><span aria-hidden="true">&times;</span></button>
-          <p>{{message.content}}</p>
+        <div class="container">
+          <div class="alert alert-dismissible" rv-class-alert-danger="alert.danger" rv-class-alert-warning="alert.warning" rv-class-alert-success="alert.success" id="alert" role="alert" style="margin-top:20px;">
+            <button type="button" class="close" rv-on-click="alert.dismiss" aria-label="close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="alert-heading" rv-text="alert.head"></h4>
+            <p rv-text="alert.text"></p>
+          </div>
         </div>
       </div>
-    
     </section>
-    <footer class="footer navbar navbar-inverse navbar-custom navbar-fixed-bottom">
-      <div class="container-fluid">
-        <div class="nav navbar-nav navbar-left">
-          <p class="text-muted">Copyright © 2015-2017. ICAM. All rights reserved.</p>
-        </div>
-      </div>
+    <footer class="footer fixed-bottom bg-light text-dark">
+      <p class="text-center">Copyright © 2015-2018. ICAM. All rights reserved.</p>
     </footer>
   </body>
   <script type="text/javascript">
-  var app = angular.module('app',[]);
-
-  app.filter('ceil', function() {
-	return function(input) {
-	  return Math.ceil(input);
-	};
+  var content = {};
+  rivets.bind($('#content'), content);
+  
+  /* user */
+  
+  content.user = {};
+  
+  emit.user.name(function onSuccess(response) {
+	content.user.name = response;
+	emit.user.role(function onSuccess(response) {
+	  content.user.role = response;
+	},function onError(response) {
+	  content.user.role = false;
+	});
+  }, function onError(response){
+	content.user.name = null;
   });
   
-  app.controller('controller', function ($scope, $http) {
+  /* alert */
+  
+  content.alert = {}; 
+  
+  var display = function(type, head, text) {
+	content.alert.danger = (type === "danger" ? true : false);
+	content.alert.warning = (type === "warning" ? true : false);
+	content.alert.success = (type === "success" ? true : false);
+	content.alert.head = head;
+	content.alert.text = text;
+    $("#alert").show();
+  }
+  
+  content.alert.dismiss = function() {
+    $("#alert").hide();
+    content.alert.danger = false;
+    content.alert.warning = false;
+    content.alert.success = false;
+    content.alert.head = null;
+    content.alert.text = null;
+  }
 
-	$scope.user = {};
-	$scope.user.name = null;
-	$scope.user.role = false;
-	  
-  	var user = function() {
-  		$http({method:'GET',url:'../user/name'})
-  		.then(function onSuccess(response) {
-  			$scope.user.name = response.data;
-  		}, function onError(response) {
-  			$scope.user.name = null;
-  		});
-  		$http({method:'GET',url:'../user/role'})
-  		.then(function onSuccess(response) {
-  			$scope.user.role = response.data;
-  		}, function onError(response) {
-  			$scope.user.role = false;
-  		});
-  	}
-  	
-  	user();
-  	
-  	$scope.message = {};
-    
-    var display = function(type, content) {
-        $scope.message.type = type;
-        $scope.message.content = content;
-        $("#alert").show();
+  content.alert.dismiss();
+  
+
+  /* clients */ 
+  
+  content.clients = {};
+  content.clients.creating = false;
+  content.clients.updating = false;
+  content.clients.item = null;
+  content.clients.length = 5;
+  content.clients.offset = 0;
+  content.clients.limit = 1;
+  content.clients.index = 1;
+  content.clients.size = 0;
+  content.clients.items = [];
+  
+  var sync = function() {
+	content.clients.index = Math.ceil((content.clients.offset + 1) / content.clients.length);
+	content.clients.limit = Math.ceil(content.clients.size / content.clients.length);
+  }
+  
+  content.clients.prev = function() {
+    if (content.clients.length <= content.clients.offset) {
+      content.clients.offset = content.clients.offset - content.clients.length;
+      sync();
+      page();
     }
-    
-    $scope.doDismiss = function() {
-        $("#alert").hide();
-        $scope.alert = {};
+  }
+  
+  content.clients.next = function() {
+    if (content.clients.offset + content.clients.length < content.clients.size) {
+      content.clients.offset = content.clients.offset + content.clients.length;
+      sync();
+      page();
     }
-  	
-    $scope.x0 = {};
-    $scope.x0.items = [];
+  }
+  
+  content.clients.first = function() {
+    content.clients.offset = 0;
+    sync();
+    page();
+  }
+
+  content.clients.last = function() {
+    content.clients.offset = Math.floor((content.clients.size - 1) / content.clients.length) * content.clients.length;
+    sync();
+    page();
+  }
       
-    var list = function() {
-      $http({method:'GET',url:'../brokers/list'})
-      .then(function onSuccess(response) {
-        $scope.x0.items = response.data;
-      },function onError(response) {
-        $scope.x0.items = [];
-      });
-    }
-    
-    list();
-    
-    $scope.x1 = {};
-    $scope.x1.creating = false;
-    $scope.x1.updating = false;
-    $scope.x1.item = null;
-    $scope.x1.length = 5;
-    $scope.x1.offset = 0;
-    $scope.x1.size = 0;
-    $scope.x1.items = [];
-    
-    $scope.x1.doPrev = function() {
-      if ($scope.x1.length <= $scope.x1.offset) {
-        $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        $scope.x1.doPage();
-      }
-    }
-    
-    $scope.x1.doNext = function() {
-      if ($scope.x1.offset + $scope.x1.length < $scope.x1.size) {
-        $scope.x1.offset = $scope.x1.offset + $scope.x1.length;
-        $scope.x1.doPage();
-      }
-    }
-    
-    $scope.x1.doFirst = function() {
-      $scope.x1.offset = 0;
-      $scope.x1.doPage();
-    }
-
-    $scope.x1.doLast = function() {
-      $scope.x1.offset = Math.floor(($scope.x1.size - 1) / $scope.x1.length) * $scope.x1.length;
-      $scope.x1.doPage();
-    }
-        
-    $scope.x1.doSelect = function(item) {
-      if (item) {
-        $scope.x1.creating = false;
-        $scope.x1.updating = true;
-        $scope.x1.item = angular.copy(item);              
-      } else {
-        $scope.x1.creating = true;
-        $scope.x1.updating = false;
-        $scope.x1.item = angular.copy({});
-      }
-    }
-    
-    $scope.x1.doClean = function() {
-      $scope.x1.creating = false;
-      $scope.x1.updating = false;
-      $scope.x1.item = null;
-    }
-
-    $scope.x1.doSize = function() {
-      $http({method:'GET',url:'../clients/size'})
-      .then(function onSuccess(response) {
-         $scope.x1.size = response.data;
-      },function onError(response) {
-        $scope.x1.size = 0;
-      });
-    }
+  content.clients.select = function() {
+    content.clients.creating = true;
+    content.clients.updating = false;
+    content.clients.item = {};
+    content.clients.item.open = false;
+    content.clients.item.toggle = function() { console.log(content.clients.item.open); content.clients.item.open = !content.clients.item.open; };
+  }
       
-    $scope.x1.doPage = function() {
-      var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
-      $http({method:'GET',url:'../clients/page?' + content})
-      .then(function onSuccess(response) {
-        $scope.x1.items = response.data;
-      },function onError(response) {
-        $scope.x1.items = [];
-      });
-    }
+  var select = function(item) {
+    content.clients.creating = false;
+    content.clients.updating = true;
+    content.clients.item = Object.assign({}, item);
+    content.clients.item.toggle = function() { console.log(content.clients.item.open); content.clients.item.open = !content.clients.item.open; };
+  }
+  
+  content.clients.clean = function() {
+    content.clients.creating = false;
+    content.clients.updating = false;
+    content.clients.item = null;
+  }
+  
+  content.clients.reset = function() {
+    content.clients.clean();
+    content.alert.dismiss();
+  }
 
-    $scope.x1.doCreate = function() {
-      var content = "name=" + $scope.x1.item.name + "&broker=" + $scope.x1.item.broker.uri + "&open=" + $scope.x1.item.open;
-      $http({method:'POST',url:'../clients/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The new client has been sucessfully created.");
-        $scope.x1.doClean();
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while creating the new client.");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.doUpdate = function() {
-      var content = "uuid=" + $scope.x1.item.uuid + "&name=" + $scope.x1.item.name + "&broker=" + $scope.x1.item.broker.uri + "&open=" + $scope.x1.item.open;
-      $http({method:'POST',url:'../clients/update',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully updated.");
-        $scope.x1.doClean();
-        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
-          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        }
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while updating the client #" + $scope.x1.item.uuid +".");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.doDelete = function() {
-      var content = "uuid=" + $scope.x1.item.uuid;
-      $http({method:'POST',url:'../clients/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The client " + $scope.x1.item.uuid + " has been sucessfully deleted.");
-        $scope.x1.doClean();
-        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
-          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        }
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while deleting the client #" + $scope.x1.item.uuid +".");
-        $scope.x1.doClean();
-      });
-    }
-	
-    $scope.x1.doSize();
-    $scope.x1.doPage();
+  var size = function() {
+    emit.clients.size(function onSuccess(response) {
+      content.clients.size = response;
+      sync();
+      page();
+      $("#content").show();
+    },function onError(response) {
+      content.clients.size = 0;
+    });
+  }
     
-    $scope.options = [
-        {value: false, label: 'private'},
-        {value: true, label: 'public'},
-    ];
+  var page = function() {
+    emit.clients.page(content.clients, function onSuccess(response) {
+      content.clients.items = response;
+      content.clients.items.forEach(function (item) {
+    	item._broker = item.broker; // FIXME
+    	item.broker = item._broker.uri; // FIXME
+    	item.select = function() { select(item); };
+      });
+    },function onError(response) {
+      content.clients.items = [];
+    });
+  }
     
-  });
+  content.clients.create = function() {
+    emit.clients.create(content.clients.item, function onSuccess(response) {
+      display("success", "Success", "The client has successfully been created.");
+      content.clients.clean();
+      size();
+    },function onError(response) {
+    	display("danger", "Failure", "Something wrong happened while creating the client.");
+    });
+  }
+    
+  content.clients.update = function() {
+    emit.clients.update(content.clients.item, function onSuccess(response) {
+      display("success", "Success", "The client has successfully been updated.");
+      content.clients.clean();
+      page();
+    },function onError(response) {
+    	display("danger", "Failure", "Something wrong happened while updating the client.");
+    });
+  }
+    
+  content.clients.delete = function() {
+    emit.clients.delete(content.clients.item, function onSuccess(response) {
+      display("success", "Success", "The client has successfully been deleted.");
+      content.clients.clean();
+      size();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while deleting the client.");
+    });
+  }
+    
+  /* brokers */
+  
+  content.brokers = {};
+  
+  var brokers = function() {
+    emit.brokers.list(function onSuccess(response) {
+      content.brokers.items = response;
+      size();
+    },function onError(response) {
+      content.brokers.items = [];
+    });
+  }
+  
+  brokers();
+  
   </script>
 </html>
