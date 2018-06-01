@@ -721,11 +721,11 @@
     <url-pattern>/clients/publish</url-pattern>
   </servlet-mapping>
   
-  <!-- actions -->
+  <!-- records -->
 
   <servlet>
     <servlet-name>connect-size</servlet-name>
-    <servlet-class>fr.icam.emit.services.actions.Sizer</servlet-class>
+    <servlet-class>fr.icam.emit.services.records.Sizer</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
       <param-value>/fr/icam/emit/queries/connects/size.sql</param-value>
@@ -734,7 +734,7 @@
 
   <servlet>
     <servlet-name>subscribe-size</servlet-name>
-    <servlet-class>fr.icam.emit.services.actions.Sizer</servlet-class>
+    <servlet-class>fr.icam.emit.services.records.Sizer</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
       <param-value>/fr/icam/emit/queries/subscribes/size.sql</param-value>
@@ -743,34 +743,38 @@
 
   <servlet>
     <servlet-name>publish-size</servlet-name>
-    <servlet-class>fr.icam.emit.services.actions.Sizer</servlet-class>
+    <servlet-class>fr.icam.emit.services.records.Sizer</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
       <param-value>/fr/icam/emit/queries/publishs/size.sql</param-value>
     </init-param>
   </servlet>
 
+  <!-- records -->
+
   <servlet>
-    <servlet-name>action-size</servlet-name>
-    <servlet-class>fr.icam.emit.services.actions.Sumer</servlet-class>
+    <servlet-name>record-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.records.Sumer</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>action-size</servlet-name>
-    <url-pattern>/clients/actions/size</url-pattern>
+    <servlet-name>record-size</servlet-name>
+    <url-pattern>/records/size</url-pattern>
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>action-page</servlet-name>
-    <servlet-class>fr.icam.emit.services.actions.Pager</servlet-class>
+    <servlet-name>record-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.records.Pager</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
-      <param-value>/fr/icam/emit/queries/actions/page.sql</param-value>
+      <param-value>/fr/icam/emit/queries/records/page.sql</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
-    <servlet-name>action-page</servlet-name>
-    <url-pattern>/clients/actions/page</url-pattern>
+    <servlet-name>record-page</servlet-name>
+    <url-pattern>/records/page</url-pattern>
   </servlet-mapping>
+
+  <!-- messages -->
 
   <servlet>
     <servlet-name>message-size</servlet-name>
@@ -778,7 +782,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>message-size</servlet-name>
-    <url-pattern>/clients/messages/size</url-pattern>
+    <url-pattern>/messages/size</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -787,10 +791,8 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>message-page</servlet-name>
-    <url-pattern>/clients/messages/page</url-pattern>
+    <url-pattern>/messages/page</url-pattern>
   </servlet-mapping>
-
-  <!-- messages -->
   
   <servlet>
     <servlet-name>message-search</servlet-name>
@@ -1295,15 +1297,20 @@
       <web-resource-name>user-area</web-resource-name>
       <url-pattern>/index.html</url-pattern>
       <url-pattern>/settings.html</url-pattern>
+      <url-pattern>/monitoring/controls.html</url-pattern>
+      <url-pattern>/monitoring/records.html</url-pattern>
+      <url-pattern>/monitoring/messages.html</url-pattern>
+      <!-- to remove -->
       <url-pattern>/managing/clients.html</url-pattern>
-      <url-pattern>/managing/shares.html</url-pattern>
-      <url-pattern>/monitoring/clients.html</url-pattern>
+      <url-pattern>/managing/shares.html</url-pattern>      
       <url-pattern>/reporting/clients.html</url-pattern>
       <url-pattern>/reporting/topics.html</url-pattern>
+      <!-- to keep -->
       <url-pattern>/user/clear</url-pattern>
       <url-pattern>/user/name</url-pattern>
       <url-pattern>/user/role</url-pattern>
       <url-pattern>/user/update</url-pattern>
+      <!-- to remove -->
       <url-pattern>/tokens/item</url-pattern>
       <url-pattern>/tokens/create</url-pattern>
       <url-pattern>/tokens/delete</url-pattern>
@@ -1317,6 +1324,7 @@
       <url-pattern>/clients/managing/page</url-pattern>
       <url-pattern>/clients/handling/size</url-pattern>
       <url-pattern>/clients/handling/page</url-pattern>
+      <!-- to keep -->
       <url-pattern>/clients/connected</url-pattern>
       <url-pattern>/clients/connect</url-pattern>
       <url-pattern>/clients/disconnect</url-pattern>
@@ -1324,11 +1332,13 @@
       <url-pattern>/clients/subscribe</url-pattern>
       <url-pattern>/clients/unsubscribe</url-pattern>
       <url-pattern>/clients/publish</url-pattern>
+      <!-- to remove -->
       <url-pattern>/clients/callback</url-pattern>
-      <url-pattern>/clients/actions/size</url-pattern>
-      <url-pattern>/clients/actions/page</url-pattern>
-      <url-pattern>/clients/messages/size</url-pattern>
-      <url-pattern>/clients/messages/page</url-pattern>
+      <!-- to keep -->
+      <url-pattern>/records/size</url-pattern>
+      <url-pattern>/records/page</url-pattern>
+      <url-pattern>/messages/size</url-pattern>
+      <url-pattern>/messages/page</url-pattern>
       <url-pattern>/clients/shares/create</url-pattern>
       <url-pattern>/clients/shares/update</url-pattern>
       <url-pattern>/clients/shares/delete</url-pattern>
@@ -1340,6 +1350,7 @@
       <url-pattern>/clients/callbacks/attached</url-pattern>
       <url-pattern>/clients/callbacks/attach</url-pattern>
       <url-pattern>/clients/callbacks/detach</url-pattern>
+      <!-- to keep -->
       <url-pattern>/messages/search</url-pattern>
     </web-resource-collection>
     <auth-constraint>

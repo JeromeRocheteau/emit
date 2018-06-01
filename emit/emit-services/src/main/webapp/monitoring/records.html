@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Emit | Configuring</title>
+    <title>Emit | Monitoring</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
@@ -75,7 +75,7 @@
       </div>
     </section>
     <section class="container-fluid row">
-      <div class="col-6">
+      <div class="col-6" rv-hide="clients.item">
           <div class="container" style="padding-top:1ex;">
             <h4>Clients <small>(<span rv-text="clients.size"></span> items)</small></h4>
           </div>
@@ -112,47 +112,72 @@
                     <i class="fas fa-lock" rv-hide="item.open"></i>
                   </span>
                 </h5>
-                <p class="list-group-item-text"><span rv-text="item._broker.name"></span> (<small rv-text="item._broker.uri"></small>)</p>
-                <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="clients.item">Edit</button>
+                <p class="list-group-item-text"><span rv-text="item.broker.name"></span> (<small rv-text="item.broker.uri"></small>)</p>
+                <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="clients.item">Select</button>
               </li>
             </ul>
           </div>
-          <div class="container" style="padding-top:1ex;">
-            <p class="text-right"><button class="btn btn-primary" rv-on-click="clients.select" rv-disabled="clients.item">Create</button></p>
-          </div>
       </div>
-      <div class="col-6">
-        <form name="form container" class="form" id="form" rv-show="clients.item">
-          <fieldset>
-            <legend rv-show="clients.creating">Create a client</legend>
-            <legend rv-show="clients.updating">Update a client</legend>
-            <div class="form-group" rv-show="clients.updating">
-              <input type="text" class="form-control" id="client.uuid" rv-value="clients.item.uuid" readonly>
+      <div class="col-12" rv-show="clients.item">
+
+        <div class="container" style="padding-top:1ex;">
+          <h4>Records of <span rv-text="clients.item.name"></span> <small>(<span rv-text="records.size"></span> items)</small></h4>
+        </div>
+
+
+        <div class="container">
+          <table class="table table-borderless table-hover">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>type</th>
+                <th>started</th>
+                <th>stopped</th>
+                <th>topic</th>
+                <th>user</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr rv-each-item="records.items" rv-class-table-success="item.published" rv-class-table-warning="item.subscribing" rv-class-table-primary="item.connecting">
+                <td><span rv-text="item.id"></span></td>
+                <td><span rv-text="item.type"></span></td>
+                <td><span rv-text="item.started  | date"></span></td>
+                <td><span rv-show="item.stopped" rv-text="item.stopped | date"></span></td>
+                <td><span rv-show="item.topic" rv-text="item.topic"></span></td>
+                <td><span rv-text="item.user"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="container" style="padding-top:1ex;">
+          <nav class="btn-toolbar justify-content-between" role="toolbar" aria-label="...">
+            <div class="btn-group" role="group">
+              <button class="btn btn-outline-secondary" rv-on-click="records.first">
+                <i class="fas fa-step-backward"></i>
+              </button>
+              <button class="btn btn-outline-secondary" rv-on-click="records.prev">
+                <i class="fas fa-chevron-left"></i>
+              </button>
             </div>
-            <div class="form-group input-group">
-              <input type="text" class="form-control" id="client.name" rv-value="clients.item.name" placeholder="Name">
-              <div class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary" rv-class-btn-outline-success="clients.item.open" rv-on-click="clients.item.toggle" >
-                  <span rv-show="clients.item.open">public</span>
-                  <span rv-hide="clients.item.open">private</span>
-                </button>
-              </div>
+            <div class="btn-group" role="group">
+              <span rv-text="records.index"></span>/<span rv-text="records.limit"></span>
             </div>
-            <div class="form-group">
-              <select id="client.item.broker" class="form-control" rv-value="clients.item.broker" placeholder="Broker" required>
-                <option rv-each-item="brokers.items" rv-value="item.uri" rv-text="item.name"></option>
-              </select>
+            <div class="btn-group" role="group">
+              <button class="btn btn-outline-secondary" rv-on-click="records.next">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+              <button class="btn btn-outline-secondary" rv-on-click="records.last">
+                <i class="fas fa-step-forward"></i>
+              </button>
             </div>
-            <div class="form-group">
-              <button type="reset" class="btn btn-outline-secondary" rv-on-click="clients.reset"><strong>Cancel</strong></button>
-              <div class="float-right">
-                <button type="button" class="btn btn-outline-primary" rv-on-click="clients.create" rv-show="clients.creating"><strong>Create</strong></button>
-                <button type="button" class="btn btn-outline-danger" rv-on-click="clients.delete" rv-show="clients.updating"><strong>Delete</strong></button>
-                <button type="button" class="btn btn-outline-primary" rv-on-click="clients.update" rv-show="clients.updating"><strong>Update</strong></button>
-              </div>
-            </div>
-          </fieldset>
-        </form>
+          </nav>
+        </div>
+        
+        <div class="container" style="padding-top:1ex;">
+          <button class="btn btn-secondary float-right" rv-on-click="clients.reset">Close</button>
+        </div>
+              
         <div class="container">
           <div class="alert alert-dismissible" rv-class-alert-danger="alert.danger" rv-class-alert-warning="alert.warning" rv-class-alert-success="alert.success" id="alert" role="alert" style="margin-top:20px;">
             <button type="button" class="close" rv-on-click="alert.dismiss" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -169,6 +194,10 @@
   <script type="text/javascript">
   var content = {};
   rivets.bind($('#content'), content);
+  
+  rivets.formatters.date = function(value) {
+    return moment(value).format('YYYY-MM-DD HH:mm:ss')
+  }
   
   /* user */
   
@@ -196,7 +225,7 @@
 	content.alert.head = head;
 	content.alert.text = text;
     $("#alert").show();
-  }
+  };
   
   content.alert.dismiss = function() {
     $("#alert").hide();
@@ -205,7 +234,7 @@
     content.alert.success = false;
     content.alert.head = null;
     content.alert.text = null;
-  }
+  };
 
   content.alert.dismiss();
   
@@ -213,8 +242,6 @@
   /* clients */ 
   
   content.clients = {};
-  content.clients.creating = false;
-  content.clients.updating = false;
   content.clients.item = null;
   content.clients.length = 5;
   content.clients.offset = 0;
@@ -226,7 +253,7 @@
   var sync = function() {
 	content.clients.index = Math.ceil((content.clients.offset + 1) / content.clients.length);
 	content.clients.limit = Math.ceil(content.clients.size / content.clients.length);
-  }
+  };
   
   content.clients.prev = function() {
     if (content.clients.length <= content.clients.offset) {
@@ -234,7 +261,7 @@
       sync();
       page();
     }
-  }
+  };
   
   content.clients.next = function() {
     if (content.clients.offset + content.clients.length < content.clients.size) {
@@ -242,45 +269,40 @@
       sync();
       page();
     }
-  }
+  };
   
   content.clients.first = function() {
     content.clients.offset = 0;
     sync();
     page();
-  }
+  };
 
   content.clients.last = function() {
     content.clients.offset = Math.floor((content.clients.size - 1) / content.clients.length) * content.clients.length;
     sync();
     page();
-  }
-      
-  content.clients.select = function() {
-    content.clients.creating = true;
-    content.clients.updating = false;
-    content.clients.item = {};
-    content.clients.item.open = false;
-    content.clients.item.toggle = function() { console.log(content.clients.item.open); content.clients.item.open = !content.clients.item.open; };
-  }
+  };
       
   var select = function(item) {
-    content.clients.creating = false;
-    content.clients.updating = true;
-    content.clients.item = Object.assign({}, item);
-    content.clients.item.toggle = function() { console.log(content.clients.item.open); content.clients.item.open = !content.clients.item.open; };
-  }
+    content.clients.item = item;
+    content.records.uuid = item.uuid;
+    rsize();
+  };
   
   content.clients.clean = function() {
-    content.clients.creating = false;
-    content.clients.updating = false;
     content.clients.item = null;
-  }
+    content.records.length = 25;
+    content.records.offset = 0;
+    content.records.limit = 1;
+    content.records.index = 1;
+    content.records.size = 0;
+    content.records.items = [];
+  };
   
   content.clients.reset = function() {
     content.clients.clean();
     content.alert.dismiss();
-  }
+  };
 
   var size = function() {
     emit.clients.size(function onSuccess(response) {
@@ -291,65 +313,90 @@
     },function onError(response) {
       content.clients.size = 0;
     });
-  }
+  };
     
   var page = function() {
     emit.clients.page(content.clients, function onSuccess(response) {
       content.clients.items = response;
       content.clients.items.forEach(function (item) {
-    	item._broker = item.broker; // FIXME
-    	item.broker = item._broker.uri; // FIXME
     	item.select = function() { select(item); };
       });
     },function onError(response) {
       content.clients.items = [];
     });
-  }
-    
-  content.clients.create = function() {
-    emit.clients.create(content.clients.item, function onSuccess(response) {
-      display("success", "Success", "The client has successfully been created.");
-      content.clients.clean();
-      size();
-    },function onError(response) {
-    	display("danger", "Failure", "Something wrong happened while creating the client.");
-    });
-  }
-    
-  content.clients.update = function() {
-    emit.clients.update(content.clients.item, function onSuccess(response) {
-      display("success", "Success", "The client has successfully been updated.");
-      content.clients.clean();
-      page();
-    },function onError(response) {
-    	display("danger", "Failure", "Something wrong happened while updating the client.");
-    });
-  }
-    
-  content.clients.delete = function() {
-    emit.clients.delete(content.clients.item, function onSuccess(response) {
-      display("success", "Success", "The client has successfully been deleted.");
-      content.clients.clean();
-      size();
-    },function onError(response) {
-      display("danger", "Failure", "Something wrong happened while deleting the client.");
-    });
-  }
-    
-  /* brokers */
+  };
+
+  size();
   
-  content.brokers = {};
+  /* records */ 
   
-  var brokers = function() {
-    emit.brokers.list(function onSuccess(response) {
-      content.brokers.items = response;
-      size();
+  content.records = {};
+  content.records.length = 25;
+  content.records.offset = 0;
+  content.records.limit = 1;
+  content.records.index = 1;
+  content.records.size = 0;
+  content.records.items = [];
+  
+  var rsync = function() {
+	content.records.index = Math.ceil((content.records.offset + 1) / content.records.length);
+	content.records.limit = Math.ceil(content.records.size / content.records.length);
+  };
+  
+  content.records.prev = function() {
+    if (content.records.length <= content.records.offset) {
+      content.records.offset = content.records.offset - content.records.length;
+      rsync();
+      rpage();
+    }
+  };
+  
+  content.records.next = function() {
+    if (content.records.offset + content.records.length < content.records.size) {
+      content.records.offset = content.records.offset + content.records.length;
+      rsync();
+      rpage();
+    }
+  };
+  
+  content.records.first = function() {
+    content.records.offset = 0;
+    rsync();
+    rpage();
+  };
+
+  content.records.last = function() {
+    content.records.offset = Math.floor((content.records.size - 1) / content.records.length) * content.records.length;
+    rsync();
+    rpage();
+  };
+  
+  var rsize = function() {
+    emit.records.size(content.records, function onSuccess(response) {
+      content.records.size = response;
+      rsync();
+      rpage();
     },function onError(response) {
-      content.brokers.items = [];
+      content.records.size = 0;
     });
-  }
-  
-  brokers();
+  };
+    
+  var rpage = function() {
+    emit.records.page(content.records, function onSuccess(response) {
+      content.records.items = response;
+      content.records.items.forEach(function (item) {
+  	    item.connected = item.type === "connect"  && item.stopped != null;
+        item.connecting = item.type === "connect"  && item.stopped == null;
+        item.subscribed = item.type === "subscribe" && item.stopped != null;
+        item.subscribing = item.type === "subscribe" && item.stopped == null;
+        item.published = item.type === "publish";
+      });
+    },function onError(response) {
+      content.records.items = [];
+    });
+  };
+
+  size();
   
   </script>
 </html>

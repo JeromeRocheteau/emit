@@ -1,4 +1,4 @@
-package fr.icam.emit.services.actions;
+package fr.icam.emit.services.records;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;

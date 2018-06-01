@@ -402,3 +402,97 @@ emit.clients.publish = function(data, onSuccess, onError) {
   req.send(null);    
 };
 
+emit.records = {};
+
+emit.records.size = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/records/size' + parameters, true);
+  req.send(null);    
+};
+
+emit.records.page = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid 
+  + "&offset=" + data.offset 
+  + "&length=" + data.length;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/records/page' + parameters, true);
+  req.send(null);    
+};
+
+emit.messages = {};
+
+emit.messages.size = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/messages/size' + parameters, true);
+  req.send(null);    
+};
+
+emit.messages.page = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid 
+  + "&offset=" + data.offset 
+  + "&length=" + data.length;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/messages/page' + parameters, true);
+  req.send(null);    
+};
+
+emit.messages.search = function(data, onSuccess, onError) {
+  var parameters = "?topic=" + encodeURIComponent(data.topic) 
+  + "&started=" + data.started 
+  + "&stopped=" + data.stopped;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/messages/search' + parameters, true);
+  req.send(null);    
+};

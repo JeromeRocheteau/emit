@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Emit | Configuring</title>
+    <title>Emit | Monitoring</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
@@ -112,47 +112,93 @@
                     <i class="fas fa-lock" rv-hide="item.open"></i>
                   </span>
                 </h5>
-                <p class="list-group-item-text"><span rv-text="item._broker.name"></span> (<small rv-text="item._broker.uri"></small>)</p>
-                <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="clients.item">Edit</button>
+                <p class="list-group-item-text"><span rv-text="item.broker.name"></span> (<small rv-text="item.broker.uri"></small>)</p>
+                <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="clients.item">Select</button>
               </li>
             </ul>
           </div>
-          <div class="container" style="padding-top:1ex;">
-            <p class="text-right"><button class="btn btn-primary" rv-on-click="clients.select" rv-disabled="clients.item">Create</button></p>
-          </div>
       </div>
       <div class="col-6">
-        <form name="form container" class="form" id="form" rv-show="clients.item">
-          <fieldset>
-            <legend rv-show="clients.creating">Create a client</legend>
-            <legend rv-show="clients.updating">Update a client</legend>
-            <div class="form-group" rv-show="clients.updating">
-              <input type="text" class="form-control" id="client.uuid" rv-value="clients.item.uuid" readonly>
-            </div>
+
+        <div class="container" rv-show="clients.item">
+          <h4>Connection</h4>
+          <div rv-hide="clients.item.connected">
+            <p>
+              connect to <span rv-text="clients.item.broker.name"></span>
+              <button class="btn btn-outline-primary float-right" rv-on-click="clients.item.connect">Connect</button>
+            </p>
+          </div>
+          <div rv-show="clients.item.connected">
+            <p>
+              connected to <span rv-text="clients.item.broker.name"></span>
+              <button class="btn btn-outline-danger float-right" rv-disabled="clients.item.subscribed" rv-on-click="clients.item.disconnect">Disconnect</button>
+            </p>
+          </div>
+        </div>
+
+        <div class="container" rv-show="clients.item.connected">
+          <h4>Subscription</h4>
+          <form class="form" rv-hide="clients.item.subscribed">
             <div class="form-group input-group">
-              <input type="text" class="form-control" id="client.name" rv-value="clients.item.name" placeholder="Name">
+              <input type="text" class="form-control" id="client.filter" rv-value="clients.item.filter" placeholder="Topic">
               <div class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary" rv-class-btn-outline-success="clients.item.open" rv-on-click="clients.item.toggle" >
-                  <span rv-show="clients.item.open">public</span>
-                  <span rv-hide="clients.item.open">private</span>
-                </button>
+                <button type="button" class="btn btn-outline-secondary" rv-on-click="clients.item.subscribe">Subscribe</button>
               </div>
             </div>
+          </form>
+          <div rv-show="clients.item.subscribed">
+            <p>
+              subscribed to <span rv-text="clients.item.subscribed.topic"></span>
+              <button class="btn btn-outline-danger float-right" rv-on-click="clients.item.unsubscribe">Unsubscribe</button>
+            </p>
+          </div>
+        </div>
+
+        <div class="container" rv-show="clients.item.connected">
+          <h4>Publication</h4>
+          <form class="form">
             <div class="form-group">
-              <select id="client.item.broker" class="form-control" rv-value="clients.item.broker" placeholder="Broker" required>
-                <option rv-each-item="brokers.items" rv-value="item.uri" rv-text="item.name"></option>
-              </select>
+              <input type="text" class="form-control" id="client.topic" rv-value="clients.item.topic" placeholder="Topic">
             </div>
             <div class="form-group">
-              <button type="reset" class="btn btn-outline-secondary" rv-on-click="clients.reset"><strong>Cancel</strong></button>
-              <div class="float-right">
-                <button type="button" class="btn btn-outline-primary" rv-on-click="clients.create" rv-show="clients.creating"><strong>Create</strong></button>
-                <button type="button" class="btn btn-outline-danger" rv-on-click="clients.delete" rv-show="clients.updating"><strong>Delete</strong></button>
-                <button type="button" class="btn btn-outline-primary" rv-on-click="clients.update" rv-show="clients.updating"><strong>Update</strong></button>
+              <input type="text" class="form-control" id="client.payload" rv-value="clients.item.payload" placeholder="Payload">
+            </div>
+            
+            <div class="row form-group justify-content-between">
+              <div class="col">
+                <select class="form-control" id="client.item.qos" rv-value="clients.item.qos" required>
+                  <option value="" selected disabled>QoS</option>
+                  <option value="0">0 - at most once</option>
+                  <option value="1">1 - at least once</option>
+                  <option value="2">2 - exactly once</option>
+                </select>
+              </div>
+              <div class="col">
+                <select class="form-control" id="client.item.retained" rv-value="clients.item.retained" required>
+                  <option value="" selected disabled>Retained</option>
+                  <option value="true">yes</option>
+                  <option value="false">no</option>
+                </select>
+              </div>
+              <div class="col form-check">
+                <select class="form-control" id="client.item.persisted" rv-value="clients.item.persisted" required>
+                  <option value="" selected disabled>Persisted</option>
+                  <option value="true">yes</option>
+                  <option value="false">no</option>
+                </select>
               </div>
             </div>
-          </fieldset>
-        </form>
+            
+            <div class="form-group">
+              <button type="button" class="btn btn-outline-primary float-right" rv-on-click="clients.item.publish">Publish</button>
+            </div>
+          </form>
+        </div>
+        
+        <div class="container" rv-show="clients.item">
+          <button class="btn btn-outline-secondary" rv-on-click="clients.reset">Clear</button>
+        </div>
+              
         <div class="container">
           <div class="alert alert-dismissible" rv-class-alert-danger="alert.danger" rv-class-alert-warning="alert.warning" rv-class-alert-success="alert.success" id="alert" role="alert" style="margin-top:20px;">
             <button type="button" class="close" rv-on-click="alert.dismiss" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -196,7 +242,7 @@
 	content.alert.head = head;
 	content.alert.text = text;
     $("#alert").show();
-  }
+  };
   
   content.alert.dismiss = function() {
     $("#alert").hide();
@@ -205,7 +251,7 @@
     content.alert.success = false;
     content.alert.head = null;
     content.alert.text = null;
-  }
+  };
 
   content.alert.dismiss();
   
@@ -213,8 +259,6 @@
   /* clients */ 
   
   content.clients = {};
-  content.clients.creating = false;
-  content.clients.updating = false;
   content.clients.item = null;
   content.clients.length = 5;
   content.clients.offset = 0;
@@ -226,7 +270,7 @@
   var sync = function() {
 	content.clients.index = Math.ceil((content.clients.offset + 1) / content.clients.length);
 	content.clients.limit = Math.ceil(content.clients.size / content.clients.length);
-  }
+  };
   
   content.clients.prev = function() {
     if (content.clients.length <= content.clients.offset) {
@@ -234,7 +278,7 @@
       sync();
       page();
     }
-  }
+  };
   
   content.clients.next = function() {
     if (content.clients.offset + content.clients.length < content.clients.size) {
@@ -242,45 +286,40 @@
       sync();
       page();
     }
-  }
+  };
   
   content.clients.first = function() {
     content.clients.offset = 0;
     sync();
     page();
-  }
+  };
 
   content.clients.last = function() {
     content.clients.offset = Math.floor((content.clients.size - 1) / content.clients.length) * content.clients.length;
     sync();
     page();
-  }
-      
-  content.clients.select = function() {
-    content.clients.creating = true;
-    content.clients.updating = false;
-    content.clients.item = {};
-    content.clients.item.open = false;
-    content.clients.item.toggle = function() { console.log(content.clients.item.open); content.clients.item.open = !content.clients.item.open; };
-  }
+  };
       
   var select = function(item) {
-    content.clients.creating = false;
-    content.clients.updating = true;
-    content.clients.item = Object.assign({}, item);
-    content.clients.item.toggle = function() { console.log(content.clients.item.open); content.clients.item.open = !content.clients.item.open; };
-  }
+    content.clients.item = item;
+  };
   
   content.clients.clean = function() {
-    content.clients.creating = false;
-    content.clients.updating = false;
     content.clients.item = null;
-  }
+    content.clients.items.forEach(function (item) {
+      item.filter = null;
+      item.topic = null;
+      item.payload = null;
+      item.qos = null;
+      item.retained = null;
+      item.persisted = null;
+    });
+  };
   
   content.clients.reset = function() {
     content.clients.clean();
     content.alert.dismiss();
-  }
+  };
 
   var size = function() {
     emit.clients.size(function onSuccess(response) {
@@ -291,65 +330,107 @@
     },function onError(response) {
       content.clients.size = 0;
     });
-  }
+  };
     
   var page = function() {
     emit.clients.page(content.clients, function onSuccess(response) {
       content.clients.items = response;
       content.clients.items.forEach(function (item) {
-    	item._broker = item.broker; // FIXME
-    	item.broker = item._broker.uri; // FIXME
     	item.select = function() { select(item); };
+        item.connect = function() { connect(item); };
+        item.disconnect = function() { disconnect(item); };
+        item.subscribe = function() { subscribe(item); };
+        item.unsubscribe = function() { unsubscribe(item); };
+        item.publish = function() { publish(item); };
+    	connected(item);
       });
     },function onError(response) {
       content.clients.items = [];
     });
-  }
-    
-  content.clients.create = function() {
-    emit.clients.create(content.clients.item, function onSuccess(response) {
-      display("success", "Success", "The client has successfully been created.");
-      content.clients.clean();
-      size();
+  };
+
+  var connected = function(item) {
+    emit.clients.connected(item, function onSuccess(response) {
+      item.connected = response;
+      if (item.connected) {
+        subscribed(item);
+      }
     },function onError(response) {
-    	display("danger", "Failure", "Something wrong happened while creating the client.");
+	  item.connected = null;
+	  display("warning","Failure","Something wrong happened while querying.");
     });
-  }
-    
-  content.clients.update = function() {
-    emit.clients.update(content.clients.item, function onSuccess(response) {
-      display("success", "Success", "The client has successfully been updated.");
-      content.clients.clean();
-      page();
+  };
+
+  var connect = function(item) {
+    emit.clients.connect(item, function onSuccess(response) {
+      connected(item);
     },function onError(response) {
-    	display("danger", "Failure", "Something wrong happened while updating the client.");
+	  display("warning","Failure","Something wrong happened while connecting.");
+	  connected(item);
     });
-  }
-    
-  content.clients.delete = function() {
-    emit.clients.delete(content.clients.item, function onSuccess(response) {
-      display("success", "Success", "The client has successfully been deleted.");
-      content.clients.clean();
-      size();
+  };
+
+  var disconnect = function(item) {
+    emit.clients.disconnect(item, function onSuccess(response) {
+      connected(item);
     },function onError(response) {
-      display("danger", "Failure", "Something wrong happened while deleting the client.");
+	  display("warning","Failure","Something wrong happened while disconnecting.");
+	  connected(item);
     });
-  }
-    
-  /* brokers */
-  
-  content.brokers = {};
-  
-  var brokers = function() {
-    emit.brokers.list(function onSuccess(response) {
-      content.brokers.items = response;
-      size();
+  };
+
+  var subscribed = function(item) {
+    emit.clients.subscribing(item, function onSuccess(response) {
+      item.subscribed = response;
+      if (item.subscribed) {
+    	item.filter = item.subscribed.topic;  
+      }
     },function onError(response) {
-      content.brokers.items = [];
+	  item.subscribed = null;
+      item.topic = null;
+	  display("warning","Failure","Something wrong happened while querying the client.");
     });
-  }
-  
-  brokers();
+  };
+
+  var subscribe = function(item) {
+    emit.clients.subscribe(item, function onSuccess(response) {
+      subscribed(item);
+    },function onError(response) {
+	  display("warning","Failure","Something wrong happened while subscribing.");
+	  subscribed(item);
+    });
+  };
+
+  var unsubscribe = function(item) {
+    emit.clients.unsubscribe(item, function onSuccess(response) {
+      item.filter = null;
+      subscribed(item);
+    },function onError(response) {
+	  display("warning","Failure","Something wrong happened while unsubscribing.");
+	  item.filter = null;
+	  subscribed(item);
+    });
+  };
+
+  var publish = function(item) {
+    emit.clients.publish(item, function onSuccess(response) {
+      display("success","Published","The message have been successfully published.");
+      item.topic = null;
+      item.payload = null;
+      item.qos = null;
+      item.retained = null;
+      item.persisted = null;
+    },function onError(response) {
+      display("warning","Failure","Something wrong happened while publishing.");
+      item.topic = null;
+      item.payload = null;
+      item.qos = null;
+      item.retained = null;
+      item.persisted = null;
+    });
+  };
+    
+  size();
   
   </script>
 </html>
