@@ -297,8 +297,8 @@
     emit.clients.page(content.clients, function onSuccess(response) {
       content.clients.items = response;
       content.clients.items.forEach(function (item) {
-    	item._broker = item.broker; // FIXME
-    	item.broker = item._broker.uri; // FIXME
+    	item._broker = item.broker;
+    	item.broker = item._broker.uri;
     	item.select = function() { select(item); };
       });
     },function onError(response) {

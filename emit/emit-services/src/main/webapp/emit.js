@@ -1,5 +1,9 @@
 var emit = {};
 
+var invalid = function(value) {
+	return value == null || value == undefined || value === "";
+}
+
 emit.user = {};
 	    
 emit.user.name = function(onSuccess, onError) {
@@ -128,8 +132,8 @@ emit.brokers.list = function(onSuccess, onError) {
 emit.brokers.create = function(data, onSuccess, onError) {
   var parameters = "?name=" + encodeURIComponent(data.name) 
   + "&uri=" + encodeURIComponent(data.uri) 
-  + (data.username == null ? "" : "&username=" + encodeURIComponent(data.username)) 
-  + (data.password == null ? "" : "&password=" + encodeURIComponent(data.password));
+  + (invalid(data.username) ? "" : "&username=" + encodeURIComponent(data.username)) 
+  + (invalid(data.password) ? "" : "&password=" + encodeURIComponent(data.password));
   const req = new XMLHttpRequest();
   req.onload = function(event) {
     if (this.status === 200) {
@@ -148,8 +152,8 @@ emit.brokers.create = function(data, onSuccess, onError) {
 emit.brokers.update = function(data, onSuccess, onError) {
   var parameters = "?name=" + encodeURIComponent(data.name) 
   + "&uri=" + encodeURIComponent(data.uri) 
-  + (data.username == null ? "" : "&username=" + encodeURIComponent(data.username)) 
-  + (data.password == null ? "" : "&password=" + encodeURIComponent(data.password));
+  + (invalid(data.username) ? "" : "&username=" + encodeURIComponent(data.username)) 
+  + (invalid(data.password) ? "" : "&password=" + encodeURIComponent(data.password));
   const req = new XMLHttpRequest();
   req.onload = function(event) {
     if (this.status === 200) {
@@ -496,3 +500,337 @@ emit.messages.search = function(data, onSuccess, onError) {
   req.open('GET','/emit/messages/search' + parameters, true);
   req.send(null);    
 };
+
+emit.types = {};
+
+emit.types.list = function(onSuccess, onError) {
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/types/list', true);
+  req.send(null);    
+};
+
+emit.callbacks = {};
+
+emit.callbacks.size = function(onSuccess, onError) {
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/callbacks/size', true);
+  req.send(null);    
+};
+
+emit.callbacks.page = function(data, onSuccess, onError) {
+  var parameters = "?offset=" + data.offset 
+  + "&length=" + data.length;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/callbacks/page' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.list = function(onSuccess, onError) {
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/callbacks/list', true);
+  req.send(null);    
+};
+	    
+emit.callbacks.delete = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/delete' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.types = {};
+
+emit.callbacks.types.create = function(data, onSuccess, onError) {
+  var parameters = "?name=" + encodeURIComponent(data.name) 
+  + "&atomic=" + data.atomic 
+  + "&category=" + encodeURIComponent(data.category)
+  + "&type=" + encodeURIComponent(data.type);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/create/type' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.types.update = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id
+  + "&name=" + encodeURIComponent(data.name) 
+  + "&atomic=" + data.atomic 
+  + "&category=" + encodeURIComponent(data.category)
+  + "&type=" + encodeURIComponent(data.type);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/update/type' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.types.find = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/callbacks/find/type' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.topics = {};
+
+emit.callbacks.topics.create = function(data, onSuccess, onError) {
+  var parameters = "?name=" + encodeURIComponent(data.name) 
+  + "&atomic=" + data.atomic 
+  + "&category=" + encodeURIComponent(data.category)
+  + "&topic=" + encodeURIComponent(data.topic);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/create/topic' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.topics.update = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id
+  + "&name=" + encodeURIComponent(data.name) 
+  + "&atomic=" + data.atomic 
+  + "&category=" + encodeURIComponent(data.category)
+  + "&topic=" + encodeURIComponent(data.topic);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/update/topic' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.topics.find = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/callbacks/find/topic' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.storages = {};
+
+emit.callbacks.storages.create = function(data, onSuccess, onError) {
+  var parameters = "?name=" + encodeURIComponent(data.name) 
+  + "&atomic=" + data.atomic 
+  + "&category=" + encodeURIComponent(data.category)
+  + "&collection=" + encodeURIComponent(data.collection);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/create/storage' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.storages.update = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id
+  + "&name=" + encodeURIComponent(data.name) 
+  + "&atomic=" + data.atomic 
+  + "&category=" + encodeURIComponent(data.category)
+  + "&collection=" + encodeURIComponent(data.collection);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/update/storage' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.storages.find = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/callbacks/find/storage' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.features = {};
+
+emit.callbacks.guards = {};
+
+emit.callbacks.guards.create = function(data, onSuccess, onError) {
+  var parameters = "?name=" + encodeURIComponent(data.name) 
+  + "&atomic=" + data.atomic 
+  + "&category=" + encodeURIComponent(data.category)
+  + "&test=" + data.test
+  + "&success=" + data.success
+  + (invalid(data.failure) ? "" : "&failure=" + data.failure);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/create/guard' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.guards.update = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id
+  + "&name=" + encodeURIComponent(data.name) 
+  + "&atomic=" + data.atomic 
+  + "&category=" + encodeURIComponent(data.category)
+  + "&test=" + data.test
+  + "&success=" + data.success
+  + (invalid(data.failure) ? "" : "&failure=" + data.failure);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/update/guard' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.guards.find = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/callbacks/find/guard' + parameters, true);
+  req.send(null);    
+};
+
