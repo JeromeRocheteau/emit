@@ -6,6 +6,7 @@ SELECT
   c.`issued` AS issued, 
   c.`user` AS user, 
   s.`name` AS symbolName,
+  s.`html` AS symbolHtml,
   t.`name` AS typeName,
   t.`category` AS typeCategory,
   fc.`value` AS value

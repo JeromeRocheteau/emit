@@ -48,10 +48,11 @@ public class Finder extends JdbcQueryServlet<FeatureCallback> {
     		Timestamp issued = resultSet.getTimestamp("issued");
     		String user = resultSet.getString("user");
     		String symbolName = resultSet.getString("symbolName");
+    		String symbolHtml = resultSet.getString("symbolHtml");
     		String typeName = resultSet.getString("typeName");
     		String typeCategory = resultSet.getString("typeCategory");
     		String value = resultSet.getString("value");
-    		Symbol symbol = new Symbol(symbolName);
+    		Symbol symbol = new Symbol(symbolName, symbolHtml);
     		Type type = new Type(typeName, typeCategory);
     		item = new FeatureCallback(id, name, issued.getTime(), user, atomic, category, symbol, type, value);
     	}

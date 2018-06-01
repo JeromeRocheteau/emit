@@ -1,8 +1,8 @@
-INSERT INTO `symbols` (`name`) 
+INSERT INTO `symbols` (`name`,`html`) 
 VALUES 
-  ('eq'),
-  ('neq'),
-  ('lt'),
-  ('leq'),
-  ('gt'),
-  ('geq');
+  ('eq','='),
+  ('neq','&ne;'),
+  ('lt','&lt;'),
+  ('leq','&le;'),
+  ('gt','&gt;'),
+  ('geq','&ge;');

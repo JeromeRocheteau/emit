@@ -519,6 +519,24 @@ emit.types.list = function(onSuccess, onError) {
   req.send(null);    
 };
 
+emit.symbols = {};
+
+emit.symbols.list = function(onSuccess, onError) {
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/symbols/list', true);
+  req.send(null);    
+};
+
 emit.callbacks = {};
 
 emit.callbacks.size = function(onSuccess, onError) {
@@ -769,6 +787,68 @@ emit.callbacks.storages.find = function(data, onSuccess, onError) {
 };
 
 emit.callbacks.features = {};
+
+emit.callbacks.features.create = function(data, onSuccess, onError) {
+  var parameters = "?name=" + encodeURIComponent(data.name) 
+  + "&atomic=" + data.atomic 
+  + "&category=" + encodeURIComponent(data.category)
+  + "&symbol=" + data.symbol
+  + "&type=" + data.type
+  + "&value=" + encodeURIComponent(data.value);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/create/feature' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.features.update = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id
+  + "&name=" + encodeURIComponent(data.name) 
+  + "&atomic=" + data.atomic 
+  + "&category=" + encodeURIComponent(data.category)
+  + "&symbol=" + data.symbol
+  + "&type=" + data.type
+  + "&value=" + encodeURIComponent(data.value);
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/callbacks/update/feature' + parameters, true);
+  req.send(null);    
+};
+
+emit.callbacks.features.find = function(data, onSuccess, onError) {
+  var parameters = "?id=" + data.id;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/callbacks/find/feature' + parameters, true);
+  req.send(null);    
+};
 
 emit.callbacks.guards = {};
 

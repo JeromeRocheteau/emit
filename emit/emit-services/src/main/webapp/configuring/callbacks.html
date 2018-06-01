@@ -118,6 +118,7 @@
                 <a class="dropdown-item" rv-on-click="callbacks.types.select">Type</a>
                 <a class="dropdown-item" rv-on-click="callbacks.topics.select">Topic</a>
                 <a class="dropdown-item" rv-on-click="callbacks.storages.select">Storage</a>
+                <a class="dropdown-item" rv-on-click="callbacks.features.select">Feature</a>
                 <a class="dropdown-item" rv-on-click="callbacks.guards.select">Guard</a>
               </div>
             </div>
@@ -189,10 +190,42 @@
             </div>
           </fieldset>
         </form>
+        <form name="form container" class="form" id="featureCallbackForm" rv-show="callbacks.item.isfeature">
+          <fieldset>
+            <legend rv-show="callbacks.creating">Create a feature callback</legend>
+            <legend rv-show="callbacks.updating">Update a feature callback</legend>
+            <div class="form-group">
+              <input type="text" class="form-control" id="callback.name" rv-value="callbacks.item.name" placeholder="Name">
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <select id="callback.type" class="container form-control" rv-value="callbacks.item.type" placeholder="Type" required>
+                  <option rv-each-item="types.items" rv-value="item.name" rv-text="item.name"></option>
+                </select>
+              </div>
+              <div class="col">
+                <select id="callback.symbol" class="container form-control" rv-value="callbacks.item.symbol" placeholder="Symbol" required>
+                  <option rv-each-item="symbols.items" rv-value="item.name" rv-html="item.html"></option>
+                </select>
+              </div>
+              <div class="col">
+                <input type="text" class="container form-control" id="callback.value" rv-value="callbacks.item.value" placeholder="Value">
+              </div>
+            </div>
+            <div class="form-group">
+              <button type="reset" class="btn btn-outline-secondary" rv-on-click="callbacks.reset"><strong>Cancel</strong></button>
+              <div class="float-right">
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.features.create" rv-show="callbacks.creating"><strong>Create</strong></button>
+                <button type="button" class="btn btn-outline-danger" rv-on-click="callbacks.delete" rv-show="callbacks.updating"><strong>Delete</strong></button>
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.features.update" rv-show="callbacks.updating"><strong>Update</strong></button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
         <form name="form container" class="form" id="guardCallbackForm" rv-show="callbacks.item.isguard">
           <fieldset>
             <legend rv-show="callbacks.creating">Create a guard callback</legend>
-            <legend rv-show="callbacks.updating">Update a gaurd callback</legend>
+            <legend rv-show="callbacks.updating">Update a guard callback</legend>
             <div class="form-group">
               <input type="text" class="form-control" id="callback.name" rv-value="callbacks.item.name" placeholder="Name">
             </div>
@@ -288,6 +321,16 @@
     });
   };
   
+  content.symbols = {};
+
+  var symb = function() {
+    emit.symbols.list(function onSuccess(response) {
+      content.symbols.items = response;
+    },function onError(response) {
+      content.symbols.items = [];
+    });
+  };
+  
   content.callbacks = {};
   content.callbacks.creating = false;
   content.callbacks.updating = false;
@@ -342,6 +385,8 @@
       findTopicCallback(item);
     } else if (item.category === "storage") {
       findStorageCallback(item);
+    } else if (item.category === "feature") {
+      findFeatureCallback(item);
     } else if (item.category === "guard") {
       findGuardCallback(item);
     }
@@ -410,6 +455,7 @@
     content.callbacks.item.istype = true;
     content.callbacks.item.istopic = false;
     content.callbacks.item.isstorage = false;
+    content.callbacks.item.isfeature = false;
     content.callbacks.item.isguard = false;
   };
   
@@ -441,6 +487,7 @@
       content.callbacks.item.istype = true;
       content.callbacks.item.istopic = false;
       content.callbacks.item.isstorage = false;
+      content.callbacks.item.isfeature = false;
       content.callbacks.item.isguard = false;
     },function onError(response) {
       content.callbacks.item = null;
@@ -459,6 +506,7 @@
     content.callbacks.item.istype = false;
     content.callbacks.item.istopic = true;
     content.callbacks.item.isstorage = false;
+    content.callbacks.item.isfeature = false;
     content.callbacks.item.isguard = false;
   };
   
@@ -488,6 +536,7 @@
       content.callbacks.item.istype = false;
       content.callbacks.item.istopic = true;
       content.callbacks.item.isstorage = false;
+      content.callbacks.item.isfeature = false;
       content.callbacks.item.isguard = false;
     },function onError(response) {
       content.callbacks.item = null;
@@ -506,6 +555,7 @@
     content.callbacks.item.istype = false;
     content.callbacks.item.istopic = false;
     content.callbacks.item.isstorage = true;
+    content.callbacks.item.isfeature = false;
     content.callbacks.item.isguard = false;
   };
   
@@ -535,10 +585,64 @@
       content.callbacks.item.istype = false;
       content.callbacks.item.istopic = false;
       content.callbacks.item.isstorage = true;
+      content.callbacks.item.isfeature = false;
       content.callbacks.item.isguard = false;
     },function onError(response) {
       content.callbacks.item = null;
       display("danger", "Failure", "Something wrong happened while retrieving the storage callback.");
+    });
+  };
+  
+  content.callbacks.features = {};
+      
+  content.callbacks.features.select = function() {
+    content.callbacks.creating = true;
+    content.callbacks.updating = false;
+    content.callbacks.item = {};
+    content.callbacks.item.category = "feature";
+    content.callbacks.item.atomic = false;
+    content.callbacks.item.istype = false;
+    content.callbacks.item.istopic = false;
+    content.callbacks.item.isstorage = false;
+    content.callbacks.item.isfeature = true;
+    content.callbacks.item.isguard = false;
+  };
+  
+  content.callbacks.features.create = function() {
+    emit.callbacks.features.create(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The feature callback has successfully been created.");
+      content.callbacks.clean();
+      size();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while creating the feature callback.");
+    });
+  };
+    
+  content.callbacks.features.update = function() {
+    emit.callbacks.features.update(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The feature callback has successfully been updated.");
+      content.callbacks.clean();
+      page();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while updating the feature callback.");
+    });
+  };
+    
+  var findFeatureCallback = function(item) {
+    emit.callbacks.features.find(item, function onSuccess(response) {
+      content.callbacks.item = response;
+      content.callbacks.item._type = content.callbacks.item.type;
+      content.callbacks.item.type = content.callbacks.item._type.name;
+      content.callbacks.item._symbol = content.callbacks.item.symbol;
+      content.callbacks.item.symbol = content.callbacks.item._symbol.name;
+      content.callbacks.item.istype = false;
+      content.callbacks.item.istopic = false;
+      content.callbacks.item.isstorage = false;
+      content.callbacks.item.isfeature = true;
+      content.callbacks.item.isguard = false;
+    },function onError(response) {
+      content.callbacks.item = null;
+      display("danger", "Failure", "Something wrong happened while retrieving the feature callback.");
     });
   };
   
@@ -553,6 +657,7 @@
     content.callbacks.item.istype = false;
     content.callbacks.item.istopic = false;
     content.callbacks.item.isstorage = false;
+    content.callbacks.item.isfeature = false;
     content.callbacks.item.isguard = true;
   };
   
@@ -591,6 +696,7 @@
       content.callbacks.item.istype = false;
       content.callbacks.item.istopic = false;
       content.callbacks.item.isstorage = false;
+      content.callbacks.item.isfeature = false;
       content.callbacks.item.isguard = true;
       console.log(content.callbacks.item);
     },function onError(response) {
@@ -600,802 +706,8 @@
   };
   
   type();
+  symb();
   size();
   
   </script>
 </html>
-
-<!-- 
-
-<html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Emit | Configuring</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/emit/emit.css"></link>
-  </head>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
-  <body ng-app="app" ng-controller="controller">
-    <header class="ng-cloak">
-      <div class="navbar navbar-inverse navbar-custom navbar-fixed-top">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="../index.html"><strong>Emit</strong></a>
-          <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-left">
-              <li class="dropdown" ng-show="user.role">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Configuring&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../configuring/brokers.html"><span class="glyphicon glyphicon-transfer" aria-hidden="true">&nbsp;</span>Brokers</a></li>
-                  <li><a href="../configuring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                  <li><a href="../configuring/callbacks.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Callbacks</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managing&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../managing/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                  <li ng-show="user.role"><a href="../managing/shares.html"><span class="glyphicon glyphicon-share-alt" aria-hidden="true">&nbsp;</span>Shares</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Monitoring&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../monitoring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reporting&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">Logical Layer</li>
-                  <li><a href="../reporting/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
-                  <li class="dropdown-header">Conceptual Layer</li>
-                  <li><a href="../reporting/topics.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Topics</a></li>
-                </ul>
-              </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-header">{{user.name}}</li>
-                  <li><a href="../settings.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Settings</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="../user/clear"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </header>
-    <section id="title" class="ng-cloak">
-      <div class="container-fluid well">
-        <h2>EMIT <small>a supervisory & control system for MQTT clients</small></h2>
-      </div>
-    </section>
-    <section id="content" class="container ng-cloak">
-
-      <div class="col-md-6">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <a class="pull-right btn btn-default" ng-click="x1.doClean()"><span aria-hidden="true" class="glyphicon glyphicon-refresh"></span></a>
-            <h3>Callbacks <small>({{x1.size}} items)</small></h3>
-            <nav aria-label="...">
-              <ul class="pager">
-                <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
-                <li class="previous"><a class="btn btn-default" ng-click="x1.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
-                <li ng-show="x1.size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
-                <li class="next"><a class="btn btn-default" ng-click="x1.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
-                <li class="next"><a class="btn btn-default" ng-click="x1.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
-              </ul>
-            </nav>
-          </div>
-          <ul class="list-group" >
-            <li class="list-group-item" ng-repeat="item in x1.items">
-              <p class="list-group-item-text text-right">
-              </p>
-              <h4 class="list-group-item-heading">#{{item.id}} {{item.name}}</h4>
-              <p class="list-group-item-text">{{item.category}} callback</p>
-              <p class="list-group-item-text text-right">
-                <button class="btn btn-default btn-md" ng-click="x1.doSelect(item)">Edit</button>
-              </p>
-            </li>
-          </ul>
-        </div>
-        <div class="text-right">
-          <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="actions" data-toggle="dropdown" ng-disabled="x1.item">Create&nbsp;<span class="caret"></span></button>
-            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="actions">
-              <li class="dropdown-header">Atomic Callbacks</li>
-              <li><a ng-click="x1.doType()">Type Callback</a></li>
-              <li><a ng-click="x1.doTopic()">Topic Callback</a></li>
-              <li><a ng-click="x1.doFeature()">Feature Callback</a></li>
-              <li><a ng-click="x1.doStorage()">Storage Callback</a></li>
-              <li role="separator" class="divider"></li>
-              <li class="dropdown-header">Composite Callbacks</li>
-              <li><a ng-click="x1.doGuard()">Guard Callback</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-      
-        <form name="f1" class="form list-group-item" id="f1" ng-show="x1.f1.active">
-          <fieldset ng-disabled="!(x1.creating || x1.updating)">
-            <legend ng-hide="x1.updating">Create a type callback</legend>
-            <legend ng-show="x1.updating">Update a type callback</legend>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.name" ng-model="x1.item.name" placeholder="Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <select class="form-control" id="callback.type" ng-model="x1.item.type" ng-options="option as option.name for option in x0.types track by option.name" ng-required="true" required>
-                    <option value="" disabled selected>Type</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group pull-right">
-                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.f1.doCreate()" ng-show="x1.creating" ng-disabled="!f1.$valid"><strong>Create</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!f1.$valid"><strong>Delete</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.f1.doUpdate()" ng-show="x1.updating" ng-disabled="!f1.$valid"><strong>Update</strong></button>
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-        
-        <form name="f2" class="form list-group-item" id="f2" ng-show="x1.f2.active">
-          <fieldset ng-disabled="!(x1.creating || x1.updating)">
-            <legend ng-hide="x1.updating">Create a topic callback</legend>
-            <legend ng-show="x1.updating">Update a topic callback</legend>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.name" ng-model="x1.item.name" placeholder="Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                 <input type="text" class="form-control" id="callback.topic" ng-model="x1.item.topic" placeholder="Topic" ng-required="true" required>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group pull-right">
-                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.f2.doCreate()" ng-show="x1.creating" ng-disabled="!f2.$valid"><strong>Create</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!f2.$valid"><strong>Delete</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.f2.doUpdate()" ng-show="x1.updating" ng-disabled="!f2.$valid"><strong>Update</strong></button>
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-        
-        <form name="f3" class="form list-group-item" id="f3" ng-show="x1.f3.active">
-          <fieldset ng-disabled="!(x1.creating || x1.updating)">
-            <legend ng-hide="x1.updating">Create a storage callback</legend>
-            <legend ng-show="x1.updating">Update a storage callback</legend>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.name" ng-model="x1.item.name" placeholder="Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <select class="form-control" id="callback.collection" ng-model="x1.item.collection" ng-required="true" required>
-                    <option value="" disabled selected>Collection</option>
-                    <option value="messages" selected>messages</option>
-                    <option value="failures">failures</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group pull-right">
-                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.f3.doCreate()" ng-show="x1.creating" ng-disabled="!f3.$valid"><strong>Create</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!f3.$valid"><strong>Delete</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.f3.doUpdate()" ng-show="x1.updating" ng-disabled="!f3.$valid"><strong>Update</strong></button>
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-        
-        <form name="f4" class="form list-group-item" id="f4" ng-show="x1.f4.active">
-          <fieldset ng-disabled="!(x1.creating || x1.updating)">
-            <legend ng-hide="x1.updating">Create a feature callback</legend>
-            <legend ng-show="x1.updating">Update a feature callback</legend>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.name" ng-model="x1.item.name" placeholder="Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-4">
-                <div class="form-group">
-                  <select class="form-control" id="callback.type" ng-model="x1.item.type" ng-options="option as option.name for option in x0.types track by option.name" ng-required="true" required>
-                    <option value="" disabled selected>Type</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <select class="form-control" id="callback.symbol" ng-model="x1.item.symbol" ng-options="option as option.name for option in x0.symbols track by option.name" ng-required="true" required>
-                    <option value="" disabled selected>Symbol</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.value" ng-model="x1.item.value" placeholder="Value" ng-required="true" required>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group pull-right">
-                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.f4.doCreate()" ng-show="x1.creating" ng-disabled="!f4.$valid"><strong>Create</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!f4.$valid"><strong>Delete</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.f4.doUpdate()" ng-show="x1.updating" ng-disabled="!f4.$valid"><strong>Update</strong></button>
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-        
-        <form name="f5" class="form list-group-item" id="f5" ng-show="x1.f5.active">
-          <fieldset ng-disabled="!(x1.creating || x1.updating)">
-            <legend ng-hide="x1.updating">Create a guard callback</legend>
-            <legend ng-show="x1.updating">Update a guard callback</legend>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="callback.name" ng-model="x1.item.name" placeholder="Name">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <select class="form-control" id="callback.test" ng-model="x1.item.test" ng-options="option as option.name for option in x0.callbacks track by option.name" ng-required="true" required>
-                    <option value="" disabled selected>Test Callback</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <select class="form-control" id="callback.success" ng-model="x1.item.success" ng-options="option as option.name for option in x0.callbacks track by option.name" ng-required="true" required>
-                    <option value="" disabled selected>Success Callback</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <select class="form-control" id="callback.failure" ng-model="x1.item.failure" ng-options="option as option.name for option in x0.callbacks track by option.name">
-                    <option value="" disabled selected>Failure Callback</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group pull-right">
-                  <button type="reset" class="btn" ng-click="x1.doClean()"><strong>Cancel</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.f5.doCreate()" ng-show="x1.creating" ng-disabled="!f5.$valid"><strong>Create</strong></button>
-                  <button type="submit" class="btn btn-danger" ng-click="x1.doDelete()" ng-show="x1.updating" ng-disabled="!f5.$valid"><strong>Delete</strong></button>
-                  <button type="submit" class="btn btn-default" ng-click="x1.f5.doUpdate()" ng-show="x1.updating" ng-disabled="!f5.$valid"><strong>Update</strong></button>
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-      
-        <div class="alert alert-{{message.type}} alert-dismissible" id="alert" role="alert" style="display:none;margin-top:20px;">
-          <button type="button" class="close" aria-label="close" ng-click="doDismiss()"><span aria-hidden="true">&times;</span></button>
-          <p>{{message.content}}</p>
-        </div>
-      </div>
-    
-    </section>
-    
-    <footer class="footer navbar navbar-inverse navbar-custom navbar-fixed-bottom">
-      <div class="container-fluid">
-        <div class="nav navbar-nav navbar-left">
-          <p class="text-muted">Copyright © 2015-2017. ICAM. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-  </body>
-  <script type="text/javascript">
-  var app = angular.module('app',[]);
-
-  app.filter('ceil', function() {
-	return function(input) {
-	  return Math.ceil(input);
-	};
-  });
-  
-  app.controller('controller', function ($scope, $http) {
-
-	$scope.user = {};
-	$scope.user.name = null;
-	$scope.user.role = false;
-	  
-  	var user = function() {
-  		$http({method:'GET',url:'../user/name'})
-  		.then(function onSuccess(response) {
-  			$scope.user.name = response.data;
-  		}, function onError(response) {
-  			$scope.user.name = null;
-  		});
-  		$http({method:'GET',url:'../user/role'})
-  		.then(function onSuccess(response) {
-  			$scope.user.role = response.data;
-  		}, function onError(response) {
-  			$scope.user.role = false;
-  		});
-  	}
-  	
-  	user();
-  	
-  	$scope.message = {};
-    
-    var display = function(type, content) {
-        $scope.message.type = type;
-        $scope.message.content = content;
-        $("#alert").show();
-    }
-    
-    $scope.doDismiss = function() {
-        $("#alert").hide();
-        $scope.alert = {};
-    }
-  	
-    $scope.x0 = {};
-    $scope.x0.callbacks = [];
-    $scope.x0.types = [];
-    $scope.x0.symbols = [];
-      
-    var list = function() {
-      $http({method:'GET',url:'../callbacks/list'})
-      .then(function onSuccess(response) {
-        $scope.x0.callbacks = response.data;
-      },function onError(response) {
-        $scope.x0.callbacks = [];
-      });
-      $http({method:'GET',url:'../types/list'})
-      .then(function onSuccess(response) {
-        $scope.x0.types = response.data;
-      },function onError(response) {
-        $scope.x0.types = [];
-      });
-      $http({method:'GET',url:'../symbols/list'})
-      .then(function onSuccess(response) {
-        $scope.x0.symbols = response.data;
-      },function onError(response) {
-        $scope.x0.symbols = [];
-      });
-    }
-    
-    list();
-    
-    $scope.x1 = {};
-    $scope.x1.f1 = {};
-    $scope.x1.f2 = {};
-    $scope.x1.f3 = {};
-    $scope.x1.f4 = {};
-    $scope.x1.f5 = {};
-    $scope.x1.callback = null;
-    $scope.x1.creating = false;
-    $scope.x1.updating = false;
-    $scope.x1.item = null;
-    $scope.x1.length = 5;
-    $scope.x1.offset = 0;
-    $scope.x1.size = 0;
-    $scope.x1.items = [];
-    
-    $scope.x1.doPrev = function() {
-      if ($scope.x1.length <= $scope.x1.offset) {
-        $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        $scope.x1.doPage();
-      }
-    }
-    
-    $scope.x1.doNext = function() {
-      if ($scope.x1.offset + $scope.x1.length < $scope.x1.size) {
-        $scope.x1.offset = $scope.x1.offset + $scope.x1.length;
-        $scope.x1.doPage();
-      }
-    }
-    
-    $scope.x1.doFirst = function() {
-      $scope.x1.offset = 0;
-      $scope.x1.doPage();
-    }
-
-    $scope.x1.doLast = function() {
-      $scope.x1.offset = Math.floor(($scope.x1.size - 1) / $scope.x1.length) * $scope.x1.length;
-      $scope.x1.doPage();
-    }
-        
-    $scope.x1.doSelect = function(item) {
-      if (item) {
-        $scope.x1.creating = false;
-        $scope.x1.updating = true;
-        $scope.x1.item = angular.copy(item);
-        if ($scope.x1.item.category == 'type') {
-            $scope.x1.f1.active = true;
-            $scope.x1.f2.active = false;
-            $scope.x1.f3.active = false;
-            $scope.x1.f4.active = false;
-            $scope.x1.f5.active = false;
-        } else if ($scope.x1.item.category == 'topic') {
-            $scope.x1.f1.active = false;
-            $scope.x1.f2.active = true;
-            $scope.x1.f3.active = false;
-            $scope.x1.f4.active = false;
-            $scope.x1.f5.active = false;
-        } else if ($scope.x1.item.category == 'storage') {
-            $scope.x1.f1.active = false;
-            $scope.x1.f2.active = false;
-            $scope.x1.f3.active = true;
-            $scope.x1.f4.active = false;
-            $scope.x1.f5.active = false;
-        } else if ($scope.x1.item.category == 'feature') {
-            $scope.x1.f1.active = false;
-            $scope.x1.f2.active = false;
-            $scope.x1.f3.active = false;
-            $scope.x1.f4.active = true;
-            $scope.x1.f5.active = false;
-        } else if ($scope.x1.item.category == 'guard') {
-            $scope.x1.f1.active = false;
-            $scope.x1.f2.active = false;
-            $scope.x1.f3.active = false;
-            $scope.x1.f4.active = false;
-            $scope.x1.f5.active = true;
-        }
-      } else {
-        $scope.x1.creating = true;
-        $scope.x1.updating = false;
-        $scope.x1.item = angular.copy({});
-      }
-    }
-        
-    $scope.x1.doType = function() {
-      $scope.x1.doSelect();
-      $scope.x1.f1.active = true;
-      $scope.x1.f2.active = false;
-      $scope.x1.f3.active = false;
-      $scope.x1.f4.active = false;
-      $scope.x1.f5.active = false;
-    }
-        
-    $scope.x1.doTopic = function() {
-      $scope.x1.doSelect();
-      $scope.x1.f1.active = false;
-      $scope.x1.f2.active = true;
-      $scope.x1.f3.active = false;
-      $scope.x1.f4.active = false;
-      $scope.x1.f5.active = false;
-    }
-        
-    $scope.x1.doStorage = function() {
-      $scope.x1.doSelect();
-      $scope.x1.f1.active = false;
-      $scope.x1.f2.active = false;
-      $scope.x1.f3.active = true;
-      $scope.x1.f4.active = false;
-      $scope.x1.f5.active = false;
-    }
-        
-    $scope.x1.doFeature = function() {
-      $scope.x1.doSelect();
-      $scope.x1.f1.active = false;
-      $scope.x1.f2.active = false;
-      $scope.x1.f3.active = false;
-      $scope.x1.f4.active = true;
-      $scope.x1.f5.active = false;
-    }
-        
-    $scope.x1.doGuard = function() {
-      $scope.x1.doSelect();
-      $scope.x1.f1.active = false;
-      $scope.x1.f2.active = false;
-      $scope.x1.f3.active = false;
-      $scope.x1.f4.active = false;
-      $scope.x1.f5.active = true;
-    }
-    
-    $scope.x1.doClean = function() {
-      $scope.x1.creating = false;
-      $scope.x1.updating = false;
-      $scope.x1.item = null;
-      $scope.x1.f1.active = false;
-      $scope.x1.f2.active = false;
-      $scope.x1.f3.active = false;
-      $scope.x1.f4.active = false;
-      $scope.x1.f5.active = false;
-    }
-
-    $scope.x1.doSize = function() {
-      $http({method:'GET',url:'../callbacks/size'})
-      .then(function onSuccess(response) {
-         $scope.x1.size = response.data;
-      },function onError(response) {
-        $scope.x1.size = 0;
-      });
-    }
-     
-    var find = function(i, item) {
-      var schema = "/" + item.category + "?";
-      var content = "id=" + item.id; 
-      $http({method:'GET',url:'../callbacks/find/' + schema + content})
-      .then(function onSuccess(response) {
-        $scope.x1.items.splice(i, 0, response.data);
-      },function onError(response) {
-      });
-    }
-    
-    $scope.x1.doPage = function() {
-      var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
-      $http({method:'GET',url:'../callbacks/page?' + content})
-      .then(function onSuccess(response) {
-    	$scope.x1.items = [];
-    	var i = 0;
-        angular.forEach(response.data, function(item, key) {
-          find(i, item);
-          i++;
-        });
-      },function onError(response) {
-        $scope.x1.items = [];
-      });
-    }
-
-    $scope.x1.doDelete = function() {
-      var content = "id=" + $scope.x1.item.id;
-      $http({method:'POST',url:'../callbacks/delete',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The callback " + $scope.x1.item.id + " has been sucessfully deleted.");
-        $scope.x1.doClean();
-        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
-          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        }
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while deleting the callback #" + $scope.x1.item.id +".");
-        $scope.x1.doClean();
-      });
-    }
-    
-    $scope.x1.f1.doCreate = function() {
-      var content = "name=" + encodeURIComponent($scope.x1.item.name) 
-      + "&type=" + $scope.x1.item.type.name 
-      + "&atomic=true&category=type";
-      $http({method:'POST',url:'../callbacks/create/type',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The new callback has been sucessfully created.");
-        $scope.x1.doClean();
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while creating the new callback.");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.f1.doUpdate = function() {
-      var content = "id=" + $scope.x1.item.id
-      + "&name=" + encodeURIComponent($scope.x1.item.name) 
-      + "&type=" + $scope.x1.item.type.name 
-      + "&atomic=true&category=type";
-      $http({method:'POST',url:'../callbacks/update/type',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The callback " + $scope.x1.item.id + " has been sucessfully updated.");
-        $scope.x1.doClean();
-        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
-          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        }
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while updating the callback #" + $scope.x1.item.id +".");
-        $scope.x1.doClean();
-      });
-    }
-    
-    $scope.x1.f2.doCreate = function() {
-      var content = "name=" + encodeURIComponent($scope.x1.item.name) 
-      + "&topic=" + $scope.x1.item.topic 
-      + "&atomic=true&category=topic";
-      $http({method:'POST',url:'../callbacks/create/topic',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The new callback has been sucessfully created.");
-        $scope.x1.doClean();
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while creating the new callback.");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.f2.doUpdate = function() {
-      var content = "id=" + $scope.x1.item.id 
-      + "&name=" + encodeURIComponent($scope.x1.item.name) 
-      + "&topic=" + $scope.x1.item.topic 
-      + "&atomic=true&category=topic";
-      $http({method:'POST',url:'../callbacks/update/topic',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The callback " + $scope.x1.item.id + " has been sucessfully updated.");
-        $scope.x1.doClean();
-        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
-          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        }
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while updating the callback #" + $scope.x1.item.id +".");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.f3.doCreate = function() {
-      var content = "name=" + encodeURIComponent($scope.x1.item.name) 
-      + "&collection=" + $scope.x1.item.collection 
-      + "&atomic=true&category=storage";
-      $http({method:'POST',url:'../callbacks/create/storage',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The new callback has been sucessfully created.");
-        $scope.x1.doClean();
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while creating the new callback.");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.f3.doUpdate = function() {
-      var content = "id=" + $scope.x1.item.id 
-      + "&name=" + encodeURIComponent($scope.x1.item.name)
-      + "&collection="  + $scope.x1.item.collection 
-      + "&atomic=true&category=storage";
-      $http({method:'POST',url:'../callbacks/update/storage',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The callback " + $scope.x1.item.id + " has been sucessfully updated.");
-        $scope.x1.doClean();
-        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
-          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        }
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while updating the callback #" + $scope.x1.item.id +".");
-        $scope.x1.doClean();
-      });
-    }
-    
-    $scope.x1.f4.doCreate = function() {
-      var content = "name=" + encodeURIComponent($scope.x1.item.name) 
-      + "&type=" + $scope.x1.item.type.name 
-      + "&symbol=" + $scope.x1.item.symbol.name 
-      + "&value=" + encodeURIComponent($scope.x1.item.value) 
-      + "&atomic=true&category=feature";
-      $http({method:'POST',url:'../callbacks/create/feature',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The new callback has been sucessfully created.");
-        $scope.x1.doClean();
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while creating the new callback.");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.f4.doUpdate = function() {
-      var content = "id=" + $scope.x1.item.id 
-      + "&name=" + encodeURIComponent($scope.x1.item.name) 
-      + "&type=" + $scope.x1.item.type.name 
-      + "&symbol=" + $scope.x1.item.symbol.name 
-      + "&value=" + encodeURIComponent($scope.x1.item.value) 
-      + "&atomic=true&category=feature";
-      $http({method:'POST',url:'../callbacks/update/feature',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The callback " + $scope.x1.item.id + " has been sucessfully updated.");
-        $scope.x1.doClean();
-        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
-          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        }
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while updating the callback #" + $scope.x1.item.id +".");
-        $scope.x1.doClean();
-      });
-    }
-    
-    $scope.x1.f5.doCreate = function() {
-    	var content = "name=" + encodeURIComponent($scope.x1.item.name) 
-    	+ "&test=" + $scope.x1.item.test.id 
-    	+ "&success=" + $scope.x1.item.success.id 
-    	+ ($scope.x1.item.failure ? "&failure=" + $scope.x1.item.failure.id : "") 
-    	+ "&atomic=true&category=guard";
-      $http({method:'POST',url:'../callbacks/create/guard',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The new callback has been sucessfully created.");
-        $scope.x1.doClean();
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while creating the new callback.");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.f5.doUpdate = function() {
-      var content = "id=" + $scope.x1.item.id 
-      + "&name=" + encodeURIComponent($scope.x1.item.name) 
-      + "&test=" + $scope.x1.item.test.id 
-      + "&success=" + $scope.x1.item.success.id 
-      + ($scope.x1.item.failure ? "&failure=" + $scope.x1.item.failure.id : "")
-      + "&atomic=true&category=guard";
-      $http({method:'POST',url:'../callbacks/update/guard',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
-      .then(function onSuccess(response) {
-        display("success", "The callback " + $scope.x1.item.id + " has been sucessfully updated.");
-        $scope.x1.doClean();
-        if (Math.ceil($scope.x1.size / $scope.x1.length) < $scope.x1.offset) {
-          $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
-        }
-        $scope.x1.doSize();
-        $scope.x1.doPage();
-      },function onError(response) {
-        display("danger", "Something wrong happened while updating the callback #" + $scope.x1.item.id +".");
-        $scope.x1.doClean();
-      });
-    }
-
-    $scope.x1.doSize();
-    $scope.x1.doPage();
-    
-  });
-  </script>
-</html>
- -->

@@ -17,7 +17,8 @@ public class Lister extends fr.icam.emit.services.commons.Lister<Symbol> {
     	List<Symbol> items = new LinkedList<Symbol>();
     	while (resultSet.next()) {
     		String name = resultSet.getString("name");
-    		Symbol item = new Symbol(name);
+    		String html = resultSet.getString("html");
+    		Symbol item = new Symbol(name, html);
     		items.add(item);
     	}
     	return items;
