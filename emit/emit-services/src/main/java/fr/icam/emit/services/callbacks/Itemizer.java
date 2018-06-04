@@ -18,15 +18,9 @@ public class Itemizer extends JdbcQueryServlet<Callback> {
 	private static final long serialVersionUID = 201711141212013L;
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		Callback callback = this.doProcess(request);
-		this.doWrite(callback, response.getWriter());
-	}
-
-	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Callback callback = this.doProcess(request);
-		request.setAttribute("callback", callback);
+		request.setAttribute("abstract-callback", callback);
 	}
 
 	@Override

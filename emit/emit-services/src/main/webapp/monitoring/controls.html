@@ -121,6 +121,38 @@
       <div class="col-6">
 
         <div class="container" rv-show="clients.item">
+          <h4>Callback</h4>        
+          <form rv-hide="clients.item.attached">
+            <fieldset>
+              <div class="form-group">
+                <select id="callback.type" class="form-control" rv-value="clients.item.id" placeholder="Callback" required>
+                  <option rv-each-item="callbacks.items" rv-value="item.id" rv-text="item.name"></option>
+                </select>
+              </div>
+              <div class="form-group">
+                <div class="float-right">
+                  <button type="button" class="btn btn-outline-primary" rv-on-click="clients.item.attach">Attach</button>
+                </div>
+              </div>
+            </fieldset>
+          </form>        
+          <form rv-show="clients.item.attached">
+            <fieldset>
+              <div class="form-group">
+                <select id="callback.type" class="form-control" rv-value="clients.item.id" required>
+                  <option rv-each-item="callbacks.items" rv-value="item.id" rv-text="item.name"></option>
+                </select>
+              </div>
+              <div class="form-group">
+                <div class="float-right">
+                  <button type="button" class="btn btn-outline-primary" rv-on-click="clients.item.detach">Detach</button>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+
+        <div class="container" rv-show="clients.item">
           <h4>Connection</h4>
           <div rv-hide="clients.item.connected">
             <p>
@@ -256,6 +288,18 @@
   content.alert.dismiss();
   
 
+  content.callbacks = {};
+
+  var callbacks = function() {
+    emit.callbacks.list(function onSuccess(response) {
+      content.callbacks.items = response;
+    },function onError(response) {
+      content.callbacks.items = [];
+    });
+  };
+  
+  callbacks();
+  
   /* clients */ 
   
   content.clients = {};
@@ -341,8 +385,11 @@
         item.disconnect = function() { disconnect(item); };
         item.subscribe = function() { subscribe(item); };
         item.unsubscribe = function() { unsubscribe(item); };
+        item.attach = function() { attach(item); };
+        item.detach = function() { detach(item); };
         item.publish = function() { publish(item); };
     	connected(item);
+    	attached(item);
       });
     },function onError(response) {
       content.clients.items = [];
@@ -427,6 +474,42 @@
       item.qos = null;
       item.retained = null;
       item.persisted = null;
+    });
+  };
+
+  var attached = function(item) {
+    emit.clients.attached(item, function onSuccess(response) {
+      item.attached = response;
+      if (item.attached) {
+    	item.id = item.attached.id;
+    	item.category = item.attached.category;
+      } else {
+        item.id = null;
+      	item.category = null;
+      }
+    },function onError(response) {
+	  item.attached = null;
+      item.id = null;
+      item.category = null;
+	  display("warning","Failure","Something wrong happened while querying the client.");
+    });
+  };
+
+  var attach = function(item) {
+    emit.clients.attach(item, function onSuccess(response) {
+      attached(item);
+    },function onError(response) {
+	  display("warning","Failure","Something wrong happened while attaching callback.");
+	  attached(item);
+    });
+  };
+
+  var detach = function(item) {
+    emit.clients.detach(item, function onSuccess(response) {
+      attached(item);
+    },function onError(response) {
+	  display("warning","Failure","Something wrong happened while detaching callback.");
+	  attached(item);
     });
   };
     

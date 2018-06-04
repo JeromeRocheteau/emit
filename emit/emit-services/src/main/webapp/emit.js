@@ -406,6 +406,58 @@ emit.clients.publish = function(data, onSuccess, onError) {
   req.send(null);    
 };
 
+emit.clients.attached = function(data, onSuccess, onError) {
+  var parameters = "?uuid=" + data.uuid;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/clients/attached' + parameters, true);
+  req.send(null);    
+};
+	    
+emit.clients.attach = function(data, onSuccess, onError) {
+  var parameters = "?uuid=" + data.uuid
+  + "&id=" + data.id;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/clients/attach' + parameters, true);
+  req.send(null);    
+};
+	    
+emit.clients.detach = function(data, onSuccess, onError) {
+  var parameters = "?uuid=" + data.uuid;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('POST','/emit/clients/detach' + parameters, true);
+  req.send(null);    
+};
+
 emit.records = {};
 
 emit.records.size = function(data, onSuccess, onError) {

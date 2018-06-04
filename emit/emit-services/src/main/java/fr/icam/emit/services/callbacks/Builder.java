@@ -28,8 +28,9 @@ public class Builder extends JdbcServlet {
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String id = request.getParameter("uuid");
-		String category = request.getParameter("category");
+		String client = request.getParameter("uuid");
+		Callback callback = (Callback) request.getAttribute("abstract-callback");
+		String category = callback.getCategory();
 		if (category.equals("type")) {
 			this.doCall(request, response, "type-callback-item");
 		} else if (category.equals("topic")) {
@@ -43,8 +44,8 @@ public class Builder extends JdbcServlet {
 		}
 		try {
 			Callback cb = (Callback) request.getAttribute("callback");
-			MqttCallback callback = CallbackFactory.from(listener, id, cb);
-			request.setAttribute("mqtt-callback", callback);
+			MqttCallback mqttCallback = CallbackFactory.from(listener, client, cb);
+			request.setAttribute("mqtt-callback", mqttCallback);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
