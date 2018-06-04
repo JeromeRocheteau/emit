@@ -7,4 +7,5 @@ SELECT
   b.`name` AS brokerName,
   b.`user` AS brokerUser
 FROM `clients` c
-INNER JOIN `brokers`b ON b.`uri` = c.`broker`;
+INNER JOIN `brokers`b ON b.`uri` = c.`broker`
+WHERE c.`user`= ?;

@@ -221,6 +221,22 @@ emit.clients.page = function(data, onSuccess, onError) {
   req.open('GET','/emit/clients/page' + parameters, true);
   req.send(null);    
 };
+
+emit.clients.list = function(onSuccess, onError) {
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/clients/list', true);
+  req.send(null);    
+};
 	    
 emit.clients.create = function(data, onSuccess, onError) {
   var parameters = "?name=" + encodeURIComponent(data.name) 
@@ -550,6 +566,25 @@ emit.messages.search = function(data, onSuccess, onError) {
     onError(this.responseText);
   }
   req.open('GET','/emit/messages/search' + parameters, true);
+  req.send(null);    
+};
+
+emit.topics = {};
+
+emit.topics.list = function(data, onSuccess, onError) {
+  var parameters = "?client=" + data.uuid;
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/topics/list' + parameters, true);
   req.send(null);    
 };
 

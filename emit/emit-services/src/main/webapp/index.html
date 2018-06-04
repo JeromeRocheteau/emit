@@ -74,13 +74,96 @@
         <h1 class="display-4">EMIT <small class="lead">a supervisory &amp; control system for networks of MQTT clients</small></h1>
       </div>
     </section>
+    <section id="content" class="container-fluid">
+      <div class="row">
+        <div class="col-8" style="position: relative; height:40vh; width:80vw">
+          <div class="chart-container">
+            <canvas id="chart"></canvas>
+          </div>
+          <nav class="row" style="margin-left:1em;margin-right:1em;" aria-label="...">
+            <button class="btn btn-outline-primary" rv-on-click="prev">avant</button>
+            <div style="margin-left:auto;margin-right:auto;">
+              <span rv-text="started | date"></span> &mdash; <span rv-text="stopped | date"></span>
+            </div>
+            <button class="btn btn-outline-primary" rv-on-click="next">après</button>
+          </nav>          
+        </div>
+        <div class="col-4">
+          <form class="form" role="form" name="form">
+            <div class="form-group">
+              <label for="topic">Client</label>
+              <select id="topic" class="form-control" rv-value="client" rv-on-change="topics.list" placeholder="Client" required>
+                <option rv-each-item="clients.items" rv-value="item.uuid" rv-text="item.name"></option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="topic">Topic</label>
+              <select id="topic" class="form-control" rv-value="topic" rv-on-change="messages.search" placeholder="Topic" required>
+                <option rv-each-item="topics.items" rv-value="item" rv-text="item"></option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="time">Time Interval</label>
+              <select id="time" class="form-control" rv-value="time" rv-on-change="messages.search" placeholder="Time" required>
+                <option value="minute">per minute</option>
+                <option value="hour">per hour</option>
+                <option value="day">per day</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
     <footer class="footer fixed-bottom bg-light text-dark">
       <p class="text-center">Copyright © 2015-2018. ICAM. All rights reserved.</p>
     </footer>
   </body>
   <script type="text/javascript">
+  var colors = {
+    red: 'rgb(255, 99, 132)',
+    orange: 'rgb(255, 159, 64)',
+    yellow: 'rgb(255, 205, 86)',
+    green: 'rgb(75, 192, 192)',
+    blue: 'rgb(54, 162, 235)',
+    purple: 'rgb(153, 102, 255)',
+    grey: 'rgb(201, 203, 207)'
+  };
+  
+  var mychart = null;
+  var mylabels = [];
+  var mydata = [];
+  
+  var timeseries = function(data,items) {
+	while(mylabels.length > 0) { mylabels.pop(); }
+	while(mydata.length > 0) { mydata.pop(); }
+	for (var i in items) {
+	  var item = items[i];
+      mylabels.push(item.issued);
+      mydata.push(item.value);
+	}
+  };
+  
+  var update = function(data, items) { 
+	  timeseries(data, items);
+	  var context = document.getElementById('chart').getContext('2d');
+	  var payload = {
+	    type: 'line',
+	    data: {labels:mylabels,datasets:[{label: data.topic, fill: false, backgroundColor: colors.blue,borderColor: colors.blue, data:mydata}]},
+		options: {scales: {yAxes: [{type: "linear",ticks:{beginAtZero:true}}],xAxes: [{type: 'time',time: {unit: data.time,min:data.started,max:data.stopped,displayFormats:{minute:'HH:mm:ss',hour:'HH:mm:ss',day:'HH:mm:ss'}}}]}}
+	  };
+	  new Chart(context, payload);	  
+  }
+  </script>
+  <script type="text/javascript">
   var content = {};
+
+  rivets.formatters.date = function(value) {
+    return moment(value).format('YYYY-MM-DD HH:mm:ss');
+  }
+  
   rivets.bind($('#content'), content);
+  
+  /* users */ 
   
   content.user = {};
   
@@ -94,5 +177,78 @@
   }, function onError(response){
 	content.user.name = null;
   });
+  
+  /**/
+  
+  content.time = "day";
+  content.client = null;
+  content.topic = null;
+  content.started = moment().startOf(content.time);
+  content.stopped = moment().endOf(content.time);
+  
+  /* clients */ 
+  
+  content.clients = {};
+  content.clients.items = [];
+      
+  content.reset = function() {
+    content.client = null;
+    content.topic = null;
+  }
+    
+  var clients = function() {
+    emit.clients.list(function onSuccess(response) {
+      content.clients.items = response;
+    },function onError(response) {
+      content.clients.items = [];
+    });
+  };
+  
+  clients();
+  
+  /* topics */ 
+  
+  content.topics = {};
+  content.topics.items = [];
+    
+  content.topics.list = function() {
+    emit.topics.list(content.clients.item, function onSuccess(response) {
+      content.topics.items = response;
+    },function onError(response) {
+      content.topics.items = [];
+    });
+  };
+  
+  /* messages */ 
+  
+  content.messages = {};
+  content.messages.items = [];
+    
+  content.messages.search = function() {
+	if (content.topic && content.time) {
+	  var date = content.started;
+	  content.started = moment(date).startOf(content.time);
+	  content.stopped = moment(date).endOf(content.time);
+      emit.messages.search(content, function onSuccess(response) {
+	    content.messages.items = response;
+	    update(content, content.messages.items);
+	  },function onError(response) {
+	    content.messages.items = [];
+	  });		
+	}
+  };
+  
+  content.prev = function () {
+      content.started = moment(content.started).subtract(1, content.time + 's');
+      content.stopped = moment(content.stopped).subtract(1, content.time + 's');
+      content.messages.search();
+  }
+  
+  content.next = function () {
+      content.started = moment(content.started).add(1, content.time + 's');
+      content.stopped = moment(content.stopped).add(1, content.time + 's');
+      content.messages.search();
+  }
+  
   </script>
 </html>

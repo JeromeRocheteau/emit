@@ -13,13 +13,25 @@ public class GuardCallback extends Callback {
 	public Callback getTest() {
 		return test;
 	}
+	
+	public void setTest(Callback test) {
+		this.test = test;
+	}
 
 	public Callback getSuccess() {
 		return success;
 	}
+	
+	public void setSuccess(Callback success) {
+		this.success = success;
+	}
 
 	public Callback getFailure() {
 		return failure;
+	}
+	
+	public void setFailure(Callback failure) {
+		this.failure = failure;
 	}
 
 	public GuardCallback(Long id, String name, Long issued, String user, Boolean atomic, String category, Callback test, Callback success, Callback failure) {
