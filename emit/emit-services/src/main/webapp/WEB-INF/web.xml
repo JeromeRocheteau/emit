@@ -447,7 +447,7 @@
     <servlet-class>fr.icam.emit.services.clients.Lister</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
-      <param-value>/fr/icam/emit/queries/clients/list.sql</param-value>
+      <param-value>/fr/icam/emit/queries/clients/list-user.sql</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>

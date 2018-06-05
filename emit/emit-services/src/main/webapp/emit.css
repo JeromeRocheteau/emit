@@ -15,6 +15,12 @@ footer {
 	padding-bottom: 1ex;
 }
 
+@media (min-width: 576px) {
+  .jumbotron {
+    padding: 2rem 1rem;
+  }
+}
+
 /*
 
 .footer {

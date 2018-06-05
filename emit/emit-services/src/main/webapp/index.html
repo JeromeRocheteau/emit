@@ -43,14 +43,6 @@
                   <a class="dropdown-item" href="/emit/monitoring/messages.html">Messages</a>
                 </div>
               </li>
-              <li class="nav-item active dropdown">
-                <a class="nav-link active dropdown-toggle" href="#" id="reportingDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Reporting
-                </a>
-                <div class="dropdown-menu" aria-labelledby="reportingDropdown">
-                  <a class="dropdown-item" href="/emit/reporting/clients.html">Clients</a>
-                </div>
-              </li>
             </ul>
             <ul class="navbar-nav">
               <li class="nav-item active dropdown">
@@ -80,7 +72,7 @@
           <div class="chart-container">
             <canvas id="chart"></canvas>
           </div>
-          <nav class="row" style="margin-left:1em;margin-right:1em;" aria-label="...">
+          <nav class="row" style="margin-left:1em;margin-right:1em;padding-bottom:10ex;" aria-label="...">
             <button class="btn btn-outline-primary" rv-on-click="prev">avant</button>
             <div style="margin-left:auto;margin-right:auto;">
               <span rv-text="started | date"></span> &mdash; <span rv-text="stopped | date"></span>
@@ -92,7 +84,7 @@
           <form class="form" role="form" name="form">
             <div class="form-group">
               <label for="topic">Client</label>
-              <select id="topic" class="form-control" rv-value="client" rv-on-change="topics.list" placeholder="Client" required>
+              <select id="topic" class="form-control" rv-value="uuid" rv-on-change="topics.list" placeholder="Client" required>
                 <option rv-each-item="clients.items" rv-value="item.uuid" rv-text="item.name"></option>
               </select>
             </div>
@@ -180,8 +172,8 @@
   
   /**/
   
-  content.time = "day";
-  content.client = null;
+  content.time = "minute";
+  content.uuid = null;
   content.topic = null;
   content.started = moment().startOf(content.time);
   content.stopped = moment().endOf(content.time);
@@ -212,7 +204,8 @@
   content.topics.items = [];
     
   content.topics.list = function() {
-    emit.topics.list(content.clients.item, function onSuccess(response) {
+	content.topic = null;
+    emit.topics.list(content, function onSuccess(response) {
       content.topics.items = response;
     },function onError(response) {
       content.topics.items = [];
