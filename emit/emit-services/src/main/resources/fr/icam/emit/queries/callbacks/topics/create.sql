@@ -1,0 +1,1 @@
+INSERT INTO `topic_callbacks` (`id`,`topic`) VALUES (?,?);

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Emit | Reporting</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css">
+    <style type="text/css">
+      html {overflow-y:scroll;position:relative;height:100%;min-height:100%;}
+      body {padding-top:5ex;}
+      footer {padding-top:2ex;padding-bottom:1ex;color:white;}
+     .navbar-inverse {background-color: #3c0050;}
+     .navbar-inverse .navbar-nav > .active > a,.navbar-inverse .navbar-nav > .open > a:hover,.navbar-inverse .navbar-nav > .open > a:focus {color: #fff;background-color: #3c0050;}
+    </style>
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
+  <body ng-app="app" ng-controller="controller">
+    <header class="ng-cloak">
+      <div class="navbar navbar-inverse navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="../index.html"><strong>Emit</strong></a>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-left">
+              <li class="dropdown" ng-show="user.role">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Configuring&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../configuring/brokers.html"><span class="glyphicon glyphicon-transfer" aria-hidden="true">&nbsp;</span>Brokers</a></li>
+                  <li><a href="../configuring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li><a href="../configuring/callbacks.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Callbacks</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managing&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../managing/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li ng-show="user.role"><a href="../managing/shares.html"><span class="glyphicon glyphicon-share-alt" aria-hidden="true">&nbsp;</span>Shares</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Monitoring&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../monitoring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reporting&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../reporting/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li class="dropdown-header">Conceptual Layer</li>
+                  <li><a href="../reporting/topics.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Topics</a></li>
+                </ul>
+              </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">{{user.name}}</li>
+                  <li><a href="../settings.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Settings</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="../user/clear"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+    <section id="title" class="ng-cloak">
+      <div class="container-fluid well">
+        <h2>EMIT <small>a supervisory & control system for MQTT clients</small></h2>
+      </div>
+    </section>
+    <section id="content" class="container ng-cloak">
+      <div class="col-md-6">
+        <h3>Topics</h3>
+        <nav aria-label="...">
+          <ul class="pager">
+            <li class="previous"><a class="btn btn-default" ng-click="x1.doRoot()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
+            <li class="previous"><a class="btn btn-default" ng-click="x1.doLift()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+          </ul>
+        </nav>
+        <div class="list-group">
+          <div ng-show="x1.item" class="list-group-item">
+            <span ng-hide="x1.item.leaf" class="glyphicon glyphicon-chevron-down" aria-hidden="true">&nbsp;</span>
+            <span ng-show="x1.item.leaf" class="glyphicon glyphicon-play" aria-hidden="true">&nbsp;</span>
+            {{x1.item.name}}
+          </div>
+          <a class="list-group-item" ng-repeat="item in x1.items" ng-click="x1.doSelect(item)">
+            <span ng-hide="item.leaf" class="glyphicon glyphicon-chevron-right" aria-hidden="true">&nbsp;</span>
+            <span ng-show="item.leaf" class="glyphicon glyphicon-play-circle" aria-hidden="true">&nbsp;</span>
+            {{item.name}}
+          </a>
+        </div>
+      </div>
+      <div class="col-md-6">
+      </div>
+    </section>
+    <footer class="footer navbar navbar-inverse navbar-custom navbar-fixed-bottom">
+      <div class="container-fluid">
+        <div class="nav navbar-nav navbar-left">
+          <p class="text-muted">Copyright © 2015-2017. ICAM. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+  <script type="text/javascript">
+  var app = angular.module('app',[]);
+
+  app.filter('ceil', function() {
+	return function(input) {
+	  return Math.ceil(input);
+	};
+  });
+  
+  app.filter('binary', function() {
+	return function(input) {
+	  return String.fromCharCode.apply(null, new Uint16Array(input));
+	};
+  });
+  
+  app.controller('controller', function ($scope, $http) {
+
+	$scope.user = {};
+	$scope.user.name = null;
+	$scope.user.role = false;
+	  
+  	var user = function() {
+  		$http({method:'GET',url:'../user/name'})
+  		.then(function onSuccess(response) {
+  			$scope.user.name = response.data;
+  		}, function onError(response) {
+  			$scope.user.name = null;
+  		});
+  		$http({method:'GET',url:'../user/role'})
+  		.then(function onSuccess(response) {
+  			$scope.user.role = response.data;
+  		}, function onError(response) {
+  			$scope.user.role = false;
+  		});
+  	}
+  	
+  	user();
+  	
+  	$scope.message = {};
+    
+    var display = function(type, content) {
+        $scope.message.type = type;
+        $scope.message.content = content;
+        $("#alert").show();
+    }
+    
+    $scope.doDismiss = function() {
+        $("#alert").hide();
+        $scope.alert = {};
+    }
+  	
+    $scope.x0 = {};
+    $scope.x0.items = [];
+    $scope.x0.lists = [];
+    
+    $scope.x1 = {};
+    $scope.x1.item = null;
+    $scope.x1.items = [];
+    
+    $scope.x1.doList = function() {
+      $http({method:'GET',url:'../topics/roots/list'})
+      .then(function onSuccess(response) {
+        $scope.x1.items = response.data;
+      },function onError(response) {
+       $scope.x1.items = [];
+      });
+    }
+    
+    $scope.x1.doRoot = function() {
+      if ($scope.x0.items.length > 0 && $scope.x0.lists.length > 0) {
+        $scope.x1.item = null;
+        while ($scope.x0.items.length > 0) {
+        	$scope.x0.items.pop();
+        }
+        while ($scope.x0.lists.length > 0) {
+        	$scope.x0.lists.pop();
+        }
+        $scope.x1.doList();
+      }
+    }
+    
+    $scope.x1.doSelect = function(item) {
+      $scope.x0.items.push($scope.x1.item);
+      $scope.x0.lists.push($scope.x1.items);
+      $scope.x1.item = item;
+      if (item.leaf) {
+        $scope.x1.items = [];
+      } else {
+        var content = "topic=" + item.name;
+        $http({method:'GET',url:'../topics/nodes/list?' + content})
+        .then(function onSuccess(response) {
+          $scope.x1.items = response.data;
+        },function onError(response) {
+          $scope.x1.items = [];
+        });    	  
+      }
+    }
+    
+    $scope.x1.doLift = function() {
+      if ($scope.x0.items.length > 0 && $scope.x0.lists.length > 0) {
+        $scope.x1.item = $scope.x0.items.pop();
+        $scope.x1.items = $scope.x0.lists.pop();
+      }
+	}
+    
+    $scope.x1.doList();
+    
+  });
+  </script>
+</html>

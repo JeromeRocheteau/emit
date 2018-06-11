@@ -1,0 +1,1483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+	version="3.0">
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <resource-ref>
+    <description>JDBC Resource</description>
+    <res-ref-name>jdbc/database</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+  <context-param>
+    <param-name>jdbc-resource</param-name>
+    <param-value>jdbc/database</param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>com.github.jeromerocheteau.JdbcListener</listener-class>
+  </listener>
+
+  <context-param>
+    <param-name>mongodb-server</param-name>
+    <param-value>mongodb://localhost:27017</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>mongodb-database</param-name>
+    <param-value>emit</param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>mongodb-message-collection</param-name>
+    <param-value>messages</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>mongodb-failure-collection</param-name>
+    <param-value>failures</param-value>
+  </context-param>
+  
+  <listener>
+    <listener-class>fr.icam.emit.listeners.MongoListener</listener-class>
+  </listener>
+
+  <listener>
+    <listener-class>fr.icam.emit.listeners.MqttClientListener</listener-class>
+  </listener>
+  
+  <!-- FIXME: TO REMOVE 
+  
+  <context-param>
+    <param-name>mqtt-broker</param-name>
+    <param-value>tcp://172.21.50.3:1883</param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>peaktech-topic</param-name>
+    <param-value>peaktech/power</param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>ardgetti-topic</param-name>
+    <param-value>ardgetti/1/power</param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>fr.icam.emit.listeners.PeaktechListener</listener-class>
+  </listener>
+
+  <listener>
+    <listener-class>fr.icam.emit.listeners.ArdgettiListener</listener-class>
+  </listener>
+  
+  FIXME: END TO REMOVE -->
+
+  <filter>
+    <filter-name>no-cache-filter</filter-name>
+    <filter-class>fr.icam.emit.filters.NoCacheFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>no-cache-filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>jdbc-filter</filter-name>
+    <filter-class>com.github.jeromerocheteau.JdbcFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>jdbc-filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- timestamp -->
+
+  <servlet>
+    <servlet-name>timestamp</servlet-name>
+    <servlet-class>fr.icam.emit.services.messages.Time</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>timestamp</servlet-name>
+    <url-pattern>/timestamp</url-pattern>
+  </servlet-mapping>
+
+  <!-- users -->
+
+  <servlet>
+    <servlet-name>user-clear</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Clear</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-clear</servlet-name>
+    <url-pattern>/user/clear</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-name</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Name</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-name</servlet-name>
+    <url-pattern>/user/name</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-role</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Role</servlet-class>
+    <init-param>
+      <param-name>role</param-name>
+      <param-value>admin</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-role</servlet-name>
+    <url-pattern>/user/role</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-register</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Register</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/prospects/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-register</servlet-name>
+    <url-pattern>/user/register</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Update</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/users/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-update</servlet-name>
+    <url-pattern>/user/update</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/prospects/size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-size</servlet-name>
+    <url-pattern>/users/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/prospects/page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-page</servlet-name>
+    <url-pattern>/users/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/users/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-create</servlet-name>
+    <url-pattern>/users/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>user-delete</servlet-name>
+    <servlet-class>fr.icam.emit.services.users.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/users/delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user-delete</servlet-name>
+    <url-pattern>/users/delete</url-pattern>
+  </servlet-mapping>
+
+  <!-- tokens -->
+
+  <servlet>
+    <servlet-name>token-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.tokens.Item</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/tokens/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>token-item</servlet-name>
+    <url-pattern>/tokens/item</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>token-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.tokens.Create</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/tokens/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>token-create</servlet-name>
+    <url-pattern>/tokens/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>access-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.access.Create</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/access/create.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>token-delete</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/tokens/delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>token-delete</servlet-name>
+    <url-pattern>/tokens/delete</url-pattern>
+  </servlet-mapping>
+
+  <!-- shares -->
+
+  <servlet>
+    <servlet-name>share-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.shares.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/shares/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>share-create</servlet-name>
+    <url-pattern>/clients/shares/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>share-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.shares.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/shares/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>share-update</servlet-name>
+    <url-pattern>/clients/shares/update</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>share-delete</servlet-name>
+    <servlet-class>fr.icam.emit.services.shares.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/shares/delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>share-delete</servlet-name>
+    <url-pattern>/clients/shares/delete</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>share-remove</servlet-name>
+    <servlet-class>fr.icam.emit.services.shares.Remover</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/shares/delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>share-remove</servlet-name>
+    <url-pattern>/clients/shares/remove</url-pattern>
+  </servlet-mapping>
+
+  <!-- brokers -->
+
+  <servlet>
+    <servlet-name>broker-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.UserSizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/brokers/size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>broker-size</servlet-name>
+    <url-pattern>/brokers/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>broker-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.brokers.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/brokers/page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>broker-page</servlet-name>
+    <url-pattern>/brokers/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>broker-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.brokers.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/brokers/item.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>broker-list</servlet-name>
+    <servlet-class>fr.icam.emit.services.brokers.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/brokers/list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>broker-list</servlet-name>
+    <url-pattern>/brokers/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>broker-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.brokers.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/brokers/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>broker-create</servlet-name>
+    <url-pattern>/brokers/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>broker-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.brokers.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/brokers/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>broker-update</servlet-name>
+    <url-pattern>/brokers/update</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>broker-delete</servlet-name>
+    <servlet-class>fr.icam.emit.services.brokers.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/brokers/delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>broker-delete</servlet-name>
+    <url-pattern>/brokers/delete</url-pattern>
+  </servlet-mapping>
+
+  <!-- clients -->
+
+  <servlet>
+    <servlet-name>client-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.UserSizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-size</servlet-name>
+    <url-pattern>/clients/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-page</servlet-name>
+    <url-pattern>/clients/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-list</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/list-user.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-list</servlet-name>
+    <url-pattern>/clients/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-find</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-find</servlet-name>
+    <url-pattern>/clients/find</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-create</servlet-name>
+    <url-pattern>/clients/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-update</servlet-name>
+    <url-pattern>/clients/update</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-delete</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Deleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-delete</servlet-name>
+    <url-pattern>/clients/delete</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>monitor-client-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.UserSizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/size-monitor.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>monitor-client-size</servlet-name>
+    <url-pattern>/clients/monitoring/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>monitor-client-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/page-monitor.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>monitor-client-page</servlet-name>
+    <url-pattern>/clients/monitoring/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>report-client-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.UserSizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/size-report.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>report-client-size</servlet-name>
+    <url-pattern>/clients/reporting/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>report-client-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/page-report.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>report-client-page</servlet-name>
+    <url-pattern>/clients/reporting/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>manage-client-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.UserSizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/size-manage.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>manage-client-size</servlet-name>
+    <url-pattern>/clients/managing/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>manage-client-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.shares.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/page-manage.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>manage-client-page</servlet-name>
+    <url-pattern>/clients/managing/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>handle-client-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.UserSizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/size-handle.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>handle-client-size</servlet-name>
+    <url-pattern>/clients/handling/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>handle-client-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.shares.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/page-handle.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>handle-client-page</servlet-name>
+    <url-pattern>/clients/handling/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>follow-client-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.shares.UserSizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/size-follow.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>follow-client-size</servlet-name>
+    <url-pattern>/clients/following/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>follow-client-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.shares.UserPager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/page-follow.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>follow-client-page</servlet-name>
+    <url-pattern>/clients/following/page</url-pattern>
+  </servlet-mapping>
+
+  <!-- connections -->
+
+  <servlet>
+    <servlet-name>client-connected</servlet-name>
+    <servlet-class>fr.icam.emit.services.connects.Connected</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/connects/list-started.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-connected</servlet-name>
+    <url-pattern>/clients/connected</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-connect</servlet-name>
+    <servlet-class>fr.icam.emit.services.connects.Connect</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/connects/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-connect</servlet-name>
+    <url-pattern>/clients/connect</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-disconnect</servlet-name>
+    <servlet-class>fr.icam.emit.services.connects.Disconnect</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/connects/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-disconnect</servlet-name>
+    <url-pattern>/clients/disconnect</url-pattern>
+  </servlet-mapping>
+
+  <!-- subscriptions -->
+
+  <servlet>
+    <servlet-name>client-subscribing</servlet-name>
+    <servlet-class>fr.icam.emit.services.subscribes.Subscribing</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/subscribes/list-started.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-subscribing</servlet-name>
+    <url-pattern>/clients/subscribing</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-subscribe</servlet-name>
+    <servlet-class>fr.icam.emit.services.subscribes.Subscribe</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/subscribes/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-subscribe</servlet-name>
+    <url-pattern>/clients/subscribe</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-unsubscribe</servlet-name>
+    <servlet-class>fr.icam.emit.services.subscribes.Unsubscribe</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/subscribes/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-unsubscribe</servlet-name>
+    <url-pattern>/clients/unsubscribe</url-pattern>
+  </servlet-mapping>
+
+  <!-- publications -->
+
+  <servlet>
+    <servlet-name>client-publish</servlet-name>
+    <servlet-class>fr.icam.emit.services.publishs.Publish</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/publishs/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-publish</servlet-name>
+    <url-pattern>/clients/publish</url-pattern>
+  </servlet-mapping>
+  
+  <!-- records -->
+
+  <servlet>
+    <servlet-name>connect-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.records.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/connects/size.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>subscribe-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.records.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/subscribes/size.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>publish-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.records.Sizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/publishs/size.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <!-- records -->
+
+  <servlet>
+    <servlet-name>record-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.records.Sumer</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>record-size</servlet-name>
+    <url-pattern>/records/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>record-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.records.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/records/page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>record-page</servlet-name>
+    <url-pattern>/records/page</url-pattern>
+  </servlet-mapping>
+
+  <!-- messages -->
+
+  <servlet>
+    <servlet-name>message-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.messages.Sizer</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>message-size</servlet-name>
+    <url-pattern>/messages/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>message-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.messages.Pager</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>message-page</servlet-name>
+    <url-pattern>/messages/page</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>message-search</servlet-name>
+    <servlet-class>fr.icam.emit.services.messages.Search</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>message-search</servlet-name>
+    <url-pattern>/messages/search</url-pattern>
+  </servlet-mapping>
+
+  <!-- types -->
+  
+  <servlet>
+    <servlet-name>type-list</servlet-name>
+    <servlet-class>fr.icam.emit.services.types.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/types/list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>type-list</servlet-name>
+    <url-pattern>/types/list</url-pattern>
+  </servlet-mapping>
+
+  <!-- symbols -->
+  
+  <servlet>
+    <servlet-name>symbol-list</servlet-name>
+    <servlet-class>fr.icam.emit.services.symbols.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/symbols/list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>symbol-list</servlet-name>
+    <url-pattern>/symbols/list</url-pattern>
+  </servlet-mapping>
+  
+  <!-- callbacks -->
+
+  <servlet>
+    <servlet-name>callback-size</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.UserSizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/size.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-size</servlet-name>
+    <url-pattern>/callbacks/size</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>callback-page</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Pager</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/page.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-page</servlet-name>
+    <url-pattern>/callbacks/page</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>callback-list</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/list.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-list</servlet-name>
+    <url-pattern>/callbacks/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>client-callback-list</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/list-share.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>client-callback-list</servlet-name>
+    <url-pattern>/clients/callbacks/list</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/create.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/update.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>callback-delete</servlet-name>
+    <servlet-class>fr.icam.emit.services.commons.UserDeleter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/delete.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-delete</servlet-name>
+    <url-pattern>/callbacks/delete</url-pattern>
+  </servlet-mapping>
+
+<!-- type callbacks -->
+
+  <servlet>
+    <servlet-name>type-callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.types.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/types/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>type-callback-create</servlet-name>
+    <url-pattern>/callbacks/create/type</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>type-callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.types.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/types/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>type-callback-update</servlet-name>
+    <url-pattern>/callbacks/update/type</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>type-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.types.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/types/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>type-callback-item</servlet-name>
+    <url-pattern>/callbacks/find/type</url-pattern>
+  </servlet-mapping>
+
+<!-- topic callbacks -->
+
+  <servlet>
+    <servlet-name>topic-callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.topics.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/topics/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-callback-create</servlet-name>
+    <url-pattern>/callbacks/create/topic</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>topic-callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.topics.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/topics/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-callback-update</servlet-name>
+    <url-pattern>/callbacks/update/topic</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>topic-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.topics.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/topics/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-callback-item</servlet-name>
+    <url-pattern>/callbacks/find/topic</url-pattern>
+  </servlet-mapping>
+
+<!-- storage callbacks -->
+
+  <servlet>
+    <servlet-name>storage-callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.storages.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/storages/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>storage-callback-create</servlet-name>
+    <url-pattern>/callbacks/create/storage</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>storage-callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.storages.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/storages/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>storage-callback-update</servlet-name>
+    <url-pattern>/callbacks/update/storage</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>storage-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.storages.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/storages/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>storage-callback-item</servlet-name>
+    <url-pattern>/callbacks/find/storage</url-pattern>
+  </servlet-mapping>
+
+<!-- feature callbacks -->
+
+  <servlet>
+    <servlet-name>feature-callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.features.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/features/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-callback-create</servlet-name>
+    <url-pattern>/callbacks/create/feature</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>feature-callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.features.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/features/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-callback-update</servlet-name>
+    <url-pattern>/callbacks/update/feature</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>feature-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.features.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/features/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>feature-callback-item</servlet-name>
+    <url-pattern>/callbacks/find/feature</url-pattern>
+  </servlet-mapping>
+  
+  <!-- guard callbacks -->
+
+  <servlet>
+    <servlet-name>guard-callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.guards.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/guards/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>guard-callback-create</servlet-name>
+    <url-pattern>/callbacks/create/guard</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>guard-callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.guards.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/guards/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>guard-callback-update</servlet-name>
+    <url-pattern>/callbacks/update/guard</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>guard-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.guards.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/guards/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>guard-callback-item</servlet-name>
+    <url-pattern>/callbacks/find/guard</url-pattern>
+  </servlet-mapping>
+  
+  <!-- client & callbacks -->
+
+  <servlet>
+    <servlet-name>callback-attach</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Attach</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/attach.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-attach</servlet-name>
+    <url-pattern>/clients/attach</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>callback-detach</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Detach</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/detach.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-detach</servlet-name>
+    <url-pattern>/clients/detach</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>callback-build</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Builder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/build.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Itemizer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/item.sql</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>callback-find</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/find.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-find</servlet-name>
+    <url-pattern>/clients/attached</url-pattern>
+  </servlet-mapping>
+  
+  <!-- topics -->
+  
+  <servlet>
+    <servlet-name>topic-list-root</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/topics/list-root.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-list-root</servlet-name>
+    <url-pattern>/topics/roots/list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>topic-list-leaf</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Lister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/topics/list-leaf.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-list-leaf</servlet-name>
+    <url-pattern>/topics/leafs/list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>topic-list-node</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.SubLister</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/topics/list-node.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-list-node</servlet-name>
+    <url-pattern>/topics/nodes/list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>topic-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/topics/item.sql</param-value>
+    </init-param>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>topic-insert</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Inserter</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/topics/create.sql</param-value>
+    </init-param>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>topic-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Creator</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>topic-list</servlet-name>
+    <servlet-class>fr.icam.emit.services.topics.Retriever</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>topic-list</servlet-name>
+    <url-pattern>/topics/list</url-pattern>
+  </servlet-mapping>
+  
+  <!-- initialization -->
+
+  <servlet>
+    <servlet-name>client-initialize</servlet-name>
+    <servlet-class>fr.icam.emit.services.clients.Initializer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/clients/list.sql</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>callback-initialize</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.Initializer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/init.sql</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>connect-initialize</servlet-name>
+    <servlet-class>fr.icam.emit.services.connects.Initializer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/connects/list.sql</param-value>
+    </init-param>
+    <load-on-startup>3</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>subscribe-initialize</servlet-name>
+    <servlet-class>fr.icam.emit.services.subscribes.Initializer</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/subscribes/list.sql</param-value>
+    </init-param>
+    <load-on-startup>4</load-on-startup>
+  </servlet>
+
+  <!-- security -->
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>public-area</web-resource-name>
+      <url-pattern>/security/register.html</url-pattern>
+      <url-pattern>/emit.css</url-pattern>
+      <url-pattern>/emit.js</url-pattern>
+      <url-pattern>/user/register</url-pattern>
+      <url-pattern>/timestamp</url-pattern>
+   </web-resource-collection>
+ </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>user-area</web-resource-name>
+      <url-pattern>/index.html</url-pattern>
+      <url-pattern>/settings.html</url-pattern>
+      <url-pattern>/monitoring/controls.html</url-pattern>
+      <url-pattern>/monitoring/records.html</url-pattern>
+      <url-pattern>/monitoring/messages.html</url-pattern>
+      <!-- to remove -->
+      <url-pattern>/managing/clients.html</url-pattern>
+      <url-pattern>/managing/shares.html</url-pattern>      
+      <url-pattern>/reporting/clients.html</url-pattern>
+      <url-pattern>/reporting/topics.html</url-pattern>
+      <!-- to keep -->
+      <url-pattern>/user/clear</url-pattern>
+      <url-pattern>/user/name</url-pattern>
+      <url-pattern>/user/role</url-pattern>
+      <url-pattern>/user/update</url-pattern>
+      <!-- to remove -->
+      <url-pattern>/tokens/item</url-pattern>
+      <url-pattern>/tokens/create</url-pattern>
+      <url-pattern>/tokens/delete</url-pattern>
+      <url-pattern>/clients/monitoring/size</url-pattern>
+      <url-pattern>/clients/monitoring/page</url-pattern>
+      <url-pattern>/clients/reporting/size</url-pattern>
+      <url-pattern>/clients/reporting/page</url-pattern>
+      <url-pattern>/clients/following/size</url-pattern>
+      <url-pattern>/clients/following/page</url-pattern>
+      <url-pattern>/clients/managing/size</url-pattern>
+      <url-pattern>/clients/managing/page</url-pattern>
+      <url-pattern>/clients/handling/size</url-pattern>
+      <url-pattern>/clients/handling/page</url-pattern>
+      <!-- to keep -->
+      <url-pattern>/clients/connected</url-pattern>
+      <url-pattern>/clients/connect</url-pattern>
+      <url-pattern>/clients/disconnect</url-pattern>
+      <url-pattern>/clients/subscribing</url-pattern>
+      <url-pattern>/clients/subscribe</url-pattern>
+      <url-pattern>/clients/unsubscribe</url-pattern>
+      <url-pattern>/clients/publish</url-pattern>
+      <url-pattern>/clients/attached</url-pattern>
+      <url-pattern>/clients/attach</url-pattern>
+      <url-pattern>/clients/detach</url-pattern>
+      <!-- to remove -->
+      <url-pattern>/clients/callback</url-pattern>
+      <!-- to keep -->
+      <url-pattern>/records/size</url-pattern>
+      <url-pattern>/records/page</url-pattern>
+      <url-pattern>/messages/size</url-pattern>
+      <url-pattern>/messages/page</url-pattern>
+      <url-pattern>/topics/list</url-pattern>
+      <!-- to remove -->
+      <url-pattern>/clients/shares/create</url-pattern>
+      <url-pattern>/clients/shares/update</url-pattern>
+      <url-pattern>/clients/shares/delete</url-pattern>
+      <url-pattern>/clients/shares/remove</url-pattern>
+      <url-pattern>/topics/roots/list</url-pattern>
+      <url-pattern>/topics/leafs/list</url-pattern>
+      <url-pattern>/topics/nodes/list</url-pattern>
+      <url-pattern>/clients/callbacks/list</url-pattern>
+      <!-- to keep -->
+      <url-pattern>/messages/search</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>user</role-name>
+      <role-name>admin</role-name>
+      <role-name>root</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>user-area</web-resource-name>
+      <url-pattern>/configuring/brokers.html</url-pattern>
+      <url-pattern>/configuring/clients.html</url-pattern>
+      <url-pattern>/configuring/callbacks.html</url-pattern>
+      <url-pattern>/brokers/size</url-pattern>
+      <url-pattern>/brokers/page</url-pattern>
+      <url-pattern>/brokers/list</url-pattern>
+      <url-pattern>/brokers/create</url-pattern>
+      <url-pattern>/brokers/update</url-pattern>
+      <url-pattern>/brokers/delete</url-pattern>
+      <url-pattern>/clients/size</url-pattern>
+      <url-pattern>/clients/page</url-pattern>
+      <url-pattern>/clients/list</url-pattern>
+      <url-pattern>/clients/create</url-pattern>
+      <url-pattern>/clients/update</url-pattern>
+      <url-pattern>/clients/delete</url-pattern>
+      <url-pattern>/types/list</url-pattern>
+      <url-pattern>/symbols/list</url-pattern>
+      <url-pattern>/callbacks/list</url-pattern>
+      <url-pattern>/callbacks/size</url-pattern>
+      <url-pattern>/callbacks/page</url-pattern>
+      <url-pattern>/callbacks/create/type</url-pattern>
+      <url-pattern>/callbacks/update/type</url-pattern>
+      <url-pattern>/callbacks/find/type</url-pattern>
+      <url-pattern>/callbacks/create/topic</url-pattern>
+      <url-pattern>/callbacks/update/topic</url-pattern>
+      <url-pattern>/callbacks/find/topic</url-pattern>
+      <url-pattern>/callbacks/create/storage</url-pattern>
+      <url-pattern>/callbacks/update/storage</url-pattern>
+      <url-pattern>/callbacks/find/storage</url-pattern>
+      <url-pattern>/callbacks/create/feature</url-pattern>
+      <url-pattern>/callbacks/update/feature</url-pattern>
+      <url-pattern>/callbacks/find/feature</url-pattern>
+      <url-pattern>/callbacks/create/guard</url-pattern>
+      <url-pattern>/callbacks/update/guard</url-pattern>
+      <url-pattern>/callbacks/find/guard</url-pattern>
+      <url-pattern>/callbacks/delete</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+      <role-name>root</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>user-area</web-resource-name>
+      <url-pattern>/users/size</url-pattern>
+      <url-pattern>/users/page</url-pattern>
+      <url-pattern>/users/create</url-pattern>
+      <url-pattern>/users/delete</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>root</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>forbidden-methods</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint/>
+  </security-constraint>
+
+  <security-role>
+    <role-name>root</role-name>
+  </security-role>
+
+  <security-role>
+    <role-name>admin</role-name>
+  </security-role>
+
+  <security-role>
+    <role-name>user</role-name>
+  </security-role>
+
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <form-login-config>
+      <form-login-page>/security/index.html</form-login-page>
+      <form-error-page>/security/failure.html</form-error-page>
+    </form-login-config>
+  </login-config>
+
+</web-app>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Emit | Configuring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="/emit/emit.css">
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script type="text/javascript" src="/emit/emit.js"></script>
+  <body id="content" style="display:none;">
+    <section id="menu">
+      <div class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/emit/index.html">Home</a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active dropdown" rv-show="user.role">
+                <a class="nav-link active dropdown-toggle" href="#" id="configuringDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Configuring
+                </a>
+                <div class="dropdown-menu" aria-labelledby="configuringDropdown">
+                  <a class="dropdown-item" href="/emit/configuring/brokers.html">Brokers</a>
+                  <a class="dropdown-item" href="/emit/configuring/clients.html">Clients</a>
+                  <a class="dropdown-item" href="/emit/configuring/callbacks.html">Callbacks</a>
+                </div>
+              </li>
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="monitoringDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Monitoring
+                </a>
+                <div class="dropdown-menu" aria-labelledby="monitoringDropdown">
+                  <a class="dropdown-item" href="/emit/monitoring/controls.html">Controls</a>
+                  <a class="dropdown-item" href="/emit/monitoring/records.html">Records</a>
+                  <a class="dropdown-item" href="/emit/monitoring/messages.html">Messages</a>
+                </div>
+              </li>
+            </ul>
+            <ul class="navbar-nav">
+              <li class="nav-item active dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Account
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
+                  <div class="dropdown-header" rv-text="user.name"></div>
+                  <a class="dropdown-item" href="/emit/settings.html">Settings</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/emit/user/clear">Disconnect</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="title" class="jumbotron jumbotron-fluid">
+      <div class="container-fluid">
+        <h1 class="display-4">EMIT <small class="lead">a supervisory &amp; control system for networks of MQTT clients</small></h1>
+      </div>
+    </section>
+    <section class="container-fluid row">
+      <div class="col-6">
+          <div class="container" style="padding-top:1ex;">
+            <h4>Callbacks <small>(<span rv-text="callbacks.size"></span> items)</small></h4>
+          </div>
+          <div class="container" style="padding-top:1ex;">
+            <nav class="btn-toolbar justify-content-between" role="toolbar" aria-label="...">
+              <div class="btn-group" role="group">
+                <button class="btn btn-outline-secondary" rv-on-click="callbacks.first">
+                  <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="btn btn-outline-secondary" rv-on-click="callbacks.prev">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+              </div>
+              <div class="btn-group" role="group">
+                <span rv-text="callbacks.index"></span>/<span rv-text="callbacks.limit"></span>
+              </div>
+              <div class="btn-group" role="group">
+                <button class="btn btn-outline-secondary" rv-on-click="callbacks.next">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="btn btn-outline-secondary" rv-on-click="callbacks.last">
+                  <i class="fas fa-step-forward"></i>
+                </button>
+              </div>
+            </nav>
+          </div>
+          <div class="container">
+          <ul class="list-group" style="padding-top:1ex;">
+              <li class="list-group-item" rv-each-item="callbacks.items">
+                <h5 class="list-group-item-heading" rv-text="item.name"></h5>
+                <p class="list-group-item-text"><span rv-text="item.category"></span> callback</p>
+                <button class="float-right btn btn-outline-primary" rv-on-click="item.select" rv-disabled="callbacks.item">Edit</button>
+              </li>
+            </ul>
+          </div>
+          <div class="container" style="padding-top:1ex;">
+            <div class="dropdown text-right">
+              <button class="btn btn-primary dropdown-toggle" id="callbackDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" rv-disabled="callbacks.item">Create</button>
+              <div class="dropdown-menu" aria-labelledby="callbackDropdown">
+                <a class="dropdown-item" rv-on-click="callbacks.types.select">Type</a>
+                <a class="dropdown-item" rv-on-click="callbacks.topics.select">Topic</a>
+                <a class="dropdown-item" rv-on-click="callbacks.storages.select">Storage</a>
+                <a class="dropdown-item" rv-on-click="callbacks.features.select">Feature</a>
+                <a class="dropdown-item" rv-on-click="callbacks.guards.select">Guard</a>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="col-6">
+        <form name="form container" class="form" id="typeCallbackForm" rv-show="callbacks.item.istype">
+          <fieldset>
+            <legend rv-show="callbacks.creating">Create a type callback</legend>
+            <legend rv-show="callbacks.updating">Update a type callback</legend>
+            <div class="form-group">
+              <input type="text" class="form-control" id="callback.name" rv-value="callbacks.item.name" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <select id="callback.type" class="form-control" rv-value="callbacks.item.type" placeholder="Type" required>
+                <option rv-each-item="types.items" rv-value="item.name" rv-text="item.name"></option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="reset" class="btn btn-outline-secondary" rv-on-click="callbacks.reset"><strong>Cancel</strong></button>
+              <div class="float-right">
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.types.create" rv-show="callbacks.creating"><strong>Create</strong></button>
+                <button type="button" class="btn btn-outline-danger" rv-on-click="callbacks.delete" rv-show="callbacks.updating"><strong>Delete</strong></button>
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.types.update" rv-show="callbacks.updating"><strong>Update</strong></button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <form name="form container" class="form" id="topicCallbackForm" rv-show="callbacks.item.istopic">
+          <fieldset>
+            <legend rv-show="callbacks.creating">Create a topic callback</legend>
+            <legend rv-show="callbacks.updating">Update a topic callback</legend>
+            <div class="form-group">
+              <input type="text" class="form-control" id="callback.name" rv-value="callbacks.item.name" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" id="callback.topic" rv-value="callbacks.item.topic" placeholder="Topic">
+            </div>
+            <div class="form-group">
+              <button type="reset" class="btn btn-outline-secondary" rv-on-click="callbacks.reset"><strong>Cancel</strong></button>
+              <div class="float-right">
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.topics.create" rv-show="callbacks.creating"><strong>Create</strong></button>
+                <button type="button" class="btn btn-outline-danger" rv-on-click="callbacks.delete" rv-show="callbacks.updating"><strong>Delete</strong></button>
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.topics.update" rv-show="callbacks.updating"><strong>Update</strong></button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <form name="form container" class="form" id="topicCallbackForm" rv-show="callbacks.item.isstorage">
+          <fieldset>
+            <legend rv-show="callbacks.creating">Create a storage callback</legend>
+            <legend rv-show="callbacks.updating">Update a storage callback</legend>
+            <div class="form-group">
+              <input type="text" class="form-control" id="callback.name" rv-value="callbacks.item.name" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <select id="callback.collection" class="form-control" rv-value="callbacks.item.collection" placeholder="Collection" required>
+                <option value="messages">messages</option>
+                <option value="failures">failures</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="reset" class="btn btn-outline-secondary" rv-on-click="callbacks.reset"><strong>Cancel</strong></button>
+              <div class="float-right">
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.storages.create" rv-show="callbacks.creating"><strong>Create</strong></button>
+                <button type="button" class="btn btn-outline-danger" rv-on-click="callbacks.delete" rv-show="callbacks.updating"><strong>Delete</strong></button>
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.storages.update" rv-show="callbacks.updating"><strong>Update</strong></button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <form name="form container" class="form" id="featureCallbackForm" rv-show="callbacks.item.isfeature">
+          <fieldset>
+            <legend rv-show="callbacks.creating">Create a feature callback</legend>
+            <legend rv-show="callbacks.updating">Update a feature callback</legend>
+            <div class="form-group">
+              <input type="text" class="form-control" id="callback.name" rv-value="callbacks.item.name" placeholder="Name">
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <select id="callback.type" class="container form-control" rv-value="callbacks.item.type" placeholder="Type" required>
+                  <option rv-each-item="types.items" rv-value="item.name" rv-text="item.name"></option>
+                </select>
+              </div>
+              <div class="col">
+                <select id="callback.symbol" class="container form-control" rv-value="callbacks.item.symbol" placeholder="Symbol" required>
+                  <option rv-each-item="symbols.items" rv-value="item.name" rv-html="item.html"></option>
+                </select>
+              </div>
+              <div class="col">
+                <input type="text" class="container form-control" id="callback.value" rv-value="callbacks.item.value" placeholder="Value">
+              </div>
+            </div>
+            <div class="form-group">
+              <button type="reset" class="btn btn-outline-secondary" rv-on-click="callbacks.reset"><strong>Cancel</strong></button>
+              <div class="float-right">
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.features.create" rv-show="callbacks.creating"><strong>Create</strong></button>
+                <button type="button" class="btn btn-outline-danger" rv-on-click="callbacks.delete" rv-show="callbacks.updating"><strong>Delete</strong></button>
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.features.update" rv-show="callbacks.updating"><strong>Update</strong></button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <form name="form container" class="form" id="guardCallbackForm" rv-show="callbacks.item.isguard">
+          <fieldset>
+            <legend rv-show="callbacks.creating">Create a guard callback</legend>
+            <legend rv-show="callbacks.updating">Update a guard callback</legend>
+            <div class="form-group">
+              <input type="text" class="form-control" id="callback.name" rv-value="callbacks.item.name" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <select id="callback.test" class="form-control" rv-value="callbacks.item.test" placeholder="Test Callback" required>
+                <option rv-each-item="callbacks.references" rv-value="item.id" rv-text="item.name"></option>
+              </select>
+            </div>
+            <div class="form-group">
+              <select id="callback.success" class="form-control" rv-value="callbacks.item.success" placeholder="Success Callback" required>
+                <option rv-each-item="callbacks.references" rv-value="item.id" rv-text="item.name"></option>
+              </select>
+            </div>
+            <div class="form-group">
+              <select id="callback.failure" class="form-control" rv-value="callbacks.item.failure" placeholder="Failure Callback">
+                <option value="" selected></option>
+                <option rv-each-item="callbacks.references" rv-value="item.id" rv-text="item.name"></option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="reset" class="btn btn-outline-secondary" rv-on-click="callbacks.reset"><strong>Cancel</strong></button>
+              <div class="float-right">
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.guards.create" rv-show="callbacks.creating"><strong>Create</strong></button>
+                <button type="button" class="btn btn-outline-danger" rv-on-click="callbacks.delete" rv-show="callbacks.updating"><strong>Delete</strong></button>
+                <button type="button" class="btn btn-outline-primary" rv-on-click="callbacks.guards.update" rv-show="callbacks.updating"><strong>Update</strong></button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <div class="container">
+          <div class="alert alert-dismissible" rv-class-alert-danger="alert.danger" rv-class-alert-warning="alert.warning" rv-class-alert-success="alert.success" id="alert" role="alert" style="margin-top:20px;">
+            <button type="button" class="close" rv-on-click="alert.dismiss" aria-label="close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="alert-heading" rv-text="alert.head"></h4>
+            <p rv-text="alert.text"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="footer fixed-bottom bg-light text-dark">
+      <p class="text-center">Copyright © 2015-2018. ICAM. All rights reserved.</p>
+    </footer>
+  </body>
+  <script type="text/javascript">
+  var content = {};
+  rivets.bind($('#content'), content);
+  
+  /* user */
+  
+  content.user = {};
+  
+  emit.user.name(function onSuccess(response) {
+	content.user.name = response;
+	emit.user.role(function onSuccess(response) {
+	  content.user.role = response;
+	},function onError(response) {
+	  content.user.role = false;
+	});
+  }, function onError(response){
+	content.user.name = null;
+  });
+  
+  /* alert */
+  
+  content.alert = {}; 
+  
+  var display = function(type, head, text) {
+	content.alert.danger = (type === "danger" ? true : false);
+	content.alert.warning = (type === "warning" ? true : false);
+	content.alert.success = (type === "success" ? true : false);
+	content.alert.head = head;
+	content.alert.text = text;
+    $("#alert").show();
+  };
+  
+  content.alert.dismiss = function() {
+    $("#alert").hide();
+    content.alert.danger = false;
+    content.alert.warning = false;
+    content.alert.success = false;
+    content.alert.head = null;
+    content.alert.text = null;
+  };
+
+  content.alert.dismiss();
+  
+  content.types = {};
+
+  var type = function() {
+    emit.types.list(function onSuccess(response) {
+      content.types.items = response;
+    },function onError(response) {
+      content.types.items = [];
+    });
+  };
+  
+  content.symbols = {};
+
+  var symb = function() {
+    emit.symbols.list(function onSuccess(response) {
+      content.symbols.items = response;
+    },function onError(response) {
+      content.symbols.items = [];
+    });
+  };
+  
+  content.callbacks = {};
+  content.callbacks.creating = false;
+  content.callbacks.updating = false;
+  content.callbacks.item = null;
+  content.callbacks.length = 5;
+  content.callbacks.offset = 0;
+  content.callbacks.limit = 1;
+  content.callbacks.index = 1;
+  content.callbacks.size = 0;
+  content.callbacks.items = [];
+  content.callbacks.references = [];
+  
+  var sync = function() {
+	content.callbacks.index = Math.ceil((content.callbacks.offset + 1) / content.callbacks.length);
+	content.callbacks.limit = Math.ceil(content.callbacks.size / content.callbacks.length);
+  };
+  
+  content.callbacks.prev = function() {
+    if (content.callbacks.length <= content.callbacks.offset) {
+      content.callbacks.offset = content.callbacks.offset - content.callbacks.length;
+      sync();
+      page();
+    }
+  };
+  
+  content.callbacks.next = function() {
+    if (content.callbacks.offset + content.callbacks.length < content.callbacks.size) {
+      content.callbacks.offset = content.callbacks.offset + content.callbacks.length;
+      sync();
+      page();
+    }
+  };
+  
+  content.callbacks.first = function() {
+    content.callbacks.offset = 0;
+    sync();
+    page();
+  };
+
+  content.callbacks.last = function() {
+    content.callbacks.offset = Math.floor((content.callbacks.size - 1) / content.callbacks.length) * content.callbacks.length;
+    sync();
+    page();
+  };
+      
+  var select = function(item) {
+    content.callbacks.creating = false;
+    content.callbacks.updating = true;
+    if (item.category === "type") {
+      findTypeCallback(item);
+    } else if (item.category === "topic") {
+      findTopicCallback(item);
+    } else if (item.category === "storage") {
+      findStorageCallback(item);
+    } else if (item.category === "feature") {
+      findFeatureCallback(item);
+    } else if (item.category === "guard") {
+      findGuardCallback(item);
+    }
+  };
+  
+  content.callbacks.clean = function() {
+    content.callbacks.creating = false;
+    content.callbacks.updating = false;
+    content.callbacks.item = null;
+  };
+  
+  content.callbacks.reset = function() {
+    content.callbacks.clean();
+    content.alert.dismiss();
+  };
+
+  var size = function() {
+    emit.callbacks.size(function onSuccess(response) {
+      content.callbacks.size = response;
+      sync();
+      page();
+      list();
+      $("#content").show();
+    },function onError(response) {
+      content.callbacks.size = 0;
+    });
+  };
+    
+  var page = function() {
+    emit.callbacks.page(content.callbacks, function onSuccess(response) {
+      content.callbacks.items = response;
+      content.callbacks.items.forEach(function (item) {
+    	item.select = function() { select(item); };
+      });
+    },function onError(response) {
+      content.callbacks.items = [];
+    });
+  };
+    
+  var list = function() {
+    emit.callbacks.list(function onSuccess(response) {
+      content.callbacks.references = response;
+    },function onError(response) {
+      content.callbacks.references = [];
+    });
+  };
+    
+  content.callbacks.delete = function() {
+    emit.callbacks.delete(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The broker has successfully been deleted.");
+      content.callbacks.clean();
+      size();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while deleting the broker.");
+    });
+  };
+  
+  content.callbacks.types = {};
+      
+  content.callbacks.types.select = function() {
+    content.callbacks.creating = true;
+    content.callbacks.updating = false;
+    content.callbacks.item = {};
+    content.callbacks.item.category = "type";
+    content.callbacks.item.atomic = true;
+    content.callbacks.item.istype = true;
+    content.callbacks.item.istopic = false;
+    content.callbacks.item.isstorage = false;
+    content.callbacks.item.isfeature = false;
+    content.callbacks.item.isguard = false;
+  };
+  
+  content.callbacks.types.create = function() {
+    emit.callbacks.types.create(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The type callback has successfully been created.");
+      content.callbacks.clean();
+      size();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while creating the type callback.");
+    });
+  };
+    
+  content.callbacks.types.update = function() {
+    emit.callbacks.types.update(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The type callback has successfully been updated.");
+      content.callbacks.clean();
+      page();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while updating the type callback.");
+    });
+  };
+    
+  var findTypeCallback = function(item) {
+    emit.callbacks.types.find(item, function onSuccess(response) {
+      content.callbacks.item = response;
+      content.callbacks.item._type = content.callbacks.item.type;
+      content.callbacks.item.type = content.callbacks.item._type.name;
+      content.callbacks.item.istype = true;
+      content.callbacks.item.istopic = false;
+      content.callbacks.item.isstorage = false;
+      content.callbacks.item.isfeature = false;
+      content.callbacks.item.isguard = false;
+    },function onError(response) {
+      content.callbacks.item = null;
+      display("danger", "Failure", "Something wrong happened while retrieving the type callback.");
+    });
+  };
+  
+  content.callbacks.topics = {};
+      
+  content.callbacks.topics.select = function() {
+    content.callbacks.creating = true;
+    content.callbacks.updating = false;
+    content.callbacks.item = {};
+    content.callbacks.item.category = "topic";
+    content.callbacks.item.atomic = true;
+    content.callbacks.item.istype = false;
+    content.callbacks.item.istopic = true;
+    content.callbacks.item.isstorage = false;
+    content.callbacks.item.isfeature = false;
+    content.callbacks.item.isguard = false;
+  };
+  
+  content.callbacks.topics.create = function() {
+    emit.callbacks.topics.create(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The topic callback has successfully been created.");
+      content.callbacks.clean();
+      size();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while creating the topic callback.");
+    });
+  };
+    
+  content.callbacks.topics.update = function() {
+    emit.callbacks.topics.update(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The topic callback has successfully been updated.");
+      content.callbacks.clean();
+      page();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while updating the topic callback.");
+    });
+  };
+    
+  var findTopicCallback = function(item) {
+    emit.callbacks.topics.find(item, function onSuccess(response) {
+      content.callbacks.item = response;
+      content.callbacks.item.istype = false;
+      content.callbacks.item.istopic = true;
+      content.callbacks.item.isstorage = false;
+      content.callbacks.item.isfeature = false;
+      content.callbacks.item.isguard = false;
+    },function onError(response) {
+      content.callbacks.item = null;
+      display("danger", "Failure", "Something wrong happened while retrieving the topic callback.");
+    });
+  };
+  
+  content.callbacks.storages = {};
+      
+  content.callbacks.storages.select = function() {
+    content.callbacks.creating = true;
+    content.callbacks.updating = false;
+    content.callbacks.item = {};
+    content.callbacks.item.category = "storage";
+    content.callbacks.item.atomic = true;
+    content.callbacks.item.istype = false;
+    content.callbacks.item.istopic = false;
+    content.callbacks.item.isstorage = true;
+    content.callbacks.item.isfeature = false;
+    content.callbacks.item.isguard = false;
+  };
+  
+  content.callbacks.storages.create = function() {
+    emit.callbacks.storages.create(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The storage callback has successfully been created.");
+      content.callbacks.clean();
+      size();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while creating the storage callback.");
+    });
+  };
+    
+  content.callbacks.storages.update = function() {
+    emit.callbacks.storages.update(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The storage callback has successfully been updated.");
+      content.callbacks.clean();
+      page();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while updating the storage callback.");
+    });
+  };
+    
+  var findStorageCallback = function(item) {
+    emit.callbacks.storages.find(item, function onSuccess(response) {
+      content.callbacks.item = response;
+      content.callbacks.item.istype = false;
+      content.callbacks.item.istopic = false;
+      content.callbacks.item.isstorage = true;
+      content.callbacks.item.isfeature = false;
+      content.callbacks.item.isguard = false;
+    },function onError(response) {
+      content.callbacks.item = null;
+      display("danger", "Failure", "Something wrong happened while retrieving the storage callback.");
+    });
+  };
+  
+  content.callbacks.features = {};
+      
+  content.callbacks.features.select = function() {
+    content.callbacks.creating = true;
+    content.callbacks.updating = false;
+    content.callbacks.item = {};
+    content.callbacks.item.category = "feature";
+    content.callbacks.item.atomic = false;
+    content.callbacks.item.istype = false;
+    content.callbacks.item.istopic = false;
+    content.callbacks.item.isstorage = false;
+    content.callbacks.item.isfeature = true;
+    content.callbacks.item.isguard = false;
+  };
+  
+  content.callbacks.features.create = function() {
+    emit.callbacks.features.create(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The feature callback has successfully been created.");
+      content.callbacks.clean();
+      size();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while creating the feature callback.");
+    });
+  };
+    
+  content.callbacks.features.update = function() {
+    emit.callbacks.features.update(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The feature callback has successfully been updated.");
+      content.callbacks.clean();
+      page();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while updating the feature callback.");
+    });
+  };
+    
+  var findFeatureCallback = function(item) {
+    emit.callbacks.features.find(item, function onSuccess(response) {
+      content.callbacks.item = response;
+      content.callbacks.item._type = content.callbacks.item.type;
+      content.callbacks.item.type = content.callbacks.item._type.name;
+      content.callbacks.item._symbol = content.callbacks.item.symbol;
+      content.callbacks.item.symbol = content.callbacks.item._symbol.name;
+      content.callbacks.item.istype = false;
+      content.callbacks.item.istopic = false;
+      content.callbacks.item.isstorage = false;
+      content.callbacks.item.isfeature = true;
+      content.callbacks.item.isguard = false;
+    },function onError(response) {
+      content.callbacks.item = null;
+      display("danger", "Failure", "Something wrong happened while retrieving the feature callback.");
+    });
+  };
+  
+  content.callbacks.guards = {};
+      
+  content.callbacks.guards.select = function() {
+    content.callbacks.creating = true;
+    content.callbacks.updating = false;
+    content.callbacks.item = {};
+    content.callbacks.item.category = "guard";
+    content.callbacks.item.atomic = false;
+    content.callbacks.item.istype = false;
+    content.callbacks.item.istopic = false;
+    content.callbacks.item.isstorage = false;
+    content.callbacks.item.isfeature = false;
+    content.callbacks.item.isguard = true;
+  };
+  
+  content.callbacks.guards.create = function() {
+    emit.callbacks.guards.create(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The guard callback has successfully been created.");
+      content.callbacks.clean();
+      size();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while creating the guard callback.");
+    });
+  };
+    
+  content.callbacks.guards.update = function() {
+    emit.callbacks.guards.update(content.callbacks.item, function onSuccess(response) {
+      display("success", "Success", "The guard callback has successfully been updated.");
+      content.callbacks.clean();
+      page();
+    },function onError(response) {
+      display("danger", "Failure", "Something wrong happened while updating the guard callback.");
+    });
+  };
+    
+  var findGuardCallback = function(item) {
+	console.log("find guard callback");
+    emit.callbacks.guards.find(item, function onSuccess(response) {
+      content.callbacks.item = response;
+      content.callbacks.item._test = content.callbacks.item.test;
+      content.callbacks.item.test = content.callbacks.item._test.id;
+      content.callbacks.item._success = content.callbacks.item.success;
+      content.callbacks.item.success = content.callbacks.item._success.id;
+      if (content.callbacks.item.failure) {
+        content.callbacks.item._failure = content.callbacks.item.failure;
+        content.callbacks.item.failure = content.callbacks.item._failure.id;  
+      }
+      content.callbacks.item.istype = false;
+      content.callbacks.item.istopic = false;
+      content.callbacks.item.isstorage = false;
+      content.callbacks.item.isfeature = false;
+      content.callbacks.item.isguard = true;
+      console.log(content.callbacks.item);
+    },function onError(response) {
+      content.callbacks.item = null;
+      display("danger", "Failure", "Something wrong happened while retrieving the guard callback.");
+    });
+  };
+  
+  type();
+  symb();
+  size();
+  
+  </script>
+</html>

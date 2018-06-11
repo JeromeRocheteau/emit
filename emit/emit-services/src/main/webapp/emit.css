@@ -1,0 +1,126 @@
+html {
+	overflow-y:scroll;
+	position:relative;
+	height:100%;
+	min-height:100%;
+}
+
+body {
+	/* padding-top: 5ex; */
+	padding-bottom: 10ex;
+}
+
+footer {
+	padding-top: 3ex;
+	padding-bottom: 1ex;
+}
+
+@media (min-width: 576px) {
+  .jumbotron {
+    padding: 2rem 1rem;
+  }
+}
+
+/*
+
+.footer {
+	z-index: 2;
+}
+
+.btn {
+	border-radius: 2px;
+}
+
+.btn-primary {
+  background-color: #3c0050;
+  border-color: #3c0050;
+}
+
+.btn-outline-primary {
+  border-color: #3c0050;
+  color: #3c0050;
+}
+
+.btn-primary:focus,
+.btn-primary.focus {
+	
+}
+
+.btn-primary:hover {
+  background-color: #33143d;
+  border-color: #33143d;
+}
+
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  background-color: #33143d;
+  border-color: #33143d;
+	}
+
+.btn-primary:active:hover,
+.btn-primary.active:hover,
+.open > .dropdown-toggle.btn-primary:hover,
+.btn-primary:active:focus,
+.btn-primary.active:focus,
+.open > .dropdown-toggle.btn-primary:focus,
+.btn-primary:active.focus,
+.btn-primary.active.focus,
+.open > .dropdown-toggle.btn-primary.focus {
+  background-color: #33143d;
+  border-color: #33143d;
+}
+
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  background-color: #3c0050;
+}
+
+.btn-primary.disabled:hover,
+.btn-primary[disabled]:hover,
+fieldset[disabled] .btn-primary:hover,
+.btn-primary.disabled:focus,
+.btn-primary[disabled]:focus,
+fieldset[disabled] .btn-primary:focus,
+.btn-primary.disabled.focus,
+.btn-primary[disabled].focus,
+fieldset[disabled] .btn-primary.focus {
+  background-color: #2e1f33;
+  border-color: #2e1f33;
+}
+.btn-primary .badge {
+}
+
+.navbar-inverse {
+	background-color: #3c0050;
+}
+
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .open > a:hover,
+.navbar-inverse .navbar-nav > .open > a:focus {
+	color: #fff;
+	background-color: #3c0050;
+}
+.carousel-indicators li {
+    background-color: #2e1f33;
+}
+.carousel-indicators .active {
+    background-color: #3c0050;
+}
+
+.carousel-control,
+.carousel-control.left,
+.carousel-control.right {
+  color: #3c0050;
+  background-image: none;
+}
+
+.carousel-control.left {
+  margin-left: -10ex;
+}
+
+.carousel-control.right {
+  margin-right: -10ex;
+}
+*/

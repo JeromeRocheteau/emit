@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Emit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="/emit/emit.css">
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <body id="content">
+    <section id="menu">
+      <div class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/emit/index.html">Home</a>
+        </div>
+      </div>
+    </section>
+    <section id="title" class="jumbotron jumbotron-fluid">
+      <div class="container-fluid">
+        <h1 class="display-4">EMIT <small class="lead">a supervisory &amp; control system for networks of MQTT clients</small></h1>
+      </div>
+    </section>
+    <section class="container">
+      <div class="row justify-content-center">
+      <form class="form col-6" method="post" action="/emit/j_security_check">
+        <fieldset>
+          <legend>Connection</legend>
+          <div class="form-group">
+            <label class="control-label" for="username">Username</label>
+            <div class="">
+              <input id="username" name="j_username" type="text" placeholder="username" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label" for="password">Password</label>
+            <div class="">
+              <input id="password" name="j_password" type="password" placeholder="password" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <a class="btn btn-outline-primary" href="/emit/security/register.html">Sign Up</a>
+            <div class="float-right">
+              <button type="reset" class="btn btn-outline-secondary">Reset</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+      </div>
+    </section>
+    <footer class="footer fixed-bottom bg-light text-dark">
+      <p class="text-center">Copyright © 2015-2018. ICAM. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

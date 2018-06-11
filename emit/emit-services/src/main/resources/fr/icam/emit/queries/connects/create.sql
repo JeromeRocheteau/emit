@@ -1,0 +1,1 @@
+INSERT INTO `connects` (`started`,`client`,`user`) VALUES (now(),?,?);

@@ -1,0 +1,1 @@
+INSERT INTO `storage_callbacks` (`id`,`collection`) VALUES (?,?);

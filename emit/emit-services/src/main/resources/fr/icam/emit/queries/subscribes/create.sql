@@ -1,0 +1,1 @@
+INSERT INTO `subscribes` (`started`,`client`,`user`,`topic`) VALUES (now(),?,?,?);

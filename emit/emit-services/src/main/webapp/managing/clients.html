@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Emit | Managing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/emit/emit.css"></link>
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/i18n/angular-locale_fr-fr.js"></script>
+  <body ng-app="app" ng-controller="controller">
+    <header class="ng-cloak">
+      <div class="navbar navbar-inverse navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="../index.html"><strong>Emit</strong></a>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-left">
+              <li class="dropdown" ng-show="user.role">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Configuring&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../configuring/brokers.html"><span class="glyphicon glyphicon-transfer" aria-hidden="true">&nbsp;</span>Brokers</a></li>
+                  <li><a href="../configuring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li><a href="../configuring/callbacks.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Callbacks</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managing&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../managing/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li ng-show="user.role"><a href="../managing/shares.html"><span class="glyphicon glyphicon-share-alt" aria-hidden="true">&nbsp;</span>Shares</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Monitoring&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../monitoring/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reporting&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">Logical Layer</li>
+                  <li><a href="../reporting/clients.html"><span class="glyphicon glyphicon-pawn" aria-hidden="true">&nbsp;</span>Clients</a></li>
+                  <li class="dropdown-header">Conceptual Layer</li>
+                  <li><a href="../reporting/topics.html"><span class="glyphicon glyphicon-tags" aria-hidden="true">&nbsp;</span>Topics</a></li>
+                </ul>
+              </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header">{{user.name}}</li>
+                  <li><a href="../settings.html"><span class="glyphicon glyphicon-cog" aria-hidden="true">&nbsp;</span>Settings</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="../user/clear"><span class="glyphicon glyphicon-off" aria-hidden="true">&nbsp;</span>Disconnect</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+    <section id="title" class="ng-cloak">
+      <div class="container-fluid well">
+        <h2>EMIT <small>a supervisory & control system for MQTT clients</small></h2>
+      </div>
+    </section>
+    <section id="content" class="container ng-cloak">
+
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h3>Usable Clients <small>({{x1.size}} items)</small></h3>
+            <nav aria-label="...">
+              <ul class="pager">
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x1.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li ng-show="x1.size > 0">{{(x1.offset + 1) / x1.length | ceil}} / {{x1.size / x1.length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="x1.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="x1.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+          <ul class="list-group" >
+            <li class="list-group-item" ng-repeat="item in x1.items">
+              <p class="list-group-item-text text-right">
+              </p>
+              <h4 class="list-group-item-heading">{{item.uuid}}</h4>
+              <p class="list-group-item-text">broker: {{item.broker}}</p>
+              <p class="list-group-item-text">owner: {{item.user}}</p>
+              <p class="list-group-item-text" ng-show="item.control == null">pending</p>
+              <p class="list-group-item-text" ng-show="item.control == true">monitoring</p>
+              <p class="list-group-item-text" ng-show="item.control == false">reporting</p>
+              <p class="list-group-item-text text-right">
+                <button class="btn btn-md" ng-click="x1.doRemove(item)">Remove</button>
+              </p>
+            </li>
+          </ul>
+        </div>
+        <div class="alert alert-{{x1.message.type}} alert-dismissible" id="x1-alert" role="alert" style="display:none;margin-top:20px;">
+          <button type="button" class="close" aria-label="close" ng-click="x1.doDismiss()"><span aria-hidden="true">&times;</span></button>
+          <p>{{x1.message.content}}</p>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h3>Available Clients <small>({{x2.size}} items)</small></h3>
+            <nav aria-label="...">
+              <ul class="pager">
+                <li class="previous"><a class="btn btn-default" ng-click="x2.doFirst()"><span aria-hidden="true" class="glyphicon glyphicon-step-backward"></span></a></li>
+                <li class="previous"><a class="btn btn-default" ng-click="x2.doPrev()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span></a></li>
+                <li ng-show="x2.size > 0">{{(x2.offset + 1) / x2.length | ceil}} / {{x2.size / x2.length | ceil}}</li>
+                <li class="next"><a class="btn btn-default" ng-click="x2.doLast()"><span aria-hidden="true" class="glyphicon glyphicon-step-forward"></span></a></li>
+                <li class="next"><a class="btn btn-default" ng-click="x2.doNext()"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </ul>
+            </nav>
+          </div>
+          <ul class="list-group" >
+            <li class="list-group-item" ng-repeat="item in x2.items">
+              <p class="list-group-item-text text-right">
+              </p>
+              <h4 class="list-group-item-heading">{{item.uuid}}</h4>
+              <p class="list-group-item-text">broker: {{item.broker}}</p>
+              <p class="list-group-item-text">owner: {{item.user}}</p>
+              <p class="list-group-item-text text-right">
+                <button class="btn btn-default btn-md" ng-click="x2.doFollow(item)">Follow</button>
+              </p>
+            </li>
+          </ul>
+        </div>
+        <div class="alert alert-{{x2.message.type}} alert-dismissible" id="x2-alert" role="alert" style="display:none;margin-top:20px;">
+          <button type="button" class="close" aria-label="close" ng-click="x2.doDismiss()"><span aria-hidden="true">&times;</span></button>
+          <p>{{x2.message.content}}</p>
+        </div>
+      </div>
+    
+    </section>
+    <footer class="footer navbar navbar-inverse navbar-custom navbar-fixed-bottom">
+      <div class="container-fluid">
+        <div class="nav navbar-nav navbar-left">
+          <p class="text-muted">Copyright © 2015-2017. ICAM. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+  <script type="text/javascript">
+  var app = angular.module('app',[]);
+
+  app.filter('ceil', function() {
+	return function(input) {
+	  return Math.ceil(input);
+	};
+  });
+  
+  app.controller('controller', function ($scope, $http) {
+
+	$scope.user = {};
+	$scope.user.name = null;
+	$scope.user.role = false;
+	  
+  	var user = function() {
+  		$http({method:'GET',url:'../user/name'})
+  		.then(function onSuccess(response) {
+  			$scope.user.name = response.data;
+  		}, function onError(response) {
+  			$scope.user.name = null;
+  		});
+  		$http({method:'GET',url:'../user/role'})
+  		.then(function onSuccess(response) {
+  			$scope.user.role = response.data;
+  		}, function onError(response) {
+  			$scope.user.role = false;
+  		});
+  	}
+  	
+  	user();
+  	
+    $scope.x1 = {};
+    $scope.x1.item = {};
+    $scope.x1.length = 5;
+    $scope.x1.offset = 0;
+    $scope.x1.size = 0;
+    $scope.x1.items = [];
+    
+    $scope.x1.doPrev = function() {
+      if ($scope.x1.length <= $scope.x1.offset) {
+        $scope.x1.offset = $scope.x1.offset - $scope.x1.length;
+        $scope.x1.doPage();
+      }
+    }
+    
+    $scope.x1.doNext = function() {
+      if ($scope.x1.offset + $scope.x1.length < $scope.x1.size) {
+        $scope.x1.offset = $scope.x1.offset + $scope.x1.length;
+        $scope.x1.doPage();
+      }
+    }
+    
+    $scope.x1.doFirst = function() {
+      if ($scope.x1.offset < 0) {
+        $scope.x1.offset = 0;
+        $scope.x1.doPage();
+      }
+    }
+
+    $scope.x1.doLast = function() {
+      if ($scope.x1.offset + $scope.x1.length < $scope.x1.size) {
+        $scope.x1.offset = Math.floor(($scope.x1.size - 1) / $scope.x1.length) * $scope.x1.length;
+        $scope.x1.doPage();    	  
+      }
+    }
+
+    $scope.x1.doSize = function() {
+      $http({method:'GET',url:'../clients/handling/size'})
+      .then(function onSuccess(response) {
+         $scope.x1.size = response.data;
+      },function onError(response) {
+        $scope.x1.size = 0;
+      });
+    }
+      
+    $scope.x1.doPage = function() {
+      var content = "length=" + $scope.x1.length + "&offset=" + $scope.x1.offset; 
+      $http({method:'GET',url:'../clients/handling/page?' + content})
+      .then(function onSuccess(response) {
+        $scope.x1.items = response.data;
+      },function onError(response) {
+        $scope.x1.items = [];
+      });
+    }
+
+    $scope.x1.doRemove = function(item) {
+        var content = "client=" + item.uuid;
+        $http({method:'POST',url:'../clients/shares/remove',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+        .then(function onSuccess(response) {
+          $scope.x1.display("success", "The client '" + item.uuid + "' is sucessfully unfollowed.");
+          $scope.x1.doSize();
+          $scope.x1.doPage();
+          $scope.x2.doSize();
+          $scope.x2.doPage();
+        },function onError(response) {
+          $scope.x1.display("danger", "Something wrong happened while unfollowing the client #" + item.uuid +" to user '" + item.user + "'.");
+        });
+    }
+    
+    $scope.x2 = {};
+    $scope.x2.item = {};
+    $scope.x2.length = 5;
+    $scope.x2.offset = 0;
+    $scope.x2.size = 0;
+    $scope.x2.items = [];
+    
+    $scope.x2.doPrev = function() {
+      if ($scope.x2.length <= $scope.x2.offset) {
+        $scope.x2.offset = $scope.x2.offset - $scope.x2.length;
+        $scope.x2.doPage();
+      }
+    }
+    
+    $scope.x2.doNext = function() {
+      if ($scope.x2.offset + $scope.x2.length < $scope.x2.size) {
+        $scope.x2.offset = $scope.x2.offset + $scope.x2.length;
+        $scope.x2.doPage();
+      }
+    }
+    
+    $scope.x2.doFirst = function() {
+      if ($scope.x2.offset < 0) {
+        $scope.x2.offset = 0;
+        $scope.x2.doPage();
+      }
+    }
+
+    $scope.x2.doLast = function() {
+      if ($scope.x2.offset + $scope.x2.length < $scope.x2.size) {
+        $scope.x2.offset = Math.floor(($scope.x2.size - 1) / $scope.x2.length) * $scope.x2.length;
+        $scope.x2.doPage();
+      }
+    }
+
+    $scope.x2.doSize = function() {
+      $http({method:'GET',url:'../clients/following/size'})
+      .then(function onSuccess(response) {
+         $scope.x2.size = response.data;
+      },function onError(response) {
+        $scope.x2.size = 0;
+      });
+    }
+      
+    $scope.x2.doPage = function() {
+      var content = "length=" + $scope.x2.length + "&offset=" + $scope.x2.offset; 
+      $http({method:'GET',url:'../clients/following/page?' + content})
+      .then(function onSuccess(response) {
+        $scope.x2.items = response.data;
+      },function onError(response) {
+        $scope.x2.items = [];
+      });
+    }
+
+    $scope.x2.doFollow = function(item) {
+      var content = "client=" + item.uuid;
+      $http({method:'POST',url:'../clients/shares/create',data:content,headers:{'Content-Type': 'application/x-www-form-urlencoded'}})
+      .then(function onSuccess(response) {
+        $scope.x2.display("success", "The request to follow the client " + item.uuid + " has sucessfully registered.");
+        $scope.x1.doSize();
+        $scope.x1.doPage();
+        $scope.x2.doSize();
+        $scope.x2.doPage();
+      },function onError(response) {
+        $scope.x2.display("danger", "Something wrong happened while requesting to follow the client #" + item.uuid +".");
+      });
+    }
+
+    $scope.x1.display = function(type, content) {
+    	$scope.x1.message = angular.copy({});
+    	$scope.x1.message.type = type;
+        $scope.x1.message.content = content;
+        $("#x1-alert").show();
+    }
+    
+    $scope.x2.display = function(type, content) {
+    	$scope.x2.message = angular.copy({});
+    	$scope.x2.message.type = type;
+        $scope.x2.message.content = content;
+        $("#x2-alert").show();
+    }
+    
+    $scope.x1.doDismiss = function() {
+        $("#x1-alert").hide();
+        $scope.x1.alert = {};
+    }
+    
+    $scope.x2.doDismiss = function() {
+        $("#x2-alert").hide();
+        $scope.x2.alert = {};
+    }
+    
+    $scope.x1.doSize();
+    $scope.x1.doPage();
+	
+    $scope.x2.doSize();
+    $scope.x2.doPage();
+    
+  });
+  </script>
+</html>

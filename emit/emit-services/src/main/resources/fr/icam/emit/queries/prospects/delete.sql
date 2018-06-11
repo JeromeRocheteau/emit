@@ -1,0 +1,1 @@
+DELETE FROM `prospects` WHERE `username` = ?;
