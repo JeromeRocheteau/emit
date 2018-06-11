@@ -113,9 +113,8 @@
       <div class="col-12" rv-show="clients.item">
 
         <div class="container" style="padding-top:1ex;">
-          <h4>Messages of <span rv-text="clients.item.name"></span> <small>(<span rv-text="messages.size"></span> items)</small></h4>
+          <h4>Messages of <span rv-text="clients.item.name"></span> <small rv-show="messages.synch">(<span rv-text="messages.size"></span> items)</small></h4>
         </div>
-
 
         <div class="container">
           <table class="table table-borderless table-hover">
@@ -152,9 +151,9 @@
                 <i class="fas fa-chevron-left"></i>
               </button>
             </div>
-            <div class="btn-group" role="group">
+            <!-- div class="btn-group" role="group">
               <span rv-text="messages.index"></span>/<span rv-text="messages.limit"></span>
-            </div>
+            </div -->
             <div class="btn-group" role="group">
               <button class="btn btn-outline-secondary" rv-on-click="messages.next">
                 <i class="fas fa-chevron-right"></i>
@@ -282,12 +281,13 @@
   var select = function(item) {
     content.clients.item = item;
     content.messages.uuid = item.uuid;
-    msize();
+    mpage();
   };
   
   content.clients.clean = function() {
     content.clients.item = null;
-    content.messages.length = 25;
+    content.messages.synch = false;
+    content.messages.length = 10;
     content.messages.offset = 0;
     content.messages.limit = 1;
     content.messages.index = 1;
@@ -321,13 +321,12 @@
       content.clients.items = [];
     });
   };
-
-  size();
   
   /* records */ 
   
   content.messages = {};
-  content.messages.length = 25;
+  content.messages.synch = false;
+  content.messages.length = 10;
   content.messages.offset = 0;
   content.messages.limit = 1;
   content.messages.index = 1;
@@ -337,12 +336,12 @@
   var msync = function() {
 	content.messages.index = Math.ceil((content.messages.offset + 1) / content.messages.length);
 	content.messages.limit = Math.ceil(content.messages.size / content.messages.length);
+    content.messages.synch = true;
   };
   
   content.messages.prev = function() {
     if (content.messages.length <= content.messages.offset) {
       content.messages.offset = content.messages.offset - content.messages.length;
-      msync();
       mpage();
     }
   };
@@ -350,28 +349,25 @@
   content.messages.next = function() {
     if (content.messages.offset + content.messages.length < content.messages.size) {
       content.messages.offset = content.messages.offset + content.messages.length;
-      msync();
       mpage();
     }
   };
   
   content.messages.first = function() {
     content.messages.offset = 0;
-    msync();
     mpage();
   };
 
   content.messages.last = function() {
     content.messages.offset = Math.floor((content.messages.size - 1) / content.messages.length) * content.messages.length;
-    msync();
     mpage();
   };
   
   var msize = function() {
     emit.messages.size(content.messages, function onSuccess(response) {
       content.messages.size = response;
-      msync();
-      mpage();
+      content.messages.synch = true;
+      // msync();
     },function onError(response) {
       content.messages.size = 0;
     });
@@ -383,6 +379,9 @@
       content.messages.items.forEach(function (item) {
         item.published = item.mode === "publish";
       });
+      if (content.messages.synch == false) {
+   	    msize();
+      }
     },function onError(response) {
       content.messages.items = [];
     });
