@@ -11,6 +11,5 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <modules>
-    <module>emit-models</module>
   </modules>
 </project>
