@@ -569,6 +569,23 @@ emit.messages.search = function(data, onSuccess, onError) {
   req.send(null);    
 };
 
+emit.messages.last = function(data, onSuccess, onError) {
+  var parameters = "?topic=" + encodeURIComponent(data.topic); 
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/messages/last' + parameters, true);
+  req.send(null);    
+};
+
 emit.topics = {};
 
 emit.topics.list = function(data, onSuccess, onError) {

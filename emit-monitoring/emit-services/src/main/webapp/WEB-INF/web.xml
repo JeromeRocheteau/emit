@@ -815,6 +815,15 @@
     <servlet-name>message-search</servlet-name>
     <url-pattern>/messages/search</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>message-last</servlet-name>
+    <servlet-class>fr.icam.emit.services.messages.Last</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>message-last</servlet-name>
+    <url-pattern>/messages/last</url-pattern>
+  </servlet-mapping>
 
   <!-- types -->
   
@@ -1385,6 +1394,7 @@
       <url-pattern>/clients/callbacks/list</url-pattern>
       <!-- to keep -->
       <url-pattern>/messages/search</url-pattern>
+      <url-pattern>/messages/last</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>user</role-name>

@@ -69,6 +69,14 @@
     <section id="content" class="container-fluid">
       <div class="row">
         <div class="col-8" style="position: relative; height:40vh; width:80vw">
+          <div class="row" rv-show="messages.item">
+            <div class="container">
+            last value: 
+            <span rv-text="messages.item.value"></span> 
+            &mdash; received at 
+            <span rv-text="messages.item.issued | date"></span>
+            </div> 
+          </div>          
           <div class="chart-container">
             <canvas id="chart"></canvas>
           </div>
@@ -215,9 +223,21 @@
   /* messages */ 
   
   content.messages = {};
+  content.messages.item = null;
   content.messages.items = [];
     
+  content.messages.last = function() {
+	if (content.topic) {
+      emit.messages.last(content, function onSuccess(response) {
+	    content.messages.item = response;
+	  },function onError(response) {
+	    content.messages.item = null;
+	  });		
+	}
+  };
+    
   content.messages.search = function() {
+	content.messages.last();
 	if (content.topic && content.time) {
 	  var date = content.started;
 	  content.started = moment(date).startOf(content.time);
