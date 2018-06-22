@@ -54,33 +54,6 @@
     <listener-class>fr.icam.emit.listeners.MqttClientListener</listener-class>
   </listener>
   
-  <!-- FIXME: TO REMOVE 
-  
-  <context-param>
-    <param-name>mqtt-broker</param-name>
-    <param-value>tcp://172.21.50.3:1883</param-value>
-  </context-param>
-  
-  <context-param>
-    <param-name>peaktech-topic</param-name>
-    <param-value>peaktech/power</param-value>
-  </context-param>
-  
-  <context-param>
-    <param-name>ardgetti-topic</param-name>
-    <param-value>ardgetti/1/power</param-value>
-  </context-param>
-
-  <listener>
-    <listener-class>fr.icam.emit.listeners.PeaktechListener</listener-class>
-  </listener>
-
-  <listener>
-    <listener-class>fr.icam.emit.listeners.ArdgettiListener</listener-class>
-  </listener>
-  
-  FIXME: END TO REMOVE -->
-
   <filter>
     <filter-name>no-cache-filter</filter-name>
     <filter-class>fr.icam.emit.filters.NoCacheFilter</filter-class>
@@ -1382,6 +1355,7 @@
       <url-pattern>/records/page</url-pattern>
       <url-pattern>/messages/size</url-pattern>
       <url-pattern>/messages/page</url-pattern>
+      <url-pattern>/messages/last</url-pattern>
       <url-pattern>/topics/list</url-pattern>
       <!-- to remove -->
       <url-pattern>/clients/shares/create</url-pattern>
@@ -1394,7 +1368,6 @@
       <url-pattern>/clients/callbacks/list</url-pattern>
       <!-- to keep -->
       <url-pattern>/messages/search</url-pattern>
-      <url-pattern>/messages/last</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>user</role-name>

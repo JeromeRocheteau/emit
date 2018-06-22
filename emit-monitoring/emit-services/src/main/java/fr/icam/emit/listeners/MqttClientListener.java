@@ -54,7 +54,7 @@ public class MqttClientListener implements ServletContextListener {
 			if (client.isConnected()) {
 				try {
 					client.disconnect();
-					System.out.println("[EMIT] Disonnect Client " + client.getClientId());
+					System.out.println("[EMIT] Disconnected Client " + client.getClientId());
 				} catch (MqttException e) {
 					e.printStackTrace();
 				}
@@ -82,6 +82,7 @@ public class MqttClientListener implements ServletContextListener {
 	}
 	
 	public void doConnect(String id, String username, String password) throws Exception {
+		System.out.println("[EMIT] Connecting Client " + id);
 		MqttClient client = clients.get(id);
 		if (client == null) {
 			throw new NullPointerException(id);
@@ -95,7 +96,7 @@ public class MqttClientListener implements ServletContextListener {
 			}
 			options.setCleanSession(true);
 			client.connect(options);
-		}
+			System.out.println("[EMIT] Connected Client " + id);		}
 	}
 	
 	public void doDisconnect(String id) throws Exception {
@@ -108,20 +109,24 @@ public class MqttClientListener implements ServletContextListener {
 	}
 	
 	public void doSubscribe(String id, String topic) throws Exception {
+		System.out.println("[EMIT] Subscribing to '" + topic + "' by Client " + id);
 		MqttClient client = clients.get(id);
 		if (client == null) {
 			throw new NullPointerException(id);
 		} else {
 			client.subscribe(topic);
+			System.out.println("[EMIT] Subscribed to '" + topic + "' Client " + id);
 		}
 	}
 	
 	public void doUnsubscribe(String id, String topic) throws Exception {
+		System.out.println("[EMIT] Unsubscribing to '" + topic + "' by Client " + id);
 		MqttClient client = clients.get(id);
 		if (client == null) {
 			throw new NullPointerException(id);
 		} else {
 			client.unsubscribe(topic);
+			System.out.println("[EMIT] Unsubscribed to '" + topic + "' by Client " + id);
 		}
 	}
 	
@@ -146,6 +151,7 @@ public class MqttClientListener implements ServletContextListener {
 	}
 	
 	public void doAttach(String id, MqttCallback callback) {
+		System.out.println("[EMIT] Attaching '" + callback.getClass().getSimpleName() + "' to Client " + id);
 		MqttClient client = clients.get(id);
 		if (client == null) {
 			throw new NullPointerException(id);
@@ -153,19 +159,23 @@ public class MqttClientListener implements ServletContextListener {
 			EmitMqttCallback cb = (EmitMqttCallback) callback;
 			client.setCallback(cb);
 			cb.embedd(new HashMap<String, Object>(), true);
+			System.out.println("[EMIT] Attached '" + callback.getClass().getSimpleName() + "' to Client " + id);
 		} else {
 			MqttCallbackWrapper cb = new MqttCallbackWrapper(callback);
 			client.setCallback(cb);
 			cb.embedd(new HashMap<String, Object>(), true);
+			System.out.println("[EMIT] Attached '" + callback.getClass().getSimpleName() + "' to Client " + id);
 		}
 	}
 	
 	public void doDetach(String id) {
+		System.out.println("[EMIT] Detaching Client " + id);
 		MqttClient client = clients.get(id);
 		if (client == null) {
 			throw new NullPointerException(id);
 		} else {
 			client.setCallback(null);
+			System.out.println("[EMIT] Detached Client " + id);
 		}
 	}
 	

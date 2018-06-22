@@ -186,12 +186,32 @@
   var content = {};
   rivets.bind($('#content'), content);
   
+  /*
   rivets.formatters.date = function(value) {
     return moment(value).format('YYYY-MM-DD HH:mm:ss');
   }
   
   rivets.formatters.binary = function(value) {
-	  return String.fromCharCode.apply(null, new Uint16Array(value));
+	return String.fromCharCode.apply(null, new Uint16Array(value));
+  }
+  */
+  
+  rivets.formatters.date = {
+    read: function(value) {
+      return moment(value).format('YYYY-MM-DD HH:mm:ss')
+    },
+    publish: function(value) {
+      return moment(value).format('YYYY-MM-DD HH:mm:ss')
+    } 
+  }
+  
+  rivets.formatters.binary = {
+    read: function(value) {
+      return String.fromCharCode.apply(null, new Uint16Array(value));
+    },
+    publish: function(value) {
+      return String.fromCharCode.apply(null, new Uint16Array(value));
+    } 
   }
   
   /* user */
@@ -277,14 +297,20 @@
     sync();
     page();
   };
-      
+  
+  var timer = null;
+  
   var select = function(item) {
     content.clients.item = item;
     content.messages.uuid = item.uuid;
+    if (timer) { clearInterval(timer); }
+    timer = setInterval(() => mpage(), 5000);
     mpage();
+    msize();
   };
   
   content.clients.clean = function() {
+	if (timer) { clearInterval(timer); }
     content.clients.item = null;
     content.messages.synch = false;
     content.messages.length = 10;
@@ -322,7 +348,7 @@
     });
   };
   
-  /* records */ 
+  /* messages */ 
   
   content.messages = {};
   content.messages.synch = false;
@@ -332,12 +358,6 @@
   content.messages.index = 1;
   content.messages.size = 0;
   content.messages.items = [];
-  
-  var msync = function() {
-	content.messages.index = Math.ceil((content.messages.offset + 1) / content.messages.length);
-	content.messages.limit = Math.ceil(content.messages.size / content.messages.length);
-    content.messages.synch = true;
-  };
   
   content.messages.prev = function() {
     if (content.messages.length <= content.messages.offset) {
@@ -366,8 +386,6 @@
   var msize = function() {
     emit.messages.size(content.messages, function onSuccess(response) {
       content.messages.size = response;
-      content.messages.synch = true;
-      // msync();
     },function onError(response) {
       content.messages.size = 0;
     });
@@ -379,15 +397,11 @@
       content.messages.items.forEach(function (item) {
         item.published = item.mode === "publish";
       });
-      if (content.messages.synch == false) {
-   	    msize();
-      }
     },function onError(response) {
       content.messages.items = [];
     });
   };
 
   size();
-  
   </script>
 </html>

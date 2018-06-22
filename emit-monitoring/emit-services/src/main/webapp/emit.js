@@ -3,6 +3,22 @@ var emit = {};
 var invalid = function(value) {
 	return value == null || value == undefined || value === "";
 }
+	    
+emit.timestamp = function(onSuccess, onError) {
+  const req = new XMLHttpRequest();
+  req.onload = function(event) {
+    if (this.status === 200) {
+      onSuccess(JSON.parse(this.responseText));
+    } else {
+      onError(this.responseText);
+    }
+  };
+  req.onerror = function(event) {
+    onError(this.responseText);
+  }
+  req.open('GET','/emit/timestamp', true);
+  req.send(null);    
+};
 
 emit.user = {};
 	    
@@ -551,7 +567,7 @@ emit.messages.page = function(data, onSuccess, onError) {
 };
 
 emit.messages.search = function(data, onSuccess, onError) {
-  var parameters = "?topic=" + encodeURIComponent(data.topic) 
+  var parameters = "?client=" + encodeURIComponent(data.uuid) 
   + "&started=" + data.started 
   + "&stopped=" + data.stopped;
   const req = new XMLHttpRequest();
@@ -570,7 +586,7 @@ emit.messages.search = function(data, onSuccess, onError) {
 };
 
 emit.messages.last = function(data, onSuccess, onError) {
-  var parameters = "?topic=" + encodeURIComponent(data.topic); 
+  var parameters = "?client=" + data.uuid; 
   const req = new XMLHttpRequest();
   req.onload = function(event) {
     if (this.status === 200) {

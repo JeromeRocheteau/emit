@@ -21,9 +21,9 @@
       <div class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
           <a class="navbar-brand" href="/emit/index.html">Home</a>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="collapse navbar-collapse" id="navbarSupportedContent" rv-show="user.role">
             <ul class="navbar-nav mr-auto">
-              <li class="nav-item active dropdown" rv-show="user.role">
+              <li class="nav-item active dropdown">
                 <a class="nav-link active dropdown-toggle" href="#" id="configuringDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Configuring
                 </a>
@@ -63,43 +63,29 @@
     </section>
     <section id="title" class="jumbotron jumbotron-fluid">
       <div class="container-fluid">
-        <h1 class="display-4">EMIT <small class="lead">a supervisory &amp; control system for networks of MQTT clients</small></h1>
+        <h1 class="display-4">EMIT <small class="lead">a monitoring system for networks of MQTT clients</small></h1>
       </div>
     </section>
     <section id="content" class="container-fluid">
       <div class="row">
         <div class="col-8" style="position: relative; height:40vh; width:80vw">
-          <div class="row" rv-show="messages.item">
-            <div class="container">
-            last value: 
-            <span rv-text="messages.item.value"></span> 
-            &mdash; received at 
-            <span rv-text="messages.item.issued | date"></span>
-            </div> 
-          </div>          
           <div class="chart-container">
             <canvas id="chart"></canvas>
           </div>
           <nav class="row" style="margin-left:1em;margin-right:1em;padding-bottom:10ex;" aria-label="...">
-            <button class="btn btn-outline-primary" rv-on-click="prev">avant</button>
+            <button class="btn btn-outline-primary" rv-on-click="prev">prev</button>
             <div style="margin-left:auto;margin-right:auto;">
               <span rv-text="started | date"></span> &mdash; <span rv-text="stopped | date"></span>
             </div>
-            <button class="btn btn-outline-primary" rv-on-click="next">après</button>
+            <button class="btn btn-outline-primary" rv-on-click="next">next</button>
           </nav>          
         </div>
         <div class="col-4">
           <form class="form" role="form" name="form">
             <div class="form-group">
               <label for="topic">Client</label>
-              <select id="topic" class="form-control" rv-value="uuid" rv-on-change="topics.list" placeholder="Client" required>
+              <select id="topic" class="form-control" rv-value="uuid" rv-on-change="messages.search" placeholder="Client" required>
                 <option rv-each-item="clients.items" rv-value="item.uuid" rv-text="item.name"></option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="topic">Topic</label>
-              <select id="topic" class="form-control" rv-value="topic" rv-on-change="messages.search" placeholder="Topic" required>
-                <option rv-each-item="topics.items" rv-value="item" rv-text="item"></option>
               </select>
             </div>
             <div class="form-group">
@@ -109,6 +95,9 @@
                 <option value="hour">per hour</option>
                 <option value="day">per day</option>
               </select>
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-outline-primary" rv-on-click="timestamp">now</button>
             </div>
           </form>
         </div>
@@ -139,7 +128,7 @@
 	for (var i in items) {
 	  var item = items[i];
       mylabels.push(item.issued);
-      mydata.push(item.value);
+      mydata.push(String.fromCharCode.apply(null, new Uint16Array(item.payload)));
 	}
   };
   
@@ -148,7 +137,7 @@
 	  var context = document.getElementById('chart').getContext('2d');
 	  var payload = {
 	    type: 'line',
-	    data: {labels:mylabels,datasets:[{label: data.topic, fill: false, backgroundColor: colors.blue,borderColor: colors.blue, data:mydata}]},
+	    data: {labels:mylabels,datasets:[{label:"",fill: false, backgroundColor: colors.blue,borderColor: colors.blue, data:mydata}]},
 		options: {scales: {yAxes: [{type: "linear",ticks:{beginAtZero:true}}],xAxes: [{type: 'time',time: {unit: data.time,min:data.started,max:data.stopped,displayFormats:{minute:'HH:mm:ss',hour:'HH:mm:ss',day:'HH:mm:ss'}}}]}}
 	  };
 	  new Chart(context, payload);	  
@@ -156,9 +145,13 @@
   </script>
   <script type="text/javascript">
   var content = {};
-
+  
   rivets.formatters.date = function(value) {
     return moment(value).format('YYYY-MM-DD HH:mm:ss');
+  }
+  
+  rivets.formatters.binary = function(value) {
+	  return String.fromCharCode.apply(null, new Uint16Array(value));
   }
   
   rivets.bind($('#content'), content);
@@ -182,9 +175,8 @@
   
   content.time = "minute";
   content.uuid = null;
-  content.topic = null;
-  content.started = moment().startOf(content.time);
-  content.stopped = moment().endOf(content.time);
+  content.started = null;
+  content.stopped = null;
   
   /* clients */ 
   
@@ -206,39 +198,30 @@
   
   clients();
   
-  /* topics */ 
+  /* timestamp */ 
   
-  content.topics = {};
-  content.topics.items = [];
-    
-  content.topics.list = function() {
-	content.topic = null;
-    emit.topics.list(content, function onSuccess(response) {
-      content.topics.items = response;
+  content.timestamp = function() {
+    emit.timestamp(function onSuccess(response) {
+      var timestamp = response;
+      content.started = moment(timestamp).startOf(content.time);
+      content.stopped = moment(timestamp).endOf(content.time);
+      content.messages.search();
     },function onError(response) {
-      content.topics.items = [];
+      content.started = moment().startOf(content.time);
+      content.stopped = moment().endOf(content.time);
+      content.messages.search();
     });
   };
+  
+  content.timestamp();
   
   /* messages */ 
   
   content.messages = {};
-  content.messages.item = null;
   content.messages.items = [];
     
-  content.messages.last = function() {
-	if (content.topic) {
-      emit.messages.last(content, function onSuccess(response) {
-	    content.messages.item = response;
-	  },function onError(response) {
-	    content.messages.item = null;
-	  });		
-	}
-  };
-    
   content.messages.search = function() {
-	content.messages.last();
-	if (content.topic && content.time) {
+	if (content.uuid && content.time) {
 	  var date = content.started;
 	  content.started = moment(date).startOf(content.time);
 	  content.stopped = moment(date).endOf(content.time);
@@ -255,13 +238,13 @@
       content.started = moment(content.started).subtract(1, content.time + 's');
       content.stopped = moment(content.stopped).subtract(1, content.time + 's');
       content.messages.search();
-  }
+  };
   
   content.next = function () {
-      content.started = moment(content.started).add(1, content.time + 's');
-      content.stopped = moment(content.stopped).add(1, content.time + 's');
-      content.messages.search();
-  }
+    content.started = moment(content.started).add(1, content.time + 's');
+    content.stopped = moment(content.stopped).add(1, content.time + 's');
+    content.messages.search();
+  };
   
   </script>
 </html>
