@@ -30,6 +30,7 @@ import fr.icam.emit.entities.Broker;
 import fr.icam.emit.entities.Callback;
 import fr.icam.emit.entities.Client;
 import fr.icam.emit.entities.Connect;
+import fr.icam.emit.entities.Message;
 import fr.icam.emit.entities.Subscribe;
 
 public class EmitClient {
@@ -223,7 +224,7 @@ public class EmitClient {
 	
 	public Client getClient(UUID uuid) throws Exception {
 		URIBuilder builder = new URIBuilder("/emit/clients/find");
-		builder.addParameter("offset", uuid.toString());
+		builder.addParameter("client", uuid.toString());
         HttpGet request = new HttpGet(builder.build());
         return this.getObject(Client.class, request);
 	}
@@ -542,6 +543,30 @@ public class EmitClient {
 	}
 	
 	/* end of client publications */
+
+	
+	/* begin of client messages */
+	
+	public Long getTimestamp() throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/timestamp");
+        HttpGet request = new HttpGet(builder.build());
+        return this.getLong(request);
+	}
+	
+	public Integer getMessageSize(Client client) throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/messages/size");
+		builder.addParameter("client", client.getUuid());
+        HttpGet request = new HttpGet(builder.build());
+        return this.getInteger(request);
+	}
+	
+	public List<Message> getMessagePage(Client client, Long issued) throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/messages/search");
+		builder.addParameter("client", client.getUuid());
+		builder.addParameter("started", issued.toString());
+        HttpGet request = new HttpGet(builder.build());
+        return this.getList(Message[].class, request);
+	}
 	
 	/*
 	public Integer getClientSize(Mode mode) throws Exception {
@@ -679,6 +704,19 @@ public class EmitClient {
 		EntityUtils.consume(entity);
 		if (status == 200) {
 			return Integer.valueOf(message);
+		} else {
+			throw new EmitClientException(status, message);
+		}
+	}
+	
+	private Long getLong(HttpRequestBase request) throws IOException, ClientProtocolException, EmitClientException {
+		HttpResponse response = client.execute(host, request);
+		HttpEntity entity = response.getEntity();
+		String message = EntityUtils.toString(entity);
+		int status = response.getStatusLine().getStatusCode();
+		EntityUtils.consume(entity);
+		if (status == 200) {
+			return Long.valueOf(message);
 		} else {
 			throw new EmitClientException(status, message);
 		}

@@ -1302,6 +1302,10 @@
       <url-pattern>/emit.js</url-pattern>
       <url-pattern>/user/register</url-pattern>
       <url-pattern>/timestamp</url-pattern>
+      <!-- to move afterwards -->
+      <url-pattern>/messages/size</url-pattern>
+      <url-pattern>/messages/page</url-pattern>
+      <url-pattern>/messages/search</url-pattern>
    </web-resource-collection>
  </security-constraint>
 
@@ -1353,9 +1357,6 @@
       <!-- to keep -->
       <url-pattern>/records/size</url-pattern>
       <url-pattern>/records/page</url-pattern>
-      <url-pattern>/messages/size</url-pattern>
-      <url-pattern>/messages/page</url-pattern>
-      <url-pattern>/messages/last</url-pattern>
       <url-pattern>/topics/list</url-pattern>
       <!-- to remove -->
       <url-pattern>/clients/shares/create</url-pattern>
@@ -1366,8 +1367,6 @@
       <url-pattern>/topics/leafs/list</url-pattern>
       <url-pattern>/topics/nodes/list</url-pattern>
       <url-pattern>/clients/callbacks/list</url-pattern>
-      <!-- to keep -->
-      <url-pattern>/messages/search</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>user</role-name>
@@ -1378,7 +1377,7 @@
 
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>user-area</web-resource-name>
+      <web-resource-name>admin-area</web-resource-name>
       <url-pattern>/configuring/brokers.html</url-pattern>
       <url-pattern>/configuring/clients.html</url-pattern>
       <url-pattern>/configuring/callbacks.html</url-pattern>
@@ -1391,6 +1390,7 @@
       <url-pattern>/clients/size</url-pattern>
       <url-pattern>/clients/page</url-pattern>
       <url-pattern>/clients/list</url-pattern>
+      <url-pattern>/clients/find</url-pattern>
       <url-pattern>/clients/create</url-pattern>
       <url-pattern>/clients/update</url-pattern>
       <url-pattern>/clients/delete</url-pattern>
@@ -1424,7 +1424,7 @@
 
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>user-area</web-resource-name>
+      <web-resource-name>root-area</web-resource-name>
       <url-pattern>/users/size</url-pattern>
       <url-pattern>/users/page</url-pattern>
       <url-pattern>/users/create</url-pattern>

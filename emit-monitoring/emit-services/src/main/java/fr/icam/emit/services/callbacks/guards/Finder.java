@@ -27,7 +27,7 @@ public class Finder extends JdbcQueryServlet<GuardCallback> {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		GuardCallback callback = this.doProcess(request);
-		request.setAttribute("callback", callback);
+		request.setAttribute("mqtt-callback", callback);
 	}
 
 	@Override

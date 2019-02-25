@@ -9,5 +9,6 @@ SELECT
 FROM `clients` c
 INNER JOIN `brokers`b ON b.`uri` = c.`broker`
 WHERE b.`user` = c.`user`
+AND c.`user` = ?
 AND c.`uuid` = ?
 LIMIT 0,1;

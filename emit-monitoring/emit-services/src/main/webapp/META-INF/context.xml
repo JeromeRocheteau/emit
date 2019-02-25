@@ -29,9 +29,10 @@
     userRoleTable="users"
     userNameCol="username"
     userCredCol="password"
-    roleNameCol="rolename"
-    digest="MD5"
-  />
+    roleNameCol="rolename">
+    <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
+    	algorithm="md5" />
+  </Realm>
 
   <Valve className="org.apache.catalina.authenticator.FormAuthenticator" 
     characterEncoding="UTF-8" 

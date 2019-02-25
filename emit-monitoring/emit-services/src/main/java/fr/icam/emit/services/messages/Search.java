@@ -38,19 +38,19 @@ public class Search extends JdbcServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
-			System.out.println("[emit] GET " + System.currentTimeMillis());
+			// System.out.println("[emit] GET " + System.currentTimeMillis());
 			List<Message> items = new LinkedList<Message>();
 			String client = request.getParameter("client");
 			String started = request.getParameter("started");
 			String stopped = request.getParameter("stopped");
-			System.out.println("[emit] PARAM " + System.currentTimeMillis());
+			// System.out.println("[emit] PARAM " + System.currentTimeMillis());
 			Bson filter = this.getFilter(client, started, stopped);
 			if (filter != null) {
-				System.out.println("[emit] FILTER " + System.currentTimeMillis());
+				// System.out.println("[emit] FILTER " + System.currentTimeMillis());
 				FindIterable<Document> find = messages.find(filter);
-				System.out.println("[emit] FIND " + System.currentTimeMillis());
+				// System.out.println("[emit] FIND " + System.currentTimeMillis());
 				find.sort(Sorts.descending("_id"));
-				System.out.println("[emit] SORT " + System.currentTimeMillis());
+				// System.out.println("[emit] SORT " + System.currentTimeMillis());
 				MongoCursor<Document> cursor = find.iterator();
 				while (cursor.hasNext()) {
 					Document document = cursor.next();
@@ -64,7 +64,7 @@ public class Search extends JdbcServlet {
 					Message item = new Message(issued, mode, topic, qos, retained, payload);
 					items.add(item);
 				}
-				System.out.println("[emit] ITER " + System.currentTimeMillis());
+				// System.out.println("[emit] ITER " + System.currentTimeMillis());
 			}
 			this.doWrite(items, response.getWriter());
 		} catch (Exception e) {

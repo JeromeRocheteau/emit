@@ -12,6 +12,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 
 import com.github.jeromerocheteau.JdbcUpdateServlet;
 
+import fr.icam.emit.callbacks.CallbackFactory;
 import fr.icam.emit.entities.Callback;
 import fr.icam.emit.listeners.MqttClientListener;
 
@@ -29,12 +30,16 @@ public class Attach extends JdbcUpdateServlet<Integer> {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		this.doAttach(request, response);
+		try {
+			this.doAttach(request, response);
 		Integer count = this.doProcess(request);
 		this.doWrite(count, response.getWriter());
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
 	}
 
-	private void doAttach(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	private void doAttach(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String uuid = request.getParameter("uuid");
 		this.doCall(request, response, "callback-item");
 		Callback cb = (Callback) request.getAttribute("abstract-callback");
@@ -52,7 +57,8 @@ public class Attach extends JdbcUpdateServlet<Integer> {
 		} else {
 			throw new ServletException("undefined callback category '" + category + "'");
 		}
-		MqttCallback callback = (MqttCallback) request.getAttribute("mqtt-callback");
+		Callback c = (Callback) request.getAttribute("mqtt-callback");
+		MqttCallback callback = CallbackFactory.from(listener, uuid, c);
 		listener.doAttach(uuid, callback);
 	}
 
