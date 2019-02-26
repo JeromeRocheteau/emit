@@ -26,15 +26,24 @@ public class Finder extends JdbcQueryServlet<StorageCallback> {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		StorageCallback callback = this.doProcess(request);
-		request.setAttribute("mqtt-callback", callback);
+		request.setAttribute("callback", callback);
 	}
 
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		Long id = Long.valueOf(request.getParameter("id"));
+		Long id = this.getAttributeOrParameter(request, "id");
 		statement.setLong(1, id);
 	}
-
+	
+	private Long getAttributeOrParameter(HttpServletRequest request, String name) {
+		Long value = (Long) request.getAttribute(name);
+		if (value == null) {
+			return Long.valueOf(request.getParameter(name));
+		} else {
+			return value;
+		}
+	}
+	
     @Override
     protected StorageCallback doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
     	StorageCallback item = null;

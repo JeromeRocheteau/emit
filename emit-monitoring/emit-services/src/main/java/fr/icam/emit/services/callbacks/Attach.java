@@ -14,6 +14,7 @@ import com.github.jeromerocheteau.JdbcUpdateServlet;
 
 import fr.icam.emit.callbacks.CallbackFactory;
 import fr.icam.emit.entities.Callback;
+import fr.icam.emit.entities.callbacks.GuardCallback;
 import fr.icam.emit.listeners.MqttClientListener;
 
 public class Attach extends JdbcUpdateServlet<Integer> {
@@ -32,8 +33,8 @@ public class Attach extends JdbcUpdateServlet<Integer> {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
 			this.doAttach(request, response);
-		Integer count = this.doProcess(request);
-		this.doWrite(count, response.getWriter());
+			Integer count = this.doProcess(request);
+			this.doWrite(count, response.getWriter());
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
@@ -41,9 +42,21 @@ public class Attach extends JdbcUpdateServlet<Integer> {
 
 	private void doAttach(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String uuid = request.getParameter("uuid");
+		Long id = Long.valueOf(request.getParameter("id"));
+		Callback callback = this.getCallback(request, response, id);
+		MqttCallback mqttCallback = CallbackFactory.from(listener, uuid, callback);
+		listener.doAttach(uuid, mqttCallback);
+	}
+
+	private Callback getCallback(HttpServletRequest request, HttpServletResponse response, Long id) throws Exception {
+		request.setAttribute("id", id);
 		this.doCall(request, response, "callback-item");
-		Callback cb = (Callback) request.getAttribute("abstract-callback");
-		String category = cb.getCategory();
+		Callback abstractCallback = (Callback) request.getAttribute("abstract-callback");
+		return this.getCallback(request, response, abstractCallback);
+	}
+
+	private Callback getCallback(HttpServletRequest request, HttpServletResponse response, Callback abstractCallback) throws Exception {
+		String category = abstractCallback.getCategory();
 		if (category.equals("type")) {
 			this.doCall(request, response, "type-callback-item");
 		} else if (category.equals("topic")) {
@@ -54,12 +67,17 @@ public class Attach extends JdbcUpdateServlet<Integer> {
 			this.doCall(request, response, "feature-callback-item");
 		} else if (category.equals("guard")) {
 			this.doCall(request, response, "guard-callback-item");
+			GuardCallback guard = (GuardCallback) request.getAttribute("callback");
+			guard.setTest(this.getCallback(request, response, guard.getTest().getId()));
+			guard.setSuccess(this.getCallback(request, response, guard.getSuccess().getId()));
+			if (guard.getFailure() != null) {
+				guard.setFailure(this.getCallback(request, response, guard.getFailure().getId()));	
+			}
+			request.setAttribute("callback", guard);
 		} else {
 			throw new ServletException("undefined callback category '" + category + "'");
 		}
-		Callback c = (Callback) request.getAttribute("mqtt-callback");
-		MqttCallback callback = CallbackFactory.from(listener, uuid, c);
-		listener.doAttach(uuid, callback);
+		return (Callback) request.getAttribute("callback");
 	}
 
 	@Override

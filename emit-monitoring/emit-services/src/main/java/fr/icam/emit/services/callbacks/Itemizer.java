@@ -25,10 +25,19 @@ public class Itemizer extends JdbcQueryServlet<Callback> {
 
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
-		Long id = Long.valueOf(request.getParameter("id"));
+		Long id = this.getAttributeOrParameter(request, "id");
 		statement.setLong(1, id);
 	}
-
+	
+	private Long getAttributeOrParameter(HttpServletRequest request, String name) {
+		Long value = (Long) request.getAttribute(name);
+		if (value == null) {
+			return Long.valueOf(request.getParameter(name));
+		} else {
+			return value;
+		}
+	}
+	
     @Override
     protected Callback doMap(HttpServletRequest request, ResultSet resultSet) throws Exception {
     	Callback item = null;
