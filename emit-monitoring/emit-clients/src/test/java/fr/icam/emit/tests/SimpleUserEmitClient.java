@@ -11,7 +11,7 @@ public class SimpleUserEmitClient extends UserEmitClient {
 	@Override
 	protected InputStream getPropertyStream() throws IOException {
 		ClassLoader loader = getClass().getClassLoader();
-		return loader.getResourceAsStream("super-user-tests.properties");
+		return loader.getResourceAsStream("simple-user-tests.properties");
 	}
 
 	@Test
