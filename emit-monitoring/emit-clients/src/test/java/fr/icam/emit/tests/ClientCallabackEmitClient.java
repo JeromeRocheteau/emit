@@ -117,10 +117,10 @@ public class ClientCallabackEmitClient extends SuperUserEmitClient {
 				return callback;
 			}
 		}
-		Integer count = api.doTopicCallbackCreate("Test Callback", "test");
-		Assert.assertNotNull(count);
-		Assert.assertNotEquals(0, count.intValue());
-		Assert.assertEquals(1, count.intValue());
+		Long id = api.doTopicCallbackCreate("Test Callback", "test");
+		Assert.assertNotNull(id);
+		Assert.assertNotEquals(0, id.longValue());
+		// Assert.assertEquals(1, count.intValue());
 		if (first) {
 			return callback(false);
 		} else {

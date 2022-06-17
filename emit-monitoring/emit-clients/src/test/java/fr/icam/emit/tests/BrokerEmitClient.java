@@ -15,7 +15,7 @@ public class BrokerEmitClient extends SuperUserEmitClient {
 
 	private final String FIRST_BROKER_URI = "tcp://localhost:1883";
 	
-	private final String SECOND_BROKER_URI = "tcp://172.21.50.1:1883";
+	private final String SECOND_BROKER_URI = "tcp://10.44.10.55:1883";
 	
 	@Test
 	public void test_01_size() throws Exception {

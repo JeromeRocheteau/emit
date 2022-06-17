@@ -282,7 +282,14 @@ public class EmitClient {
         return this.getList(Callback[].class, request);
 	}
 	
-	public Integer doTypeCallbackCreate(String name, Type type) throws Exception {
+	public Callback getCallback(Long id) throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/callbacks/find");
+		builder.addParameter("id", id.toString());
+        HttpGet request = new HttpGet(builder.build());
+        return this.getObject(Callback.class, request);
+	}
+	
+	public Long doTypeCallbackCreate(String name, Type type) throws Exception {
         HttpPost request = new HttpPost("/emit/callbacks/create/type");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
         parameters.add(new BasicNameValuePair("name", name));
@@ -290,7 +297,7 @@ public class EmitClient {
         parameters.add(new BasicNameValuePair("category", Category.TYPE.toString().toLowerCase()));
         parameters.add(new BasicNameValuePair("type", type.toString().toLowerCase()));
         request.setEntity(new UrlEncodedFormEntity(parameters));
-        return this.getInteger(request);
+        return this.getLong(request);
 	}
 	
 	public Integer doTypeCallbackUpdate(Long id, String name, Type type) throws Exception {
@@ -305,7 +312,7 @@ public class EmitClient {
         return this.getInteger(request);
 	}
 	
-	public Integer doTopicCallbackCreate(String name, String topic) throws Exception {
+	public Long doTopicCallbackCreate(String name, String topic) throws Exception {
         HttpPost request = new HttpPost("/emit/callbacks/create/topic");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
         parameters.add(new BasicNameValuePair("name", name));
@@ -313,7 +320,7 @@ public class EmitClient {
         parameters.add(new BasicNameValuePair("category", Category.TOPIC.toString().toLowerCase()));
         parameters.add(new BasicNameValuePair("topic", topic));
         request.setEntity(new UrlEncodedFormEntity(parameters));
-        return this.getInteger(request);
+        return this.getLong(request);
 	}
 	
 	public Integer doTopicCallbackUpdate(Long id, String name, String topic) throws Exception {
@@ -328,7 +335,7 @@ public class EmitClient {
         return this.getInteger(request);
 	}
 	
-	public Integer doStorageCallbackCreate(String name, Collection collection) throws Exception {
+	public Long doStorageCallbackCreate(String name, Collection collection) throws Exception {
         HttpPost request = new HttpPost("/emit/callbacks/create/storage");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
         parameters.add(new BasicNameValuePair("name", name));
@@ -336,7 +343,7 @@ public class EmitClient {
         parameters.add(new BasicNameValuePair("category", Category.STORAGE.toString().toLowerCase()));
         parameters.add(new BasicNameValuePair("collection", collection.toString().toLowerCase()));
         request.setEntity(new UrlEncodedFormEntity(parameters));
-        return this.getInteger(request);
+        return this.getLong(request);
 	}
 	
 	public Integer doStorageCallbackUpdate(Long id, String name, Collection collection) throws Exception {
@@ -351,7 +358,7 @@ public class EmitClient {
         return this.getInteger(request);
 	}
 	
-	public <T> Integer doFeatureCallbackCreate(String name, Symbol symbol, Class<T> type, T value) throws Exception {
+	public <T> Long doFeatureCallbackCreate(String name, Symbol symbol, Class<T> type, T value) throws Exception {
         HttpPost request = new HttpPost("/emit/callbacks/create/feature");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(6);
         parameters.add(new BasicNameValuePair("name", name));
@@ -361,7 +368,7 @@ public class EmitClient {
         parameters.add(new BasicNameValuePair("type", this.getType(type).toString().toLowerCase()));
         parameters.add(new BasicNameValuePair("value", value.toString()));
         request.setEntity(new UrlEncodedFormEntity(parameters));
-        return this.getInteger(request);
+        return this.getLong(request);
 	}
 	
 	public <T> Integer doFeatureCallbackUpdate(Long id, String name, Symbol symbol, Class<T> type, T value) throws Exception {
@@ -378,7 +385,7 @@ public class EmitClient {
         return this.getInteger(request);
 	}
 	
-	public <T> Integer doGuardCallbackCreate(String name, Callback testCallback, Callback successCallback) throws Exception {
+	public Long doGuardCallbackCreate(String name, Callback testCallback, Callback successCallback) throws Exception {
         HttpPost request = new HttpPost("/emit/callbacks/create/guard");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(5);
         parameters.add(new BasicNameValuePair("name", name));
@@ -387,10 +394,10 @@ public class EmitClient {
         parameters.add(new BasicNameValuePair("test", testCallback.getId().toString()));
         parameters.add(new BasicNameValuePair("success", successCallback.getId().toString()));
         request.setEntity(new UrlEncodedFormEntity(parameters));
-        return this.getInteger(request);
+        return this.getLong(request);
 	}
 	
-	public <T> Integer doGuardCallbackCreate(String name, Callback testCallback, Callback successCallback, Callback failureCallback) throws Exception {
+	public Long doGuardCallbackCreate(String name, Callback testCallback, Callback successCallback, Callback failureCallback) throws Exception {
         HttpPost request = new HttpPost("/emit/callbacks/create/guard");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(6);
         parameters.add(new BasicNameValuePair("name", name));
@@ -400,10 +407,10 @@ public class EmitClient {
         parameters.add(new BasicNameValuePair("success", successCallback.getId().toString()));
         parameters.add(new BasicNameValuePair("failure", failureCallback.getId().toString()));
         request.setEntity(new UrlEncodedFormEntity(parameters));
-        return this.getInteger(request);
+        return this.getLong(request);
 	}
 	
-	public <T> Integer doGuardCallbackUpdate(Long id, String name, Callback testCallback, Callback successCallback) throws Exception {
+	public Integer doGuardCallbackUpdate(Long id, String name, Callback testCallback, Callback successCallback) throws Exception {
         HttpPost request = new HttpPost("/emit/callbacks/update/guard");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(6);
         parameters.add(new BasicNameValuePair("id", id.toString()));
@@ -416,7 +423,7 @@ public class EmitClient {
         return this.getInteger(request);
 	}
 	
-	public <T> Integer doGuardCallbackUpdate(Long id, String name, Callback testCallback, Callback successCallback, Callback failureCallback) throws Exception {
+	public Integer doGuardCallbackUpdate(Long id, String name, Callback testCallback, Callback successCallback, Callback failureCallback) throws Exception {
         HttpPost request = new HttpPost("/emit/callbacks/update/guard");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(7);
         parameters.add(new BasicNameValuePair("id", id.toString()));

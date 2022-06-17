@@ -40,10 +40,10 @@ public class CallbackEmitClient extends SuperUserEmitClient {
 	
 	@Test
 	public void test_04_create() throws Exception {
-		Integer count = api.doTypeCallbackCreate("Test Integer Callback", Type.INTEGER);
-		Assert.assertNotEquals(0, count.intValue());
-		Assert.assertEquals(1, count.intValue());
-		System.out.println("[04] created type callback: " + count);
+		Long id = api.doTypeCallbackCreate("Test Integer Callback", Type.INTEGER);
+		Assert.assertNotEquals(0, id.longValue());
+		// Assert.assertEquals(1, id.intValue());
+		System.out.println("[04] created type callback: " + id);
 	}
 	
 	@Test
@@ -74,10 +74,10 @@ public class CallbackEmitClient extends SuperUserEmitClient {
 	
 	@Test
 	public void test_14_create() throws Exception {
-		Integer count = api.doTopicCallbackCreate("Test Topic Callback", "test");
-		Assert.assertNotEquals(0, count.intValue());
-		Assert.assertEquals(1, count.intValue());
-		System.out.println("[14] created topic callback: " + count);
+		Long id = api.doTopicCallbackCreate("Test Topic Callback", "test");
+		Assert.assertNotEquals(0, id.longValue());
+		// Assert.assertEquals(1, id.intValue());
+		System.out.println("[14] created topic callback: " + id);
 	}
 	
 	@Test
@@ -108,10 +108,10 @@ public class CallbackEmitClient extends SuperUserEmitClient {
 	
 	@Test
 	public void test_24_create() throws Exception {
-		Integer count = api.doStorageCallbackCreate("Test Storage Callback", Collection.MESSAGES);
-		Assert.assertNotEquals(0, count.intValue());
-		Assert.assertEquals(1, count.intValue());
-		System.out.println("[24] created storage callback: " + count);
+		Long id = api.doStorageCallbackCreate("Test Storage Callback", Collection.MESSAGES);
+		Assert.assertNotEquals(0, id.longValue());
+		// Assert.assertEquals(1, id.intValue());
+		System.out.println("[24] created storage callback: " + id);
 	}
 	
 	@Test
@@ -142,10 +142,10 @@ public class CallbackEmitClient extends SuperUserEmitClient {
 	
 	@Test
 	public void test_34_create() throws Exception {
-		Integer count = api.doFeatureCallbackCreate("Test Feature Callback", Symbol.EQ, Integer.class, 5);
-		Assert.assertNotEquals(0, count.intValue());
-		Assert.assertEquals(1, count.intValue());
-		System.out.println("[34] created feature callback: " + count);
+		Long id = api.doFeatureCallbackCreate("Test Feature Callback", Symbol.EQ, Integer.class, 5);
+		Assert.assertNotEquals(0, id.longValue());
+		// Assert.assertEquals(1, count.intValue());
+		System.out.println("[34] created feature callback: " + id);
 	}
 	
 	@Test
@@ -178,20 +178,20 @@ public class CallbackEmitClient extends SuperUserEmitClient {
 	public void test_44_create() throws Exception {
 		List<Callback> page = api.getCallbackPage(0, 2);
 		Assert.assertEquals(2, page.size());
-		Integer count = api.doGuardCallbackCreate("Test IfThen Callback", page.get(0), page.get(1));
-		Assert.assertNotEquals(0, count.intValue());
-		Assert.assertEquals(1, count.intValue());
-		System.out.println("[44] created guard callback: " + count);
+		Long id = api.doGuardCallbackCreate("Test IfThen Callback", page.get(0), page.get(1));
+		Assert.assertNotEquals(0, id.longValue());
+		// Assert.assertEquals(1, id.intValue());
+		System.out.println("[44] created guard callback: " + id);
 	}
 	
 	@Test
 	public void test_45_create() throws Exception {
 		List<Callback> page = api.getCallbackPage(0, 3);
 		Assert.assertEquals(3, page.size());
-		Integer count = api.doGuardCallbackCreate("Test IfThenElse Callback", page.get(0), page.get(1), page.get(2));
-		Assert.assertNotEquals(0, count.intValue());
-		Assert.assertEquals(1, count.intValue());
-		System.out.println("[44] created guard callback: " + count);
+		Long id = api.doGuardCallbackCreate("Test IfThenElse Callback", page.get(0), page.get(1), page.get(2));
+		Assert.assertNotEquals(0, id.longValue());
+		// Assert.assertEquals(1, id.intValue());
+		System.out.println("[44] created guard callback: " + id);
 	}
 	
 	@Test

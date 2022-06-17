@@ -33,7 +33,7 @@ public class Item extends JdbcQueryServlet<Token> {
 		Token token = null;
 		while (resultSet.next()) {
 			String uuid = resultSet.getString("uuid");
-			String username = resultSet.getString("username");
+			String username = resultSet.getString("user");
 			token = new Token(uuid, username);
 		}
 		return token;

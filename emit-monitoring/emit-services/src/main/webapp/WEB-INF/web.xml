@@ -1163,6 +1163,10 @@
       <param-value>/fr/icam/emit/queries/callbacks/item.sql</param-value>
     </init-param>
   </servlet>
+  <servlet-mapping>
+    <servlet-name>callback-item</servlet-name>
+    <url-pattern>/callbacks/find</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>callback-find</servlet-name>

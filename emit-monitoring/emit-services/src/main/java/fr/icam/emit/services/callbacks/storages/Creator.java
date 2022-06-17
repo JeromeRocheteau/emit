@@ -10,15 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.jeromerocheteau.JdbcUpdateServlet;
 
-public class Creator extends JdbcUpdateServlet<Integer> {
+public class Creator extends JdbcUpdateServlet<Long> {
 
 	private static final long serialVersionUID = 201803151145003L;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		this.doCall(request, response, "callback-create");
-		Integer count = this.doProcess(request);
-		this.doWrite(count, response.getWriter());
+		Long id = this.doProcess(request);
+		this.doWrite(id, response.getWriter());
 	}
 
 	@Override
@@ -30,8 +30,8 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 	}
 	
 	@Override
-	protected Integer doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
-		return count;
+	protected Long doMap(HttpServletRequest request, int count, ResultSet resultSet) throws Exception {
+		return (Long) request.getAttribute("id");
 	}
 
 }
