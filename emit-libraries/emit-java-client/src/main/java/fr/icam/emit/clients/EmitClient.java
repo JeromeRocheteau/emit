@@ -156,6 +156,13 @@ public class EmitClient {
         return this.getList(Broker[].class, request);
 	}
 	
+	public Broker getBroker(URI uri) throws Exception {
+		URIBuilder builder = new URIBuilder("/emit/brokers/find");
+		builder.addParameter("uri", uri.toString());
+        HttpGet request = new HttpGet(builder.build());
+        return this.getObject(Broker.class, request);
+	}
+	
 	public Integer doBrokerCreate(String name, URI uri) throws Exception {
         HttpPost request = new HttpPost("/emit/brokers/create");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(2);

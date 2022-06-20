@@ -328,12 +328,25 @@
 
   <servlet>
     <servlet-name>broker-item</servlet-name>
-    <servlet-class>fr.icam.emit.services.brokers.Finder</servlet-class>
+    <servlet-class>fr.icam.emit.services.brokers.Itemizer</servlet-class>
     <init-param>
       <param-name>sql-query</param-name>
       <param-value>/fr/icam/emit/queries/brokers/item.sql</param-value>
     </init-param>
   </servlet>
+
+  <servlet>
+    <servlet-name>broker-find</servlet-name>
+    <servlet-class>fr.icam.emit.services.brokers.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/brokers/find.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>broker-find</servlet-name>
+    <url-pattern>/brokers/find</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>broker-list</servlet-name>
@@ -1388,6 +1401,7 @@
       <url-pattern>/brokers/size</url-pattern>
       <url-pattern>/brokers/page</url-pattern>
       <url-pattern>/brokers/list</url-pattern>
+      <url-pattern>/brokers/find</url-pattern>
       <url-pattern>/brokers/create</url-pattern>
       <url-pattern>/brokers/update</url-pattern>
       <url-pattern>/brokers/delete</url-pattern>
