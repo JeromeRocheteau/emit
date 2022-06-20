@@ -457,7 +457,7 @@ public class EmitClient {
 	/* clients & callbacks */
 	
 	public Integer doAttach(Client client, Callback callback) throws Exception {
-        HttpPost request = new HttpPost("/emit/clients/callbacks/attach");
+        HttpPost request = new HttpPost("/emit/clients/attach");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(3);
         parameters.add(new BasicNameValuePair("uuid", client.getUuid()));
         parameters.add(new BasicNameValuePair("id", callback.getId().toString()));
@@ -467,7 +467,7 @@ public class EmitClient {
 	}
 	
 	public Integer doDetach(Client client) throws Exception {
-        HttpPost request = new HttpPost("/emit/clients/callbacks/detach");
+        HttpPost request = new HttpPost("/emit/clients/detach");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
         parameters.add(new BasicNameValuePair("uuid", client.getUuid()));
         request.setEntity(new UrlEncodedFormEntity(parameters));
@@ -475,7 +475,7 @@ public class EmitClient {
 	}
 	
 	public Callback isAttached(Client client) throws Exception {
-		URIBuilder builder = new URIBuilder("/emit/clients/callbacks/attached");
+		URIBuilder builder = new URIBuilder("/emit/clients/attached");
 		builder.addParameter("uuid", client.getUuid());
         HttpGet request = new HttpGet(builder.build());
         return this.getObject(Callback.class, request);

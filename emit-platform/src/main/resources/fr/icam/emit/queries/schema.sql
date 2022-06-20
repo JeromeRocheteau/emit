@@ -45,22 +45,22 @@ DROP TABLE IF EXISTS `users`;
 /* */
 
 CREATE TABLE `users` (
-  `username` varchar(45) NOT NULL,
-  `rolename` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
+  `username` varchar(90) NOT NULL,
+  `rolename` varchar(90) NOT NULL,
+  `password` varchar(90) NOT NULL,
   PRIMARY KEY (`username`)
 );
 
 CREATE TABLE `prospects` (
-  `username` varchar(45) NOT NULL,
-  `rolename` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
+  `username` varchar(90) NOT NULL,
+  `rolename` varchar(90) NOT NULL,
+  `password` varchar(90) NOT NULL,
   PRIMARY KEY (`username`)
 );
 
 CREATE TABLE `tokens` (
-  `uuid` varchar(45) NOT NULL,
-  `user` varchar(45) NOT NULL,
+  `uuid` varchar(90) NOT NULL,
+  `user` varchar(90) NOT NULL,
   PRIMARY KEY (`uuid`),
   FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -68,7 +68,7 @@ CREATE TABLE `tokens` (
 CREATE TABLE `access` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `issued` datetime NOT NULL,
-  `token` varchar(45) NOT NULL,
+  `token` varchar(90) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`token`) REFERENCES `tokens` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -76,38 +76,38 @@ CREATE TABLE `access` (
 /* */
 
 CREATE TABLE `types` (
-  `name` varchar(45) NOT NULL,
-  `category` varchar(45) NOT NULL,
+  `name` varchar(90) NOT NULL,
+  `category` varchar(90) NOT NULL,
   PRIMARY KEY (`name`)
 );
 
 CREATE TABLE `symbols` (
-  `name` varchar(45) NOT NULL,
-  `html` varchar(45) NOT NULL,
+  `name` varchar(90) NOT NULL,
+  `html` varchar(90) NOT NULL,
   PRIMARY KEY (`name`)
 );
 
 CREATE TABLE `callbacks` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
+  `name` varchar(90) NOT NULL,
   `atomic` tinyint(1) NOT NULL,
-  `category` varchar(45) NOT NULL,
+  `category` varchar(90) NOT NULL,
   `issued` datetime NOT NULL,
-  `user` varchar(45) NOT NULL,
+  `user` varchar(90) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `topic_callbacks` (
   `id` bigint(20) NOT NULL,
-  `topic` varchar(45) NOT NULL,
+  `topic` varchar(90) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id`) REFERENCES `callbacks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `type_callbacks` (
   `id` bigint(20) NOT NULL,
-  `type` varchar(45) NOT NULL,
+  `type` varchar(90) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id`) REFERENCES `callbacks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`type`) REFERENCES `types` (`name`)
@@ -115,9 +115,9 @@ CREATE TABLE `type_callbacks` (
 
 CREATE TABLE `feature_callbacks` (
   `id` bigint(20) NOT NULL,
-  `symbol` varchar(45) NOT NULL,
-  `type` varchar(45) NOT NULL,
-  `value` varchar(45) NOT NULL,
+  `symbol` varchar(90) NOT NULL,
+  `type` varchar(90) NOT NULL,
+  `value` varchar(90) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id`) REFERENCES `callbacks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`symbol`) REFERENCES `symbols` (`name`),
@@ -126,7 +126,7 @@ CREATE TABLE `feature_callbacks` (
 
 CREATE TABLE `storage_callbacks` (
   `id` bigint(20) NOT NULL,
-  `collection` varchar(45) NOT NULL,
+  `collection` varchar(90) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id`) REFERENCES `callbacks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -144,9 +144,9 @@ CREATE TABLE `guard_callbacks` (
 );
 
 CREATE TABLE `topics` (
-  `name` varchar(45) NOT NULL,
-  `prefix` varchar(45) DEFAULT NULL,
-  `suffix` varchar(45) NOT NULL,
+  `name` varchar(90) NOT NULL,
+  `prefix` varchar(90) DEFAULT NULL,
+  `suffix` varchar(90) NOT NULL,
   `leaf` tinyint(1) NOT NULL,
   PRIMARY KEY (`name`),
   FOREIGN KEY (`prefix`) REFERENCES `topics` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -155,20 +155,20 @@ CREATE TABLE `topics` (
 /* */ 
 
 CREATE TABLE `brokers` (
-  `uri` varchar(45) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `user` varchar(45) NOT NULL,
-  `username` varchar(45) DEFAULT NULL,
-  `password` varchar(45) DEFAULT NULL,
+  `uri` varchar(90) NOT NULL,
+  `name` varchar(90) NOT NULL,
+  `user` varchar(90) NOT NULL,
+  `username` varchar(90) DEFAULT NULL,
+  `password` varchar(90) DEFAULT NULL,
   PRIMARY KEY (`uri`,`user`),
   FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `clients` (
-  `uuid` varchar(45) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `broker` varchar(45) NOT NULL,
-  `user` varchar(45) NOT NULL,
+  `uuid` varchar(90) NOT NULL,
+  `name` varchar(90) NOT NULL,
+  `broker` varchar(90) NOT NULL,
+  `user` varchar(90) NOT NULL,
   `open` tinyint(1) NOT NULL,
   `callback` bigint(20) NULL DEFAULT NULL,
   PRIMARY KEY (`uuid`),
@@ -181,8 +181,8 @@ CREATE TABLE `connects` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `started` datetime NOT NULL,
   `stopped` datetime DEFAULT NULL,
-  `client` varchar(45) NOT NULL,
-  `user` varchar(45) NOT NULL,
+  `client` varchar(90) NOT NULL,
+  `user` varchar(90) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`client`) REFERENCES `clients` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -191,9 +191,9 @@ CREATE TABLE `connects` (
 CREATE TABLE `publishs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `issued` datetime NOT NULL,
-  `topic` varchar(45) NOT NULL,
-  `client` varchar(45) NOT NULL,
-  `user` varchar(45) NOT NULL,
+  `topic` varchar(90) NOT NULL,
+  `client` varchar(90) NOT NULL,
+  `user` varchar(90) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`client`) REFERENCES `clients` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -203,17 +203,17 @@ CREATE TABLE `subscribes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `started` datetime NOT NULL,
   `stopped` datetime DEFAULT NULL,
-  `client` varchar(45) NOT NULL,
-  `user` varchar(45) NOT NULL,
-  `topic` varchar(45) NOT NULL,
+  `client` varchar(90) NOT NULL,
+  `user` varchar(90) NOT NULL,
+  `topic` varchar(90) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`client`) REFERENCES `clients` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `shares` (
-  `client` varchar(45) NOT NULL,
-  `user` varchar(45) NOT NULL,
+  `client` varchar(90) NOT NULL,
+  `user` varchar(90) NOT NULL,
   `control` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`client`,`user`),
   FOREIGN KEY (`client`) REFERENCES `clients` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -223,15 +223,15 @@ CREATE TABLE `shares` (
 /* */
 
 INSERT INTO `types` (`name`,`category`) VALUES 
-("string",  "primitive"),
-("boolean", "primitive"),
-("integer", "primitive"),
-("long",    "primitive"),
-("float",   "primitive"),
-("double",  "primitive"),
-("date",    "primitive"),
-("uuid",    "primitive"),
-("uri",     "primitive");
+("string",  "datatype"),
+("boolean", "datatype"),
+("integer", "datatype"),
+("long",    "datatype"),
+("float",   "datatype"),
+("double",  "datatype"),
+("date",    "datatype"),
+("uuid",    "datatype"),
+("uri",     "datatype");
 
 INSERT INTO `symbols` (`name`,`html`) VALUES 
 ("eq",  "="),
