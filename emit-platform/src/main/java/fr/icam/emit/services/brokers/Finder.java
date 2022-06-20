@@ -14,20 +14,20 @@ import fr.icam.emit.entities.Broker;
 
 public class Finder extends JdbcQueryServlet<Broker> {
 
-	private static final long serialVersionUID = 201710301015006L;
+	private static final long serialVersionUID = 202206201030001L;
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Broker broker = this.doProcess(request);
-		request.setAttribute("broker", broker);
+		this.doWrite(broker, response.getWriter());
 	}
-	
+
 	@Override
 	protected void doFill(PreparedStatement statement, HttpServletRequest request) throws Exception {
 		String user = request.getUserPrincipal().getName();
-		String client = request.getParameter("client");
+		String uri = request.getParameter("uri");
 		statement.setString(1, user);
-		statement.setString(2, client);
+		statement.setString(2, uri);
 	}
 
     @Override
