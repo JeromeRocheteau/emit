@@ -7,70 +7,87 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import fr.icam.emit.clients.EmitClient.Collection;
-import fr.icam.emit.clients.EmitClient.Symbol;
 import fr.icam.emit.clients.EmitClient.Type;
 import fr.icam.emit.entities.Callback;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CallbackEmitClient extends SuperUserEmitClient {
+public class TypeCallbackEmitClient extends SuperUserEmitClient {
+	
+	private static Long ID;
 	
 	@Test
-	public void test_91_size() throws Exception {
+	public void test_90_size() throws Exception {
 		Integer size = api.getCallbackSize();
-		Assert.assertNotEquals(0, size.intValue());
-		System.out.println("[91] number of callbacks: " + size);
+		Assert.assertEquals(0, size.intValue());
+		System.out.println("[90] number of callbacks: " + size);
 	}
 	
 	@Test
-	public void test_92_list() throws Exception {
+	public void test_91_list() throws Exception {
 		List<Callback> list = api.getCallbackList();
 		Assert.assertNotNull(list);
-		Assert.assertNotEquals(0, list.size());
-		System.out.println("[92] callback list size: " + list.size());
+		Assert.assertEquals(0, list.size());
+		System.out.println("[91] callback list size: " + list.size());
 	}
 	
 	@Test
-	public void test_93_page() throws Exception {
+	public void test_92_page() throws Exception {
 		List<Callback> page = api.getCallbackPage(0, 5);
 		Assert.assertNotNull(page);
-		Assert.assertNotEquals(0, page.size());
-		System.out.println("[93] callback page size: " + page.size());
+		Assert.assertEquals(0, page.size());
+		System.out.println("[92] callback page size: " + page.size());
 	}
 	
 	@Test
-	public void test_04_create() throws Exception {
+	public void test_93_create() throws Exception {
 		Long id = api.doTypeCallbackCreate("Test Integer Callback", Type.INTEGER);
 		Assert.assertNotEquals(0, id.longValue());
-		// Assert.assertEquals(1, id.intValue());
-		System.out.println("[04] created type callback: " + id);
+		System.out.println("[93] created type callback: " + id);
+		ID = id;
 	}
 	
 	@Test
-	public void test_05_update() throws Exception {
+	public void test_93_size() throws Exception {
+		Integer size = api.getCallbackSize();
+		Assert.assertEquals(1, size.intValue());
+		System.out.println("[93] number of callbacks: " + size);
+	}
+	
+	@Test
+	public void test_94_find() throws Exception {
+		Callback callback = api.getCallback(ID);
+		Assert.assertNotNull(callback);
+		Assert.assertEquals(callback.getId(), ID);
+		System.out.println("[94] retrieved callback: " + callback);
+	}
+	
+	@Test
+	public void test_95_update() throws Exception {
 		List<Callback> callbacks = api.getCallbackList();
 		for (Callback callback : callbacks) {
-			if (callback.getName().equals("Test Integer Callback")) {
+			if (callback.getId() == ID) {
 				Integer count = api.doTypeCallbackUpdate(callback.getId(), "Test Float Callback", Type.FLOAT);
 				Assert.assertNotEquals(0, count.intValue());
 				Assert.assertEquals(1, count.intValue());
-				System.out.println("[05] updated type callback '" + callback.getId() + "': " + count);	
+				System.out.println("[95] updated type callback '" + callback.getId() + "': " + count);	
 			}
 		}
 	}
 	
 	@Test
-	public void test_06_delete() throws Exception {
+	public void test_96_delete() throws Exception {
 		List<Callback> callbacks = api.getCallbackList();
 		for (Callback callback : callbacks) {
-			if (callback.getName().equals("Test Float Callback")) {
+			if (callback.getId() == ID) {
 				Boolean done = api.doCallbackDelete(callback.getId());
 				Assert.assertNotEquals(false, done.booleanValue());
 				Assert.assertEquals(true, done.booleanValue());
-				System.out.println("[06] deleted type callback '" + callback.getId() + "': " + done);	
+				System.out.println("[96] deleted type callback '" + callback.getId() + "': " + done);	
 			}
 		}
 	}
+	
+	/*
 	
 	@Test
 	public void test_14_create() throws Exception {
@@ -249,5 +266,7 @@ public class CallbackEmitClient extends SuperUserEmitClient {
 			}
 		}
 	}
+
+	*/
 	
 }

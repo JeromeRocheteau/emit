@@ -1417,6 +1417,7 @@
       <url-pattern>/callbacks/list</url-pattern>
       <url-pattern>/callbacks/size</url-pattern>
       <url-pattern>/callbacks/page</url-pattern>
+      <url-pattern>/callbacks/find</url-pattern>
       <url-pattern>/callbacks/create/type</url-pattern>
       <url-pattern>/callbacks/update/type</url-pattern>
       <url-pattern>/callbacks/find/type</url-pattern>
