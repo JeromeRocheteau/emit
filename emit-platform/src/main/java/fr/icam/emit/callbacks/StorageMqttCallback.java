@@ -10,10 +10,12 @@ public class StorageMqttCallback extends MongoMqttCallback {
 
 	public StorageMqttCallback(MongoCollection<Document> collection, String id) throws Exception {
 		super(collection, id);
+		System.out.println("[EMIT] MondoDB MQTT Callback from client " + id + " to database " + collection.getNamespace().getFullName());
 	}
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) {
+		System.out.println("[EMIT] Storage MQTT Callback - message arrived: " + new String(message.getPayload()));
 		boolean retained = message.isRetained();
 		int qos = message.getQos();
 		boolean duplicate = message.isDuplicate();

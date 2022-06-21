@@ -32,7 +32,10 @@ public abstract class EmitMqttCallback implements MqttCallback {
 	}
 	
 	@Override
-	public void connectionLost(Throwable throwable) { }
+	public void connectionLost(Throwable throwable) {
+		System.out.println("[EMIT] Emit MQTT Callback - connection lost");
+		throwable.printStackTrace();
+	}
 
 	@Override
 	public void deliveryComplete(IMqttDeliveryToken token) { }

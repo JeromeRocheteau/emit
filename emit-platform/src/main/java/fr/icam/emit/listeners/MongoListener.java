@@ -18,6 +18,8 @@ public class MongoListener implements ServletContextListener {
 		client = new MongoClient(uri);
 		MongoDatabase db = client.getDatabase(database);
 		sce.getServletContext().setAttribute("mongodb-database", db);
+		
+		System.out.println("[EMIT] MongoDD Database: " + db.getName());
 	}
 
 	public void contextDestroyed(ServletContextEvent sce) {

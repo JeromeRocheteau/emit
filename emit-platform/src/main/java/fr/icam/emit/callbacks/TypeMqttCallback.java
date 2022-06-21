@@ -14,6 +14,7 @@ public class TypeMqttCallback<T extends Comparable<T>> extends EmitMqttCallback 
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) {
+		System.out.println("[EMIT] Type MQTT Callback - message arrived: " + new String(message.getPayload()));
 		String string = new String(message.getPayload());
 		try {
 			T value = type.valueOf(string);

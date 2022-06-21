@@ -43,6 +43,10 @@ public class MqttClientListener implements ServletContextListener {
 		String failureCollectionName = sce.getServletContext().getInitParameter("mongodb-failure-collection");
 		messages = db.getCollection(messageCollectionName);
 		failures = db.getCollection(failureCollectionName);
+
+		System.out.println("[EMIT] MongoDD Collection: " + messages.toString());
+		System.out.println("[EMIT] MongoDD Collection: " + failures.toString());
+		
 		clients = new HashMap<String, MqttClient>(124);
 		sce.getServletContext().setAttribute("mqtt-client-listener", this);
 	}

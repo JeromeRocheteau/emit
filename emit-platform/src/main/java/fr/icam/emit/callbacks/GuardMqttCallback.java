@@ -38,6 +38,7 @@ public class GuardMqttCallback extends EmitMqttCallback implements MqttCallback 
 	
 	@Override
 	public final void messageArrived(String topic, MqttMessage message) {
+		System.out.println("[EMIT] Guard MQTT Callback - message arrived: " + new String(message.getPayload()));
 		callback.messageArrived(topic, message);
 		if (callback.status()) {
 			successCallback.messageArrived(topic, message);

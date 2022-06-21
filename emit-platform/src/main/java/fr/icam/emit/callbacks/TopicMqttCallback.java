@@ -13,6 +13,7 @@ public class TopicMqttCallback extends EmitMqttCallback {
 	
 	@Override
 	public void messageArrived(String topic, MqttMessage message) {
+		System.out.println("[EMIT] Topic MQTT Callback - message arrived: " + new String(message.getPayload()));
 		try {
 			boolean matched = MqttTopic.isMatched(filter, topic);
 			this.status(matched);
