@@ -493,19 +493,19 @@ public class EmitClient {
         return this.getInteger(request);
 	}
 	
-	public Integer doDisconnect(Client client) throws Exception {
+	public Integer doDisconnect(Connect connect) throws Exception {
         HttpPost request = new HttpPost("/emit/clients/disconnect");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
-        parameters.add(new BasicNameValuePair("client", client.getUuid()));
+        parameters.add(new BasicNameValuePair("client", connect.getClient().getUuid()));
+        parameters.add(new BasicNameValuePair("connect", connect.getId().toString()));
         request.setEntity(new UrlEncodedFormEntity(parameters));
         return this.getInteger(request);
 	}
 	
 	public Connect isConnected(Client client) throws Exception {
-        HttpPost request = new HttpPost("/emit/clients/connected");
-        List<NameValuePair> parameters = new ArrayList<NameValuePair>(1);
-        parameters.add(new BasicNameValuePair("client", client.getUuid()));
-        request.setEntity(new UrlEncodedFormEntity(parameters));
+		URIBuilder builder = new URIBuilder("/emit/clients/connected");
+		builder.addParameter("client", client.getUuid());
+        HttpGet request = new HttpGet(builder.build());
         return this.getObject(Connect.class, request);
 	}
 	
