@@ -967,6 +967,47 @@
     <url-pattern>/callbacks/find/type</url-pattern>
   </servlet-mapping>
 
+<!-- value callbacks -->
+
+  <servlet>
+    <servlet-name>value-callback-create</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.values.Creator</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/values/create.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>value-callback-create</servlet-name>
+    <url-pattern>/callbacks/create/value</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>value-callback-update</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.values.Updater</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/values/update.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>value-callback-update</servlet-name>
+    <url-pattern>/callbacks/update/value</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>value-callback-item</servlet-name>
+    <servlet-class>fr.icam.emit.services.callbacks.values.Finder</servlet-class>
+    <init-param>
+      <param-name>sql-query</param-name>
+      <param-value>/fr/icam/emit/queries/callbacks/values/item.sql</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>value-callback-item</servlet-name>
+    <url-pattern>/callbacks/find/value</url-pattern>
+  </servlet-mapping>
+
 <!-- topic callbacks -->
 
   <servlet>
@@ -1421,6 +1462,9 @@
       <url-pattern>/callbacks/create/type</url-pattern>
       <url-pattern>/callbacks/update/type</url-pattern>
       <url-pattern>/callbacks/find/type</url-pattern>
+      <url-pattern>/callbacks/create/value</url-pattern>
+      <url-pattern>/callbacks/update/value</url-pattern>
+      <url-pattern>/callbacks/find/value</url-pattern>
       <url-pattern>/callbacks/create/topic</url-pattern>
       <url-pattern>/callbacks/update/topic</url-pattern>
       <url-pattern>/callbacks/find/topic</url-pattern>

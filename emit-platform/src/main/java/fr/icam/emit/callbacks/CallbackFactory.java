@@ -1,6 +1,7 @@
 package fr.icam.emit.callbacks;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -12,16 +13,21 @@ import fr.icam.emit.entities.callbacks.GuardCallback;
 import fr.icam.emit.entities.callbacks.StorageCallback;
 import fr.icam.emit.entities.callbacks.TopicCallback;
 import fr.icam.emit.entities.callbacks.TypeCallback;
+import fr.icam.emit.entities.callbacks.ValueCallback;
 import fr.icam.emit.listeners.MqttClientListener;
 import fr.icam.emit.types.Symbol;
 import fr.icam.emit.types.Type;
 
 public class CallbackFactory {
 
+	private final static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	
 	public static EmitMqttCallback from(MqttClientListener listener, String id, Callback callback) throws Exception {
 		String category = callback.getCategory();
 		if (category.equals("type")) {
 			return CallbackFactory.from((TypeCallback) callback);
+		} else if (category.equals("value")) {
+			return CallbackFactory.from((ValueCallback) callback);
 		} else if (category.equals("topic")) {
 			return CallbackFactory.from((TopicCallback) callback);
 		} else if (category.equals("storage")) {
@@ -115,6 +121,37 @@ public class CallbackFactory {
 		} else {
 			return new TopicMqttCallback(callback.getTopic());			
 		}
+	}
+
+	private static EmitMqttCallback from(ValueCallback callback) throws Exception {
+		String category = callback.getType().getCategory();
+		String value = callback.getValue();
+		if (category.equals("datatype")) {
+			String name = callback.getType().getName();
+			if (name.equals("string")) {
+				return new ValueMqttCallback<String>(Type.STRING, value);
+			} else if (name.equals("boolean")) {
+				return new ValueMqttCallback<Boolean>(Type.BOOLEAN, Boolean.valueOf(value));
+			} else if (name.equals("integer")) {
+				return new ValueMqttCallback<Integer>(Type.INTEGER, Integer.valueOf(value));
+			} else if (name.equals("long")) {
+				return new ValueMqttCallback<Long>(Type.LONG, Long.valueOf(value));
+			} else if (name.equals("float")) {
+				return new ValueMqttCallback<Float>(Type.FLOAT, Float.valueOf(value));
+			} else if (name.equals("double")) {
+				return new ValueMqttCallback<Double>(Type.DOUBLE, Double.valueOf(value));
+			} else if (name.equals("date")) {
+				return new ValueMqttCallback<Date>(Type.DATE, formatter.parse(value));
+			} else if (name.equals("uri")) {
+				return new ValueMqttCallback<URI>(Type.URI, URI.create(value));
+			} else if (name.equals("uuid")) {
+				return new ValueMqttCallback<UUID>(Type.UUID, UUID.fromString(value));
+			} else {
+				throw new Exception("undefined datatype name '" + name + "'");
+			}
+		} else {
+			throw new Exception("wrong type category '" + category + "' <> 'datatype'");
+		}						
 	}
 
 	private static EmitMqttCallback from(TypeCallback callback) throws Exception {

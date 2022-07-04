@@ -41,7 +41,7 @@ public class EmitClient {
 	
 	public enum Symbol {EQ, NEQ, LT, LEQ, GT, GEQ};
 	
-	private enum Category {TYPE, TOPIC, STORAGE, FEATURE, GUARD};
+	private enum Category {TYPE, VALUE, TOPIC, STORAGE, FEATURE, GUARD};
 	
 	public enum Collection {MESSAGES, FAILURES};
 	
@@ -326,6 +326,31 @@ public class EmitClient {
         parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
         parameters.add(new BasicNameValuePair("category", Category.TYPE.toString().toLowerCase()));
         parameters.add(new BasicNameValuePair("type", type.toString().toLowerCase()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getInteger(request);
+	}
+	
+	public Long doValueCallbackCreate(String name, Type type, String value) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/create/value");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(5);
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.VALUE.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("type", type.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("value", value));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getLong(request);
+	}
+	
+	public Integer doValueCallbackUpdate(Long id, String name, Type type, String value) throws Exception {
+        HttpPost request = new HttpPost("/emit/callbacks/update/value");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(6);
+        parameters.add(new BasicNameValuePair("id", id.toString()));
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("atomic", Boolean.TRUE.toString()));
+        parameters.add(new BasicNameValuePair("category", Category.VALUE.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("type", type.toString().toLowerCase()));
+        parameters.add(new BasicNameValuePair("value", value));
         request.setEntity(new UrlEncodedFormEntity(parameters));
         return this.getInteger(request);
 	}

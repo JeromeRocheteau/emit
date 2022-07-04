@@ -23,6 +23,7 @@ import fr.icam.emit.entities.callbacks.GuardCallback;
 import fr.icam.emit.entities.callbacks.StorageCallback;
 import fr.icam.emit.entities.callbacks.TopicCallback;
 import fr.icam.emit.entities.callbacks.TypeCallback;
+import fr.icam.emit.entities.callbacks.ValueCallback;
 import fr.icam.emit.listeners.MqttClientListener;
 
 public class Initializer extends JdbcQueryServlet<Map<String, Callback>> {
@@ -56,6 +57,11 @@ public class Initializer extends JdbcQueryServlet<Map<String, Callback>> {
 			TypeCallback typeCallback = this.getTypeCallback(resultSet);
 			resultSet.close();
 			return typeCallback;
+		} else if (category.equals("value")) {
+			ResultSet resultSet = this.getResultSet("values", id);
+			ValueCallback topicCallback = this.getValueCallback(resultSet);
+			resultSet.close();
+			return topicCallback;
 		} else if (category.equals("topic")) {
 			ResultSet resultSet = this.getResultSet("topics", id);
 			TopicCallback topicCallback = this.getTopicCallback(resultSet);
@@ -112,6 +118,24 @@ public class Initializer extends JdbcQueryServlet<Map<String, Callback>> {
     		String typeCategory = resultSet.getString("typeCategory");
     		Type type = new Type(typeName, typeCategory);
     		item = new TypeCallback(id, name, issued.getTime(), user, atomic, category, type);
+    	}
+    	return item;
+	}
+
+	private ValueCallback getValueCallback(ResultSet resultSet) throws Exception {
+		ValueCallback item = null;
+    	if (resultSet.next()) {
+    		Long id = resultSet.getLong("id");
+    		String name = resultSet.getString("name");
+    		Boolean atomic = resultSet.getBoolean("atomic");
+    		String category = resultSet.getString("category");
+    		Timestamp issued = resultSet.getTimestamp("issued");
+    		String user = resultSet.getString("user");
+    		String typeName = resultSet.getString("typeName");
+    		String typeCategory = resultSet.getString("typeCategory");
+    		String value = resultSet.getString("value");
+    		Type type = new Type(typeName, typeCategory);
+    		item = new ValueCallback(id, name, issued.getTime(), user, atomic, category, type, value);
     	}
     	return item;
 	}

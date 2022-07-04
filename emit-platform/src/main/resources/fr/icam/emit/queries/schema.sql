@@ -22,6 +22,8 @@ DROP TABLE IF EXISTS `storage_callbacks`;
 
 DROP TABLE IF EXISTS `feature_callbacks`;
 
+DROP TABLE IF EXISTS `value_callbacks`;
+
 DROP TABLE IF EXISTS `type_callbacks`;
 
 DROP TABLE IF EXISTS `topic_callbacks`;
@@ -108,6 +110,15 @@ CREATE TABLE `topic_callbacks` (
 CREATE TABLE `type_callbacks` (
   `id` bigint(20) NOT NULL,
   `type` varchar(90) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`id`) REFERENCES `callbacks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`type`) REFERENCES `types` (`name`)
+);
+
+CREATE TABLE `value_callbacks` (
+  `id` bigint(20) NOT NULL,
+  `type` varchar(90) NOT NULL,
+  `value` varchar(90) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id`) REFERENCES `callbacks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`type`) REFERENCES `types` (`name`)
