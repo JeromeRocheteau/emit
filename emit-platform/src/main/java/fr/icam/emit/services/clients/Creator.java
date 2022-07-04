@@ -43,11 +43,20 @@ public class Creator extends JdbcUpdateServlet<Integer> {
 	}
 
 	private void doCreate(HttpServletRequest request) throws Exception {
-		String client = UUID.randomUUID().toString();
+		String client = this.getClientUUID(request);
 		String broker = URI.create(request.getParameter("broker")).toString();
 		request.setAttribute("client", client);
 		request.setAttribute("broker", broker);
 		listener.doCreate(broker, client);
+	}
+
+	private String getClientUUID(HttpServletRequest request) {
+		String uuid = request.getParameter("uuid");
+		if (uuid == null || uuid.isEmpty()) {
+			return UUID.randomUUID().toString();
+		} else {
+			return UUID.fromString(uuid).toString();	
+		}
 	}
 	
 	@Override

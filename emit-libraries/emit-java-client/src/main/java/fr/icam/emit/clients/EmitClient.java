@@ -246,6 +246,17 @@ public class EmitClient {
         return this.getUUID(request);
 	}
 	
+	public UUID doClientCreate(UUID uuid, String name, Broker broker, Boolean visibility) throws Exception {
+        HttpPost request = new HttpPost("/emit/clients/create");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
+        parameters.add(new BasicNameValuePair("uuid", uuid.toString()));
+        parameters.add(new BasicNameValuePair("name", name));
+        parameters.add(new BasicNameValuePair("broker", broker.getUri()));
+        parameters.add(new BasicNameValuePair("open", visibility.toString()));
+        request.setEntity(new UrlEncodedFormEntity(parameters));
+        return this.getUUID(request);
+	}
+	
 	public Integer doClientUpdate(UUID uuid, String name, Broker broker, Boolean visibility) throws Exception {
         HttpPost request = new HttpPost("/emit/clients/update");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(4);
